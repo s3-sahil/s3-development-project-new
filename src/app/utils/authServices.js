@@ -348,3 +348,128 @@ export const InvoicePaginationAPI = async (
         return null;
     }
 };
+
+export const SalesmanPaginationAPI = async (
+    tableName = "salesman",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Salesman pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const salesmanDetailsEdit = async (empNo) => {
+    try {
+        const response = await axiosInstance.get(
+            "/GETRETRIVE-SALESMAN_DETAILS",
+            {
+                params: { Emp_no: empNo },
+            }
+        );
+
+        const data = response.data;
+        console.log("API Response Data:", data);
+
+        // Lowercase top-level keys
+        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+            acc[key.toLowerCase()] = data[key];
+            return acc;
+        }, {});
+
+        // Lowercase nested Data keys
+        const normalizedData = Object.keys(
+            lowerCaseResponse.data || {}
+        ).reduce((acc, key) => {
+            acc[key.toLowerCase()] = lowerCaseResponse.data[key];
+            return acc;
+        }, {});
+
+        return { data: normalizedData };
+    } catch (error) {
+        console.error(
+            "Salesman Edit API Error:",
+            error.response || error.message
+        );
+        return { data: {} };
+    }
+};
+
+export const Employeelistapichange = async (profcen_cd) => {
+    try {
+        const response = await axiosInstance.get(
+            "/api/Master/Fetch-Employees-dropdown",
+            {
+                params: { Profcen_cd: profcen_cd },
+            }
+        );
+
+        const data = response.data;
+
+        console.log("API Response Data:", data);
+
+        // Lowercase top-level keys
+        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+            acc[key.toLowerCase()] = data[key];
+            return acc;
+        }, {});
+
+        return lowerCaseResponse; // { data: [...] }
+    } catch (error) {
+        console.error(
+            "Error fetching dropdown data:",
+            error.response || error.message
+        );
+        return { data: [] };
+    }
+};
+
+export const customerDetailPaginationAPI = async (
+    tableName = "cust_mst",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Customer pagination fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
+};

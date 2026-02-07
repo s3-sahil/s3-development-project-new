@@ -78,18 +78,39 @@ const navigations = [
         name: "Master",
         icon: "person",
         children: [
+          { name: "Consignee Details", path: "/material/sales-consignee-table", icon: "arrow_forward" },
+          { name: "Notify Party Details", path: "/material/customers", icon: "arrow_forward" },
+          { name: "Contract Review", path: "/material/sales-Contract-review-table", icon: "arrow_forward" },
+          { name: "Salesman", path: "/material/salesman", icon: "arrow_forward" },
+          { name: "Customer Details", path: "/material/customers", icon: "arrow_forward" },
+          // SALES / MATERIAL MASTER TABLES
+
           {
-            name: "Salesman",
-            path: "/material/salesman",
-            icon: "person_add",
-            tooltip: "Salesman Master",
+            name: "Customer Item Details",
+            path: "/material/sales-customer-item-details-form-table",
+            icon: "arrow_forward",
           },
           {
-            name: "Customer Details",
-            path: "/material/customers",
-            icon: "list",
-            tooltip: "Customer Master",
+            name: "Contract Review Checklist",
+            path: "/material/sales-contract-review-checklist-form-table",
+            icon: "arrow_forward",
           },
+          {
+            name: "Project Execution Plan",
+            path: "/material/sales-project-execution-plan-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Project Activity Master",
+            path: "/material/sales-project-activity-master-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Customer Wise Product Price List",
+            path: "/material/sales-customer-wise-product-price-table",
+            icon: "arrow_forward",
+          },
+
         ],
       },
       {
@@ -115,6 +136,13 @@ const navigations = [
           { name: "Link Invoice To Export Schemes", path: "/material/sales-link-invoice-to-export-schemes-table", icon: "arrow_forward" },
           { name: "Enquiry Detail", path: "/material/sales-enquiry-table", icon: "arrow_forward" },
           { name: "Enquiry Login Entry", path: "/material/sales-enquiry-login-entry-table", icon: "arrow_forward" },
+          { name: "Costing", path: "/material/sales-costing-table", icon: "arrow_forward" },
+          { name: "Upload E-Invoice", path: "/material/sales-upload-e-invoice-table", icon: "arrow_forward" },
+          { name: "PRE Shipment Packingslip", path: "/material/sales-pre-shipment-packingslip-table", icon: "arrow_forward" },
+          { name: "Customer RCIA Entry", path: "/material/sales-customer-RCIA-entry-table", icon: "arrow_forward" },
+          { name: "Daily Activity Plan", path: "/material/sales-daily-activity-plan-table", icon: "arrow_forward" },
+          { name: "Business Plan", path: "/material/sales-business-plan-table", icon: "arrow_forward" },
+
         ]
       }
     ]

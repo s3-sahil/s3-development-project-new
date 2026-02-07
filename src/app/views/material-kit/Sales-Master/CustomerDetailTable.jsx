@@ -11,57 +11,59 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 
-export default function SalesmanTable() {
+export default function CustomerDetailTable() {
     const navigate = useNavigate();
 
     // 🔹 HARD CODED DATA
     const rows = [
         {
-            id: 1,
-            employeeCode: "EMP001",
-            employeeName: "John Doe",
-            email: "john@gmail.com",
-            contactNo: "9876543210",
-            gender: "Male",
+            code: "C001",
+            name: "ABC Pvt Ltd",
+            city: "Pune",
+            phone: "9876543210",
+            email: "abc@gmail.com",
         },
         {
-            id: 2,
-            employeeCode: "EMP002",
-            employeeName: "Jane Smith",
-            email: "jane@gmail.com",
-            contactNo: "9123456789",
-            gender: "Female",
+            code: "C002",
+            name: "XYZ Traders",
+            city: "Mumbai",
+            phone: "9123456780",
+            email: "xyz@gmail.com",
         },
         {
-            id: 3,
-            employeeCode: "EMP003",
-            employeeName: "Rahul Kumar",
-            email: "rahul@gmail.com",
-            contactNo: "9988776655",
-            gender: "Male",
+            code: "C003",
+            name: "Global Corp",
+            city: "Delhi",
+            phone: "9988776655",
+            email: "global@gmail.com",
+        },
+        {
+            code: "C004",
+            name: "Sunrise Industries",
+            city: "Bangalore",
+            phone: "9001122334",
+            email: "sunrise@gmail.com",
         },
     ];
 
-    const handleAdd = () => {
-        navigate("/material/salesman/add");
-    };
-
     const handleEdit = (row) => {
-        navigate(`/material/salesman/edit/${row.employeeCode}`, {
-            state: row,
-        });
+        navigate(`/material/customer/edit/${row.code}`, { state: row });
     };
 
-    const handleDelete = (id) => {
-        console.log("Delete salesman:", id);
+    const handleDelete = (code) => {
+        console.log("Delete customer:", code);
+    };
+
+    const handleAddNew = () => {
+        navigate("/material/customer/add");
     };
 
     const columns = [
-        { field: "employeeCode", headerName: "Code", width: 140 },
-        { field: "employeeName", headerName: "Name", width: 180 },
+        { field: "code", headerName: "Code", width: 120 },
+        { field: "name", headerName: "Name", width: 180 },
+        { field: "city", headerName: "City", width: 150 },
+        { field: "phone", headerName: "Phone", width: 160 },
         { field: "email", headerName: "Email", width: 220 },
-        { field: "contactNo", headerName: "Contact No", width: 160 },
-        { field: "gender", headerName: "Gender", width: 120 },
 
         {
             field: "actions",
@@ -77,7 +79,7 @@ export default function SalesmanTable() {
                     </Tooltip>
 
                     <Tooltip title="Delete">
-                        <IconButton onClick={() => handleDelete(params.row.id)}>
+                        <IconButton onClick={() => handleDelete(params.row.code)}>
                             <Icon color="error">delete</Icon>
                         </IconButton>
                     </Tooltip>
@@ -90,7 +92,10 @@ export default function SalesmanTable() {
         <Container>
             <Box className="breadcrumb">
                 <Breadcrumb
-                    routeSegments={[{ name: "Master" }, { name: "Salesman" }]}
+                    routeSegments={[
+                        { name: "Master" },
+                        { name: "Customer Detail" },
+                    ]}
                 />
             </Box>
 
@@ -99,9 +104,9 @@ export default function SalesmanTable() {
                     <Button
                         variant="contained"
                         startIcon={<Icon>add</Icon>}
-                        onClick={handleAdd}
+                        onClick={handleAddNew}
                     >
-                        Add Salesman
+                        Add New
                     </Button>
                 </Box>
 
@@ -109,6 +114,7 @@ export default function SalesmanTable() {
                     <DataGrid
                         rows={rows}
                         columns={columns}
+                        getRowId={(row) => row.code}
                         pageSizeOptions={[5, 10]}
                         initialState={{
                             pagination: {
