@@ -473,3 +473,25 @@ export const customerDetailPaginationAPI = async (
         return { Data: [], TotalCount: 0 };
     }
 };
+
+export const salesmanDetailsAdd = async (payload) => {
+  try {
+    console.log("Calling Salesman Add API with:", payload);
+
+    const response = await axiosInstance.post(
+      "/ADD-SALESMAN_DETAILS", // relative to baseURL
+      payload
+    );
+
+    console.log("Salesman Add API Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Salesman Add API Error:", error.response || error.message);
+
+    if (error.response?.data?.message) {
+      throw new Error(error.response.data.message);
+    }
+
+    throw new Error("Failed to add salesman. Please try again.");
+  }
+};

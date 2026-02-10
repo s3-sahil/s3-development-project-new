@@ -65,7 +65,48 @@ const navigations = [
     ]
   },
   { name: "TMS", path: "/material/buttons", icon: "watch_later" },
-  { name: "Payroll", path: "/material/checkbox", icon: "payment" },
+  {
+    name: "Payroll",
+    icon: "payment",
+    children: [
+      {
+        name: "Master",
+        icon: "person",
+        children: [
+          { name: "Employee Information", path: "/material/payroll-employee-information-table", icon: "arrow_forward" },
+          { name: "Salary / Wages Details", path: "/material/payroll-salary-wages-table", icon: "arrow_forward" },
+          { name: "Profession Tax Slab", path: "/material/payroll-profession-tax-table", icon: "arrow_forward" },
+          { name: "Labour Welfare Slab", path: "/material/payroll-labour-welfare-slab-table", icon: "arrow_forward" },
+          { name: "Designation Details", path: "/material/payroll-designation-table", icon: "arrow_forward" },
+          { name: "Experience Details", path: "/material/payroll-designation-table", icon: "arrow_forward" },
+
+          { name: "Grade Details", path: "/material/payroll-grade-table", icon: "arrow_forward" },
+          { name: "Location Details", path: "/material/payroll-location-table", icon: "arrow_forward" },
+          { name: "Education Details Entry", path: "/payroll/education-details", icon: "arrow_forward" },
+          { name: "Family Detail Entry", path: "/payroll/family-details", icon: "arrow_forward" },
+        ]
+      },
+      {
+        name: "Transaction",
+        icon: "directions_transit",
+        children: [
+          { name: "Attendance Entry", path: "/payroll/attendance-entry", icon: "arrow_forward" },
+          { name: "Salary Processing", path: "/payroll/salary-processing", icon: "arrow_forward" },
+          { name: "Payslip Generation", path: "/payroll/payslip-generation", icon: "arrow_forward" },
+          { name: "Training Attendance", path: "/payroll/training-attendance", icon: "arrow_forward" },
+        ]
+      },
+      {
+        name: "Reports",
+        icon: "bug_report",
+        children: [
+          { name: "Salary Register", path: "/payroll/reports/salary-register", icon: "arrow_forward" },
+          { name: "Payslip Report", path: "/payroll/reports/payslip", icon: "arrow_forward" },
+          { name: "PF / ESI Report", path: "/payroll/reports/pf-esi", icon: "arrow_forward" },
+        ]
+      }
+    ]
+  },
   { name: "SGMS", path: "/material/dialog", icon: "local_grocery_store" },
   { name: "Material", path: "/material/expansion-panel", icon: "slideshow" },
 

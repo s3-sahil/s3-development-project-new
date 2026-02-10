@@ -160,6 +160,44 @@ const CustomerRCIAEntryTable = Loadable(
 const CustomerRCIAEntryForm = Loadable(
   lazy(() => import("./Sales-Transaction/CustomerRCIAEntryForm")),
 );
+const EmployeeInformationTable = Loadable(
+  lazy(() => import("./Payroll-Master/EmployeeInformationTable")),
+);
+const EmployeeInformationForm = Loadable(
+  lazy(() => import("./Payroll-Master/EmployeeInformationForm")),
+);
+const ProfessionTaxTable = Loadable(
+  lazy(() => import("./Payroll-Master/ProfessionTaxTable")),
+);
+const ProfessionTaxForm = Loadable(
+  lazy(() => import("./Payroll-Master/ProfessionTaxForm")),
+);
+const SalaryWagesTable = Loadable(
+  lazy(() => import("./Payroll-Master/SalaryWagesTable")),
+);
+const SalaryWagesForm = Loadable(
+  lazy(() => import("./Payroll-Master/SalaryWagesForm")),
+);
+const LabourWelfareSlabTable = Loadable(
+  lazy(() => import("./Payroll-Master/LabourWelfareSlabTable")),
+);
+const LabourWelfareSlabForm = Loadable(
+  lazy(() => import("./Payroll-Master/LabourWelfareSlabForm")),
+);
+const DesignationTable = Loadable(
+  lazy(() => import("./Payroll-Master/DesignationTable")),
+);
+const DesignationForm = Loadable(
+  lazy(() => import("./Payroll-Master/DesignationForm")),
+);
+const GradeTable = Loadable(lazy(() => import("./Payroll-Master/GradeTable")));
+const GradeForm = Loadable(lazy(() => import("./Payroll-Master/GradeForm")));
+const LocationTable = Loadable(
+  lazy(() => import("./Payroll-Master/LocationTable")),
+);
+const LocationForm = Loadable(
+  lazy(() => import("./Payroll-Master/LocationForm")),
+);
 
 const materialRoutes = [
   { path: "/material/table", element: <AppTable /> },
@@ -416,6 +454,90 @@ const materialRoutes = [
   {
     path: "/material/sales-daily-activity-plan-form/edit/:slipNo",
     element: <DailyActivityPlanForm />,
+  },
+  {
+    path: "/material/payroll-employee-information-table",
+    element: <EmployeeInformationTable />,
+  },
+  {
+    path: "/material/payroll-employee-information-form/add",
+    element: <EmployeeInformationForm />,
+  },
+  {
+    path: "/material/payroll-employee-information-form/edit/:slipNo",
+    element: <EmployeeInformationForm />,
+  },
+  {
+    path: "/material/payroll-profession-tax-table",
+    element: <ProfessionTaxTable />,
+  },
+  {
+    path: "/material/payroll-profession-tax-form/add",
+    element: <ProfessionTaxForm />,
+  },
+  {
+    path: "/material/payroll-profession-tax-form/edit/:slipNo",
+    element: <ProfessionTaxForm />,
+  },
+  {
+    path: "/material/payroll-salary-wages-table",
+    element: <SalaryWagesTable />,
+  },
+  {
+    path: "/material/payroll-salary-wages-form/add",
+    element: <SalaryWagesForm />,
+  },
+  {
+    path: "/material/payroll-salary-wages-form/edit/:slipNo",
+    element: <SalaryWagesForm />,
+  },
+  {
+    path: "/material/payroll-labour-welfare-slab-table",
+    element: <LabourWelfareSlabTable />,
+  },
+  {
+    path: "/material/payroll-labour-welfare-slab-form/add",
+    element: <LabourWelfareSlabForm />,
+  },
+  {
+    path: "/material/payroll-labour-welfare-slab-form/edit/:slipNo",
+    element: <LabourWelfareSlabForm />,
+  },
+  {
+    path: "/material/payroll-designation-table",
+    element: <DesignationTable />,
+  },
+  {
+    path: "/material/payroll-designation-form/add",
+    element: <DesignationForm />,
+  },
+  {
+    path: "/material/payroll-designation-form/edit/:slipNo",
+    element: <DesignationForm />,
+  },
+  {
+    path: "/material/payroll-grade-table",
+    element: <GradeTable />,
+  },
+  {
+    path: "/material/payroll-grade-form/add",
+    element: <GradeForm />,
+  },
+  {
+    path: "/material/payroll-grade-form/edit/:slipNo",
+    element: <GradeForm />,
+  },
+  {
+    path: "/material/payroll-location-table",
+    element: <LocationTable />,
+  },
+  {
+    path: "/material/payroll-location-form/add",
+    element: <LocationForm />,
+  },
+  {
+    path: "/material/payroll-location-form/edit/:slipNo",
+    element: <LocationForm />,
   },
 ];
 
