@@ -90,10 +90,13 @@ const navigations = [
         name: "Transaction",
         icon: "directions_transit",
         children: [
-          { name: "Attendance Entry", path: "/payroll/attendance-entry", icon: "arrow_forward" },
-          { name: "Salary Processing", path: "/payroll/salary-processing", icon: "arrow_forward" },
-          { name: "Payslip Generation", path: "/payroll/payslip-generation", icon: "arrow_forward" },
-          { name: "Training Attendance", path: "/payroll/training-attendance", icon: "arrow_forward" },
+          { name: "Arrears Days Generation", path: "/material/payroll-areas-days-generation-table", icon: "arrow_forward" },
+          { name: "Full & Final", path: "/material/payroll-full-final-table", icon: "arrow_forward" },
+          { name: "Income Tax Processing", path: "/payroll/payslip-generation", icon: "arrow_forward" },
+          { name: "Days Details", path: "/material/payroll-days-details-entry-table", icon: "arrow_forward" },
+          { name: "Deduction Details", path: "/material/payroll-deduction-detail-entry-table", icon: "arrow_forward" },
+          { name: "Payroll Collection", path: "/material/payroll-payroll-calculation-table", icon: "arrow_forward" },
+
         ]
       },
       {

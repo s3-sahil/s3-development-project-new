@@ -2,6 +2,24 @@ import { lazy } from "react";
 import Loadable from "app/components/Loadable";
 import ActivityReportsRightsTable from "./Sys-Admin-Master/ActivityReportsRightsTable";
 import CustomersPurchaseOrderLogin from "./Sales-Transaction/customersPurchaseOrderLogin";
+import EducationDetailsTable from "./Payroll-Master/EducationDetailsTable";
+import EducationDetailsForm from "./Payroll-Master/EducationDetailsForm";
+import FamilyDetailsTable from "./Payroll-Master/FamilyDetailsTable";
+import FamilyDetailsForm from "./Payroll-Master/FamilyDetailsForm";
+import TrainingAttendanceTable from "./Payroll-Master/TrainingAttendanceTable";
+import TrainingAttendanceForm from "./Payroll-Master/TrainingAttendanceForm";
+import TrainingIdentificationTable from "./Payroll-Master/TrainingIdentificationTable";
+import TrainingIdentificationForm from "./Payroll-Master/TrainingIdentificationForm";
+import AreasDaysGenerationTable from "./Payroll-Transaction/AreasDaysGenerationTable";
+import AreasDaysGenerationForm from "./Payroll-Transaction/AreasDaysGenerationForm";
+import FullFinalTable from "./Payroll-Transaction/FullFinalTable";
+import FullFinalForm from "./Payroll-Transaction/FullFinalForm";
+import PayrollCalculationTable from "./Payroll-Transaction/PayrollCalculationTable";
+import PayrollCalculationForm from "./Payroll-Transaction/PayrollCalculationForm";
+import DaysDetailsEntryTable from "./Payroll-Transaction/DaysDetailsEntryTable";
+import DaysDetailsEntryForm from "./Payroll-Transaction/DaysDetailsEntryForm";
+import DeductionDetailEntryTable from "./Payroll-Transaction/DeductionDetailEntryTable";
+import DeductionDetailEntryForm from "./Payroll-Transaction/DeductionDetailEntryForm";
 
 const AppForm = Loadable(lazy(() => import("./forms/AppForm")));
 const AppMenu = Loadable(lazy(() => import("./menu/AppMenu")));
@@ -538,6 +556,114 @@ const materialRoutes = [
   {
     path: "/material/payroll-location-form/edit/:slipNo",
     element: <LocationForm />,
+  },
+  {
+    path: "/material/payroll-education-details-table",
+    element: <EducationDetailsTable />,
+  },
+  {
+    path: "/material/payroll-education-details-form/add",
+    element: <EducationDetailsForm />,
+  },
+  {
+    path: "/material/payroll-education-details-form/edit/:slipNo",
+    element: <EducationDetailsForm />,
+  },
+  {
+    path: "/material/payroll-family-details-table",
+    element: <FamilyDetailsTable />,
+  },
+  {
+    path: "/material/payroll-family-details-form/add",
+    element: <FamilyDetailsForm />,
+  },
+  {
+    path: "/material/payroll-family-details-form/edit/:slipNo",
+    element: <FamilyDetailsForm />,
+  },
+  {
+    path: "/material/payroll-training-attendance-table",
+    element: <TrainingAttendanceTable />,
+  },
+  {
+    path: "/material/payroll-training-attendance-form/add",
+    element: <TrainingAttendanceForm />,
+  },
+  {
+    path: "/material/payroll-training-attendance-form/edit/:slipNo",
+    element: <TrainingAttendanceForm />,
+  },
+  {
+    path: "/material/payroll-training-identification-table",
+    element: <TrainingIdentificationTable />,
+  },
+  {
+    path: "/material/payroll-training-identification-form/add",
+    element: <TrainingIdentificationForm />,
+  },
+  {
+    path: "/material/payroll-training-identification-form/edit/:slipNo",
+    element: <TrainingIdentificationForm />,
+  },
+  {
+    path: "/material/payroll-areas-days-generation-table",
+    element: <AreasDaysGenerationTable />,
+  },
+  {
+    path: "/material/payroll-areas-days-generation-form/add",
+    element: <AreasDaysGenerationForm />,
+  },
+  {
+    path: "/material/payroll-areas-days-generation-form/edit/:slipNo",
+    element: <AreasDaysGenerationForm />,
+  },
+  {
+    path: "/material/payroll-full-final-table",
+    element: <FullFinalTable />,
+  },
+  {
+    path: "/material/payroll-full-final-form/add",
+    element: <FullFinalForm />,
+  },
+  {
+    path: "/material/payroll-full-final-form/edit/:slipNo",
+    element: <FullFinalForm />,
+  },
+  {
+    path: "/material/payroll-payroll-calculation-table",
+    element: <PayrollCalculationTable />,
+  },
+  {
+    path: "/material/payroll-payroll-calculation-form/add",
+    element: <PayrollCalculationForm />,
+  },
+  {
+    path: "/material/payroll-payroll-calculation-form/edit/:slipNo",
+    element: <PayrollCalculationForm />,
+  },
+   {
+    path: "/material/payroll-days-details-entry-table",
+    element: <DaysDetailsEntryTable />,
+  },
+  {
+    path: "/material/payroll-days-details-entry-form/add",
+    element: <DaysDetailsEntryForm />,
+  },
+  {
+    path: "/material/payroll-days-details-entry-form/edit/:slipNo",
+    element: <DaysDetailsEntryForm />,
+  },
+   {
+    path: "/material/payroll-deduction-detail-entry-table",
+    element: <DeductionDetailEntryTable />,
+  },
+  {
+    path: "/material/payroll-deduction-detail-entry-form/add",
+    element: <DeductionDetailEntryForm />,
+  },
+  {
+    path: "/material/payroll-deduction-detail-entry-form/edit/:slipNo",
+    element: <DeductionDetailEntryForm />,
   },
 ];
 
