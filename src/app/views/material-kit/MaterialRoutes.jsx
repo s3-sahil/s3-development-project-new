@@ -20,6 +20,15 @@ import DaysDetailsEntryTable from "./Payroll-Transaction/DaysDetailsEntryTable";
 import DaysDetailsEntryForm from "./Payroll-Transaction/DaysDetailsEntryForm";
 import DeductionDetailEntryTable from "./Payroll-Transaction/DeductionDetailEntryTable";
 import DeductionDetailEntryForm from "./Payroll-Transaction/DeductionDetailEntryForm";
+import AdvanceLeaveDetailsTable from "./Payroll-Master/AdvanceLeaveDetailsTable";
+import AdvanceLeaveDetailsForm from "./Payroll-Master/AdvanceLeaveDetailsForm";
+import ApplicationIncomeHead from "./Payroll-Master/ApplicationIncomeHead";
+import CompanyParametersTable from "./Payroll-Master/CompanyParametersTable";
+import CompanyParametersForm from "./Payroll-Master/CompanyParametersForm";
+import DeductionRecoveryTable from "./Payroll-Master/DeductionRecoveryTable";
+import DeductionRecoveryForm from "./Payroll-Master/DeductionRecoveryForm";
+import DepartmentTable from "./Payroll-Master/DepartmentTable";
+import DepartmentForm from "./Payroll-Master/DepartmentForm";
 
 const AppForm = Loadable(lazy(() => import("./forms/AppForm")));
 const AppMenu = Loadable(lazy(() => import("./menu/AppMenu")));
@@ -641,7 +650,7 @@ const materialRoutes = [
     path: "/material/payroll-payroll-calculation-form/edit/:slipNo",
     element: <PayrollCalculationForm />,
   },
-   {
+  {
     path: "/material/payroll-days-details-entry-table",
     element: <DaysDetailsEntryTable />,
   },
@@ -653,7 +662,7 @@ const materialRoutes = [
     path: "/material/payroll-days-details-entry-form/edit/:slipNo",
     element: <DaysDetailsEntryForm />,
   },
-   {
+  {
     path: "/material/payroll-deduction-detail-entry-table",
     element: <DeductionDetailEntryTable />,
   },
@@ -664,6 +673,66 @@ const materialRoutes = [
   {
     path: "/material/payroll-deduction-detail-entry-form/edit/:slipNo",
     element: <DeductionDetailEntryForm />,
+  },
+  {
+    path: "/material/payroll-advance-leave-details-table",
+    element: <AdvanceLeaveDetailsTable />,
+  },
+  {
+    path: "/material/payroll-advance-leave-details-form/add",
+    element: <AdvanceLeaveDetailsForm />,
+  },
+  {
+    path: "/material/payroll-advance-leave-details-form/edit/:slipNo",
+    element: <AdvanceLeaveDetailsForm />,
+  },
+  {
+    path: "/material/payroll-application-income-head-table",
+    element: <ApplicationIncomeHead />,
+  },
+  {
+    path: "/material/payroll-application-income-head-form/add",
+    element: <ApplicationIncomeHead />,
+  },
+  {
+    path: "/material/payroll-application-income-head-form/edit/:slipNo",
+    element: <ApplicationIncomeHead />,
+  },
+  {
+    path: "/material/payroll-company-parameters-table",
+    element: <CompanyParametersTable />,
+  },
+  {
+    path: "/material/payroll-company-parameters-form/add",
+    element: <CompanyParametersForm />,
+  },
+  {
+    path: "/material/payroll-company-parameters-form/edit/:slipNo",
+    element: <CompanyParametersForm />,
+  },
+  {
+    path: "/material/payroll-deduction-recovery-table",
+    element: <DeductionRecoveryTable />,
+  },
+  {
+    path: "/material/payroll-deduction-recovery-form/add",
+    element: <DeductionRecoveryForm />,
+  },
+  {
+    path: "/material/payroll-deduction-recovery-form/edit/:slipNo",
+    element: <DeductionRecoveryForm />,
+  },
+  {
+    path: "/material/payroll-department-table",
+    element: <DepartmentTable />,
+  },
+  {
+    path: "/material/payroll-department-form/add",
+    element: <DepartmentForm />,
+  },
+  {
+    path: "/material/payroll-department-form/edit/:slipNo",
+    element: <DepartmentForm />,
   },
 ];
 
