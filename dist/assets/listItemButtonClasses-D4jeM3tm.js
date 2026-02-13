@@ -1,0 +1,1 @@
+import{Z as e,$ as s}from"./index-DGO-Ln70.js";function l(t){return s("MuiListItemButton",t)}const a=e("MuiListItemButton",["root","focusVisible","dense","alignItemsFlexStart","disabled","divider","gutters","selected"]);export{l as g,a as l};
