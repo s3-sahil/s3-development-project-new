@@ -84,6 +84,21 @@ const navigations = [
           { name: "Location Details", path: "/material/payroll-location-table", icon: "arrow_forward" },
           { name: "Education Details Entry", path: "/payroll/education-details", icon: "arrow_forward" },
           { name: "Family Detail Entry", path: "/payroll/family-details", icon: "arrow_forward" },
+          { name: "Training On Job", path: "/payroll/family-details", icon: "arrow_forward" },
+          { name: "Training Party Details", path: "/payroll/family-details", icon: "arrow_forward" },
+          { name: "Outsiders Loan Details", path: "/payroll/family-details", icon: "arrow_forward" },
+          { name: "Employee Loan Details", path: "/payroll/family-details", icon: "arrow_forward" },
+          { name: "LIC Details", path: "/payroll/family-details", icon: "arrow_forward" },
+          { name: "Leave Details", path: "/payroll/family-details", icon: "arrow_forward" },
+          { name: "Yearly Holiday Details", path: "/payroll/family-details", icon: "arrow_forward" },
+          { name: "Advance Leave Details", path: "/material/payroll-advance-leave-details-table", icon: "arrow_forward" },
+          { name: "Company Parameters", path: "/material/payroll-company-parameters-table", icon: "arrow_forward" },
+          { name: "Applicable Income Heads", path: "/material/payroll-application-income-head-table", icon: "arrow_forward" },
+          { name: "Grade Wise Payment Details", path: "/payroll/family-details", icon: "arrow_forward" },
+          { name: "Attendance Bonus", path: "/payroll/family-details", icon: "arrow_forward" },
+          { name: "Deduction Recovery Method", path: "/material/payroll-deduction-recovery-table", icon: "arrow_forward" },
+          { name: "Department Details", path: "/material/payroll-department-table", icon: "arrow_forward" },
+          { name: "Payroll Calculation", path: "/payroll/family-details", icon: "arrow_forward" },
         ]
       },
       {
@@ -111,7 +126,66 @@ const navigations = [
     ]
   },
   { name: "SGMS", path: "/material/dialog", icon: "local_grocery_store" },
-  { name: "Material", path: "/material/expansion-panel", icon: "slideshow" },
+  {
+    name: "Material", icon: "slideshow",
+    icon: "payment",
+    children: [
+      {
+        name: "Master",
+        icon: "person",
+        children: [
+          { name: "Unit Of Measurement", path: "/material/payroll-employee-information-table", icon: "arrow_forward" },
+          { name: "Item Category Detail", path: "/material/material-item-category-table", icon: "arrow_forward" },
+          { name: "Item Code Sub-Category Detail", path: "/material/payroll-employee-information-table", icon: "arrow_forward" },
+          { name: "Itemwise Moq", path: "/material/material-item-wise-moq-table", icon: "arrow_forward" },
+          { name: "Item Rate Details", path: "/material/material-item-rate-table", icon: "arrow_forward" },
+          { name: "Shares Of Business", path: "/material/material-share-of-business-table", icon: "arrow_forward" },
+          { name: "GRN Wise Opening Stock", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "HSN/SAC Master", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Alternate Item Details", path: "/material/material-alternate-item-table", icon: "arrow_forward" },
+          { name: "State Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Country Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Supplier Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "District Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Property Values", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Categorywise Property Values", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Machine Hour Rate Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Item HSN Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Operation Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "GST Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Exchange Currency Master", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Product Movement Flow", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Payement Conditions Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "SAC Group Master", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Material Defect Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Physical Inventory", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Item Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Bill Of Material", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Grade Master Details", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Itemwise Material Grade Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Project Detail", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Inspection Parameter", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Item Inspection Parameter Details", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+        ]
+      },
+      {
+        name: "Transaction",
+        icon: "directions_transit",
+        children: [
+          { name: "Arrears Days Generation", path: "/material/payroll-areas-days-generation-table", icon: "arrow_forward" },
+
+
+        ]
+      },
+      {
+        name: "Reports",
+        icon: "bug_report",
+        children: [
+
+        ]
+      }
+    ]
+  },
 
   {
     name: "Sales",

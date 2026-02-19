@@ -1,15 +1,17 @@
-import { Fragment } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Icon from "@mui/material/Icon";
 import ButtonBase from "@mui/material/ButtonBase";
+import TextField from "@mui/material/TextField";
 import styled from "@mui/material/styles/styled";
 
 import useSettings from "app/hooks/useSettings";
 import { Paragraph, Span } from "../Typography";
 import MatxVerticalNavExpansionPanel from "./MatxVerticalNavExpansionPanel";
 
-// STYLED COMPONENTS
+// ================= STYLED COMPONENTS =================
+
 const ListLabel = styled(Paragraph)(({ theme, mode }) => ({
   fontSize: "12px",
   marginTop: "20px",
@@ -79,9 +81,24 @@ const BadgeValue = styled("div")(() => ({
   borderRadius: "300px"
 }));
 
+// ================= COMPONENT =================
+
 export default function MatxVerticalNav({ items }) {
   const { settings } = useSettings();
   const { mode } = settings.layout1Settings.leftSidebar;
+
+  const [search, setSearch] = useState("");
+
+  // ✅ ONLY TOP-LEVEL FILTER (NO SUBMENU TOUCH)
+  const filteredItems = useMemo(() => {
+    if (!search) return items;
+
+    const lower = search.toLowerCase();
+
+    return items.filter((item) =>
+      item.name?.toLowerCase().includes(lower)
+    );
+  }, [items, search]);
 
   const renderLevels = (data) => {
     return data.map((item, index) => {
@@ -105,19 +122,20 @@ export default function MatxVerticalNav({ items }) {
             href={item.path}
             className={`${mode === "compact" && "compactNavItem"}`}
             rel="noopener noreferrer"
-            target="_blank">
+            target="_blank"
+          >
             <ButtonBase key={item.name} name="child" sx={{ width: "100%" }}>
-              {(() => {
-                if (item.icon) {
-                  return <Icon className="icon">{item.icon}</Icon>;
-                } else {
-                  return <span className="item-icon icon-text">{item.iconText}</span>;
-                }
-              })()}
+              {item.icon ? (
+                <Icon className="icon">{item.icon}</Icon>
+              ) : (
+                <span className="item-icon icon-text">{item.iconText}</span>
+              )}
+
               <StyledText mode={mode} className="sidenavHoverShow">
                 {item.name}
               </StyledText>
-              <Box mx="auto"></Box>
+
+              <Box mx="auto" />
               {item.badge && <BadgeValue>{item.badge.value}</BadgeValue>}
             </ButtonBase>
           </ExternalLink>
@@ -131,7 +149,8 @@ export default function MatxVerticalNav({ items }) {
                 isActive
                   ? `navItemActive ${mode === "compact" && "compactNavItem"}`
                   : `${mode === "compact" && "compactNavItem"}`
-              }>
+              }
+            >
               <ButtonBase key={item.name} name="child" sx={{ width: "100%" }}>
                 {item?.icon ? (
                   <Icon className="icon" sx={{ width: 36 }}>
@@ -140,7 +159,7 @@ export default function MatxVerticalNav({ items }) {
                 ) : (
                   <Fragment>
                     <BulletIcon
-                      className={`nav-bullet`}
+                      className="nav-bullet"
                       sx={{ display: mode === "compact" && "none" }}
                     />
                     <Box
@@ -149,11 +168,13 @@ export default function MatxVerticalNav({ items }) {
                         ml: "20px",
                         fontSize: "11px",
                         display: mode !== "compact" && "none"
-                      }}>
+                      }}
+                    >
                       {item.iconText}
                     </Box>
                   </Fragment>
                 )}
+
                 <StyledText mode={mode} className="sidenavHoverShow">
                   {item.name}
                 </StyledText>
@@ -161,7 +182,9 @@ export default function MatxVerticalNav({ items }) {
                 <Box mx="auto" />
 
                 {item.badge && (
-                  <BadgeValue className="sidenavHoverShow">{item.badge.value}</BadgeValue>
+                  <BadgeValue className="sidenavHoverShow">
+                    {item.badge.value}
+                  </BadgeValue>
                 )}
               </ButtonBase>
             </NavLink>
@@ -171,5 +194,21 @@ export default function MatxVerticalNav({ items }) {
     });
   };
 
-  return <div className="navigation">{renderLevels(items)}</div>;
+  return (
+    <div className="navigation">
+      {/* 🔍 MAIN MENU SEARCH */}
+      <Box px={2} py={1}>
+        <TextField
+          fullWidth
+          size="small"
+          placeholder="Search menu..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </Box>
+
+      {/* ✅ Use filteredItems (TOP LEVEL ONLY) */}
+      {renderLevels(filteredItems)}
+    </div>
+  );
 }

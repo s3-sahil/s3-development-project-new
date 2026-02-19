@@ -2,24 +2,8 @@ import { lazy } from "react";
 import Loadable from "app/components/Loadable";
 import ActivityReportsRightsTable from "./Sys-Admin-Master/ActivityReportsRightsTable";
 import CustomersPurchaseOrderLogin from "./Sales-Transaction/customersPurchaseOrderLogin";
-import EducationDetailsTable from "./Payroll-Master/EducationDetailsTable";
-import EducationDetailsForm from "./Payroll-Master/EducationDetailsForm";
-import FamilyDetailsTable from "./Payroll-Master/FamilyDetailsTable";
-import FamilyDetailsForm from "./Payroll-Master/FamilyDetailsForm";
-import TrainingAttendanceTable from "./Payroll-Master/TrainingAttendanceTable";
-import TrainingAttendanceForm from "./Payroll-Master/TrainingAttendanceForm";
-import TrainingIdentificationTable from "./Payroll-Master/TrainingIdentificationTable";
-import TrainingIdentificationForm from "./Payroll-Master/TrainingIdentificationForm";
-import AreasDaysGenerationTable from "./Payroll-Transaction/AreasDaysGenerationTable";
-import AreasDaysGenerationForm from "./Payroll-Transaction/AreasDaysGenerationForm";
-import FullFinalTable from "./Payroll-Transaction/FullFinalTable";
-import FullFinalForm from "./Payroll-Transaction/FullFinalForm";
-import PayrollCalculationTable from "./Payroll-Transaction/PayrollCalculationTable";
-import PayrollCalculationForm from "./Payroll-Transaction/PayrollCalculationForm";
-import DaysDetailsEntryTable from "./Payroll-Transaction/DaysDetailsEntryTable";
-import DaysDetailsEntryForm from "./Payroll-Transaction/DaysDetailsEntryForm";
-import DeductionDetailEntryTable from "./Payroll-Transaction/DeductionDetailEntryTable";
-import DeductionDetailEntryForm from "./Payroll-Transaction/DeductionDetailEntryForm";
+import AlternateItemTable from "./Material-Master/AlternateItemTable";
+import AlternateItemForm from "./Material-Master/AlternateItemForm";
 
 const AppForm = Loadable(lazy(() => import("./forms/AppForm")));
 const AppMenu = Loadable(lazy(() => import("./menu/AppMenu")));
@@ -215,6 +199,118 @@ const LocationTable = Loadable(
 );
 const LocationForm = Loadable(
   lazy(() => import("./Payroll-Master/LocationForm")),
+);
+
+const EducationDetailsTable = Loadable(
+  lazy(() => import("./Payroll-Master/EducationDetailsTable")),
+);
+const EducationDetailsForm = Loadable(
+  lazy(() => import("./Payroll-Master/EducationDetailsForm")),
+);
+const FamilyDetailsTable = Loadable(
+  lazy(() => import("./Payroll-Master/FamilyDetailsTable")),
+);
+const FamilyDetailsForm = Loadable(
+  lazy(() => import("./Payroll-Master/FamilyDetailsForm")),
+);
+const TrainingAttendanceTable = Loadable(
+  lazy(() => import("./Payroll-Master/TrainingAttendanceTable")),
+);
+const TrainingAttendanceForm = Loadable(
+  lazy(() => import("./Payroll-Master/TrainingAttendanceForm")),
+);
+const TrainingIdentificationTable = Loadable(
+  lazy(() => import("./Payroll-Master/TrainingIdentificationTable")),
+);
+const TrainingIdentificationForm = Loadable(
+  lazy(() => import("./Payroll-Master/TrainingIdentificationForm")),
+);
+const AreasDaysGenerationTable = Loadable(
+  lazy(() => import("./Payroll-Transaction/AreasDaysGenerationTable")),
+);
+const AreasDaysGenerationForm = Loadable(
+  lazy(() => import("./Payroll-Transaction/AreasDaysGenerationForm")),
+);
+const FullFinalTable = Loadable(
+  lazy(() => import("./Payroll-Transaction/FullFinalTable")),
+);
+const FullFinalForm = Loadable(
+  lazy(() => import("./Payroll-Transaction/FullFinalForm")),
+);
+const PayrollCalculationTable = Loadable(
+  lazy(() => import("./Payroll-Transaction/PayrollCalculationTable")),
+);
+const PayrollCalculationForm = Loadable(
+  lazy(() => import("./Payroll-Transaction/PayrollCalculationForm")),
+);
+const DaysDetailsEntryTable = Loadable(
+  lazy(() => import("./Payroll-Transaction/DaysDetailsEntryTable")),
+);
+const DaysDetailsEntryForm = Loadable(
+  lazy(() => import("./Payroll-Transaction/DaysDetailsEntryForm")),
+);
+const DeductionDetailEntryTable = Loadable(
+  lazy(() => import("./Payroll-Transaction/DeductionDetailEntryTable")),
+);
+const DeductionDetailEntryForm = Loadable(
+  lazy(() => import("./Payroll-Transaction/DeductionDetailEntryForm")),
+);
+const AdvanceLeaveDetailsTable = Loadable(
+  lazy(() => import("./Payroll-Master/AdvanceLeaveDetailsTable")),
+);
+const AdvanceLeaveDetailsForm = Loadable(
+  lazy(() => import("./Payroll-Master/AdvanceLeaveDetailsForm")),
+);
+const CompanyParametersTable = Loadable(
+  lazy(() => import("./Payroll-Master/CompanyParametersTable")),
+);
+const CompanyParametersForm = Loadable(
+  lazy(() => import("./Payroll-Master/CompanyParametersForm")),
+);
+const DeductionRecoveryTable = Loadable(
+  lazy(() => import("./Payroll-Master/DeductionRecoveryTable")),
+);
+const DeductionRecoveryForm = Loadable(
+  lazy(() => import("./Payroll-Master/DeductionRecoveryForm")),
+);
+const DepartmentTable = Loadable(
+  lazy(() => import("./Payroll-Master/DepartmentTable")),
+);
+const DepartmentForm = Loadable(
+  lazy(() => import("./Payroll-Master/DepartmentForm")),
+);
+const ItemCategoryTable = Loadable(
+  lazy(() => import("./Material-Master/ItemCategoryTable")),
+);
+const ItemCategoryForm = Loadable(
+  lazy(() => import("./Material-Master/ItemCategoryForm")),
+);
+const ItemRateTable = Loadable(
+  lazy(() => import("./Material-Master/ItemRateTable")),
+);
+const ItemRateForm = Loadable(
+  lazy(() => import("./Material-Master/ItemRateForm")),
+);
+const ItemwiseMoqTable = Loadable(
+  lazy(() => import("./Material-Master/ItemwiseMoqTable")),
+);
+const ItemwiseMoqForm = Loadable(
+  lazy(() => import("./Material-Master/ItemwiseMoqForm")),
+);
+const ApplicationIncomeHead = Loadable(
+  lazy(() => import("./Payroll-Master/ApplicationIncomeHead")),
+);
+const ShareOfBusinessTable = Loadable(
+  lazy(() => import("./Material-Master/ShareOfBusinessTable")),
+);
+const ShareOfBusinessForm = Loadable(
+  lazy(() => import("./Material-Master/ShareOfBusinessForm")),
+);
+const GRNWiseOpeningStockTable = Loadable(
+  lazy(() => import("./Material-Master/GRNWiseOpeningStockTable")),
+);
+const GRNWiseOpeningStockForm = Loadable(
+  lazy(() => import("./Material-Master/GRNWiseOpeningStockForm")),
 );
 
 const materialRoutes = [
@@ -641,7 +737,7 @@ const materialRoutes = [
     path: "/material/payroll-payroll-calculation-form/edit/:slipNo",
     element: <PayrollCalculationForm />,
   },
-   {
+  {
     path: "/material/payroll-days-details-entry-table",
     element: <DaysDetailsEntryTable />,
   },
@@ -653,7 +749,7 @@ const materialRoutes = [
     path: "/material/payroll-days-details-entry-form/edit/:slipNo",
     element: <DaysDetailsEntryForm />,
   },
-   {
+  {
     path: "/material/payroll-deduction-detail-entry-table",
     element: <DeductionDetailEntryTable />,
   },
@@ -664,6 +760,138 @@ const materialRoutes = [
   {
     path: "/material/payroll-deduction-detail-entry-form/edit/:slipNo",
     element: <DeductionDetailEntryForm />,
+  },
+  {
+    path: "/material/payroll-advance-leave-details-table",
+    element: <AdvanceLeaveDetailsTable />,
+  },
+  {
+    path: "/material/payroll-advance-leave-details-form/add",
+    element: <AdvanceLeaveDetailsForm />,
+  },
+  {
+    path: "/material/payroll-advance-leave-details-form/edit/:slipNo",
+    element: <AdvanceLeaveDetailsForm />,
+  },
+  {
+    path: "/material/payroll-application-income-head-table",
+    element: <ApplicationIncomeHead />,
+  },
+  {
+    path: "/material/payroll-application-income-head-form/add",
+    element: <ApplicationIncomeHead />,
+  },
+  {
+    path: "/material/payroll-application-income-head-form/edit/:slipNo",
+    element: <ApplicationIncomeHead />,
+  },
+  {
+    path: "/material/payroll-company-parameters-table",
+    element: <CompanyParametersTable />,
+  },
+  {
+    path: "/material/payroll-company-parameters-form/add",
+    element: <CompanyParametersForm />,
+  },
+  {
+    path: "/material/payroll-company-parameters-form/edit/:slipNo",
+    element: <CompanyParametersForm />,
+  },
+  {
+    path: "/material/payroll-deduction-recovery-table",
+    element: <DeductionRecoveryTable />,
+  },
+  {
+    path: "/material/payroll-deduction-recovery-form/add",
+    element: <DeductionRecoveryForm />,
+  },
+  {
+    path: "/material/payroll-deduction-recovery-form/edit/:slipNo",
+    element: <DeductionRecoveryForm />,
+  },
+  {
+    path: "/material/payroll-department-table",
+    element: <DepartmentTable />,
+  },
+  {
+    path: "/material/payroll-department-form/add",
+    element: <DepartmentForm />,
+  },
+  {
+    path: "/material/payroll-department-form/edit/:slipNo",
+    element: <DepartmentForm />,
+  },
+  {
+    path: "/material/material-item-category-table",
+    element: <ItemCategoryTable />,
+  },
+  {
+    path: "/material/material-item-category-form/add",
+    element: <ItemCategoryForm />,
+  },
+  {
+    path: "/material/material-item-category-form/edit/:slipNo",
+    element: <ItemCategoryForm />,
+  },
+  {
+    path: "/material/material-item-rate-table",
+    element: <ItemRateTable />,
+  },
+  {
+    path: "/material/material-item-rate-form/add",
+    element: <ItemRateForm />,
+  },
+  {
+    path: "/material/material-item-rate-form/edit/:slipNo",
+    element: <ItemRateForm />,
+  },
+  {
+    path: "/material/material-item-wise-moq-table",
+    element: <ItemwiseMoqTable />,
+  },
+  {
+    path: "/material/material-item-wise-moq-form/add",
+    element: <ItemwiseMoqForm />,
+  },
+  {
+    path: "/material/material-item-wise-moq-form/edit/:slipNo",
+    element: <ItemwiseMoqForm />,
+  },
+  {
+    path: "/material/material-share-of-business-table",
+    element: <ShareOfBusinessTable />,
+  },
+  {
+    path: "/material/material-share-of-business-form/add",
+    element: <ShareOfBusinessForm />,
+  },
+  {
+    path: "/material/material-share-of-business-form/edit/:slipNo",
+    element: <ShareOfBusinessForm />,
+  },
+  {
+    path: "/material/material-GRN-wise-opening-stock-table",
+    element: <GRNWiseOpeningStockTable />,
+  },
+  {
+    path: "/material/material-GRN-wise-opening-stock-form/add",
+    element: <GRNWiseOpeningStockForm />,
+  },
+  {
+    path: "/material/material-GRN-wise-opening-stock-form/edit/:slipNo",
+    element: <GRNWiseOpeningStockForm />,
+  },
+   {
+    path: "/material/material-alternate-item-table",
+    element: <AlternateItemTable />,
+  },
+  {
+    path: "/material/material-alternate-item-form/add",
+    element: <AlternateItemForm />,
+  },
+  {
+    path: "/material/material-alternate-item-form/edit/:slipNo",
+    element: <AlternateItemForm />,
   },
 ];
 

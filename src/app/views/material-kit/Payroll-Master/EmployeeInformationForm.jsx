@@ -1,162 +1,260 @@
 import {
-  Container,
   Box,
-  Grid,
+  Container,
   TextField,
   Button,
   Icon,
+  Grid,
   MenuItem,
-  Radio,
   RadioGroup,
   FormControlLabel,
-  FormLabel,
+  Radio,
+  Divider,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
 
-export default function EmployeeInformationForm() {
-  const [formData, setFormData] = useState({
-    employeeNo: "286",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    department: "",
-    grade: "",
-    designation: "",
-    email: "",
-    mobileNumber: "",
-    birthDate: "",
-    joinDate: "",
-    gender: "Male",
-    maritalStatus: "Unmarried",
-    panNo: "",
-    qualification: "",
-    city: "",
-    state: "",
-    pinNo: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
+const EmployeeInformationForm = () => {
   const handleSave = () => {
-    console.log("Employee Form Data:", formData);
+    alert("Saved (UI Only)");
   };
 
   return (
     <Container maxWidth="xl">
-      {/* Breadcrumb */}
-      <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "Payroll" }, { name: "Employee Information" }]} />
+      <Box className="breadcrumb">
+        <Breadcrumb
+          routeSegments={[
+            { name: "Payroll" },
+            { name: "Employee Information" },
+          ]}
+        />
       </Box>
 
-      {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Box display="flex" alignItems="center" gap={1}>
-         
+      <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
+        {/* Header */}
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <h2 style={{ color: "#6a1b9a" }}></h2>
+          <Button
+            variant="contained"
+            startIcon={<Icon>save</Icon>}
+            onClick={handleSave}
+          >
+            Save
+          </Button>
         </Box>
 
-        <Button
-          variant="contained"
-          color="secondary"
-          startIcon={<Icon>save</Icon>}
-          onClick={handleSave}
-        >
-          Save
-        </Button>
-      </Box>
+        {/* <Divider sx={{ my: 2 }} /> */}
 
-      {/* Form */}
-      <Box p={3} boxShadow={2} borderRadius={2}>
         <Grid container spacing={3}>
-          <Grid item xs={4}>
-            <TextField label="Employee No" name="employeeNo" value={formData.employeeNo} size="small" fullWidth disabled />
-          </Grid>
 
+          {/* Row 1 */}
           <Grid item xs={4}>
-            <TextField label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} size="small" fullWidth />
-          </Grid>
-
-          <Grid item xs={4}>
-            <TextField label="Middle Name" name="middleName" value={formData.middleName} onChange={handleChange} size="small" fullWidth />
-          </Grid>
-
-          <Grid item xs={4}>
-            <TextField label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} size="small" fullWidth />
-          </Grid>
-
-          <Grid item xs={4}>
-            <TextField label="Department" name="department" value={formData.department} onChange={handleChange} size="small" fullWidth select>
-              <MenuItem value="04">04</MenuItem>
-              <MenuItem value="10">10</MenuItem>
+            <TextField label="Refer" size="small" select fullWidth>
+              <MenuItem value="">Select</MenuItem>
             </TextField>
           </Grid>
 
           <Grid item xs={4}>
-            <TextField label="Designation" name="designation" value={formData.designation} onChange={handleChange} size="small" fullWidth />
+            <TextField label="Employee No" size="small" fullWidth />
           </Grid>
 
           <Grid item xs={4}>
-            <TextField label="Grade" name="grade" value={formData.grade} onChange={handleChange} size="small" fullWidth />
+            <TextField label="Status" size="small" select fullWidth>
+              <MenuItem value="">Select</MenuItem>
+            </TextField>
+          </Grid>
+
+          {/* Row 2 */}
+          <Grid item xs={4}>
+            <TextField label="First Name" size="small" fullWidth />
           </Grid>
 
           <Grid item xs={4}>
-            <TextField label="Mobile Number" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} size="small" fullWidth />
+            <TextField label="Middle Name" size="small" fullWidth />
           </Grid>
 
           <Grid item xs={4}>
-            <TextField label="E-mail" name="email" value={formData.email} onChange={handleChange} size="small" fullWidth />
+            <TextField label="Last Name" size="small" fullWidth />
+          </Grid>
+
+          {/* Row 3 */}
+          <Grid item xs={4}>
+            <TextField label="Department" size="small" select fullWidth />
           </Grid>
 
           <Grid item xs={4}>
-            <TextField label="Birth Date" type="date" name="birthDate" value={formData.birthDate} onChange={handleChange} size="small" fullWidth InputLabelProps={{ shrink: true }} />
+            <TextField label="Mobile Number" size="small" fullWidth />
           </Grid>
 
           <Grid item xs={4}>
-            <TextField label="Join Date" type="date" name="joinDate" value={formData.joinDate} onChange={handleChange} size="small" fullWidth InputLabelProps={{ shrink: true }} />
+            <TextField label="Week Off 1" size="small" select fullWidth />
           </Grid>
 
-          {/* Gender */}
-          <Grid item xs={6}>
-            <FormLabel>Gender</FormLabel>
-            <RadioGroup row name="gender" value={formData.gender} onChange={handleChange}>
-              <FormControlLabel value="Male" control={<Radio />} label="Male" />
-              <FormControlLabel value="Female" control={<Radio />} label="Female" />
+          {/* Row 4 */}
+          <Grid item xs={4}>
+            <TextField label="Grade" size="small" select fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="E-mail" size="small" fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Week Off 2" size="small" select fullWidth />
+          </Grid>
+
+          {/* Row 5 */}
+          <Grid item xs={4}>
+            <TextField label="Emp Category" size="small" select fullWidth>
+              <MenuItem value="T">Technical</MenuItem>
+              <MenuItem value="N">Non Technical</MenuItem>
+              <MenuItem value="H">Head Office</MenuItem>
+              <MenuItem value="F">Field</MenuItem>
+            </TextField>
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Blood Group" size="small" select fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Designation" size="small" select fullWidth />
+          </Grid>
+
+          {/* Row 6 */}
+          <Grid item xs={4}>
+            <TextField label="Notice Period In Days" size="small" fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField
+              label="Birth Date"
+              type="date"
+              size="small"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Birth Place" size="small" fullWidth />
+          </Grid>
+
+          {/* Gender + Marital */}
+          <Grid item xs={4}>
+            <strong>Gender</strong>
+            <RadioGroup row>
+              <FormControlLabel value="male" control={<Radio />} label="Male" />
+              <FormControlLabel value="female" control={<Radio />} label="Female" />
             </RadioGroup>
           </Grid>
 
-          {/* Marital */}
-          <Grid item xs={6}>
-            <FormLabel>Marital Status</FormLabel>
-            <RadioGroup row name="maritalStatus" value={formData.maritalStatus} onChange={handleChange}>
-              <FormControlLabel value="Married" control={<Radio />} label="Married" />
-              <FormControlLabel value="Unmarried" control={<Radio />} label="Unmarried" />
+          <Grid item xs={4}>
+            <strong>Marital Status</strong>
+            <RadioGroup row>
+              <FormControlLabel value="married" control={<Radio />} label="Married" />
+              <FormControlLabel value="unmarried" control={<Radio />} label="Unmarried" />
             </RadioGroup>
           </Grid>
 
           <Grid item xs={4}>
-            <TextField label="PAN No" name="panNo" value={formData.panNo} onChange={handleChange} size="small" fullWidth />
+            <TextField
+              label="Join Date"
+              type="date"
+              size="small"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+
+          {/* Address */}
+          <Grid item xs={4}>
+            <TextField label="Permanent Address 1" size="small" fullWidth />
           </Grid>
 
           <Grid item xs={4}>
-            <TextField label="Qualification" name="qualification" value={formData.qualification} onChange={handleChange} size="small" fullWidth />
+            <TextField label="Permanent Address 2" size="small" fullWidth />
           </Grid>
 
           <Grid item xs={4}>
-            <TextField label="City" name="city" value={formData.city} onChange={handleChange} size="small" fullWidth />
+            <TextField label="Permanent Address 3" size="small" fullWidth />
           </Grid>
 
           <Grid item xs={4}>
-            <TextField label="State" name="state" value={formData.state} onChange={handleChange} size="small" fullWidth />
+            <TextField label="City" size="small" fullWidth />
           </Grid>
 
           <Grid item xs={4}>
-            <TextField label="Pin No" name="pinNo" value={formData.pinNo} onChange={handleChange} size="small" fullWidth />
+            <TextField label="Pin No" size="small" fullWidth />
           </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="State" size="small" select fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Contact Number" size="small" fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Aadhar Card No" size="small" fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="PAN No" size="small" fullWidth />
+          </Grid>
+
+          {/* Experience + Extra */}
+          <Grid item xs={4}>
+            <TextField label="No. Of Children" size="small" fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Qualification" size="small" fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Prev. Experience (Years)" size="small" fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Prev. Experience (Months)" size="small" fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Confirm Date" type="date" size="small" fullWidth InputLabelProps={{ shrink: true }} />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Temporary Status" size="small" select fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Temporary Status Date" type="date" size="small" fullWidth InputLabelProps={{ shrink: true }} />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Gratuity ID" size="small" fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Referred By" size="small" fullWidth />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField label="Reporting" size="small" fullWidth />
+          </Grid>
+
+          {/* Button */}
+          <Grid item xs={12}>
+            <Button variant="contained" color="secondary">
+              Other Details
+            </Button>
+          </Grid>
+
         </Grid>
       </Box>
     </Container>
   );
-}
+};
+
+export default EmployeeInformationForm;
