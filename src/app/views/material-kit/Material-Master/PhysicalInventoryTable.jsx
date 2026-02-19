@@ -53,7 +53,7 @@ export default function PhysicalInventoryTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/physical-inventory-form/edit/${params.row.id}`, {
+              navigate(`/material/material-physical-inventory-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -82,7 +82,7 @@ export default function PhysicalInventoryTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/material/physical-inventory-form/add")
+              navigate("/material/material-physical-inventory-form/add")
             }
           >
             New

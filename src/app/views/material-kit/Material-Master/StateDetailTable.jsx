@@ -32,7 +32,7 @@ export default function StateDetailTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/sysadmin/state-detail-form/edit/${params.row.id}`, {
+              navigate(`/material/material-state-detail-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -61,7 +61,7 @@ export default function StateDetailTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/sysadmin/state-detail-form/add")
+              navigate("/material/material-state-detail-form/add")
             }
           >
             New

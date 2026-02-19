@@ -44,7 +44,7 @@ export default function MachineHourRateTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/production/machine-hour-rate-form/edit/${params.row.id}`, {
+              navigate(`/material/material-machine-hour-rate-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -73,7 +73,7 @@ export default function MachineHourRateTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/production/machine-hour-rate-form/add")
+              navigate("/material/material-machine-hour-rate-form/add")
             }
           >
             New

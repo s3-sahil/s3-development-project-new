@@ -56,7 +56,7 @@ const InternalLink = styled(Box)(({ theme }) => ({
     color: theme.palette.text.primary
   },
   "& .navItemActive": {
-    backgroundColor: "rgba(255, 255, 255, 0.16)"
+    backgroundColor: "rgb(25 118 210)"
   }
 }));
 

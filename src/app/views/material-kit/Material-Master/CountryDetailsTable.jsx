@@ -47,7 +47,7 @@ export default function CountryDetailsTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/country-details-form/edit/${params.row.id}`, {
+              navigate(`/material/material-country-details-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -76,7 +76,7 @@ export default function CountryDetailsTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/material/country-details-form/add")
+              navigate("/material/material-country-details-form/add")
             }
           >
             New

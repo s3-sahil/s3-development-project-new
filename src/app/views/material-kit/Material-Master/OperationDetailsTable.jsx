@@ -32,7 +32,7 @@ export default function OperationDetailsTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/production/operation-details-form/edit/${params.row.id}`, {
+              navigate(`/material/material-operation-details-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -61,7 +61,7 @@ export default function OperationDetailsTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/production/operation-details-form/add")
+              navigate("/material/material-operation-details-form/add")
             }
           >
             New

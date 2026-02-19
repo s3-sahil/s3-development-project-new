@@ -11,37 +11,43 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 
-export default function ItemHSNTable() {
+export default function GSTDetailTable() {
   const navigate = useNavigate();
 
   const rows = [
     {
       id: 1,
-      itemCode: "ITM001",
-      category: "Mechanical",
-      subCategory: "Raw",
-      description: "Steel Rod",
-      hsnCode: "7207",
-      customTariffCode: "CT001",
+      taxType: "CGST",
+      taxCode: "C01",
+      taxName: "CGST",
+      taxPercent: 14,
+      wefMonth: "07",
+      wefYear: "2017",
+      glCode: "102074",
+      description: "CGST PAYABLE",
     },
     {
       id: 2,
-      itemCode: "ITM002",
-      category: "Electrical",
-      subCategory: "Finished",
-      description: "Copper Wire",
-      hsnCode: "7408",
-      customTariffCode: "CT002",
+      taxType: "SGST",
+      taxCode: "S01",
+      taxName: "SGST",
+      taxPercent: 14,
+      wefMonth: "07",
+      wefYear: "2017",
+      glCode: "102075",
+      description: "SGST PAYABLE",
     },
   ];
 
   const columns = [
-    { field: "itemCode", headerName: "Item Code", width: 150 },
-    { field: "category", headerName: "Category", width: 150 },
-    { field: "subCategory", headerName: "Sub-Category", width: 150 },
+    { field: "taxType", headerName: "Tax Type", width: 120 },
+    { field: "taxCode", headerName: "Tax Code", width: 120 },
+    { field: "taxName", headerName: "Tax Name", width: 150 },
+    { field: "taxPercent", headerName: "Tax (%)", width: 120 },
+    { field: "wefMonth", headerName: "WEF (MM)", width: 120 },
+    { field: "wefYear", headerName: "WEF (YYYY)", width: 120 },
+    { field: "glCode", headerName: "GL Code", width: 150 },
     { field: "description", headerName: "Description", width: 250 },
-    { field: "hsnCode", headerName: "HSN Code", width: 150 },
-    { field: "customTariffCode", headerName: "Custom Tariff Code", width: 200 },
     {
       field: "actions",
       headerName: "Actions",
@@ -50,7 +56,7 @@ export default function ItemHSNTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/material-item-HSN-form/edit/${params.row.id}`, {
+              navigate(`/material/material-GST-detail-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -65,12 +71,7 @@ export default function ItemHSNTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb
-          routeSegments={[
-            { name: "Material" },
-            { name: "Item HSN Details" },
-          ]}
-        />
+        <Breadcrumb routeSegments={[{ name: "Finance" }, { name: "GST Detail" }]} />
       </Box>
 
       <Stack spacing={3}>
@@ -78,9 +79,7 @@ export default function ItemHSNTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() =>
-              navigate("/material/material-item-HSN-form/add")
-            }
+            onClick={() => navigate("/material/material-GST-detail-form/add")}
           >
             New
           </Button>

@@ -44,7 +44,7 @@ export default function SACGroupMasterTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/finance/sac-group-master-form/edit/${params.row.id}`, {
+              navigate(`/material/material-SAC-group-master-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -73,7 +73,7 @@ export default function SACGroupMasterTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/finance/sac-group-master-form/add")
+              navigate("/material/material-SAC-group-master-form/add")
             }
           >
             New

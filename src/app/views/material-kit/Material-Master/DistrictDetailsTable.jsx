@@ -44,7 +44,7 @@ export default function DistrictDetailsTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/district-details-form/edit/${params.row.id}`, {
+              navigate(`/material/material-district-details-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -73,7 +73,7 @@ export default function DistrictDetailsTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/material/district-details-form/add")
+              navigate("/material/material-district-details-form/add")
             }
           >
             New

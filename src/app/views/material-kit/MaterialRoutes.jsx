@@ -2,8 +2,7 @@ import { lazy } from "react";
 import Loadable from "app/components/Loadable";
 import ActivityReportsRightsTable from "./Sys-Admin-Master/ActivityReportsRightsTable";
 import CustomersPurchaseOrderLogin from "./Sales-Transaction/customersPurchaseOrderLogin";
-import AlternateItemTable from "./Material-Master/AlternateItemTable";
-import AlternateItemForm from "./Material-Master/AlternateItemForm";
+
 
 const AppForm = Loadable(lazy(() => import("./forms/AppForm")));
 const AppMenu = Loadable(lazy(() => import("./menu/AppMenu")));
@@ -311,6 +310,144 @@ const GRNWiseOpeningStockTable = Loadable(
 );
 const GRNWiseOpeningStockForm = Loadable(
   lazy(() => import("./Material-Master/GRNWiseOpeningStockForm")),
+);
+const AlternateItemTable = Loadable(
+  lazy(() => import("./Material-Master/AlternateItemTable")),
+);
+const AlternateItemForm = Loadable(
+  lazy(() => import("./Material-Master/AlternateItemForm")),
+);
+const SACGroupMasterTable = Loadable(
+  lazy(() => import("./Material-Master/SACGroupMasterTable")),
+);
+const SACGroupMasterForm = Loadable(
+  lazy(() => import("./Material-Master/SACGroupMasterForm")),
+);
+const StateDetailTable = Loadable(
+  lazy(() => import("./Material-Master/StateDetailTable")),
+);
+const StateDetailForm = Loadable(
+  lazy(() => import("./Material-Master/StateDetailForm")),
+);
+const CountryDetailsTable = Loadable(
+  lazy(() => import("./Material-Master/CountryDetailsTable")),
+);
+const CountryDetailsForm = Loadable(
+  lazy(() => import("./Material-Master/CountryDetailsForm")),
+);
+const DistrictDetailsTable = Loadable(
+  lazy(() => import("./Material-Master/DistrictDetailsTable")),
+);
+const DistrictDetailsForm = Loadable(
+  lazy(() => import("./Material-Master/DistrictDetailsForm")),
+);
+const PropertyValuesTable = Loadable(
+  lazy(() => import("./Material-Master/PropertyValuesTable")),
+);
+const PropertyValuesForm = Loadable(
+  lazy(() => import("./Material-Master/PropertyValuesForm")),
+);
+const CategoryPropertyTable = Loadable(
+  lazy(() => import("./Material-Master/CategoryPropertyTable")),
+);
+const CategoryPropertyForm = Loadable(
+  lazy(() => import("./Material-Master/CategoryPropertyForm")),
+);
+const HSNTable = Loadable(
+  lazy(() => import("./Material-Master/HSNTable")),
+);
+const HSNForm = Loadable(
+  lazy(() => import("./Material-Master/HSNForm")),
+);
+const GSTDetailTable = Loadable(
+  lazy(() => import("./Material-Master/GSTDetailTable")),
+);
+const GSTDetailForm = Loadable(
+  lazy(() => import("./Material-Master/GSTDetailForm")),
+);
+const SACGroupTable = Loadable(
+  lazy(() => import("./Material-Master/SACGroupTable")),
+);
+const SACGroupForm = Loadable(
+  lazy(() => import("./Material-Master/SACGroupForm")),
+);
+const SupplierTable = Loadable(
+  lazy(() => import("./Material-Master/SupplierTable")),
+);
+const SupplierForm = Loadable(
+  lazy(() => import("./Material-Master/SupplierForm")),
+);
+const ItemInspectionTable = Loadable(
+  lazy(() => import("./Material-Master/ItemInspectionTable")),
+);
+const ItemInspectionForm = Loadable(
+  lazy(() => import("./Material-Master/ItemInspectionForm")),
+);
+const ProjectDetailTable = Loadable(
+  lazy(() => import("./Material-Master/ProjectDetailTable")),
+);
+const ProjectDetailForm = Loadable(
+  lazy(() => import("./Material-Master/ProjectDetailForm")),
+);
+const GradeMasterTable = Loadable(
+  lazy(() => import("./Material-Master/GradeMasterTable")),
+);
+const GradeMasterForm = Loadable(
+  lazy(() => import("./Material-Master/GradeMasterForm")),
+);
+const ItemDetailsTable = Loadable(
+  lazy(() => import("./Material-Master/ItemDetailsTable")),
+);
+const ItemDetailsForm = Loadable(
+  lazy(() => import("./Material-Master/ItemDetailsForm")),
+);
+const PhysicalInventoryTable = Loadable(
+  lazy(() => import("./Material-Master/PhysicalInventoryTable")),
+);
+const PhysicalInventoryForm = Loadable(
+  lazy(() => import("./Material-Master/PhysicalInventoryForm")),
+);
+const MaterialDefectTable = Loadable(
+  lazy(() => import("./Material-Master/MaterialDefectTable")),
+);
+const MaterialDefectForm = Loadable(
+  lazy(() => import("./Material-Master/MaterialDefectForm")),
+);
+const PaymentConditionsTable = Loadable(
+  lazy(() => import("./Material-Master/PaymentConditionsTable")),
+);
+const PaymentConditionsForm = Loadable(
+  lazy(() => import("./Material-Master/PaymentConditionsForm")),
+);
+const ProductMovementTable = Loadable(
+  lazy(() => import("./Material-Master/ProductMovementTable")),
+);
+const ProductMovementForm = Loadable(
+  lazy(() => import("./Material-Master/ProductMovementForm")),
+);
+const ExchangeCurrencyTable = Loadable(
+  lazy(() => import("./Material-Master/ExchangeCurrencyTable")),
+);
+const ExchangeCurrencyForm = Loadable(
+  lazy(() => import("./Material-Master/ExchangeCurrencyForm")),
+);
+const OperationDetailsTable = Loadable(
+  lazy(() => import("./Material-Master/OperationDetailsTable")),
+);
+const OperationDetailsForm = Loadable(
+  lazy(() => import("./Material-Master/OperationDetailsForm")),
+);
+const ItemHSNTable = Loadable(
+  lazy(() => import("./Material-Master/ItemHSNTable")),
+);
+const ItemHSNForm = Loadable(
+  lazy(() => import("./Material-Master/ItemHSNForm")),
+);
+const MachineHourRateTable = Loadable(
+  lazy(() => import("./Material-Master/MachineHourRateTable")),
+);
+const MachineHourRateForm = Loadable(
+  lazy(() => import("./Material-Master/MachineHourRateForm")),
 );
 
 const materialRoutes = [
@@ -881,7 +1018,7 @@ const materialRoutes = [
     path: "/material/material-GRN-wise-opening-stock-form/edit/:slipNo",
     element: <GRNWiseOpeningStockForm />,
   },
-   {
+  {
     path: "/material/material-alternate-item-table",
     element: <AlternateItemTable />,
   },
@@ -892,6 +1029,270 @@ const materialRoutes = [
   {
     path: "/material/material-alternate-item-form/edit/:slipNo",
     element: <AlternateItemForm />,
+  },
+  {
+    path: "/material/material-SAC-group-master-table",
+    element: <SACGroupMasterTable />,
+  },
+  {
+    path: "/material/material-SAC-group-master-form/add",
+    element: <SACGroupMasterForm />,
+  },
+  {
+    path: "/material/material-SAC-group-master-form/edit/:slipNo",
+    element: <SACGroupMasterForm />,
+  },
+  {
+    path: "/material/material-state-detail-table",
+    element: <StateDetailTable />,
+  },
+  {
+    path: "/material/material-state-detail-form/add",
+    element: <StateDetailForm />,
+  },
+  {
+    path: "/material/material-state-detail-form/edit/:slipNo",
+    element: <StateDetailForm />,
+  },
+  {
+    path: "/material/material-country-details-table",
+    element: <CountryDetailsTable />,
+  },
+  {
+    path: "/material/material-country-details-form/add",
+    element: <CountryDetailsForm />,
+  },
+  {
+    path: "/material/material-country-details-form/edit/:slipNo",
+    element: <CountryDetailsForm />,
+  },
+  {
+    path: "/material/material-district-details-table",
+    element: <DistrictDetailsTable />,
+  },
+  {
+    path: "/material/material-district-details-form/add",
+    element: <DistrictDetailsForm />,
+  },
+  {
+    path: "/material/material-district-details-form/edit/:slipNo",
+    element: <DistrictDetailsForm />,
+  },
+  {
+    path: "/material/material-property-values-table",
+    element: <PropertyValuesTable />,
+  },
+  {
+    path: "/material/material-property-values-form/add",
+    element: <PropertyValuesForm />,
+  },
+  {
+    path: "/material/material-property-values-form/edit/:slipNo",
+    element: <PropertyValuesForm />,
+  },
+  {
+    path: "/material/material-category-property-table",
+    element: <CategoryPropertyTable />,
+  },
+  {
+    path: "/material/material-category-property-form/add",
+    element: <CategoryPropertyForm />,
+  },
+  {
+    path: "/material/material-category-property-form/edit/:slipNo",
+    element: <CategoryPropertyForm />,
+  },
+  {
+    path: "/material/material-machine-hour-rate-table",
+    element: <MachineHourRateTable />,
+  },
+  {
+    path: "/material/material-machine-hour-rate-form/add",
+    element: <MachineHourRateForm />,
+  },
+  {
+    path: "/material/material-machine-hour-rate-form/edit/:slipNo",
+    element: <MachineHourRateForm />,
+  },
+  {
+    path: "/material/material-item-HSN-table",
+    element: <ItemHSNTable />,
+  },
+  {
+    path: "/material/material-item-HSN-form/add",
+    element: <ItemHSNForm />,
+  },
+  {
+    path: "/material/material-item-HSN-form/edit/:slipNo",
+    element: <ItemHSNForm />,
+  },
+  {
+    path: "/material/material-operation-details-table",
+    element: <OperationDetailsTable />,
+  },
+  {
+    path: "/material/material-operation-details-form/add",
+    element: <OperationDetailsForm />,
+  },
+  {
+    path: "/material/material-operation-details-form/edit/:slipNo",
+    element: <OperationDetailsForm />,
+  },
+  {
+    path: "/material/material-exchange-currency-table",
+    element: <ExchangeCurrencyTable />,
+  },
+  {
+    path: "/material/material-exchange-currency-form/add",
+    element: <ExchangeCurrencyForm />,
+  },
+  {
+    path: "/material/material-exchange-currency-form/edit/:slipNo",
+    element: <ExchangeCurrencyForm />,
+  },
+  {
+    path: "/material/material-product-movement-table",
+    element: <ProductMovementTable />,
+  },
+  {
+    path: "/material/material-product-movement-form/add",
+    element: <ProductMovementForm />,
+  },
+  {
+    path: "/material/material-product-movement-form/edit/:slipNo",
+    element: <ProductMovementForm />,
+  },
+   {
+    path: "/material/material-payment-conditions-table",
+    element: <PaymentConditionsTable />,
+  },
+  {
+    path: "/material/material-payment-conditions-form/add",
+    element: <PaymentConditionsForm />,
+  },
+  {
+    path: "/material/material-payment-conditions-form/edit/:slipNo",
+    element: <PaymentConditionsForm />,
+  },
+  {
+    path: "/material/material-material-defect-table",
+    element: <MaterialDefectTable />,
+  },
+  {
+    path: "/material/material-material-defect-form/add",
+    element: <MaterialDefectForm />,
+  },
+  {
+    path: "/material/material-material-defect-form/edit/:slipNo",
+    element: <MaterialDefectForm />,
+  },
+   {
+    path: "/material/material-physical-inventory-table",
+    element: <PhysicalInventoryTable />,
+  },
+  {
+    path: "/material/material-physical-inventory-form/add",
+    element: <PhysicalInventoryForm />,
+  },
+  {
+    path: "/material/material-physical-inventory-form/edit/:slipNo",
+    element: <PhysicalInventoryForm />,
+  },
+   {
+    path: "/material/material-item-details-table",
+    element: <ItemDetailsTable />,
+  },
+  {
+    path: "/material/material-item-details-form/add",
+    element: <ItemDetailsForm />,
+  },
+  {
+    path: "/material/material-item-details-form/edit/:slipNo",
+    element: <ItemDetailsForm />,
+  },
+   {
+    path: "/material/material-grade-master-table",
+    element: <GradeMasterTable />,
+  },
+  {
+    path: "/material/material-grade-master-form/add",
+    element: <GradeMasterForm />,
+  },
+  {
+    path: "/material/material-grade-master-form/edit/:slipNo",
+    element: <GradeMasterForm />,
+  },
+   {
+    path: "/material/material-project-detail-table",
+    element: <ProjectDetailTable />,
+  },
+  {
+    path: "/material/material-project-detail-form/add",
+    element: <ProjectDetailForm />,
+  },
+  {
+    path: "/material/material-project-detail-form/edit/:slipNo",
+    element: <ProjectDetailForm />,
+  },
+  {
+    path: "/material/material-item-inspection-table",
+    element: <ItemInspectionTable />,
+  },
+  {
+    path: "/material/material-item-inspection-form/add",
+    element: <ItemInspectionForm />,
+  },
+  {
+    path: "/material/material-item-inspection-form/edit/:slipNo",
+    element: <ItemInspectionForm />,
+  },
+  {
+    path: "/material/material-supplier-table",
+    element: <SupplierTable />,
+  },
+  {
+    path: "/material/material-supplier-form/add",
+    element: <SupplierForm />,
+  },
+  {
+    path: "/material/material-supplier-form/edit/:slipNo",
+    element: <SupplierForm />,
+  },
+  {
+    path: "/material/material-SAC-group-table",
+    element: <SACGroupTable />,
+  },
+  {
+    path: "/material/material-SAC-group-form/add",
+    element: <SACGroupForm />,
+  },
+  {
+    path: "/material/material-SAC-group-form/edit/:slipNo",
+    element: <SACGroupForm />,
+  },
+   {
+    path: "/material/material-GST-detail-table",
+    element: <GSTDetailTable />,
+  },
+  {
+    path: "/material/material-GST-detail-form/add",
+    element: <GSTDetailForm />,
+  },
+  {
+    path: "/material/material-GST-detail-form/edit/:slipNo",
+    element: <GSTDetailForm />,
+  },
+   {
+    path: "/material/material-HSN-table",
+    element: <HSNTable />,
+  },
+  {
+    path: "/material/material-HSN-form/add",
+    element: <HSNForm />,
+  },
+  {
+    path: "/material/material-HSN-form/edit/:slipNo",
+    element: <HSNForm />,
   },
 ];
 

@@ -59,7 +59,7 @@ export default function ItemInspectionTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/tqm/item-inspection-form/edit/${params.row.id}`, {
+              navigate(`/material/material-item-inspection-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -88,7 +88,7 @@ export default function ItemInspectionTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/tqm/item-inspection-form/add")
+              navigate("/material/material-item-inspection-form/add")
             }
           >
             New

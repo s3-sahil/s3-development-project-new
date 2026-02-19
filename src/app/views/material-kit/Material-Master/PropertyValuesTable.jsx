@@ -41,7 +41,7 @@ export default function PropertyValuesTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/property-values-form/edit/${params.row.id}`, {
+              navigate(`/material/material-property-values-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -70,7 +70,7 @@ export default function PropertyValuesTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/material/property-values-form/add")
+              navigate("/material/material-property-values-form/add")
             }
           >
             New

@@ -47,7 +47,7 @@ export default function ProjectDetailTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/planning/project-detail-form/edit/${params.row.id}`, {
+              navigate(`/material/material-project-detail-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -76,7 +76,7 @@ export default function ProjectDetailTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/planning/project-detail-form/add")
+              navigate("/material/material-project-detail-form/add")
             }
           >
             New

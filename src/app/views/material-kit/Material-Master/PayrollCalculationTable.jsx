@@ -11,37 +11,31 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 
-export default function ItemHSNTable() {
+export default function PayrollCalculationTable() {
   const navigate = useNavigate();
 
   const rows = [
     {
       id: 1,
-      itemCode: "ITM001",
-      category: "Mechanical",
-      subCategory: "Raw",
-      description: "Steel Rod",
-      hsnCode: "7207",
-      customTariffCode: "CT001",
+      month: "04-April",
+      year: "2016",
+      division: "Consolidated",
+      status: "Processed",
     },
     {
       id: 2,
-      itemCode: "ITM002",
-      category: "Electrical",
-      subCategory: "Finished",
-      description: "Copper Wire",
-      hsnCode: "7408",
-      customTariffCode: "CT002",
+      month: "05-May",
+      year: "2016",
+      division: "Particular",
+      status: "Pending",
     },
   ];
 
   const columns = [
-    { field: "itemCode", headerName: "Item Code", width: 150 },
-    { field: "category", headerName: "Category", width: 150 },
-    { field: "subCategory", headerName: "Sub-Category", width: 150 },
-    { field: "description", headerName: "Description", width: 250 },
-    { field: "hsnCode", headerName: "HSN Code", width: 150 },
-    { field: "customTariffCode", headerName: "Custom Tariff Code", width: 200 },
+    { field: "month", headerName: "Month", width: 150 },
+    { field: "year", headerName: "Year", width: 120 },
+    { field: "division", headerName: "Division", width: 180 },
+    { field: "status", headerName: "Status", width: 150 },
     {
       field: "actions",
       headerName: "Actions",
@@ -50,7 +44,7 @@ export default function ItemHSNTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/material-item-HSN-form/edit/${params.row.id}`, {
+              navigate(`/payroll/payroll-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -65,12 +59,7 @@ export default function ItemHSNTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb
-          routeSegments={[
-            { name: "Material" },
-            { name: "Item HSN Details" },
-          ]}
-        />
+        <Breadcrumb routeSegments={[{ name: "Payroll" }, { name: "Payroll Calculation" }]} />
       </Box>
 
       <Stack spacing={3}>
@@ -78,9 +67,7 @@ export default function ItemHSNTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() =>
-              navigate("/material/material-item-HSN-form/add")
-            }
+            onClick={() => navigate("/payroll/payroll-form/add")}
           >
             New
           </Button>

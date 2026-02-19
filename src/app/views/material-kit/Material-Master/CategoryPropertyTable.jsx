@@ -41,7 +41,7 @@ export default function CategoryPropertyTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/category-property-form/edit/${params.row.id}`, {
+              navigate(`/material/material-category-property-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -70,7 +70,7 @@ export default function CategoryPropertyTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/material/category-property-form/add")
+              navigate("/material/material-category-property-form/add")
             }
           >
             New

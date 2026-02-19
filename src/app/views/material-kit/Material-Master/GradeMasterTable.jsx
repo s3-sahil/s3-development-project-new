@@ -41,7 +41,7 @@ export default function GradeMasterTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/grade-master-form/edit/${params.row.id}`, {
+              navigate(`/material/material-grade-master-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -70,7 +70,7 @@ export default function GradeMasterTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/material/grade-master-form/add")
+              navigate("/material/material-grade-master-form/add")
             }
           >
             New
