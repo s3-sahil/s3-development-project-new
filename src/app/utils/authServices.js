@@ -475,23 +475,43 @@ export const customerDetailPaginationAPI = async (
 };
 
 export const salesmanDetailsAdd = async (payload) => {
-  try {
-    console.log("Calling Salesman Add API with:", payload);
+    try {
+        console.log("Calling Salesman Add API with:", payload);
 
-    const response = await axiosInstance.post(
-      "/ADD-SALESMAN_DETAILS", // relative to baseURL
-      payload
-    );
+        const response = await axiosInstance.post(
+            "/ADD-SALESMAN_DETAILS", // relative to baseURL
+            payload
+        );
 
-    console.log("Salesman Add API Response:", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Salesman Add API Error:", error.response || error.message);
+        console.log("Salesman Add API Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Salesman Add API Error:", error.response || error.message);
 
-    if (error.response?.data?.message) {
-      throw new Error(error.response.data.message);
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+
+        throw new Error("Failed to add salesman. Please try again.");
     }
+};
 
-    throw new Error("Failed to add salesman. Please try again.");
-  }
+export const employeeSalaryApi = async (salaryData) => {
+    try {
+        console.log("Calling Salary API with:", salaryData);
+
+        const response = await axiosInstance.post(
+            "/api/Salary/add-Salary-Details",
+            salaryData
+        );
+
+        console.log("API Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("API Error:", error.response || error.message);
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+        throw new Error("Failed to save employee salary details. Please try again.");
+    }
 };

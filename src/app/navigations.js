@@ -64,7 +64,63 @@ const navigations = [
       }
     ]
   },
-  { name: "TMS", path: "/material/buttons", icon: "watch_later" },
+  {
+    name: "TMS", icon: "watch_later",
+    children: [
+      {
+        name: "Master",
+        icon: "person",
+        children: [
+          { name: "TMS Parameter", path: "/material/TMS-parameter-table", icon: "arrow_forward" },
+          { name: "Card Details", path: "/material/material-item-category-table", icon: "arrow_forward" },
+          { name: "Attendance Status Details", path: "/material/payroll-employee-information-table", icon: "arrow_forward" },
+          { name: "Rotation Details", path: "/material/material-item-wise-moq-table", icon: "arrow_forward" },
+          { name: "Route Details", path: "/material/material-item-rate-table", icon: "arrow_forward" },
+          { name: "Shift Details", path: "/material/material-share-of-business-table", icon: "arrow_forward" },
+          { name: "Assign Cards", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
+          { name: "Grade Wise Rule", path: "/material/material-HSN-table", icon: "arrow_forward" },
+          { name: "Coff Rules", path: "/material/material-alternate-item-table", icon: "arrow_forward" },
+          { name: "Overtime Rules", path: "/material/material-state-detail-table", icon: "arrow_forward" },
+        ]
+      },
+      {
+        name: "Transaction",
+        icon: "directions_transit",
+        children: [
+          { name: "Purchase Order", path: "/material/purchase-order-table", icon: "arrow_forward" },
+          { name: "Outward Challan", path: "/material/material-outward-challan-table", icon: "arrow_forward" },
+          { name: "Goods Receipt Note", path: "/material/material-goods-receipt-note-table", icon: "arrow_forward" },
+          { name: "Work Order", path: "/material/work-order-table", icon: "arrow_forward" },
+          { name: "Material Issue", path: "/material/material-issue-table", icon: "arrow_forward" },
+          { name: "Material Requisition", path: "/material/material-requisition-table", icon: "arrow_forward" },
+          { name: "Purchase Requisition", path: "/material/material-purchase-requisition-table", icon: "arrow_forward" },
+          { name: "Work Order Issue", path: "/material/material-work-order-issue-table", icon: "arrow_forward" },
+          { name: "Material Return Received", path: "/material/material-material-return-received-table", icon: "arrow_forward" },
+          { name: "Material Rate Contract", path: "/material/material-rate-contract-table", icon: "arrow_forward" },
+          { name: "Supplier Schedule", path: "/material/material-supplier-schedule-table", icon: "arrow_forward" },
+          { name: "Goods Receipt Note (Inspection)", path: "/material/material-goods-receipt-inspection-table", icon: "arrow_forward" },
+          { name: "WIP Material Adjustment", path: "/material/material-wip-material-adjustment-table", icon: "arrow_forward" },
+          { name: "Purchase Line Rejection", path: "/material/material-purchase-line-rejection-table", icon: "arrow_forward" },
+          { name: "Product Movement Slip", path: "/material/material-product-movement-slip-table", icon: "arrow_forward" },
+          { name: "Material Stock Adjustment", path: "/material/material-stock-adjustment-table", icon: "arrow_forward" },
+          { name: "Jobwork Stock Adjustment", path: "/material/material-jobwork-stock-adjustment-table", icon: "arrow_forward" },
+          { name: "Customer Stock Adjustment", path: "/material/material-customer-stock-adjustment-table", icon: "arrow_forward" },
+          { name: "Customer WIP Adjustment", path: "/material/material-customer-wip-adjustment-table", icon: "arrow_forward" },
+          { name: "Approval", path: "/material/approval-table", icon: "arrow_forward" },
+          { name: "Supplier Bills", path: "/material/material-supplier-bills-table", icon: "arrow_forward" },
+          { name: "Additional Work Order Requisition", path: "/material/additional-work-order-requisition-table", icon: "arrow_forward" },
+          { name: "Material Return", path: "/material/material-return-table", icon: "arrow_forward" },
+        ]
+      },
+      {
+        name: "Reports",
+        icon: "bug_report",
+        children: [
+
+        ]
+      }
+    ]
+  },
   {
     name: "Payroll",
     icon: "payment",
@@ -172,9 +228,29 @@ const navigations = [
         name: "Transaction",
         icon: "directions_transit",
         children: [
-          { name: "Arrears Days Generation", path: "/material/payroll-areas-days-generation-table", icon: "arrow_forward" },
-
-
+          { name: "Purchase Order", path: "/material/purchase-order-table", icon: "arrow_forward" },
+          { name: "Outward Challan", path: "/material/material-outward-challan-table", icon: "arrow_forward" },
+          { name: "Goods Receipt Note", path: "/material/material-goods-receipt-note-table", icon: "arrow_forward" },
+          { name: "Work Order", path: "/material/work-order-table", icon: "arrow_forward" },
+          { name: "Material Issue", path: "/material/material-issue-table", icon: "arrow_forward" },
+          { name: "Material Requisition", path: "/material/material-requisition-table", icon: "arrow_forward" },
+          { name: "Purchase Requisition", path: "/material/material-purchase-requisition-table", icon: "arrow_forward" },
+          { name: "Work Order Issue", path: "/material/material-work-order-issue-table", icon: "arrow_forward" },
+          { name: "Material Return Received", path: "/material/material-material-return-received-table", icon: "arrow_forward" },
+          { name: "Material Rate Contract", path: "/material/material-rate-contract-table", icon: "arrow_forward" },
+          { name: "Supplier Schedule", path: "/material/material-supplier-schedule-table", icon: "arrow_forward" },
+          { name: "Goods Receipt Note (Inspection)", path: "/material/material-goods-receipt-inspection-table", icon: "arrow_forward" },
+          { name: "WIP Material Adjustment", path: "/material/material-wip-material-adjustment-table", icon: "arrow_forward" },
+          { name: "Purchase Line Rejection", path: "/material/material-purchase-line-rejection-table", icon: "arrow_forward" },
+          { name: "Product Movement Slip", path: "/material/material-product-movement-slip-table", icon: "arrow_forward" },
+          { name: "Material Stock Adjustment", path: "/material/material-stock-adjustment-table", icon: "arrow_forward" },
+          { name: "Jobwork Stock Adjustment", path: "/material/material-jobwork-stock-adjustment-table", icon: "arrow_forward" },
+          { name: "Customer Stock Adjustment", path: "/material/material-customer-stock-adjustment-table", icon: "arrow_forward" },
+          { name: "Customer WIP Adjustment", path: "/material/material-customer-wip-adjustment-table", icon: "arrow_forward" },
+          { name: "Approval", path: "/material/approval-table", icon: "arrow_forward" },
+          { name: "Supplier Bills", path: "/material/material-supplier-bills-table", icon: "arrow_forward" },
+          { name: "Additional Work Order Requisition", path: "/material/additional-work-order-requisition-table", icon: "arrow_forward" },
+          { name: "Material Return", path: "/material/material-return-table", icon: "arrow_forward" },
         ]
       },
       {

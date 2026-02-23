@@ -2,7 +2,46 @@ import { lazy } from "react";
 import Loadable from "app/components/Loadable";
 import ActivityReportsRightsTable from "./Sys-Admin-Master/ActivityReportsRightsTable";
 import CustomersPurchaseOrderLogin from "./Sales-Transaction/customersPurchaseOrderLogin";
-
+import WorkOrderIssueTable from "./Material-Transaction/WorkOrderIssueTable";
+import WorkOrderIssueForm from "./Material-Transaction/WorkOrderIssueForm";
+import WipMaterialAdjustmentTable from "./Material-Transaction/WipMaterialAdjustmentTable";
+import WipMaterialAdjustmentForm from "./Material-Transaction/WipMaterialAdjustmentForm";
+import SupplierScheduleTable from "./Material-Transaction/SupplierScheduleTable";
+import SupplierScheduleForm from "./Material-Transaction/SupplierScheduleForm";
+import SupplierBillsTable from "./Material-Transaction/SupplierBillsTable";
+import SupplierBillsForm from "./Material-Transaction/SupplierBillsForm";
+import PurchaseRequisitionTable from "./Material-Transaction/PurchaseRequisitionTable";
+import PurchaseRequisitionForm from "./Material-Transaction/PurchaseRequisitionForm";
+import PurchaseLineRejectionTable from "./Material-Transaction/PurchaseLineRejectionTable";
+import PurchaseLineRejectionForm from "./Material-Transaction/PurchaseLineRejectionForm";
+import ProductMovementSlipTable from "./Material-Transaction/ProductMovementSlipTable";
+import ProductMovementSlipForm from "./Material-Transaction/ProductMovementSlipForm";
+import OutwardChallanTable from "./Material-Transaction/OutwardChallanTable";
+import OutwardChallanForm from "./Material-Transaction/OutwardChallanForm";
+import MaterialStockAdjustmentTable from "./Material-Transaction/MaterialStockAdjustmentTable";
+import MaterialStockAdjustmentForm from "./Material-Transaction/MaterialStockAdjustmentForm";
+import MaterialReturnReceivedTable from "./Material-Transaction/MaterialReturnReceivedTable";
+import MaterialReturnReceivedForm from "./Material-Transaction/MaterialReturnReceivedForm";
+import MaterialRateContractTable from "./Material-Transaction/MaterialRateContractTable";
+import MaterialRateContractForm from "./Material-Transaction/MaterialRateContractForm";
+import MaterialIssueTable from "./Material-Transaction/MaterialIssueTable";
+import MaterialIssueForm from "./Material-Transaction/MaterialIssueForm";
+import JobworkStockAdjustmentTable from "./Material-Transaction/JobworkStockAdjustmentTable";
+import JobworkStockAdjustmentForm from "./Material-Transaction/JobworkStockAdjustmentForm";
+import GoodsReceiptNoteTable from "./Material-Transaction/GoodsReceiptNoteTable";
+import GoodsReceiptNoteForm from "./Material-Transaction/GoodsReceiptNoteForm";
+import GoodsReceiptInspectionTable from "./Material-Transaction/GoodsReceiptInspectionTable";
+import GoodsReceiptInspectionForm from "./Material-Transaction/GoodsReceiptInspectionForm";
+import CustomerWipAdjustmentTable from "./Material-Transaction/CustomerWipAdjustmentTable";
+import CustomerWipAdjustmentForm from "./Material-Transaction/CustomerWipAdjustmentForm";
+import CustomerStockAdjustmentTable from "./Material-Transaction/CustomerStockAdjustmentTable";
+import CustomerStockAdjustmentForm from "./Material-Transaction/CustomerStockAdjustmentForm";
+import AdditionalWorkOrderRequisitionTable from "./Material-Transaction/AdditionalWorkOrderRequisitionTable";
+import AdditionalWorkOrderRequisitionForm from "./Material-Transaction/AdditionalWorkOrderRequisitionForm";
+import MaterialRequisitionTable from "./Material-Transaction/MaterialRequisitionTable";
+import MaterialRequisitionForm from "./Material-Transaction/MaterialRequisitionForm";
+import TMSParameterTable from "./TMS-Master/TMSParameterTable";
+import TMSParameterForm from "./TMS-Master/TMSParameterForm";
 
 const AppForm = Loadable(lazy(() => import("./forms/AppForm")));
 const AppMenu = Loadable(lazy(() => import("./menu/AppMenu")));
@@ -353,12 +392,8 @@ const CategoryPropertyTable = Loadable(
 const CategoryPropertyForm = Loadable(
   lazy(() => import("./Material-Master/CategoryPropertyForm")),
 );
-const HSNTable = Loadable(
-  lazy(() => import("./Material-Master/HSNTable")),
-);
-const HSNForm = Loadable(
-  lazy(() => import("./Material-Master/HSNForm")),
-);
+const HSNTable = Loadable(lazy(() => import("./Material-Master/HSNTable")));
+const HSNForm = Loadable(lazy(() => import("./Material-Master/HSNForm")));
 const GSTDetailTable = Loadable(
   lazy(() => import("./Material-Master/GSTDetailTable")),
 );
@@ -1162,7 +1197,7 @@ const materialRoutes = [
     path: "/material/material-product-movement-form/edit/:slipNo",
     element: <ProductMovementForm />,
   },
-   {
+  {
     path: "/material/material-payment-conditions-table",
     element: <PaymentConditionsTable />,
   },
@@ -1186,7 +1221,7 @@ const materialRoutes = [
     path: "/material/material-material-defect-form/edit/:slipNo",
     element: <MaterialDefectForm />,
   },
-   {
+  {
     path: "/material/material-physical-inventory-table",
     element: <PhysicalInventoryTable />,
   },
@@ -1198,7 +1233,7 @@ const materialRoutes = [
     path: "/material/material-physical-inventory-form/edit/:slipNo",
     element: <PhysicalInventoryForm />,
   },
-   {
+  {
     path: "/material/material-item-details-table",
     element: <ItemDetailsTable />,
   },
@@ -1210,7 +1245,7 @@ const materialRoutes = [
     path: "/material/material-item-details-form/edit/:slipNo",
     element: <ItemDetailsForm />,
   },
-   {
+  {
     path: "/material/material-grade-master-table",
     element: <GradeMasterTable />,
   },
@@ -1222,7 +1257,7 @@ const materialRoutes = [
     path: "/material/material-grade-master-form/edit/:slipNo",
     element: <GradeMasterForm />,
   },
-   {
+  {
     path: "/material/material-project-detail-table",
     element: <ProjectDetailTable />,
   },
@@ -1270,7 +1305,7 @@ const materialRoutes = [
     path: "/material/material-SAC-group-form/edit/:slipNo",
     element: <SACGroupForm />,
   },
-   {
+  {
     path: "/material/material-GST-detail-table",
     element: <GSTDetailTable />,
   },
@@ -1282,7 +1317,7 @@ const materialRoutes = [
     path: "/material/material-GST-detail-form/edit/:slipNo",
     element: <GSTDetailForm />,
   },
-   {
+  {
     path: "/material/material-HSN-table",
     element: <HSNTable />,
   },
@@ -1293,6 +1328,258 @@ const materialRoutes = [
   {
     path: "/material/material-HSN-form/edit/:slipNo",
     element: <HSNForm />,
+  },
+  {
+    path: "/material/material-work-order-issue-table",
+    element: <WorkOrderIssueTable />,
+  },
+  {
+    path: "/material/material-work-order-issue-form/add",
+    element: <WorkOrderIssueForm />,
+  },
+  {
+    path: "/material/material-work-order-issue-form/edit/:slipNo",
+    element: <WorkOrderIssueForm />,
+  },
+  {
+    path: "/material/material-wip-material-adjustment-table",
+    element: <WipMaterialAdjustmentTable />,
+  },
+  {
+    path: "/material/material-wip-material-adjustment-form/add",
+    element: <WipMaterialAdjustmentForm />,
+  },
+  {
+    path: "/material/material-wip-material-adjustment-form/edit/:slipNo",
+    element: <WipMaterialAdjustmentForm />,
+  },
+  {
+    path: "/material/material-supplier-schedule-table",
+    element: <SupplierScheduleTable />,
+  },
+  {
+    path: "/material/material-supplier-schedule-form/add",
+    element: <SupplierScheduleForm />,
+  },
+  {
+    path: "/material/material-supplier-schedule-form/edit/:slipNo",
+    element: <SupplierScheduleForm />,
+  },
+  {
+    path: "/material/material-supplier-bills-table",
+    element: <SupplierBillsTable />,
+  },
+  {
+    path: "/material/material-supplier-bills-form/add",
+    element: <SupplierBillsForm />,
+  },
+  {
+    path: "/material/material-supplier-bills-form/edit/:slipNo",
+    element: <SupplierBillsForm />,
+  },
+  {
+    path: "/material/material-purchase-requisition-table",
+    element: <PurchaseRequisitionTable />,
+  },
+  {
+    path: "/material/material-purchase-requisition-form/add",
+    element: <PurchaseRequisitionForm />,
+  },
+  {
+    path: "/material/material-purchase-requisition-form/edit/:slipNo",
+    element: <PurchaseRequisitionForm />,
+  },
+  {
+    path: "/material/material-purchase-line-rejection-table",
+    element: <PurchaseLineRejectionTable />,
+  },
+  {
+    path: "/material/material-purchase-line-rejection-form/add",
+    element: <PurchaseLineRejectionForm />,
+  },
+  {
+    path: "/material/material-purchase-line-rejection-form/edit/:slipNo",
+    element: <PurchaseLineRejectionForm />,
+  },
+  {
+    path: "/material/material-product-movement-slip-table",
+    element: <ProductMovementSlipTable />,
+  },
+  {
+    path: "/material/material-product-movement-slip-form/add",
+    element: <ProductMovementSlipForm />,
+  },
+  {
+    path: "/material/material-product-movement-slip-form/edit/:slipNo",
+    element: <ProductMovementSlipForm />,
+  },
+  {
+    path: "/material/material-outward-challan-table",
+    element: <OutwardChallanTable />,
+  },
+  {
+    path: "/material/material-outward-challan-form/add",
+    element: <OutwardChallanForm />,
+  },
+  {
+    path: "/material/material-outward-challan-form/edit/:slipNo",
+    element: <OutwardChallanForm />,
+  },
+  {
+    path: "/material/material-stock-adjustment-table",
+    element: <MaterialStockAdjustmentTable />,
+  },
+  {
+    path: "/material/material-stock-adjustment-form/add",
+    element: <MaterialStockAdjustmentForm />,
+  },
+  {
+    path: "/material/material-stock-adjustment-form/edit/:slipNo",
+    element: <MaterialStockAdjustmentForm />,
+  },
+  {
+    path: "/material/material-material-return-received-table",
+    element: <MaterialReturnReceivedTable />,
+  },
+  {
+    path: "/material/material-material-return-received-form/add",
+    element: <MaterialReturnReceivedForm />,
+  },
+  {
+    path: "/material/material-material-return-received-form/edit/:slipNo",
+    element: <MaterialReturnReceivedForm />,
+  },
+  {
+    path: "/material/material-material-return-received-table",
+    element: <MaterialReturnReceivedTable />,
+  },
+  {
+    path: "/material/material-material-return-received-form/add",
+    element: <MaterialReturnReceivedForm />,
+  },
+  {
+    path: "/material/material-material-return-received-form/edit/:slipNo",
+    element: <MaterialReturnReceivedForm />,
+  },
+  {
+    path: "/material/material-rate-contract-table",
+    element: <MaterialRateContractTable />,
+  },
+  {
+    path: "/material/material-rate-contract-form/add",
+    element: <MaterialRateContractForm />,
+  },
+  {
+    path: "/material/material-rate-contract-form/edit/:slipNo",
+    element: <MaterialRateContractForm />,
+  },
+  {
+    path: "/material/material-issue-table",
+    element: <MaterialIssueTable />,
+  },
+  {
+    path: "/material/material-issue-form/add",
+    element: <MaterialIssueForm />,
+  },
+  {
+    path: "/material/material-issue-form/edit/:slipNo",
+    element: <MaterialIssueForm />,
+  },
+  {
+    path: "/material/material-jobwork-stock-adjustment-table",
+    element: <JobworkStockAdjustmentTable />,
+  },
+  {
+    path: "/material/material-jobwork-stock-adjustment-form/add",
+    element: <JobworkStockAdjustmentForm />,
+  },
+  {
+    path: "/material/material-jobwork-stock-adjustment-form/edit/:slipNo",
+    element: <JobworkStockAdjustmentForm />,
+  },
+  {
+    path: "/material/material-goods-receipt-note-table",
+    element: <GoodsReceiptNoteTable />,
+  },
+  {
+    path: "/material/material-goods-receipt-note-form/add",
+    element: <GoodsReceiptNoteForm />,
+  },
+  {
+    path: "/material/material-goods-receipt-note-form/edit/:slipNo",
+    element: <GoodsReceiptNoteForm />,
+  },
+  {
+    path: "/material/material-goods-receipt-inspection-table",
+    element: <GoodsReceiptInspectionTable />,
+  },
+  {
+    path: "/material/material-goods-receipt-inspection-form/add",
+    element: <GoodsReceiptInspectionForm />,
+  },
+  {
+    path: "/material/material-goods-receipt-inspection-form/edit/:slipNo",
+    element: <GoodsReceiptInspectionForm />,
+  },
+  {
+    path: "/material/material-customer-wip-adjustment-table",
+    element: <CustomerWipAdjustmentTable />,
+  },
+  {
+    path: "/material/material-customer-wip-adjustment-form/add",
+    element: <CustomerWipAdjustmentForm />,
+  },
+  {
+    path: "/material/material-customer-wip-adjustment-form/edit/:slipNo",
+    element: <CustomerWipAdjustmentForm />,
+  },
+  {
+    path: "/material/material-customer-stock-adjustment-table",
+    element: <CustomerStockAdjustmentTable />,
+  },
+  {
+    path: "/material/material-customer-stock-adjustment-form/add",
+    element: <CustomerStockAdjustmentForm />,
+  },
+  {
+    path: "/material/material-customer-stock-adjustment-form/edit/:slipNo",
+    element: <CustomerStockAdjustmentForm />,
+  },
+  {
+    path: "/material/material-additional-work-order-requisition-table",
+    element: <AdditionalWorkOrderRequisitionTable />,
+  },
+  {
+    path: "/material/material-additional-work-order-requisition-form/add",
+    element: <AdditionalWorkOrderRequisitionForm />,
+  },
+  {
+    path: "/material/material-additional-work-order-requisition-form/edit/:slipNo",
+    element: <AdditionalWorkOrderRequisitionForm />,
+  },
+  {
+    path: "/material/material-requisition-table",
+    element: <MaterialRequisitionTable />,
+  },
+  {
+    path: "/material/material-requisition-form/add",
+    element: <MaterialRequisitionForm />,
+  },
+  {
+    path: "/material/material-requisition-form/edit/:slipNo",
+    element: <MaterialRequisitionForm />,
+  },
+  {
+    path: "/material/TMS-parameter-table",
+    element: <TMSParameterTable />,
+  },
+  {
+    path: "/material/TMS-parameter-form/add",
+    element: <TMSParameterForm />,
+  },
+  {
+    path: "/material/TMS-parameter-form/edit/:slipNo",
+    element: <TMSParameterForm />,
   },
 ];
 
