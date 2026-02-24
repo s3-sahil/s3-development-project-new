@@ -42,6 +42,16 @@ import MaterialRequisitionTable from "./Material-Transaction/MaterialRequisition
 import MaterialRequisitionForm from "./Material-Transaction/MaterialRequisitionForm";
 import TMSParameterTable from "./TMS-Master/TMSParameterTable";
 import TMSParameterForm from "./TMS-Master/TMSParameterForm";
+import RotationDetailsTable from "./TMS-Master/RotationDetailsTable";
+import RotationDetailsForm from "./TMS-Master/RotationDetailsForm";
+import GradeWiseRulesTable from "./TMS-Master/GradeWiseRulesTable";
+import GradeWiseRulesForm from "./TMS-Master/GradeWiseRulesForm";
+import OvertimeRulesTable from "./TMS-Master/OvertimeRulesTable";
+import OvertimeRulesForm from "./TMS-Master/OvertimeRulesForm";
+import AssignCardsForm from "./TMS-Master/AssignCardsForm";
+import AssignCardTable from "./TMS-Master/AssignCardTable";
+import ShiftDetailsTable from "./TMS-Master/ShiftDetailsTable";
+import ShiftDetailsForm from "./TMS-Master/ShiftDetailsForm";
 
 const AppForm = Loadable(lazy(() => import("./forms/AppForm")));
 const AppMenu = Loadable(lazy(() => import("./menu/AppMenu")));
@@ -1580,6 +1590,66 @@ const materialRoutes = [
   {
     path: "/material/TMS-parameter-form/edit/:slipNo",
     element: <TMSParameterForm />,
+  },
+  {
+    path: "/material/TMS-rotation-details-table",
+    element: <RotationDetailsTable />,
+  },
+  {
+    path: "/material/TMS-rotation-details-form/add",
+    element: <RotationDetailsForm />,
+  },
+  {
+    path: "/material/TMS-rotation-details-form/edit/:slipNo",
+    element: <RotationDetailsForm />,
+  },
+  {
+    path: "/material/TMS-grade-wise-rules-table",
+    element: <GradeWiseRulesTable />,
+  },
+  {
+    path: "/material/TMS-grade-wise-rules-form/add",
+    element: <GradeWiseRulesForm />,
+  },
+  {
+    path: "/material/TMS-grade-wise-rules-form/edit/:slipNo",
+    element: <GradeWiseRulesForm />,
+  },
+  {
+    path: "/material/TMS-overtime-rules-table",
+    element: <OvertimeRulesTable />,
+  },
+  {
+    path: "/material/TMS-overtime-rules-form/add",
+    element: <OvertimeRulesForm />,
+  },
+  {
+    path: "/material/TMS-overtime-rules-form/edit/:slipNo",
+    element: <OvertimeRulesForm />,
+  },
+  {
+    path: "/material/TMS-assign-cards-table",
+    element: <AssignCardTable />,
+  },
+  {
+    path: "/material/TMS-assign-cards-form/edit/:slipNo",
+    element: <AssignCardsForm />,
+  },
+  {
+    path: "/material/TMS-assign-cards-form/add",
+    element: <AssignCardsForm />,
+  },
+    {
+    path: "/material/TMS-Shift-details-table",
+    element: <ShiftDetailsTable />,
+  },
+  {
+    path: "/material/TMS-Shift-details-form/edit/:slipNo",
+    element: <ShiftDetailsForm />,
+  },
+  {
+    path: "/material/TMS-Shift-details-form/add",
+    element: <ShiftDetailsForm />,
   },
 ];
 

@@ -74,13 +74,13 @@ const navigations = [
           { name: "TMS Parameter", path: "/material/TMS-parameter-table", icon: "arrow_forward" },
           { name: "Card Details", path: "/material/material-item-category-table", icon: "arrow_forward" },
           { name: "Attendance Status Details", path: "/material/payroll-employee-information-table", icon: "arrow_forward" },
-          { name: "Rotation Details", path: "/material/material-item-wise-moq-table", icon: "arrow_forward" },
+          { name: "Rotation Details", path: "/material/TMS-rotation-details-table", icon: "arrow_forward" },
           { name: "Route Details", path: "/material/material-item-rate-table", icon: "arrow_forward" },
           { name: "Shift Details", path: "/material/material-share-of-business-table", icon: "arrow_forward" },
-          { name: "Assign Cards", path: "/material/material-GRN-wise-opening-stock-table", icon: "arrow_forward" },
-          { name: "Grade Wise Rule", path: "/material/material-HSN-table", icon: "arrow_forward" },
+          { name: "Assign Cards", path: "/material/TMS-assign-cards-table", icon: "arrow_forward" },
+          { name: "Grade Wise Rule", path: "/material/TMS-grade-wise-rules-table", icon: "arrow_forward" },
           { name: "Coff Rules", path: "/material/material-alternate-item-table", icon: "arrow_forward" },
-          { name: "Overtime Rules", path: "/material/material-state-detail-table", icon: "arrow_forward" },
+          { name: "Overtime Rules", path: "/material/TMS-overtime-rules-table", icon: "arrow_forward" },
         ]
       },
       {
