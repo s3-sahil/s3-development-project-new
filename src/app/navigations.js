@@ -87,29 +87,20 @@ const navigations = [
         name: "Transaction",
         icon: "directions_transit",
         children: [
-          { name: "Purchase Order", path: "/material/purchase-order-table", icon: "arrow_forward" },
-          { name: "Outward Challan", path: "/material/material-outward-challan-table", icon: "arrow_forward" },
-          { name: "Goods Receipt Note", path: "/material/material-goods-receipt-note-table", icon: "arrow_forward" },
-          { name: "Work Order", path: "/material/work-order-table", icon: "arrow_forward" },
-          { name: "Material Issue", path: "/material/material-issue-table", icon: "arrow_forward" },
-          { name: "Material Requisition", path: "/material/material-requisition-table", icon: "arrow_forward" },
-          { name: "Purchase Requisition", path: "/material/material-purchase-requisition-table", icon: "arrow_forward" },
-          { name: "Work Order Issue", path: "/material/material-work-order-issue-table", icon: "arrow_forward" },
-          { name: "Material Return Received", path: "/material/material-material-return-received-table", icon: "arrow_forward" },
-          { name: "Material Rate Contract", path: "/material/material-rate-contract-table", icon: "arrow_forward" },
-          { name: "Supplier Schedule", path: "/material/material-supplier-schedule-table", icon: "arrow_forward" },
-          { name: "Goods Receipt Note (Inspection)", path: "/material/material-goods-receipt-inspection-table", icon: "arrow_forward" },
-          { name: "WIP Material Adjustment", path: "/material/material-wip-material-adjustment-table", icon: "arrow_forward" },
-          { name: "Purchase Line Rejection", path: "/material/material-purchase-line-rejection-table", icon: "arrow_forward" },
-          { name: "Product Movement Slip", path: "/material/material-product-movement-slip-table", icon: "arrow_forward" },
-          { name: "Material Stock Adjustment", path: "/material/material-stock-adjustment-table", icon: "arrow_forward" },
-          { name: "Jobwork Stock Adjustment", path: "/material/material-jobwork-stock-adjustment-table", icon: "arrow_forward" },
-          { name: "Customer Stock Adjustment", path: "/material/material-customer-stock-adjustment-table", icon: "arrow_forward" },
-          { name: "Customer WIP Adjustment", path: "/material/material-customer-wip-adjustment-table", icon: "arrow_forward" },
-          { name: "Approval", path: "/material/approval-table", icon: "arrow_forward" },
-          { name: "Supplier Bills", path: "/material/material-supplier-bills-table", icon: "arrow_forward" },
-          { name: "Additional Work Order Requisition", path: "/material/additional-work-order-requisition-table", icon: "arrow_forward" },
-          { name: "Material Return", path: "/material/material-return-table", icon: "arrow_forward" },
+          { name: "Manual Punching", path: "/material/TMS-manual-punching", icon: "arrow_forward" },
+          { name: "In Out Flag Correction", path: "/material/TMS-In-Out-flag-table", icon: "arrow_forward" },
+          { name: "Invalid Punching Correction", path: "/material/TMS-invalid-punch-table", icon: "arrow_forward" },
+          { name: "Leave Application", path: "/material/TMS-leave-application-table", icon: "arrow_forward" },
+          { name: "Od Details", path: "/material/TMS-OD-details-table", icon: "arrow_forward" },
+          { name: "Tour Details", path: "/material/TMS-tour-details-table", icon: "arrow_forward" },
+          { name: "Approval", path: "/material/material-purchase-requisition-table", icon: "arrow_forward" },
+          { name: "Compentary Off", path: "/material/TMS-comp-Off-table", icon: "arrow_forward" },
+          { name: "Overtime Details", path: "/material/TMS-overtime-table", icon: "arrow_forward" },
+          { name: "Late Coming & Early Going Authorization", path: "/material/material-rate-contract-table", icon: "arrow_forward" },
+          { name: "Generate Muster", path: "/material/TMS-generate-muster", icon: "arrow_forward" },
+          { name: "Import Manual Muster", path: "/material/material-goods-receipt-inspection-table", icon: "arrow_forward" },
+          { name: "Import Daily Attendance File", path: "/material/TMS-import-attendance-table", icon: "arrow_forward" },
+          { name: "Shift Schedule", path: "/material/TMS-shift-schedule-table", icon: "arrow_forward" },
         ]
       },
       {
@@ -181,7 +172,80 @@ const navigations = [
       }
     ]
   },
-  { name: "SGMS", path: "/material/dialog", icon: "local_grocery_store" },
+  { name: "SGMS", path: "/material/dialog", icon: "local_grocery_store",
+     children: [
+      {
+        name: "Master",
+        icon: "person",
+        children: [
+          {
+            name: "Vehicle Type Details",
+            path: "/material/activity-reports-rights-table",
+            icon: "person_add",
+            tooltip: "activity-reports-rights-table",
+          },
+          {
+            name: "Vehicle In-Out Types",
+            path: "/material/customers",
+            icon: "list",
+            tooltip: "Customer Master",
+          },
+          {
+            name: "Visting Authority",
+            path: "/material/customers",
+            icon: "list",
+            tooltip: "Customer Master",
+          },
+          {
+            name: "Vehicle Route Details",
+            path: "/material/customers",
+            icon: "list",
+            tooltip: "Customer Master",
+          },
+          {
+            name: "Emergency Contact Details",
+            path: "/material/customers",
+            icon: "list",
+            tooltip: "Customer Master",
+          },
+        ],
+      },
+      {
+        name: "Report",
+        path: "/sysadmin/roles",
+        icon: "bug_report",
+        children: [
+          { name: "Document Wise Input Authentication", path: "/sysadmin/roles/create", icon: "add_circle" },
+          { name: "Document Approved", path: "/sysadmin/roles/assign", icon: "lock_open" },
+          { name: "Log Book", path: "/sysadmin/roles/assign", icon: "lock_open" },
+          { name: "Open Financial Year", path: "/sysadmin/roles/assign", icon: "lock_open" },
+          { name: "Security Closing", path: "/sysadmin/roles/assign", icon: "lock_open" }
+
+        ]
+      },
+      {
+        name: "Transaction",
+        path: "/sysadmin/transaction",
+        icon: "directions_transit",
+        children: [
+          { name: "Appointment Entry", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Visitor In - (Appointment)", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Visitor In - (Non Appointment)", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Visitor Out", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Material Inward Entry", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Material Outward Entry", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Vehicle Out Entry", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Vehicle In Entry", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Transporters Vehicle In", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Contractor Employee Details", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Exit Pass Request", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Exit Pass Approval", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Contractor Employee In", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+          { name: "Exit Pass In", path: "/material/customers-purchase-order-login", icon: "add_circle" },
+        ]
+      }
+    ]
+   },
   {
     name: "Material", icon: "slideshow",
     icon: "payment",

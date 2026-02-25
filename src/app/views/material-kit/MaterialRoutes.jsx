@@ -52,6 +52,30 @@ import AssignCardsForm from "./TMS-Master/AssignCardsForm";
 import AssignCardTable from "./TMS-Master/AssignCardTable";
 import ShiftDetailsTable from "./TMS-Master/ShiftDetailsTable";
 import ShiftDetailsForm from "./TMS-Master/ShiftDetailsForm";
+import ShiftScheduleTable from "./TMS-Transaction/ShiftScheduleTable";
+import ShiftScheduleForm from "./TMS-Transaction/ShiftScheduleForm";
+import ImportAttendanceTable from "./TMS-Transaction/ImportAttendanceTable";
+import ImportAttendanceForm from "./TMS-Transaction/ImportAttendanceForm";
+import TourDetailsTable from "./TMS-Transaction/TourDetailsTable";
+import TourDetailsForm from "./TMS-Transaction/TourDetailsForm";
+import OvertimeTable from "./TMS-Transaction/OvertimeTable";
+import OvertimeForm from "./TMS-Transaction/OvertimeForm";
+import ODDetailsTable from "./TMS-Transaction/ODDetailsTable";
+import ODDetailsForm from "./TMS-Transaction/ODDetailsForm";
+import LeaveApplicationTable from "./TMS-Transaction/LeaveApplicationTable";
+import LeaveApplicationForm from "./TMS-Transaction/LeaveApplicationForm";
+import LateComingTable from "./TMS-Transaction/LateComingTable";
+import LateComingForm from "./TMS-Transaction/LateComingForm";
+import InvalidPunchTable from "./TMS-Transaction/InvalidPunchTable";
+import InvalidPunchForm from "./TMS-Transaction/InvalidPunchForm";
+import ImportManualMusterTable from "./TMS-Transaction/ImportManualMusterTable";
+import GenerateMusterForm from "./TMS-Transaction/GenerateMusterForm";
+import GenerateShiftScheduleForm from "./TMS-Transaction/GenerateShiftScheduleForm";
+import CompOffTable from "./TMS-Transaction/CompOffTable";
+import CompOffForm from "./TMS-Transaction/CompOffForm";
+import InOutFlagTable from "./TMS-Transaction/InOutFlagTable";
+import InOutFlagForm from "./TMS-Transaction/InOutFlagForm";
+import ManualPunchingForm from "./TMS-Transaction/ManualPunchingForm";
 
 const AppForm = Loadable(lazy(() => import("./forms/AppForm")));
 const AppMenu = Loadable(lazy(() => import("./menu/AppMenu")));
@@ -1639,7 +1663,7 @@ const materialRoutes = [
     path: "/material/TMS-assign-cards-form/add",
     element: <AssignCardsForm />,
   },
-    {
+  {
     path: "/material/TMS-Shift-details-table",
     element: <ShiftDetailsTable />,
   },
@@ -1650,6 +1674,138 @@ const materialRoutes = [
   {
     path: "/material/TMS-Shift-details-form/add",
     element: <ShiftDetailsForm />,
+  },
+  {
+    path: "/material/TMS-shift-schedule-table",
+    element: <ShiftScheduleTable />,
+  },
+  {
+    path: "/material/TMS-shift-schedule-form/edit/:slipNo",
+    element: <ShiftScheduleForm />,
+  },
+  {
+    path: "/material/TMS-shift-schedule-form/add",
+    element: <ShiftScheduleForm />,
+  },
+  {
+    path: "/material/TMS-import-attendance-table",
+    element: <ImportAttendanceTable />,
+  },
+  {
+    path: "/material/TMS-import-attendance-form/edit/:slipNo",
+    element: <ImportAttendanceForm />,
+  },
+  {
+    path: "/material/TMS-import-attendance-form/add",
+    element: <ImportAttendanceForm />,
+  },
+   {
+    path: "/material/TMS-tour-details-table",
+    element: <TourDetailsTable />,
+  },
+  {
+    path: "/material/TMS-tour-details-form/edit/:slipNo",
+    element: <TourDetailsForm />,
+  },
+  {
+    path: "/material/TMS-tour-details-form/add",
+    element: <TourDetailsForm />,
+  },
+   {
+    path: "/material/TMS-overtime-table",
+    element: <OvertimeTable />,
+  },
+  {
+    path: "/material/TMS-overtime-form/edit/:slipNo",
+    element: <OvertimeForm />,
+  },
+  {
+    path: "/material/TMS-overtime-form/add",
+    element: <OvertimeForm />,
+  },
+   {
+    path: "/material/TMS-OD-details-table",
+    element: <ODDetailsTable />,
+  },
+  {
+    path: "/material/TMS-OD-details-form/edit/:slipNo",
+    element: <ODDetailsForm />,
+  },
+  {
+    path: "/material/TMS-OD-details-form/add",
+    element: <ODDetailsForm />,
+  },
+  {
+    path: "/material/TMS-leave-application-table",
+    element: <LeaveApplicationTable />,
+  },
+  {
+    path: "/material/TMS-leave-application-form/edit/:slipNo",
+    element: <LeaveApplicationForm />,
+  },
+  {
+    path: "/material/TMS-leave-application-form/add",
+    element: <LeaveApplicationForm />,
+  },
+   {
+    path: "/material/TMS-late-coming-table",
+    element: <LateComingTable />,
+  },
+  {
+    path: "/material/TMS-late-coming-form/edit/:slipNo",
+    element: <LateComingForm />,
+  },
+  {
+    path: "/material/TMS-late-coming-form/add",
+    element: <LateComingForm />,
+  },
+  {
+    path: "/material/TMS-invalid-punch-table",
+    element: <InvalidPunchTable />,
+  },
+  {
+    path: "/material/TMS-invalid-punch-form/edit/:slipNo",
+    element: <InvalidPunchForm />,
+  },
+  {
+    path: "/material/TMS-invalid-punch-form/add",
+    element: <InvalidPunchForm />,
+  },
+   {
+    path: "/material/TMS-generate-muster",
+    element: <GenerateMusterForm />,
+  },
+  {
+    path: "/material/TMS-Generate-shift-schedule",
+    element: <GenerateShiftScheduleForm />,
+  },
+  {
+    path: "/material/TMS-comp-Off-table",
+    element: <CompOffTable />,
+  },
+  {
+    path: "/material/TMS-comp-Off-form/edit/:slipNo",
+    element: <CompOffForm />,
+  },
+  {
+    path: "/material/TMS-comp-Off-form/add",
+    element: <CompOffForm />,
+  },
+   {
+    path: "/material/TMS-In-Out-flag-table",
+    element: <InOutFlagTable />,
+  },
+  {
+    path: "/material/TMS-In-Out-flag-form/edit/:slipNo",
+    element: <InOutFlagForm />,
+  },
+  {
+    path: "/material/TMS-In-Out-flag-form/add",
+    element: <InOutFlagForm />,
+  },
+   {
+    path: "/material/TMS-manual-punching",
+    element: <ManualPunchingForm />,
   },
 ];
 
