@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import Loadable from "app/components/Loadable";
-import ActivityReportsRightsTable from "./Sys-Admin-Master/ActivityReportsRightsTable";
+import ActivityReportsRightsTable from "./Sys-Admin-Master/ActivityFormRightsTable";
 import CustomersPurchaseOrderLogin from "./Sales-Transaction/customersPurchaseOrderLogin";
 import WorkOrderIssueTable from "./Material-Transaction/WorkOrderIssueTable";
 import WorkOrderIssueForm from "./Material-Transaction/WorkOrderIssueForm";
@@ -84,6 +84,8 @@ import LeaveDetailsTable from "./Payroll-Master/LeaveDetailsTable";
 import LeaveDetailsForm from "./Payroll-Master/LeaveDetailsForm";
 import PayrollCalculationTables from "./Payroll-Master/PayrollCalculationTable";
 import PayrollCalculationForms from "./Payroll-Master/PayrollCalculationForm";
+import TrainingOnJobTable from "./Payroll-Master/TrainingOnJobTable";
+import TrainingOnJobForm from "./Payroll-Master/TrainingOnJobForm";
 
 const AppForm = Loadable(lazy(() => import("./forms/AppForm")));
 const AppMenu = Loadable(lazy(() => import("./menu/AppMenu")));
@@ -1862,6 +1864,18 @@ const materialRoutes = [
   {
     path: "/material/payroll-payroll-calculations-form/add",
     element: <PayrollCalculationForms />,
+  },
+   {
+    path: "/material/payroll-training-on-job-table",
+    element: <TrainingOnJobTable />,
+  },
+  {
+    path: "/material/payroll-training-on-job-form/edit/:slipNo",
+    element: <TrainingOnJobForm />,
+  },
+  {
+    path: "/material/payroll-training-on-job-form/add",
+    element: <TrainingOnJobForm />,
   },
 ];
 

@@ -131,7 +131,7 @@ const navigations = [
           { name: "Location Details", path: "/material/payroll-location-table", icon: "arrow_forward" },
           { name: "Education Details Entry", path: "/material/payroll-education-details-table", icon: "arrow_forward" },
           { name: "Family Detail Entry", path: "/material/payroll-family-details-table", icon: "arrow_forward" },
-          { name: "Training On Job", path: "/payroll/family-details", icon: "arrow_forward" },
+          { name: "Training On Job", path: "/material/payroll-training-on-job-table", icon: "arrow_forward" },
           { name: "Training Party Details", path: "/payroll/family-details", icon: "arrow_forward" },
           { name: "Outsiders Loan Details", path: "/payroll/family-details", icon: "arrow_forward" },
           { name: "Employee Loan Details", path: "/payroll/family-details", icon: "arrow_forward" },

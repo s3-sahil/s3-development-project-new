@@ -12,26 +12,24 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export default function ContractReviewTable() {
+export default function ActivityFormRightsTable() {
   const navigate = useNavigate();
 
   const [rows] = useState([
     {
       id: 1,
-      contractNo: "CR-001",
-      customerName: "ABC Industries",
-      orderNo: "ORD-101",
-      poNo: "PO-555",
-      status: "Open",
+      activityName: "Sahil Test",
+      functionName: "PAYROLL",
+      menuType: "ALL",
+      menuLevel: "Main",
     },
   ]);
 
   const columns = [
-    { field: "contractNo", headerName: "Contract No", flex: 1 },
-    { field: "customerName", headerName: "Customer Name", flex: 1 },
-    { field: "orderNo", headerName: "Order No", flex: 1 },
-    { field: "poNo", headerName: "PO No", flex: 1 },
-    { field: "status", headerName: "Status", flex: 1 },
+    { field: "activityName", headerName: "Activity Name", flex: 1 },
+    { field: "functionName", headerName: "Function", flex: 1 },
+    { field: "menuType", headerName: "Menu Type", flex: 1 },
+    { field: "menuLevel", headerName: "Menu Level", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
@@ -42,7 +40,7 @@ export default function ContractReviewTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/sales-contract-review-form/edit/${params.row.id}`, {
+                navigate(`/sysadmin/activity-form-rights-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -64,7 +62,12 @@ export default function ContractReviewTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Sales" }, { name: "Contract Review" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "System Admin" },
+            { name: "Activity Form Rights" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
@@ -72,7 +75,9 @@ export default function ContractReviewTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/sales-contract-review-form/add")}
+            onClick={() =>
+              navigate("/sysadmin/activity-form-rights-form/add")
+            }
           >
             New
           </Button>
