@@ -3,34 +3,44 @@ import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Breadcrumb } from "app/components";
+import { useNavigate } from "react-router-dom";
 
 const rows = [
   { id: 1, code: "38", description: "ENGINEER", appointmentFlag: "Y" },
   { id: 2, code: "39", description: "SUPERVISOR", appointmentFlag: "N" },
 ];
 
-const columns = [
-  { field: "code", headerName: "Designation Code", flex: 1 },
-  { field: "description", headerName: "Description", flex: 2 },
-  { field: "appointmentFlag", headerName: "Appointment Letter Flag", flex: 1 },
-  {
-    field: "actions",
-    headerName: "Actions",
-    flex: 1,
-    renderCell: () => (
-      <>
-        <IconButton color="primary">
-          <EditIcon />
-        </IconButton>
-        <IconButton color="error">
-          <DeleteIcon />
-        </IconButton>
-      </>
-    ),
-  },
-];
-
 export default function DesignationTable() {
+  const navigate = useNavigate();
+
+  const columns = [
+    { field: "code", headerName: "Designation Code", flex: 1 },
+    { field: "description", headerName: "Description", flex: 2 },
+    {
+      field: "appointmentFlag",
+      headerName: "Appointment Letter Flag",
+      flex: 1,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 1,
+      renderCell: (params) => (
+        <>
+          <IconButton
+            color="primary"
+            onClick={() => navigate(`/material/payroll-designation-form/edit/${params.row.id}`)}
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton color="error">
+            <DeleteIcon />
+          </IconButton>
+        </>
+      ),
+    },
+  ];
+
   return (
     <Container maxWidth="xl">
       <Breadcrumb
@@ -42,7 +52,11 @@ export default function DesignationTable() {
           <TextField placeholder="Search..." size="small" />
           <Button variant="contained">Search</Button>
           <Box flexGrow={1} />
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/material/payroll-designation-form/add")}
+          >
             New
           </Button>
         </Box>

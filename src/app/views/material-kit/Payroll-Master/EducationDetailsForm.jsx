@@ -5,7 +5,7 @@ export default function EducationDetailsForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "HR" }, { name: "Education Details" }]} />
+        <Breadcrumb routeSegments={[{ name: "Payroll" }, { name: "Education Details" }]} />
       </Box>
 
       <Box sx={{ background: "#fff", p: 3 }}>

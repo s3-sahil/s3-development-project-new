@@ -23,7 +23,7 @@ export default function GradeForm() {
   };
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Breadcrumb routeSegments={[{ name: "Grade Details" }]} />
 
       <Box className="card" p={3}>

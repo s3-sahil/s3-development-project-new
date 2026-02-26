@@ -40,7 +40,7 @@ export default function EducationDetailsTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/hr/education-details/edit/${params.row.id}`, {
+                navigate(`/material/payroll-education-details-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -62,7 +62,7 @@ export default function EducationDetailsTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "HR" }, { name: "Education Details" }]} />
+        <Breadcrumb routeSegments={[{ name: "Payroll" }, { name: "Education Details" }]} />
       </Box>
 
       <Stack spacing={3}>
@@ -70,7 +70,7 @@ export default function EducationDetailsTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/hr/education-details/add")}
+            onClick={() => navigate("/material/payroll-education-details-form/add")}
           >
             New
           </Button>

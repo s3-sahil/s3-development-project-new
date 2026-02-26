@@ -10,7 +10,7 @@ export default function FamilyDetailsForm() {
 
       <Box sx={{ background: "#fff", p: 3 }}>
         <Box display="flex" justifyContent="space-between" mb={2}>
-          <h2>Family Details</h2>
+          <h2></h2>
           <Button variant="contained" startIcon={<Icon>save</Icon>}>Save</Button>
         </Box>
 

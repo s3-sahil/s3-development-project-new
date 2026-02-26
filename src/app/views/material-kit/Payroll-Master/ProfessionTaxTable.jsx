@@ -26,7 +26,7 @@ export default function ProfessionTaxTable() {
       renderCell: (params) => (
         <>
           <Tooltip title="Edit">
-            <IconButton onClick={() => navigate(`/master/profession-tax/edit/${params.row.id}`)}>
+            <IconButton onClick={() => navigate(`/material/payroll-profession-tax-form/edit/${params.row.id}`)}>
               <Icon color="primary">edit</Icon>
             </IconButton>
           </Tooltip>
@@ -48,7 +48,7 @@ export default function ProfessionTaxTable() {
 
       <Stack spacing={3}>
         <Box display="flex" justifyContent="flex-end">
-          <Button variant="contained" startIcon={<Icon>add</Icon>} onClick={() => navigate("/master/profession-tax/add")}>
+          <Button variant="contained" startIcon={<Icon>add</Icon>} onClick={() => navigate("/material/payroll-profession-tax-form/add")}>
             New
           </Button>
         </Box>

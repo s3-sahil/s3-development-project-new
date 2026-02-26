@@ -3,16 +3,14 @@ import { Breadcrumb } from "app/components";
 
 export default function ProfessionTaxForm() {
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
         <Breadcrumb routeSegments={[{ name: "Master" }, { name: "Profession Tax Slab" }]} />
       </Box>
 
       <Box display="flex" justifyContent="space-between" mb={2}>
         <Box display="flex" alignItems="center" gap={1}>
-          <Icon>arrow_back</Icon>
           <Box fontSize={20} fontWeight="bold" color="purple">
-            Profession Tax Slab
           </Box>
         </Box>
 

@@ -76,6 +76,14 @@ import CompOffForm from "./TMS-Transaction/CompOffForm";
 import InOutFlagTable from "./TMS-Transaction/InOutFlagTable";
 import InOutFlagForm from "./TMS-Transaction/InOutFlagForm";
 import ManualPunchingForm from "./TMS-Transaction/ManualPunchingForm";
+import GradeWisePaymentDetailsTable from "./Payroll-Master/GradeWisePaymentDetailsTable";
+import GradeWisePaymentDetailsForm from "./Payroll-Master/GradeWisePaymentDetailsForm";
+import YearlyHolidayTable from "./Payroll-Master/YearlyHolidayTable";
+import YearlyHolidayForm from "./Payroll-Master/YearlyHolidayForm";
+import LeaveDetailsTable from "./Payroll-Master/LeaveDetailsTable";
+import LeaveDetailsForm from "./Payroll-Master/LeaveDetailsForm";
+import PayrollCalculationTables from "./Payroll-Master/PayrollCalculationTable";
+import PayrollCalculationForms from "./Payroll-Master/PayrollCalculationForm";
 
 const AppForm = Loadable(lazy(() => import("./forms/AppForm")));
 const AppMenu = Loadable(lazy(() => import("./menu/AppMenu")));
@@ -1806,6 +1814,54 @@ const materialRoutes = [
    {
     path: "/material/TMS-manual-punching",
     element: <ManualPunchingForm />,
+  },
+   {
+    path: "/material/payroll-grade-wise-payment-details-table",
+    element: <GradeWisePaymentDetailsTable />,
+  },
+  {
+    path: "/material/payroll-grade-wise-payment-details-form/edit/:slipNo",
+    element: <GradeWisePaymentDetailsForm />,
+  },
+  {
+    path: "/material/payroll-grade-wise-payment-details-form/add",
+    element: <GradeWisePaymentDetailsForm />,
+  },
+   {
+    path: "/material/payroll-yearly-holiday-table",
+    element: <YearlyHolidayTable />,
+  },
+  {
+    path: "/material/payroll-yearly-holiday-form/edit/:slipNo",
+    element: <YearlyHolidayForm />,
+  },
+  {
+    path: "/material/payroll-yearly-holiday-form/add",
+    element: <YearlyHolidayForm />,
+  },
+   {
+    path: "/material/payroll-leave-details-table",
+    element: <LeaveDetailsTable />,
+  },
+  {
+    path: "/material/payroll-leave-details-form/edit/:slipNo",
+    element: <LeaveDetailsForm />,
+  },
+  {
+    path: "/material/payroll-leave-details-form/add",
+    element: <LeaveDetailsForm />,
+  },
+   {
+    path: "/material/payroll-payroll-calculations-table",
+    element: <PayrollCalculationTables />,
+  },
+  {
+    path: "/material/payroll-payroll-calculations-form/edit/:slipNo",
+    element: <PayrollCalculationForms />,
+  },
+  {
+    path: "/material/payroll-payroll-calculations-form/add",
+    element: <PayrollCalculationForms />,
   },
 ];
 

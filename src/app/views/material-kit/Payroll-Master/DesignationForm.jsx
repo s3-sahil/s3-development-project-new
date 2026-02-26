@@ -18,7 +18,7 @@ export default function DesignationForm() {
   };
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Breadcrumb routeSegments={[{ name: "Designation Details" }]} />
 
       <Box className="card" p={3}>

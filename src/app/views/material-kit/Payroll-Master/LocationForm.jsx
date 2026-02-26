@@ -26,7 +26,7 @@ export default function LocationForm() {
   };
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Breadcrumb routeSegments={[{ name: "Location Details" }]} />
 
       <Box className="card" p={3}>

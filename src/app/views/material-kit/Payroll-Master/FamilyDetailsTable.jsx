@@ -40,7 +40,7 @@ export default function FamilyDetailsTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/hr/family-details/edit/${params.row.id}`, {
+                navigate(`/material/payroll-family-details-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -62,7 +62,7 @@ export default function FamilyDetailsTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "HR" }, { name: "Family Details" }]} />
+        <Breadcrumb routeSegments={[{ name: "Payroll" }, { name: "Family Details" }]} />
       </Box>
 
       <Stack spacing={3}>
@@ -70,7 +70,7 @@ export default function FamilyDetailsTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/hr/family-details/add")}
+            onClick={() => navigate("/material/payroll-family-details-form/add")}
           >
             New
           </Button>
