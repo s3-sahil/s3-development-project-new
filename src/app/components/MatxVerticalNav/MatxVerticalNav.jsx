@@ -19,7 +19,7 @@ const ListLabel = styled(Paragraph)(({ theme, mode }) => ({
   marginBottom: "10px",
   textTransform: "uppercase",
   display: mode === "compact" && "none",
-  color: theme.palette.text.secondary
+  color: theme.palette.text.secondary,
 }));
 
 const ExtAndIntCommon = {
@@ -35,35 +35,35 @@ const ExtAndIntCommon = {
   "&:hover": { background: "rgba(255, 255, 255, 0.08)" },
   "&.compactNavItem": {
     overflow: "hidden",
-    justifyContent: "center !important"
+    justifyContent: "center !important",
   },
   "& .icon": {
     fontSize: "18px",
     paddingLeft: "16px",
     paddingRight: "16px",
-    verticalAlign: "middle"
-  }
+    verticalAlign: "middle",
+  },
 };
 
 const ExternalLink = styled("a")(({ theme }) => ({
   ...ExtAndIntCommon,
-  color: theme.palette.text.primary
+  color: theme.palette.text.primary,
 }));
 
 const InternalLink = styled(Box)(({ theme }) => ({
   "& a": {
     ...ExtAndIntCommon,
-    color: theme.palette.text.primary
+    color: theme.palette.text.primary,
   },
   "& .navItemActive": {
-    backgroundColor: "rgb(25 118 210)"
-  }
+    backgroundColor: "rgb(25 118 210)",
+  },
 }));
 
 const StyledText = styled(Span)(({ mode }) => ({
   fontSize: "0.875rem",
   paddingLeft: "0.8rem",
-  display: mode === "compact" && "none"
+  display: mode === "compact" && "none",
 }));
 
 const BulletIcon = styled("div")(({ theme }) => ({
@@ -72,13 +72,13 @@ const BulletIcon = styled("div")(({ theme }) => ({
   marginRight: "8px",
   overflow: "hidden",
   borderRadius: "300px",
-  background: theme.palette.text.primary
+  background: theme.palette.text.primary,
 }));
 
 const BadgeValue = styled("div")(() => ({
   padding: "1px 8px",
   overflow: "hidden",
-  borderRadius: "300px"
+  borderRadius: "300px",
 }));
 
 // ================= COMPONENT =================
@@ -95,9 +95,7 @@ export default function MatxVerticalNav({ items }) {
 
     const lower = search.toLowerCase();
 
-    return items.filter((item) =>
-      item.name?.toLowerCase().includes(lower)
-    );
+    return items.filter((item) => item.name?.toLowerCase().includes(lower));
   }, [items, search]);
 
   const renderLevels = (data) => {
@@ -167,7 +165,7 @@ export default function MatxVerticalNav({ items }) {
                       sx={{
                         ml: "20px",
                         fontSize: "11px",
-                        display: mode !== "compact" && "none"
+                        display: mode !== "compact" && "none",
                       }}
                     >
                       {item.iconText}
@@ -197,16 +195,25 @@ export default function MatxVerticalNav({ items }) {
   return (
     <div className="navigation">
       {/* 🔍 MAIN MENU SEARCH */}
-      <Box px={2} py={1}>
+      <Box px={2} py={2}>
         <TextField
           fullWidth
           size="small"
           placeholder="Search menu..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+              backgroundColor: "rgba(255,255,255,0.05)",
+            },
+            "& input": {
+              fontSize: "14px",
+              padding: "10px",
+            },
+          }}
         />
       </Box>
-
       {/* ✅ Use filteredItems (TOP LEVEL ONLY) */}
       {renderLevels(filteredItems)}
     </div>
