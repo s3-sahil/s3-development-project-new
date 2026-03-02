@@ -35,7 +35,7 @@ export default function NewRoleTable() {
   );
 
   const handleEdit = (row) => {
-    navigate(`terial/system-admin-new-role-form/edit/${row.id}`, {
+    navigate(`/material/system-admin-new-role-form/edit/${row.id}`, {
       state: row,
     });
   };
@@ -45,7 +45,7 @@ export default function NewRoleTable() {
   };
 
   const handleAddNew = () => {
-    navigate("terial/system-admin-new-role-form/add");
+    navigate("/material/system-admin-new-role-form/add");
   };
 
   const columns = [
