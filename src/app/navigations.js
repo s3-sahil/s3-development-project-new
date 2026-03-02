@@ -29,7 +29,7 @@ const navigations = [
           },
           {
             name: "New Role",
-            path: "/material/customers",
+            path: "/material/system-admin-new-role-table",
             icon: "list",
             tooltip: "Customer Master",
           },

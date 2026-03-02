@@ -17,6 +17,8 @@ import LoginDetailsForm from "./Sys-Admin-Master/LoginDetailsForm";
 import LoginParameterTable from "./Sys-Admin-Master/LoginParameterTable";
 import LoginParameterForm from "./Sys-Admin-Master/LoginParameterForm";
 import ActivityReportTable from "./Sys-Admin-Master/ActivityReportTable";
+import NewRoleTable from "./Sys-Admin-Master/NewRoleTable";
+import NewRoleForm from "./Sys-Admin-Master/NewRoleForm";
 // import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
 // import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
 // import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
@@ -2579,6 +2581,18 @@ const materialRoutes = [
   {
     path: "/material/system-admin-activity-report-table",
     element: <ActivityReportTable />,
+  },
+  {
+    path: "/material/system-admin-new-role-table",
+    element: <NewRoleTable />,
+  },
+  {
+    path: "/material/system-admin-new-role-form/edit/:slipNo",
+    element: <NewRoleForm />,
+  },
+  {
+    path: "/material/system-admin-new-role-form/add",
+    element: <NewRoleForm />,
   },
 ];
 
