@@ -62,7 +62,7 @@ export default function BusinessPlanTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/planning/business-plan/add")}
+            onClick={() => navigate("/material/sales-business-plan-form/add")}
           >
             New
           </Button>

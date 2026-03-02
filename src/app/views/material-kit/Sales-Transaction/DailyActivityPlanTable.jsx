@@ -53,7 +53,7 @@ export default function DailyActivityPlanTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/planning/daily-activity-plan-form/edit/${params.row.id}`)
+                navigate(`/material/sales-daily-activity-plan-form/edit/${params.row.id}`)
               }
             >
               <Icon color="primary">edit</Icon>
@@ -83,7 +83,7 @@ export default function DailyActivityPlanTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/planning/daily-activity-plan-form/add")}
+            onClick={() => navigate("/material/sales-daily-activity-plan-form/add")}
           >
             New
           </Button>

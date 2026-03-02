@@ -53,7 +53,7 @@ export default function PreShipmentPackingslipTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/sales/pre-shipment-packingslip-form/edit/${params.row.id}`)
+                navigate(`/material/sales-pre-shipment-packingslip-form/edit/${params.row.id}`)
               }
             >
               <Icon color="primary">edit</Icon>
@@ -83,7 +83,7 @@ export default function PreShipmentPackingslipTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/sales/pre-shipment-packingslip-form/add")}
+            onClick={() => navigate("/material/sales-pre-shipment-packingslip-form/add")}
           >
             New
           </Button>

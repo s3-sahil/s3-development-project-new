@@ -38,7 +38,7 @@ export default function CustomerRCIAEntryTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/tqm/customer-rcia-entry/edit/${params.row.id}`)
+                navigate(`/material/sales-customer-RCIA-entry-form/edit/${params.row.id}`)
               }
             >
               <Icon color="primary">edit</Icon>
@@ -80,7 +80,7 @@ export default function CustomerRCIAEntryTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/tqm/customer-rcia-entry/add")}
+            onClick={() => navigate("/material/sales-customer-RCIA-entry-form/add")}
           >
             New
           </Button>
