@@ -77,21 +77,11 @@ export default function SalaryWagesDetailsForm() {
         {/* HEADER */}
         <Box display="flex" justifyContent="space-between" mb={2}>
           <Typography variant="h6">
-            Salary / Wages Details
           </Typography>
 
           <Stack direction="row" spacing={1}>
 
-            <Tooltip title="Print">
-              <IconButton
-                sx={{
-                  background: "#E8F5E9",
-                  "&:hover": { background: "#C8E6C9" },
-                }}
-              >
-                <Icon color="success">print</Icon>
-              </IconButton>
-            </Tooltip>
+            
 
             <Button
               variant="contained"
@@ -110,14 +100,7 @@ export default function SalaryWagesDetailsForm() {
               {loading ? "Saving..." : "Save"}
             </Button>
 
-            <Button
-              variant="outlined"
-              startIcon={<Icon>arrow_back</Icon>}
-              onClick={() => navigate(-1)}
-              sx={{ borderRadius: 2, textTransform: "none" }}
-            >
-              Back
-            </Button>
+           
 
           </Stack>
         </Box>
