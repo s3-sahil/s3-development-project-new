@@ -2,90 +2,133 @@ import { lazy } from "react";
 import Loadable from "app/components/Loadable";
 import ActivityReportsRightsTable from "./Sys-Admin-Master/ActivityFormRightsTable";
 import CustomersPurchaseOrderLogin from "./Sales-Transaction/customersPurchaseOrderLogin";
-import WorkOrderIssueTable from "./Material-Transaction/WorkOrderIssueTable";
-import WorkOrderIssueForm from "./Material-Transaction/WorkOrderIssueForm";
-import WipMaterialAdjustmentTable from "./Material-Transaction/WipMaterialAdjustmentTable";
-import WipMaterialAdjustmentForm from "./Material-Transaction/WipMaterialAdjustmentForm";
-import SupplierScheduleTable from "./Material-Transaction/SupplierScheduleTable";
-import SupplierScheduleForm from "./Material-Transaction/SupplierScheduleForm";
-import SupplierBillsTable from "./Material-Transaction/SupplierBillsTable";
-import SupplierBillsForm from "./Material-Transaction/SupplierBillsForm";
-import PurchaseRequisitionTable from "./Material-Transaction/PurchaseRequisitionTable";
-import PurchaseRequisitionForm from "./Material-Transaction/PurchaseRequisitionForm";
-import PurchaseLineRejectionTable from "./Material-Transaction/PurchaseLineRejectionTable";
-import PurchaseLineRejectionForm from "./Material-Transaction/PurchaseLineRejectionForm";
-import ProductMovementSlipTable from "./Material-Transaction/ProductMovementSlipTable";
-import ProductMovementSlipForm from "./Material-Transaction/ProductMovementSlipForm";
-import OutwardChallanTable from "./Material-Transaction/OutwardChallanTable";
-import OutwardChallanForm from "./Material-Transaction/OutwardChallanForm";
-import MaterialStockAdjustmentTable from "./Material-Transaction/MaterialStockAdjustmentTable";
-import MaterialStockAdjustmentForm from "./Material-Transaction/MaterialStockAdjustmentForm";
-import MaterialReturnReceivedTable from "./Material-Transaction/MaterialReturnReceivedTable";
-import MaterialReturnReceivedForm from "./Material-Transaction/MaterialReturnReceivedForm";
-import MaterialRateContractTable from "./Material-Transaction/MaterialRateContractTable";
-import MaterialRateContractForm from "./Material-Transaction/MaterialRateContractForm";
-import MaterialIssueTable from "./Material-Transaction/MaterialIssueTable";
-import MaterialIssueForm from "./Material-Transaction/MaterialIssueForm";
-import JobworkStockAdjustmentTable from "./Material-Transaction/JobworkStockAdjustmentTable";
-import JobworkStockAdjustmentForm from "./Material-Transaction/JobworkStockAdjustmentForm";
-import GoodsReceiptNoteTable from "./Material-Transaction/GoodsReceiptNoteTable";
-import GoodsReceiptNoteForm from "./Material-Transaction/GoodsReceiptNoteForm";
-import GoodsReceiptInspectionTable from "./Material-Transaction/GoodsReceiptInspectionTable";
-import GoodsReceiptInspectionForm from "./Material-Transaction/GoodsReceiptInspectionForm";
-import CustomerWipAdjustmentTable from "./Material-Transaction/CustomerWipAdjustmentTable";
-import CustomerWipAdjustmentForm from "./Material-Transaction/CustomerWipAdjustmentForm";
-import CustomerStockAdjustmentTable from "./Material-Transaction/CustomerStockAdjustmentTable";
-import CustomerStockAdjustmentForm from "./Material-Transaction/CustomerStockAdjustmentForm";
-import AdditionalWorkOrderRequisitionTable from "./Material-Transaction/AdditionalWorkOrderRequisitionTable";
-import AdditionalWorkOrderRequisitionForm from "./Material-Transaction/AdditionalWorkOrderRequisitionForm";
-import MaterialRequisitionTable from "./Material-Transaction/MaterialRequisitionTable";
-import MaterialRequisitionForm from "./Material-Transaction/MaterialRequisitionForm";
-import TMSParameterTable from "./TMS-Master/TMSParameterTable";
-import TMSParameterForm from "./TMS-Master/TMSParameterForm";
-import RotationDetailsTable from "./TMS-Master/RotationDetailsTable";
-import RotationDetailsForm from "./TMS-Master/RotationDetailsForm";
-import GradeWiseRulesTable from "./TMS-Master/GradeWiseRulesTable";
-import GradeWiseRulesForm from "./TMS-Master/GradeWiseRulesForm";
-import OvertimeRulesTable from "./TMS-Master/OvertimeRulesTable";
-import OvertimeRulesForm from "./TMS-Master/OvertimeRulesForm";
-import AssignCardsForm from "./TMS-Master/AssignCardsForm";
-import AssignCardTable from "./TMS-Master/AssignCardTable";
-import ShiftDetailsTable from "./TMS-Master/ShiftDetailsTable";
-import ShiftDetailsForm from "./TMS-Master/ShiftDetailsForm";
-import ShiftScheduleTable from "./TMS-Transaction/ShiftScheduleTable";
-import ShiftScheduleForm from "./TMS-Transaction/ShiftScheduleForm";
-import ImportAttendanceTable from "./TMS-Transaction/ImportAttendanceTable";
-import ImportAttendanceForm from "./TMS-Transaction/ImportAttendanceForm";
-import TourDetailsTable from "./TMS-Transaction/TourDetailsTable";
-import TourDetailsForm from "./TMS-Transaction/TourDetailsForm";
-import OvertimeTable from "./TMS-Transaction/OvertimeTable";
-import OvertimeForm from "./TMS-Transaction/OvertimeForm";
-import ODDetailsTable from "./TMS-Transaction/ODDetailsTable";
-import ODDetailsForm from "./TMS-Transaction/ODDetailsForm";
-import LeaveApplicationTable from "./TMS-Transaction/LeaveApplicationTable";
-import LeaveApplicationForm from "./TMS-Transaction/LeaveApplicationForm";
-import LateComingTable from "./TMS-Transaction/LateComingTable";
-import LateComingForm from "./TMS-Transaction/LateComingForm";
-import InvalidPunchTable from "./TMS-Transaction/InvalidPunchTable";
-import InvalidPunchForm from "./TMS-Transaction/InvalidPunchForm";
-import ImportManualMusterTable from "./TMS-Transaction/ImportManualMusterTable";
-import GenerateMusterForm from "./TMS-Transaction/GenerateMusterForm";
-import GenerateShiftScheduleForm from "./TMS-Transaction/GenerateShiftScheduleForm";
-import CompOffTable from "./TMS-Transaction/CompOffTable";
-import CompOffForm from "./TMS-Transaction/CompOffForm";
-import InOutFlagTable from "./TMS-Transaction/InOutFlagTable";
-import InOutFlagForm from "./TMS-Transaction/InOutFlagForm";
-import ManualPunchingForm from "./TMS-Transaction/ManualPunchingForm";
-import GradeWisePaymentDetailsTable from "./Payroll-Master/GradeWisePaymentDetailsTable";
-import GradeWisePaymentDetailsForm from "./Payroll-Master/GradeWisePaymentDetailsForm";
-import YearlyHolidayTable from "./Payroll-Master/YearlyHolidayTable";
-import YearlyHolidayForm from "./Payroll-Master/YearlyHolidayForm";
-import LeaveDetailsTable from "./Payroll-Master/LeaveDetailsTable";
-import LeaveDetailsForm from "./Payroll-Master/LeaveDetailsForm";
-import PayrollCalculationTables from "./Payroll-Master/PayrollCalculationTable";
-import PayrollCalculationForms from "./Payroll-Master/PayrollCalculationForm";
-import TrainingOnJobTable from "./Payroll-Master/TrainingOnJobTable";
-import TrainingOnJobForm from "./Payroll-Master/TrainingOnJobForm";
+import BreakdownSlipTable from "./Maintenance-Transaction/BreakdownSlipTable";
+import BreakdownSlipForm from "./Maintenance-Transaction/BreakdownSlipForm";
+import BreakdownStartTable from "./Maintenance-Transaction/BreakdownStartTable";
+import BreakdownStartForm from "./Maintenance-Transaction/BreakdownStartForm";
+import CompletionEntryTable from "./Maintenance-Transaction/CompletionEntryTable";
+import CompletionEntryForm from "./Maintenance-Transaction/CompletionEntryForm";
+import PreventiveSlipTable from "./Maintenance-Transaction/PreventiveSlipTable";
+import PreventiveSlipForm from "./Maintenance-Transaction/PreventiveSlipForm";
+import SparesConsumptionTable from "./Maintenance-Transaction/SparesConsumptionTable";
+import SparesConsumptionForm from "./Maintenance-Transaction/SparesConsumptionForm";
+import LoginDetailsTable from "./Sys-Admin-Master/LoginDetailsTable";
+import LoginDetailsForm from "./Sys-Admin-Master/LoginDetailsForm";
+import LoginParameterTable from "./Sys-Admin-Master/LoginParameterTable";
+import LoginParameterForm from "./Sys-Admin-Master/LoginParameterForm";
+import ActivityReportTable from "./Sys-Admin-Master/ActivityReportTable";
+// import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
+// import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
+// import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
+// import MaintenanceCategoryForm from "./Maintenance-Master/MaintenanceCategoryForm";
+// import PreventiveMaintenanceTable from "./Maintenance-Master/PreventiveMaintenanceTable";
+// import PreventiveMaintenanceForm from "./Maintenance-Master/PreventiveMaintenanceForm";
+// import RootCauseTable from "./Maintenance-Master/RootCauseTable";
+// import RootCauseForm from "./Maintenance-Master/RootCauseForm";
+// import MaintenanceReasonTable from "./Maintenance-Master/MaintenanceReasonTable";
+// import MaintenanceReasonForm from "./Maintenance-Master/MaintenanceReasonForm";
+// import SectionWiseProductionDetailTable from "./Production-Transaction/SectionWiseProductionDetailTable";
+// import SectionWiseProductionDetailForm from "./Production-Transaction/SectionWiseProductionDetailForm";
+// import ProductCostingParameterTable from "./Production-Master/ProductCostingParameterTable";
+// import ProductCostingParameterForm from "./Production-Master/ProductCostingParameterForm";
+// import BreakdownDetailTable from "./Production-Master/BreakdownDetailTable";
+// import BreakdownDetailForm from "./Production-Master/BreakdownDetailForm";
+// import MachineAssetGroupTable from "./Production-Master/MachineAssetGroupTable";
+// import MachineAssetGroupForm from "./Production-Master/MachineAssetGroupForm";
+// import MachineAssetDetailTable from "./Production-Master/MachineAssetDetailTable";
+// import MachineAssetDetailForm from "./Production-Master/MachineAssetDetailForm";
+// import WorkOrderIssueTable from "./Material-Transaction/WorkOrderIssueTable";
+// import WorkOrderIssueForm from "./Material-Transaction/WorkOrderIssueForm";
+// import WipMaterialAdjustmentTable from "./Material-Transaction/WipMaterialAdjustmentTable";
+// import WipMaterialAdjustmentForm from "./Material-Transaction/WipMaterialAdjustmentForm";
+// import SupplierScheduleTable from "./Material-Transaction/SupplierScheduleTable";
+// import SupplierScheduleForm from "./Material-Transaction/SupplierScheduleForm";
+// import SupplierBillsTable from "./Material-Transaction/SupplierBillsTable";
+// import SupplierBillsForm from "./Material-Transaction/SupplierBillsForm";
+// import PurchaseRequisitionTable from "./Material-Transaction/PurchaseRequisitionTable";
+// import PurchaseRequisitionForm from "./Material-Transaction/PurchaseRequisitionForm";
+// import PurchaseLineRejectionTable from "./Material-Transaction/PurchaseLineRejectionTable";
+// import PurchaseLineRejectionForm from "./Material-Transaction/PurchaseLineRejectionForm";
+// import ProductMovementSlipTable from "./Material-Transaction/ProductMovementSlipTable";
+// import ProductMovementSlipForm from "./Material-Transaction/ProductMovementSlipForm";
+// import OutwardChallanTable from "./Material-Transaction/OutwardChallanTable";
+// import OutwardChallanForm from "./Material-Transaction/OutwardChallanForm";
+// import MaterialStockAdjustmentTable from "./Material-Transaction/MaterialStockAdjustmentTable";
+// import MaterialStockAdjustmentForm from "./Material-Transaction/MaterialStockAdjustmentForm";
+// import MaterialReturnReceivedTable from "./Material-Transaction/MaterialReturnReceivedTable";
+// import MaterialReturnReceivedForm from "./Material-Transaction/MaterialReturnReceivedForm";
+// import MaterialRateContractTable from "./Material-Transaction/MaterialRateContractTable";
+// import MaterialRateContractForm from "./Material-Transaction/MaterialRateContractForm";
+// import MaterialIssueTable from "./Material-Transaction/MaterialIssueTable";
+// import MaterialIssueForm from "./Material-Transaction/MaterialIssueForm";
+// import JobworkStockAdjustmentTable from "./Material-Transaction/JobworkStockAdjustmentTable";
+// import JobworkStockAdjustmentForm from "./Material-Transaction/JobworkStockAdjustmentForm";
+// import GoodsReceiptNoteTable from "./Material-Transaction/GoodsReceiptNoteTable";
+// import GoodsReceiptNoteForm from "./Material-Transaction/GoodsReceiptNoteForm";
+// import GoodsReceiptInspectionTable from "./Material-Transaction/GoodsReceiptInspectionTable";
+// import GoodsReceiptInspectionForm from "./Material-Transaction/GoodsReceiptInspectionForm";
+// import CustomerWipAdjustmentTable from "./Material-Transaction/CustomerWipAdjustmentTable";
+// import CustomerWipAdjustmentForm from "./Material-Transaction/CustomerWipAdjustmentForm";
+// import CustomerStockAdjustmentTable from "./Material-Transaction/CustomerStockAdjustmentTable";
+// import CustomerStockAdjustmentForm from "./Material-Transaction/CustomerStockAdjustmentForm";
+// import AdditionalWorkOrderRequisitionTable from "./Material-Transaction/AdditionalWorkOrderRequisitionTable";
+// import AdditionalWorkOrderRequisitionForm from "./Material-Transaction/AdditionalWorkOrderRequisitionForm";
+// import MaterialRequisitionTable from "./Material-Transaction/MaterialRequisitionTable";
+// import MaterialRequisitionForm from "./Material-Transaction/MaterialRequisitionForm";
+// import TMSParameterTable from "./TMS-Master/TMSParameterTable";
+// import TMSParameterForm from "./TMS-Master/TMSParameterForm";
+// import RotationDetailsTable from "./TMS-Master/RotationDetailsTable";
+// import RotationDetailsForm from "./TMS-Master/RotationDetailsForm";
+// import GradeWiseRulesTable from "./TMS-Master/GradeWiseRulesTable";
+// import GradeWiseRulesForm from "./TMS-Master/GradeWiseRulesForm";
+// import OvertimeRulesTable from "./TMS-Master/OvertimeRulesTable";
+// import OvertimeRulesForm from "./TMS-Master/OvertimeRulesForm";
+// import AssignCardsForm from "./TMS-Master/AssignCardsForm";
+// import AssignCardTable from "./TMS-Master/AssignCardTable";
+// import ShiftDetailsTable from "./TMS-Master/ShiftDetailsTable";
+// import ShiftDetailsForm from "./TMS-Master/ShiftDetailsForm";
+// import ShiftScheduleTable from "./TMS-Transaction/ShiftScheduleTable";
+// import ShiftScheduleForm from "./TMS-Transaction/ShiftScheduleForm";
+// import ImportAttendanceTable from "./TMS-Transaction/ImportAttendanceTable";
+// import ImportAttendanceForm from "./TMS-Transaction/ImportAttendanceForm";
+// import TourDetailsTable from "./TMS-Transaction/TourDetailsTable";
+// import TourDetailsForm from "./TMS-Transaction/TourDetailsForm";
+// import OvertimeTable from "./TMS-Transaction/OvertimeTable";
+// import OvertimeForm from "./TMS-Transaction/OvertimeForm";
+// import ODDetailsTable from "./TMS-Transaction/ODDetailsTable";
+// import ODDetailsForm from "./TMS-Transaction/ODDetailsForm";
+// import LeaveApplicationTable from "./TMS-Transaction/LeaveApplicationTable";
+// import LeaveApplicationForm from "./TMS-Transaction/LeaveApplicationForm";
+// import LateComingTable from "./TMS-Transaction/LateComingTable";
+// import LateComingForm from "./TMS-Transaction/LateComingForm";
+// import InvalidPunchTable from "./TMS-Transaction/InvalidPunchTable";
+// import InvalidPunchForm from "./TMS-Transaction/InvalidPunchForm";
+// import ImportManualMusterTable from "./TMS-Transaction/ImportManualMusterTable";
+// import GenerateMusterForm from "./TMS-Transaction/GenerateMusterForm";
+// import GenerateShiftScheduleForm from "./TMS-Transaction/GenerateShiftScheduleForm";
+// import CompOffTable from "./TMS-Transaction/CompOffTable";
+// import CompOffForm from "./TMS-Transaction/CompOffForm";
+// import InOutFlagTable from "./TMS-Transaction/InOutFlagTable";
+// import InOutFlagForm from "./TMS-Transaction/InOutFlagForm";
+// import ManualPunchingForm from "./TMS-Transaction/ManualPunchingForm";
+// import GradeWisePaymentDetailsTable from "./Payroll-Master/GradeWisePaymentDetailsTable";
+// import GradeWisePaymentDetailsForm from "./Payroll-Master/GradeWisePaymentDetailsForm";
+// import YearlyHolidayTable from "./Payroll-Master/YearlyHolidayTable";
+// import YearlyHolidayForm from "./Payroll-Master/YearlyHolidayForm";
+// import LeaveDetailsTable from "./Payroll-Master/LeaveDetailsTable";
+// import LeaveDetailsForm from "./Payroll-Master/LeaveDetailsForm";
+// import PayrollCalculationTables from "./Payroll-Master/PayrollCalculationTable";
+// import PayrollCalculationForms from "./Payroll-Master/PayrollCalculationForm";
+// import TrainingOnJobTable from "./Payroll-Master/TrainingOnJobTable";
+// import TrainingOnJobForm from "./Payroll-Master/TrainingOnJobForm";
+// import BreakdownTypeTable from "./Production-Master/BreakdownTypeTable";
+// import BreakdownTypeForm from "./Production-Master/BreakdownTypeForm";
+// import SectionTable from "./Production-Master/SectionTable";
+// import SectionForm from "./Production-Master/SectionForm";
+// import SectionWiseProcessTable from "./Production-Master/SectionWiseProcessTable";
+// import SectionWiseProcessForm from "./Production-Master/SectionWiseProcessForm";
+// import MachineProcessTable from "./Production-Master/MachineProcessTable";
+// import MachineProcessForm from "./Production-Master/MachineProcessForm";
 
 const AppForm = Loadable(lazy(() => import("./forms/AppForm")));
 const AppMenu = Loadable(lazy(() => import("./menu/AppMenu")));
@@ -527,6 +570,410 @@ const MachineHourRateTable = Loadable(
 );
 const MachineHourRateForm = Loadable(
   lazy(() => import("./Material-Master/MachineHourRateForm")),
+);
+const WorkOrderIssueTable = Loadable(
+  lazy(() => import("./Material-Transaction/WorkOrderIssueTable")),
+);
+const WorkOrderIssueForm = Loadable(
+  lazy(() => import("./Material-Transaction/WorkOrderIssueForm")),
+);
+
+const WipMaterialAdjustmentTable = Loadable(
+  lazy(() => import("./Material-Transaction/WipMaterialAdjustmentTable")),
+);
+const WipMaterialAdjustmentForm = Loadable(
+  lazy(() => import("./Material-Transaction/WipMaterialAdjustmentForm")),
+);
+
+const SupplierScheduleTable = Loadable(
+  lazy(() => import("./Material-Transaction/SupplierScheduleTable")),
+);
+const SupplierScheduleForm = Loadable(
+  lazy(() => import("./Material-Transaction/SupplierScheduleForm")),
+);
+
+const SupplierBillsTable = Loadable(
+  lazy(() => import("./Material-Transaction/SupplierBillsTable")),
+);
+const SupplierBillsForm = Loadable(
+  lazy(() => import("./Material-Transaction/SupplierBillsForm")),
+);
+
+const PurchaseRequisitionTable = Loadable(
+  lazy(() => import("./Material-Transaction/PurchaseRequisitionTable")),
+);
+const PurchaseRequisitionForm = Loadable(
+  lazy(() => import("./Material-Transaction/PurchaseRequisitionForm")),
+);
+
+const PurchaseLineRejectionTable = Loadable(
+  lazy(() => import("./Material-Transaction/PurchaseLineRejectionTable")),
+);
+const PurchaseLineRejectionForm = Loadable(
+  lazy(() => import("./Material-Transaction/PurchaseLineRejectionForm")),
+);
+
+const ProductMovementSlipTable = Loadable(
+  lazy(() => import("./Material-Transaction/ProductMovementSlipTable")),
+);
+const ProductMovementSlipForm = Loadable(
+  lazy(() => import("./Material-Transaction/ProductMovementSlipForm")),
+);
+
+const OutwardChallanTable = Loadable(
+  lazy(() => import("./Material-Transaction/OutwardChallanTable")),
+);
+const OutwardChallanForm = Loadable(
+  lazy(() => import("./Material-Transaction/OutwardChallanForm")),
+);
+
+const MaterialStockAdjustmentTable = Loadable(
+  lazy(() => import("./Material-Transaction/MaterialStockAdjustmentTable")),
+);
+const MaterialStockAdjustmentForm = Loadable(
+  lazy(() => import("./Material-Transaction/MaterialStockAdjustmentForm")),
+);
+
+const MaterialReturnReceivedTable = Loadable(
+  lazy(() => import("./Material-Transaction/MaterialReturnReceivedTable")),
+);
+const MaterialReturnReceivedForm = Loadable(
+  lazy(() => import("./Material-Transaction/MaterialReturnReceivedForm")),
+);
+
+const MaterialRateContractTable = Loadable(
+  lazy(() => import("./Material-Transaction/MaterialRateContractTable")),
+);
+const MaterialRateContractForm = Loadable(
+  lazy(() => import("./Material-Transaction/MaterialRateContractForm")),
+);
+
+const MaterialIssueTable = Loadable(
+  lazy(() => import("./Material-Transaction/MaterialIssueTable")),
+);
+const MaterialIssueForm = Loadable(
+  lazy(() => import("./Material-Transaction/MaterialIssueForm")),
+);
+
+const JobworkStockAdjustmentTable = Loadable(
+  lazy(() => import("./Material-Transaction/JobworkStockAdjustmentTable")),
+);
+const JobworkStockAdjustmentForm = Loadable(
+  lazy(() => import("./Material-Transaction/JobworkStockAdjustmentForm")),
+);
+
+const GoodsReceiptNoteTable = Loadable(
+  lazy(() => import("./Material-Transaction/GoodsReceiptNoteTable")),
+);
+const GoodsReceiptNoteForm = Loadable(
+  lazy(() => import("./Material-Transaction/GoodsReceiptNoteForm")),
+);
+
+const GoodsReceiptInspectionTable = Loadable(
+  lazy(() => import("./Material-Transaction/GoodsReceiptInspectionTable")),
+);
+const GoodsReceiptInspectionForm = Loadable(
+  lazy(() => import("./Material-Transaction/GoodsReceiptInspectionForm")),
+);
+
+const CustomerWipAdjustmentTable = Loadable(
+  lazy(() => import("./Material-Transaction/CustomerWipAdjustmentTable")),
+);
+const CustomerWipAdjustmentForm = Loadable(
+  lazy(() => import("./Material-Transaction/CustomerWipAdjustmentForm")),
+);
+
+const CustomerStockAdjustmentTable = Loadable(
+  lazy(() => import("./Material-Transaction/CustomerStockAdjustmentTable")),
+);
+const CustomerStockAdjustmentForm = Loadable(
+  lazy(() => import("./Material-Transaction/CustomerStockAdjustmentForm")),
+);
+
+const AdditionalWorkOrderRequisitionTable = Loadable(
+  lazy(
+    () => import("./Material-Transaction/AdditionalWorkOrderRequisitionTable"),
+  ),
+);
+const AdditionalWorkOrderRequisitionForm = Loadable(
+  lazy(
+    () => import("./Material-Transaction/AdditionalWorkOrderRequisitionForm"),
+  ),
+);
+
+const MaterialRequisitionTable = Loadable(
+  lazy(() => import("./Material-Transaction/MaterialRequisitionTable")),
+);
+const MaterialRequisitionForm = Loadable(
+  lazy(() => import("./Material-Transaction/MaterialRequisitionForm")),
+);
+const TMSParameterTable = Loadable(
+  lazy(() => import("./TMS-Master/TMSParameterTable")),
+);
+const TMSParameterForm = Loadable(
+  lazy(() => import("./TMS-Master/TMSParameterForm")),
+);
+
+const RotationDetailsTable = Loadable(
+  lazy(() => import("./TMS-Master/RotationDetailsTable")),
+);
+const RotationDetailsForm = Loadable(
+  lazy(() => import("./TMS-Master/RotationDetailsForm")),
+);
+
+const GradeWiseRulesTable = Loadable(
+  lazy(() => import("./TMS-Master/GradeWiseRulesTable")),
+);
+const GradeWiseRulesForm = Loadable(
+  lazy(() => import("./TMS-Master/GradeWiseRulesForm")),
+);
+
+const OvertimeRulesTable = Loadable(
+  lazy(() => import("./TMS-Master/OvertimeRulesTable")),
+);
+const OvertimeRulesForm = Loadable(
+  lazy(() => import("./TMS-Master/OvertimeRulesForm")),
+);
+
+const AssignCardTable = Loadable(
+  lazy(() => import("./TMS-Master/AssignCardTable")),
+);
+const AssignCardsForm = Loadable(
+  lazy(() => import("./TMS-Master/AssignCardsForm")),
+);
+
+const ShiftDetailsTable = Loadable(
+  lazy(() => import("./TMS-Master/ShiftDetailsTable")),
+);
+const ShiftDetailsForm = Loadable(
+  lazy(() => import("./TMS-Master/ShiftDetailsForm")),
+);
+
+const ShiftScheduleTable = Loadable(
+  lazy(() => import("./TMS-Transaction/ShiftScheduleTable")),
+);
+const ShiftScheduleForm = Loadable(
+  lazy(() => import("./TMS-Transaction/ShiftScheduleForm")),
+);
+
+const ImportAttendanceTable = Loadable(
+  lazy(() => import("./TMS-Transaction/ImportAttendanceTable")),
+);
+const ImportAttendanceForm = Loadable(
+  lazy(() => import("./TMS-Transaction/ImportAttendanceForm")),
+);
+
+const TourDetailsTable = Loadable(
+  lazy(() => import("./TMS-Transaction/TourDetailsTable")),
+);
+const TourDetailsForm = Loadable(
+  lazy(() => import("./TMS-Transaction/TourDetailsForm")),
+);
+
+const OvertimeTable = Loadable(
+  lazy(() => import("./TMS-Transaction/OvertimeTable")),
+);
+const OvertimeForm = Loadable(
+  lazy(() => import("./TMS-Transaction/OvertimeForm")),
+);
+
+const ODDetailsTable = Loadable(
+  lazy(() => import("./TMS-Transaction/ODDetailsTable")),
+);
+const ODDetailsForm = Loadable(
+  lazy(() => import("./TMS-Transaction/ODDetailsForm")),
+);
+
+const LeaveApplicationTable = Loadable(
+  lazy(() => import("./TMS-Transaction/LeaveApplicationTable")),
+);
+const LeaveApplicationForm = Loadable(
+  lazy(() => import("./TMS-Transaction/LeaveApplicationForm")),
+);
+
+const LateComingTable = Loadable(
+  lazy(() => import("./TMS-Transaction/LateComingTable")),
+);
+const LateComingForm = Loadable(
+  lazy(() => import("./TMS-Transaction/LateComingForm")),
+);
+
+const InvalidPunchTable = Loadable(
+  lazy(() => import("./TMS-Transaction/InvalidPunchTable")),
+);
+const InvalidPunchForm = Loadable(
+  lazy(() => import("./TMS-Transaction/InvalidPunchForm")),
+);
+
+const ImportManualMusterTable = Loadable(
+  lazy(() => import("./TMS-Transaction/ImportManualMusterTable")),
+);
+const GenerateMusterForm = Loadable(
+  lazy(() => import("./TMS-Transaction/GenerateMusterForm")),
+);
+const GenerateShiftScheduleForm = Loadable(
+  lazy(() => import("./TMS-Transaction/GenerateShiftScheduleForm")),
+);
+
+const CompOffTable = Loadable(
+  lazy(() => import("./TMS-Transaction/CompOffTable")),
+);
+const CompOffForm = Loadable(
+  lazy(() => import("./TMS-Transaction/CompOffForm")),
+);
+
+const InOutFlagTable = Loadable(
+  lazy(() => import("./TMS-Transaction/InOutFlagTable")),
+);
+const InOutFlagForm = Loadable(
+  lazy(() => import("./TMS-Transaction/InOutFlagForm")),
+);
+
+const ManualPunchingForm = Loadable(
+  lazy(() => import("./TMS-Transaction/ManualPunchingForm")),
+);
+
+const GradeWisePaymentDetailsTable = Loadable(
+  lazy(() => import("./Payroll-Master/GradeWisePaymentDetailsTable")),
+);
+const GradeWisePaymentDetailsForm = Loadable(
+  lazy(() => import("./Payroll-Master/GradeWisePaymentDetailsForm")),
+);
+
+const YearlyHolidayTable = Loadable(
+  lazy(() => import("./Payroll-Master/YearlyHolidayTable")),
+);
+const YearlyHolidayForm = Loadable(
+  lazy(() => import("./Payroll-Master/YearlyHolidayForm")),
+);
+
+const LeaveDetailsTable = Loadable(
+  lazy(() => import("./Payroll-Master/LeaveDetailsTable")),
+);
+const LeaveDetailsForm = Loadable(
+  lazy(() => import("./Payroll-Master/LeaveDetailsForm")),
+);
+
+const PayrollCalculationTables = Loadable(
+  lazy(() => import("./Payroll-Master/PayrollCalculationTable")),
+);
+const PayrollCalculationForms = Loadable(
+  lazy(() => import("./Payroll-Master/PayrollCalculationForm")),
+);
+
+const TrainingOnJobTable = Loadable(
+  lazy(() => import("./Payroll-Master/TrainingOnJobTable")),
+);
+const TrainingOnJobForm = Loadable(
+  lazy(() => import("./Payroll-Master/TrainingOnJobForm")),
+);
+const BreakdownTypeTable = Loadable(
+  lazy(() => import("./Production-Master/BreakdownTypeTable")),
+);
+const BreakdownTypeForm = Loadable(
+  lazy(() => import("./Production-Master/BreakdownTypeForm")),
+);
+
+const SectionTable = Loadable(
+  lazy(() => import("./Production-Master/SectionTable")),
+);
+const SectionForm = Loadable(
+  lazy(() => import("./Production-Master/SectionForm")),
+);
+
+const SectionWiseProcessTable = Loadable(
+  lazy(() => import("./Production-Master/SectionWiseProcessTable")),
+);
+const SectionWiseProcessForm = Loadable(
+  lazy(() => import("./Production-Master/SectionWiseProcessForm")),
+);
+
+const MachineProcessTable = Loadable(
+  lazy(() => import("./Production-Master/MachineProcessTable")),
+);
+const MachineProcessForm = Loadable(
+  lazy(() => import("./Production-Master/MachineProcessForm")),
+);
+const BreakdownDetailTable = Loadable(
+  lazy(() => import("./Production-Master/BreakdownDetailTable")),
+);
+const BreakdownDetailForm = Loadable(
+  lazy(() => import("./Production-Master/BreakdownDetailForm")),
+);
+
+// 🔹 Machine Asset Group
+const MachineAssetGroupTable = Loadable(
+  lazy(() => import("./Production-Master/MachineAssetGroupTable")),
+);
+const MachineAssetGroupForm = Loadable(
+  lazy(() => import("./Production-Master/MachineAssetGroupForm")),
+);
+
+// 🔹 Machine Asset Detail
+const MachineAssetDetailTable = Loadable(
+  lazy(() => import("./Production-Master/MachineAssetDetailTable")),
+);
+const MachineAssetDetailForm = Loadable(
+  lazy(() => import("./Production-Master/MachineAssetDetailForm")),
+);
+
+// 🔹 Product Costing Parameters
+const ProductCostingParameterTable = Loadable(
+  lazy(() => import("./Production-Master/ProductCostingParameterTable")),
+);
+const ProductCostingParameterForm = Loadable(
+  lazy(() => import("./Production-Master/ProductCostingParameterForm")),
+);
+
+const SectionWiseProductionDetailTable = Loadable(
+  lazy(
+    () => import("./Production-Transaction/SectionWiseProductionDetailTable"),
+  ),
+);
+const SectionWiseProductionDetailForm = Loadable(
+  lazy(
+    () => import("./Production-Transaction/SectionWiseProductionDetailForm"),
+  ),
+);
+
+// 🔹 Employee Consumption
+const EmployeeConsumptionTable = Loadable(
+  lazy(() => import("./Maintenance-Transaction/EmployeeConsumptionTable")),
+);
+const EmployeeConsumptionForm = Loadable(
+  lazy(() => import("./Maintenance-Transaction/EmployeeConsumptionForm")),
+);
+
+// 🔹 Maintenance Category
+const MaintenanceCategoryTable = Loadable(
+  lazy(() => import("./Maintenance-Master/MaintenanceCategoryTable")),
+);
+const MaintenanceCategoryForm = Loadable(
+  lazy(() => import("./Maintenance-Master/MaintenanceCategoryForm")),
+);
+
+// 🔹 Preventive Maintenance Scheduling
+const PreventiveMaintenanceTable = Loadable(
+  lazy(() => import("./Maintenance-Master/PreventiveMaintenanceTable")),
+);
+const PreventiveMaintenanceForm = Loadable(
+  lazy(() => import("./Maintenance-Master/PreventiveMaintenanceForm")),
+);
+
+// 🔹 Root Cause Details
+const RootCauseTable = Loadable(
+  lazy(() => import("./Maintenance-Master/RootCauseTable")),
+);
+const RootCauseForm = Loadable(
+  lazy(() => import("./Maintenance-Master/RootCauseForm")),
+);
+
+// 🔹 Maintenance Reason Master
+const MaintenanceReasonTable = Loadable(
+  lazy(() => import("./Maintenance-Master/MaintenanceReasonTable")),
+);
+const MaintenanceReasonForm = Loadable(
+  lazy(() => import("./Maintenance-Master/MaintenanceReasonForm")),
 );
 
 const materialRoutes = [
@@ -1709,7 +2156,7 @@ const materialRoutes = [
     path: "/material/TMS-import-attendance-form/add",
     element: <ImportAttendanceForm />,
   },
-   {
+  {
     path: "/material/TMS-tour-details-table",
     element: <TourDetailsTable />,
   },
@@ -1721,7 +2168,7 @@ const materialRoutes = [
     path: "/material/TMS-tour-details-form/add",
     element: <TourDetailsForm />,
   },
-   {
+  {
     path: "/material/TMS-overtime-table",
     element: <OvertimeTable />,
   },
@@ -1733,7 +2180,7 @@ const materialRoutes = [
     path: "/material/TMS-overtime-form/add",
     element: <OvertimeForm />,
   },
-   {
+  {
     path: "/material/TMS-OD-details-table",
     element: <ODDetailsTable />,
   },
@@ -1757,7 +2204,7 @@ const materialRoutes = [
     path: "/material/TMS-leave-application-form/add",
     element: <LeaveApplicationForm />,
   },
-   {
+  {
     path: "/material/TMS-late-coming-table",
     element: <LateComingTable />,
   },
@@ -1781,7 +2228,7 @@ const materialRoutes = [
     path: "/material/TMS-invalid-punch-form/add",
     element: <InvalidPunchForm />,
   },
-   {
+  {
     path: "/material/TMS-generate-muster",
     element: <GenerateMusterForm />,
   },
@@ -1801,7 +2248,7 @@ const materialRoutes = [
     path: "/material/TMS-comp-Off-form/add",
     element: <CompOffForm />,
   },
-   {
+  {
     path: "/material/TMS-In-Out-flag-table",
     element: <InOutFlagTable />,
   },
@@ -1813,11 +2260,11 @@ const materialRoutes = [
     path: "/material/TMS-In-Out-flag-form/add",
     element: <InOutFlagForm />,
   },
-   {
+  {
     path: "/material/TMS-manual-punching",
     element: <ManualPunchingForm />,
   },
-   {
+  {
     path: "/material/payroll-grade-wise-payment-details-table",
     element: <GradeWisePaymentDetailsTable />,
   },
@@ -1829,7 +2276,7 @@ const materialRoutes = [
     path: "/material/payroll-grade-wise-payment-details-form/add",
     element: <GradeWisePaymentDetailsForm />,
   },
-   {
+  {
     path: "/material/payroll-yearly-holiday-table",
     element: <YearlyHolidayTable />,
   },
@@ -1841,7 +2288,7 @@ const materialRoutes = [
     path: "/material/payroll-yearly-holiday-form/add",
     element: <YearlyHolidayForm />,
   },
-   {
+  {
     path: "/material/payroll-leave-details-table",
     element: <LeaveDetailsTable />,
   },
@@ -1853,7 +2300,7 @@ const materialRoutes = [
     path: "/material/payroll-leave-details-form/add",
     element: <LeaveDetailsForm />,
   },
-   {
+  {
     path: "/material/payroll-payroll-calculations-table",
     element: <PayrollCalculationTables />,
   },
@@ -1865,7 +2312,7 @@ const materialRoutes = [
     path: "/material/payroll-payroll-calculations-form/add",
     element: <PayrollCalculationForms />,
   },
-   {
+  {
     path: "/material/payroll-training-on-job-table",
     element: <TrainingOnJobTable />,
   },
@@ -1876,6 +2323,262 @@ const materialRoutes = [
   {
     path: "/material/payroll-training-on-job-form/add",
     element: <TrainingOnJobForm />,
+  },
+  {
+    path: "/material/production-breakdown-type-table",
+    element: <BreakdownTypeTable />,
+  },
+  {
+    path: "/material/production-breakdown-type-form/edit/:slipNo",
+    element: <BreakdownTypeForm />,
+  },
+  {
+    path: "/material/production-breakdown-type-form/add",
+    element: <BreakdownTypeForm />,
+  },
+  {
+    path: "/material/production-section-table",
+    element: <SectionTable />,
+  },
+  {
+    path: "/material/production-section-form/edit/:slipNo",
+    element: <SectionForm />,
+  },
+  {
+    path: "/material/production-section-form/add",
+    element: <SectionForm />,
+  },
+  {
+    path: "/material/production-sectionWise-process-table",
+    element: <SectionWiseProcessTable />,
+  },
+  {
+    path: "/material/production-sectionWise-process-form/edit/:slipNo",
+    element: <SectionWiseProcessForm />,
+  },
+  {
+    path: "/material/production-sectionWise-process-form/add",
+    element: <SectionWiseProcessForm />,
+  },
+  {
+    path: "/material/production-machine-process-table",
+    element: <MachineProcessTable />,
+  },
+  {
+    path: "/material/production-machine-process-form/edit/:slipNo",
+    element: <MachineProcessForm />,
+  },
+  {
+    path: "/material/production-machine-process-form/add",
+    element: <MachineProcessForm />,
+  },
+  {
+    path: "/material/production-breakdown-detail-table",
+    element: <BreakdownDetailTable />,
+  },
+  {
+    path: "/material/production-breakdown-detail-form/edit/:slipNo",
+    element: <BreakdownDetailForm />,
+  },
+  {
+    path: "/material/production-breakdown-detail-form/add",
+    element: <BreakdownDetailForm />,
+  },
+  {
+    path: "/material/production-machine-asset-group-table",
+    element: <MachineAssetGroupTable />,
+  },
+  {
+    path: "/material/production-machine-asset-group-form/edit/:slipNo",
+    element: <MachineAssetGroupForm />,
+  },
+  {
+    path: "/material/production-machine-asset-group-form/add",
+    element: <MachineAssetGroupForm />,
+  },
+  {
+    path: "/material/production-machine-asset-detail-table",
+    element: <MachineAssetDetailTable />,
+  },
+  {
+    path: "/material/production-machine-asset-detail-form/edit/:slipNo",
+    element: <MachineAssetDetailForm />,
+  },
+  {
+    path: "/material/production-machine-asset-detail-form/add",
+    element: <MachineAssetDetailForm />,
+  },
+  {
+    path: "/material/production-product-costing-parameter-table",
+    element: <ProductCostingParameterTable />,
+  },
+  {
+    path: "/material/production-product-costing-parameter-form/edit/:slipNo",
+    element: <ProductCostingParameterForm />,
+  },
+  {
+    path: "/material/production-product-costing-parameter-form/add",
+    element: <ProductCostingParameterForm />,
+  },
+  {
+    path: "/material/production-section-wise-production-detail-table",
+    element: <SectionWiseProductionDetailTable />,
+  },
+  {
+    path: "/material/production-section-wise-production-detail-form/edit/:slipNo",
+    element: <SectionWiseProductionDetailForm />,
+  },
+  {
+    path: "/material/production-section-wise-production-detail-form/add",
+    element: <SectionWiseProductionDetailForm />,
+  },
+  {
+    path: "/material/maintenance-employee-consumption-table",
+    element: <EmployeeConsumptionTable />,
+  },
+  {
+    path: "/material/maintenance-employee-consumption-form/edit/:slipNo",
+    element: <EmployeeConsumptionForm />,
+  },
+  {
+    path: "/material/maintenance-employee-consumption-form/add",
+    element: <EmployeeConsumptionForm />,
+  },
+  {
+    path: "/material/maintenance-maintenance-category-table",
+    element: <MaintenanceCategoryTable />,
+  },
+  {
+    path: "/material/maintenance-maintenance-category-form/edit/:slipNo",
+    element: <MaintenanceCategoryForm />,
+  },
+  {
+    path: "/material/maintenance-maintenance-category-form/add",
+    element: <MaintenanceCategoryForm />,
+  },
+  {
+    path: "/material/maintenance-preventive-maintenance-table",
+    element: <PreventiveMaintenanceTable />,
+  },
+  {
+    path: "/material/maintenance-preventive-maintenance-form/edit/:slipNo",
+    element: <PreventiveMaintenanceForm />,
+  },
+  {
+    path: "/material/maintenance-preventive-maintenance-form/add",
+    element: <PreventiveMaintenanceForm />,
+  },
+  {
+    path: "/material/maintenance-root-cause-table",
+    element: <RootCauseTable />,
+  },
+  {
+    path: "/material/maintenance-root-cause-form/edit/:slipNo",
+    element: <RootCauseForm />,
+  },
+  {
+    path: "/material/maintenance-root-cause-form/add",
+    element: <RootCauseForm />,
+  },
+  {
+    path: "/material/maintenance-reason-table",
+    element: <MaintenanceReasonTable />,
+  },
+  {
+    path: "/material/maintenance-reason-form/edit/:slipNo",
+    element: <MaintenanceReasonForm />,
+  },
+  {
+    path: "/material/maintenance-reason-form/add",
+    element: <MaintenanceReasonForm />,
+  },
+  {
+    path: "/material/maintenance-breakdown-slip-table",
+    element: <BreakdownSlipTable />,
+  },
+  {
+    path: "/material/maintenance-breakdown-slip-form/edit/:slipNo",
+    element: <BreakdownSlipForm />,
+  },
+  {
+    path: "/material/maintenance-breakdown-slip-form/add",
+    element: <BreakdownSlipForm />,
+  },
+  {
+    path: "/material/maintenance-breakdown-start-table",
+    element: <BreakdownStartTable />,
+  },
+  {
+    path: "/material/maintenance-breakdown-start-form/edit/:slipNo",
+    element: <BreakdownStartForm />,
+  },
+  {
+    path: "/material/maintenance-breakdown-start-form/add",
+    element: <BreakdownStartForm />,
+  },
+  {
+    path: "/material/maintenance-completion-entry-table",
+    element: <CompletionEntryTable />,
+  },
+  {
+    path: "/material/maintenance-completion-entry-form/edit/:slipNo",
+    element: <CompletionEntryForm />,
+  },
+  {
+    path: "/material/maintenance-completion-entry-form/add",
+    element: <CompletionEntryForm />,
+  },
+  {
+    path: "/material/maintenance-preventive-slip-table",
+    element: <PreventiveSlipTable />,
+  },
+  {
+    path: "/material/maintenance-preventive-slip-form/edit/:slipNo",
+    element: <PreventiveSlipForm />,
+  },
+  {
+    path: "/material/maintenance-preventive-slip-form/add",
+    element: <PreventiveSlipForm />,
+  },
+  {
+    path: "/material/maintenance-spares-consumption-table",
+    element: <SparesConsumptionTable />,
+  },
+  {
+    path: "/material/maintenance-spares-consumption-form/edit/:slipNo",
+    element: <SparesConsumptionForm />,
+  },
+  {
+    path: "/material/maintenance-spares-consumption-form/add",
+    element: <SparesConsumptionForm />,
+  },
+  {
+    path: "/material/system-admin-login-details-table",
+    element: <LoginDetailsTable />,
+  },
+  {
+    path: "/material/system-admin-login-details-form/edit/:slipNo",
+    element: <LoginDetailsForm />,
+  },
+  {
+    path: "/material/system-admin-login-details-form/add",
+    element: <LoginDetailsForm />,
+  },
+  {
+    path: "/material/system-admin-login-parameter-table",
+    element: <LoginParameterTable />,
+  },
+  {
+    path: "/material/system-admin-login-parameter-form/edit/:slipNo",
+    element: <LoginParameterForm />,
+  },
+  {
+    path: "/material/system-admin-login-parameter-form/add",
+    element: <LoginParameterForm />,
+  },
+  {
+    path: "/material/system-admin-activity-report-table",
+    element: <ActivityReportTable />,
   },
 ];
 

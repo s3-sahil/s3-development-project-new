@@ -39,7 +39,7 @@ export default function LoginDetailsTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/sysadmin/login-details-form/edit/${params.row.id}`, {
+                navigate(`/material/maintenance-login-details-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -91,7 +91,7 @@ export default function LoginDetailsTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/sysadmin/login-details-form/add")
+              navigate("/material/maintenance-login-details-form/add")
             }
           >
             New

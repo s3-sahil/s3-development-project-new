@@ -7,6 +7,7 @@ import {
   IconButton,
   InputAdornment,
   Stack,
+  Icon,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
@@ -46,7 +47,7 @@ export default function TrainingOnJobTable() {
     (row) =>
       row.employee.toLowerCase().includes(search.toLowerCase()) ||
       row.activity.toLowerCase().includes(search.toLowerCase()) ||
-      row.status.toLowerCase().includes(search.toLowerCase())
+      row.status.toLowerCase().includes(search.toLowerCase()),
   );
 
   const columns = [
@@ -66,7 +67,9 @@ export default function TrainingOnJobTable() {
           <IconButton
             color="primary"
             onClick={() =>
-              navigate(`/material/payroll-training-on-job-form/edit/${params.row.id}`)
+              navigate(
+                `/material/payroll-training-on-job-form/edit/${params.row.id}`,
+              )
             }
           >
             <EditIcon />
@@ -83,13 +86,10 @@ export default function TrainingOnJobTable() {
   return (
     <Container maxWidth="xl">
       <Breadcrumb
-        routeSegments={[
-          { name: "Master" },
-          { name: "Training On Job" },
-        ]}
+        routeSegments={[{ name: "Master" }, { name: "Training On Job" }]}
       />
 
-      <Stack sx={{ p: 3, borderRadius: 2, boxShadow: 3 }}>
+      <Stack>
         {/* Header */}
         <Box
           display="flex"
@@ -97,15 +97,18 @@ export default function TrainingOnJobTable() {
           alignItems="center"
           mb={3}
         >
-          <Typography variant="h5" fontWeight="bold" color="#7b1fa2">
-            Training On Job
-          </Typography>
+          <Typography
+            variant="h5"
+            fontWeight="bold"
+            color="#7b1fa2"
+          ></Typography>
 
           <Button
             variant="contained"
-            startIcon={<AddIcon />}
-            sx={{ background: "#7b1fa2" }}
-            onClick={() => navigate("/material/payroll-training-on-job-form/add")}
+            startIcon={<Icon>add</Icon>}
+            onClick={() =>
+              navigate("/material/payroll-training-on-job-form/add")
+            }
           >
             New
           </Button>

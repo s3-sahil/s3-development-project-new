@@ -11,19 +11,19 @@ const navigations = [
         children: [
           {
             name: "Activity Reports Rights",
-            path: "/material/activity-reports-rights-table",
+            path: "/material/system-admin-activity-report-table",
             icon: "person_add",
             tooltip: "activity-reports-rights-table",
           },
           {
             name: "Activity Form Rights",
-            path: "/material/customers",
+            path: "/material/activity-reports-rights-table",
             icon: "list",
             tooltip: "Customer Master",
           },
           {
             name: "Login Parameters",
-            path: "/material/customers",
+            path: "/material/system-admin-login-parameter-table",
             icon: "list",
             tooltip: "Customer Master",
           },
@@ -35,7 +35,7 @@ const navigations = [
           },
           {
             name: "Login Details",
-            path: "/material/customers",
+            path: "/material/system-admin-login-details-table",
             icon: "list",
             tooltip: "Customer Master",
           },
@@ -1054,54 +1054,44 @@ const navigations = [
         children: [
           {
             name: "Section Details",
-            path: "/material/sales-consignee-table",
+            path: "/material/production-section-table",
             icon: "arrow_forward",
           },
           {
             name: "Section Wise Process Details",
-            path: "/material/customers",
+            path: "/material/production-sectionWise-process-table",
             icon: "arrow_forward",
           },
           {
             name: "Break Down Type Details",
-            path: "/material/sales-Contract-review-table",
+            path: "/material/production-breakdown-type-table",
             icon: "arrow_forward",
           },
           {
-            name: "Salesman",
-            path: "/material/salesman",
+            name: "Break Down Details",
+            path: "/material/production-breakdown-detail-table",
             icon: "arrow_forward",
           },
           {
-            name: "Customer Details",
-            path: "/material/customers",
+            name: "Machine Process Details",
+            path: "/material/production-machine-process-table",
             icon: "arrow_forward",
           },
           // SALES / MATERIAL MASTER TABLES
 
           {
-            name: "Customer Item Details",
-            path: "/material/sales-customer-item-details-form-table",
+            name: "Machine/Asset Group Details",
+            path: "/material/production-machine-asset-group-table",
             icon: "arrow_forward",
           },
           {
-            name: "Contract Review Checklist",
-            path: "/material/sales-contract-review-checklist-form-table",
+            name: "Machine/Asset Details",
+            path: "/material/production-machine-asset-detail-table",
             icon: "arrow_forward",
           },
           {
-            name: "Project Execution Plan",
-            path: "/material/sales-project-execution-plan-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Project Activity Master",
-            path: "/material/sales-project-activity-master-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Customer Wise Product Price List",
-            path: "/material/sales-customer-wise-product-price-table",
+            name: "Product Costing Parameters",
+            path: "/material/production-product-costing-parameter-table",
             icon: "arrow_forward",
           },
         ],
@@ -1111,16 +1101,7 @@ const navigations = [
         path: "/sysadmin/roles",
         icon: "bug_report",
         children: [
-          {
-            name: "Create Role",
-            path: "/sysadmin/roles/create",
-            icon: "add_circle",
-          },
-          {
-            name: "Assign Permissions",
-            path: "/sysadmin/roles/assign",
-            icon: "lock_open",
-          },
+
         ],
       },
       {
@@ -1129,78 +1110,8 @@ const navigations = [
         icon: "directions_transit",
         children: [
           {
-            name: "Customer's Purchase Order Login",
-            path: "/material/customers-purchase-order-login",
-            icon: "arrow_forward",
-          },
-          {
-            name: "PACKING SLIP",
-            path: "/material/packing-slip-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Invoice",
-            path: "/material/sales-invoice-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Proforma Invoice",
-            path: "/material/sales-proforma-invoice-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Export Documents",
-            path: "/material/sales-export-documents-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Customer Schedule Detail",
-            path: "/material/sales-customer-schedule-detail-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Link Invoice To Export Schemes",
-            path: "/material/sales-link-invoice-to-export-schemes-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Enquiry Detail",
-            path: "/material/sales-enquiry-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Enquiry Login Entry",
-            path: "/material/sales-enquiry-login-entry-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Costing",
-            path: "/material/sales-costing-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Upload E-Invoice",
-            path: "/material/sales-upload-e-invoice-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "PRE Shipment Packingslip",
-            path: "/material/sales-pre-shipment-packingslip-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Customer RCIA Entry",
-            path: "/material/sales-customer-RCIA-entry-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Daily Activity Plan",
-            path: "/material/sales-daily-activity-plan-table",
-            icon: "arrow_forward",
-          },
-          {
-            name: "Business Plan",
-            path: "/material/sales-business-plan-table",
+            name: "Section Wise Production Details",
+            path: "/material/production-section-wise-production-detail-table",
             icon: "arrow_forward",
           },
         ],
@@ -1208,8 +1119,175 @@ const navigations = [
     ],
   },
   { name: "Planning", path: "/material/radio", icon: "report_problem" },
-  { name: "TQM", path: "/material/switch", icon: "local_gas_station" },
-  { name: "Maintenance", path: "/material/slider", icon: "domain" },
+  {
+    name: "TQM", path: "/material/switch", icon: "local_gas_station",
+    children: [
+      {
+        name: "Master",
+        icon: "person",
+        children: [
+          {
+            name: "Critical Inspection Parameter",
+            path: "/material/sales-consignee-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Inspection Sampling Plan",
+            path: "/material/customers",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Quality Defect Type Details",
+            path: "/material/sales-Contract-review-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Pre-Dispatch Inspection Entry",
+            path: "/material/salesman",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Pre-Dispatch Inspection Details Entry",
+            path: "/material/customers",
+            icon: "arrow_forward",
+          },
+          {
+            name: "First Piece Approval",
+            path: "/material/sales-customer-item-details-form-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Customer Satisfaction Servey (CSS) Form",
+            path: "/material/sales-contract-review-checklist-form-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Customer Complaints",
+            path: "/material/sales-project-execution-plan-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "ISO/TS/QS Document Details",
+            path: "/material/sales-project-execution-plan-table",
+            icon: "arrow_forward",
+          }, {
+            name: "Test Master",
+            path: "/material/sales-project-execution-plan-table",
+            icon: "arrow_forward",
+          }, {
+            name: "Quality Defect Master",
+            path: "/material/sales-project-execution-plan-table",
+            icon: "arrow_forward",
+          }, {
+            name: "Dock Audit Plan (DAP)",
+            path: "/material/sales-project-execution-plan-table",
+            icon: "arrow_forward",
+          },
+        ],
+      },
+      {
+        name: "Report",
+        path: "/sysadmin/roles",
+        icon: "bug_report",
+        children: [
+
+        ],
+      },
+      {
+        name: "Transaction",
+        path: "/sysadmin/roles",
+        icon: "directions_transit",
+        children: [
+          {
+            name: "Section Wise Production Details",
+            path: "/material/customers-purchase-order-login",
+            icon: "arrow_forward",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Maintenance", path: "/material/slider", icon: "domain",
+    children: [
+      {
+        name: "Master",
+        icon: "person",
+        children: [
+          {
+            name: "Maintenance Category Deails",
+            path: "/material/maintenance-maintenance-category-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Root Cause Details",
+            path: "/material/maintenance-root-cause-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Maintenance Reason Master",
+            path: "/material/maintenance-reason-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Machines Spares Details ",
+            path: "/material/production-breakdown-detail-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Preventive Maintenance Scheduling",
+            path: "/material/maintenance-preventive-maintenance-table",
+            icon: "arrow_forward",
+          },
+        ],
+      },
+      {
+        name: "Report",
+        path: "/sysadmin/roles",
+        icon: "bug_report",
+        children: [
+
+        ],
+      },
+      {
+        name: "Transaction",
+        path: "/sysadmin/roles",
+        icon: "directions_transit",
+        children: [
+          {
+            name: "Breakdown Slip Entry",
+            path: "/material/maintenance-breakdown-slip-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Preventive Slip Entry",
+            path: "/material/maintenance-preventive-slip-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Break Down - Shut Down Start Entry",
+            path: "/material/maintenance-breakdown-start-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Spares Consumption",
+            path: "/material/maintenance-spares-consumption-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Completion Entry",
+            path: "/material/maintenance-completion-entry-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Employee Consumption",
+            path: "/material/maintenance-employee-consumption-table",
+            icon: "arrow_forward",
+          },
+        ],
+      },
+    ],
+  },
   { name: "Calibration", path: "/material/snackbar", icon: "S" },
   { name: "Laboratory", path: "/material/table", icon: "hourglass_empty" },
   // { label: "PAGES", type: "label" },

@@ -23,7 +23,7 @@ export default function TrainingOnJobForm() {
         ]}
       />
 
-      <Stack sx={{ p: 4, borderRadius: 2, boxShadow: 3 }}>
+      <Stack>
         {/* Header */}
         <Box
           display="flex"
@@ -32,12 +32,9 @@ export default function TrainingOnJobForm() {
           mb={3}
         >
           <Typography variant="h5" fontWeight="bold" color="#7b1fa2">
-            Training On Job
           </Typography>
 
-          <Button variant="contained" sx={{ background: "#7b1fa2" }}>
-            Save
-          </Button>
+          
         </Box>
 
         {/* Form Fields */}
