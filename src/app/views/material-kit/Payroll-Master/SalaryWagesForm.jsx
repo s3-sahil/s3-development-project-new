@@ -1,149 +1,312 @@
 import {
-  Container,
   Box,
+  Container,
   Grid,
   TextField,
   Button,
   Icon,
   Checkbox,
   FormControlLabel,
-  Radio,
   RadioGroup,
+  Radio,
+  Typography,
+  Divider,
+  Stack,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function SalaryWagesForm() {
-  const [formData, setFormData] = useState({
-    employeeNo: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    department: "",
-    grade: "",
-    designation: "",
-    pfNo: "",
-    uan: "",
-    otRate: "",
-    status: "",
-    periodInDays: 0,
-    probationStartDate: "",
-    confirmDate: "",
-    tempEndDate: "",
-    incrDate: "",
-    incrRemark: "",
-    basic: "",
-    fixedBasic: "",
-    fixDA: "",
-    hra: "",
-    medical: "",
-    conveyance: "",
-    otherPayment: "",
-  });
+export default function SalaryWagesDetailsForm() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSave = () => {
+    setLoading(true);
+
+    setTimeout(() => {
+      console.log(formData);
+      alert("Saved Successfully");
+      setLoading(false);
+    }, 800);
+  };
+
+  // reusable input
+  const input = (label, name) => (
+    <TextField
+      label={label}
+      name={name}
+      size="small"
+      fullWidth
+      onChange={handleChange}
+    />
+  );
+
+  const allowances = [
+    "Basic",
+    "Fixed Basic",
+    "Dearness Allowance",
+    "Variable DA",
+    "Leave Travel",
+    "Medical",
+    "Child Education",
+    "Uniform",
+    "House Rent",
+    "Conveyance",
+    "Canteen",
+    "Magazine",
+    "Driver Salary",
+    "Guest House",
+    "Soft Furnishing",
+    "Misc 1",
+    "Misc 2",
+    "Misc 3",
+    "Misc 4",
+    "Misc 5",
+    "Misc 6",
+    "Misc 7",
+    "Misc 8",
+    "Misc 9",
+  ];
+
   return (
     <Container maxWidth="xl">
-      <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "Payroll" }, { name: "Salary / Wages Details" }]} />
+      {/* Breadcrumb */}
+      <Box className="breadcrumb">
+        <Breadcrumb
+          routeSegments={[
+            { name: "Payroll" },
+            { name: "Salary / Wages Details" },
+          ]}
+        />
       </Box>
 
-      {/* Header */}
-      <Box display="flex" justifyContent="space-between" mb={2}>
-        <Box display="flex" alignItems="center" gap={1}>
-          {/* <Icon>arrow_back</Icon>
-          <Box fontSize={20} fontWeight="bold" color="purple">
+      <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
+
+        {/* HEADER */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <Typography variant="h6">
             Salary / Wages Details
-          </Box> */}
+          </Typography>
+
+          <Stack direction="row" spacing={1}>
+
+            {/* Print */}
+            <Tooltip title="Print">
+              <IconButton
+                sx={{
+                  background: "#E8F5E9",
+                  "&:hover": { background: "#C8E6C9" },
+                }}
+              >
+                <Icon color="success">print</Icon>
+              </IconButton>
+            </Tooltip>
+
+            {/* Save */}
+            <Button
+              variant="contained"
+              startIcon={
+                <Icon>{loading ? "hourglass_top" : "save"}</Icon>
+              }
+              onClick={handleSave}
+              disabled={loading}
+              sx={{
+                borderRadius: 2,
+                textTransform: "none",
+                px: 3,
+                fontWeight: 600,
+              }}
+            >
+              {loading ? "Saving..." : "Save"}
+            </Button>
+
+            {/* Back */}
+            <Button
+              variant="outlined"
+              startIcon={<Icon>arrow_back</Icon>}
+              onClick={() => navigate(-1)}
+              sx={{
+                borderRadius: 2,
+                textTransform: "none",
+              }}
+            >
+              Back
+            </Button>
+
+          </Stack>
         </Box>
 
-        <Button variant="contained" color="secondary" startIcon={<Icon>save</Icon>}>
-          Save
-        </Button>
-      </Box>
+        {/* EMPLOYEE INFO */}
+        <Typography fontWeight="bold">Employee Info</Typography>
+        <Divider sx={{ mb: 2 }} />
 
-      <Box p={3} boxShadow={2} borderRadius={2}>
         <Grid container spacing={2}>
-          {/* Employee */}
-          <Grid item xs={4}>
-            <TextField label="Employee No" name="employeeNo" size="small" fullWidth onChange={handleChange} />
-          </Grid>
+          <Grid item xs={3}>{input("Employee No", "empNo")}</Grid>
+          <Grid item xs={3}>{input("First Name", "firstName")}</Grid>
+          <Grid item xs={3}>{input("Middle Name", "middleName")}</Grid>
+          <Grid item xs={3}>{input("Last Name", "lastName")}</Grid>
 
-          <Grid item xs={4}>
-            <TextField label="First Name" name="firstName" size="small" fullWidth onChange={handleChange} />
-          </Grid>
-
-          <Grid item xs={4}>
-            <TextField label="Last Name" name="lastName" size="small" fullWidth onChange={handleChange} />
-          </Grid>
-
-          {/* Dept */}
-          <Grid item xs={4}>
-            <TextField label="Department" name="department" size="small" fullWidth onChange={handleChange} />
-          </Grid>
-
-          <Grid item xs={4}>
-            <TextField label="Grade" name="grade" size="small" fullWidth onChange={handleChange} />
-          </Grid>
-
-          <Grid item xs={4}>
-            <TextField label="Designation" name="designation" size="small" fullWidth onChange={handleChange} />
-          </Grid>
-
-          {/* PF */}
-          <Grid item xs={4}>
-            <TextField label="PF No" name="pfNo" size="small" fullWidth onChange={handleChange} />
-          </Grid>
-
-          <Grid item xs={4}>
-            <TextField label="UAN" name="uan" size="small" fullWidth onChange={handleChange} />
-          </Grid>
-
-          <Grid item xs={4}>
-            <TextField label="OT Rate" name="otRate" size="small" fullWidth onChange={handleChange} />
-          </Grid>
-
-          {/* Dates */}
-          <Grid item xs={4}>
-            <TextField type="date" label="Probation Start Date" name="probationStartDate" size="small" fullWidth InputLabelProps={{ shrink: true }} onChange={handleChange} />
-          </Grid>
-
-          <Grid item xs={4}>
-            <TextField type="date" label="Confirm Date" name="confirmDate" size="small" fullWidth InputLabelProps={{ shrink: true }} onChange={handleChange} />
-          </Grid>
-
-          <Grid item xs={4}>
-            <TextField type="date" label="Temporary End Date" name="tempEndDate" size="small" fullWidth InputLabelProps={{ shrink: true }} onChange={handleChange} />
-          </Grid>
-
-          {/* Payment Type */}
-          <Grid item xs={6}>
-            <RadioGroup row>
-              <FormControlLabel value="cash" control={<Radio />} label="Cash" />
-              <FormControlLabel value="bank" control={<Radio />} label="Bank" />
-              <FormControlLabel value="dd" control={<Radio />} label="DD" />
-            </RadioGroup>
-          </Grid>
-
-          {/* Salary */}
-          <Grid item xs={3}>
-            <TextField label="Basic" name="basic" size="small" fullWidth onChange={handleChange} />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField label="HRA" name="hra" size="small" fullWidth onChange={handleChange} />
-          </Grid>
+          <Grid item xs={3}>{input("Department", "department")}</Grid>
+          <Grid item xs={3}>{input("Grade", "grade")}</Grid>
+          <Grid item xs={3}>{input("Designation", "designation")}</Grid>
 
           <Grid item xs={3}>
-            <TextField label="Medical Allowance" name="medical" size="small" fullWidth onChange={handleChange} />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField label="Conveyance" name="conveyance" size="small" fullWidth onChange={handleChange} />
+            <FormControlLabel
+              control={<Checkbox />}
+              label="Daily / Monthly"
+            />
           </Grid>
         </Grid>
+
+        {/* PF DETAILS */}
+        <Box mt={3}>
+          <Typography fontWeight="bold">
+            PF / ESIC Details
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+
+          <Grid container spacing={2}>
+            <Grid item xs={3}>{input("PF No", "pfNo")}</Grid>
+            <Grid item xs={3}>{input("UAN", "uan")}</Grid>
+            <Grid item xs={3}>{input("OT Rate", "otRate")}</Grid>
+
+            <Grid item xs={3}>
+              <FormControlLabel
+                control={<Checkbox />}
+                label="ESIC"
+              />
+              <br />
+              <FormControlLabel
+                control={<Checkbox />}
+                label="PF Applicable"
+              />
+            </Grid>
+          </Grid>
+        </Box>
+
+        {/* STATUS */}
+        <Box mt={3}>
+          <Typography fontWeight="bold">
+            Status & Dates
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+
+          <Grid container spacing={2}>
+            <Grid item xs={2}>{input("Status", "status")}</Grid>
+            <Grid item xs={2}>{input("Period Days", "periodDays")}</Grid>
+
+            <Grid item xs={2}>
+              <TextField
+                type="date"
+                label="Probation Start"
+                size="small"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={2}>
+              <TextField
+                type="date"
+                label="Confirm Date"
+                size="small"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={2}>
+              <TextField
+                type="date"
+                label="Temporary End"
+                size="small"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+          </Grid>
+        </Box>
+
+        {/* PAYMENT */}
+        <Box mt={3}>
+          <Typography fontWeight="bold">
+            Payment Type
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <RadioGroup row>
+                <FormControlLabel value="cash" control={<Radio />} label="Cash" />
+                <FormControlLabel value="bank" control={<Radio />} label="Bank" />
+                <FormControlLabel value="dd" control={<Radio />} label="DD" />
+              </RadioGroup>
+            </Grid>
+
+            <Grid item xs={2}>
+              <TextField
+                type="date"
+                label="Increment Date"
+                size="small"
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+
+            <Grid item xs={4}>
+              {input("Increment Remark", "remark")}
+            </Grid>
+          </Grid>
+        </Box>
+
+        {/* ALLOWANCES */}
+        <Box mt={3}>
+          <Typography fontWeight="bold">
+            Allowances
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+
+          <Grid container spacing={2}>
+            {allowances.map((item) => (
+              <Grid item xs={2} key={item}>
+                {input(item, item)}
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        {/* TOTAL */}
+        <Box mt={3}>
+          <Typography fontWeight="bold">
+            Total Calculation
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+
+          <Grid container spacing={2}>
+            <Grid item xs={2}>{input("Slip Total (A)", "totalA")}</Grid>
+            <Grid item xs={2}>{input("Annual Benefits (B)", "totalB")}</Grid>
+            <Grid item xs={2}>{input("Total (A+B)", "totalAB")}</Grid>
+            <Grid item xs={2}>{input("ESIC", "esic")}</Grid>
+            <Grid item xs={2}>{input("PF", "pf")}</Grid>
+            <Grid item xs={2}>{input("CTC Per Month", "ctc")}</Grid>
+          </Grid>
+        </Box>
+
       </Box>
     </Container>
   );
