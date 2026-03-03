@@ -48,7 +48,6 @@ export default function CardDetailsForm() {
       <Box sx={{ p: 3, borderRadius: 2, background: "#fff" }}>
         <Box display="flex" justifyContent="space-between" mb={2}>
           <Typography variant="h5" fontWeight="bold">
-            Card Details
           </Typography>
 
           <Button

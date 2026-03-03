@@ -4,6 +4,7 @@ import {
   IconButton,
   Tooltip,
   Button,
+  TextField
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -23,13 +24,24 @@ export default function CardDetailsTable() {
     { id: 5, cardNumber: "105" },
   ]);
 
+  const [searchText, setSearchText] = useState("");
+  const [filteredRows, setFilteredRows] = useState(rows);
+
+  const handleSearch = () => {
+    const filtered = rows.filter((row) =>
+      row.cardNumber.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredRows(filtered);
+  };
+
   const handleDelete = (id) => {
-    setRows(rows.filter((row) => row.id !== id));
+    const updatedRows = rows.filter((row) => row.id !== id);
+    setRows(updatedRows);
+    setFilteredRows(updatedRows);
   };
 
   const columns = [
     { field: "cardNumber", headerName: "Card Number", flex: 1 },
-
     {
       field: "actions",
       headerName: "Actions",
@@ -39,7 +51,7 @@ export default function CardDetailsTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/TMS-card-details-form/edit/${params.row.id}`, {
+                navigate(`/material/card-details-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -65,19 +77,33 @@ export default function CardDetailsTable() {
       </Box>
 
       <Stack spacing={3}>
-        <Box display="flex" justifyContent="flex-end">
+        {/* 🔍 Top Section */}
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box display="flex" gap={2}>
+            <TextField
+              size="small"
+              placeholder="Search..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            <Button variant="contained" onClick={handleSearch}>
+              Search
+            </Button>
+          </Box>
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/TMS-card-details-form/add")}
+            onClick={() => navigate("/material/card-details-form/add")}
           >
             New
           </Button>
         </Box>
 
+        {/* 📊 Table */}
         <Box sx={{ height: 500 }}>
           <DataGrid
-            rows={rows}
+            rows={filteredRows}
             columns={columns}
             pageSize={5}
             rowsPerPageOptions={[5, 10]}
