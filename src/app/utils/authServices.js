@@ -515,3 +515,53 @@ export const employeeSalaryApi = async (salaryData) => {
         throw new Error("Failed to save employee salary details. Please try again.");
     }
 };
+
+export const saveTmsParameter = async (tmsData) => {
+  try {
+    const response = await axiosInstance.post(
+      "/API/TMS/TMS_PARAMETER/ADD-TMSPARAMETER",
+      tmsData
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message || 
+      "Failed to save TMS Parameter."
+    );
+  }
+};
+
+export const TMSParameterPaginationAPI = async (
+    tableName = "TMS_PARA",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Customer pagination fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
+};
