@@ -21,6 +21,9 @@ import NewRoleTable from "./Sys-Admin-Master/NewRoleTable";
 import NewRoleForm from "./Sys-Admin-Master/NewRoleForm";
 import CardDetailsTable from "./TMS-Master/CardDetailsTable";
 import CardDetailsForm from "./TMS-Master/CardDetailsForm";
+import AttendanceStatusTable from "./TMS-Master/AttendanceStatusDetailsTable";
+import RouteTable from "./TMS-Master/RouteTable";
+import RouteForm from "./TMS-Master/RouteForm";
 // import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
 // import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
 // import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
@@ -2607,6 +2610,22 @@ const materialRoutes = [
   {
     path: "/material/TMS-card-details-form/add",
     element: <CardDetailsForm />,
+  },
+   {
+    path: "/material/TMS-attendance-status-table",
+    element: <AttendanceStatusTable />,
+  },
+  {
+    path: "/material/TMS-route-table",
+    element: <RouteTable />,
+  },
+  {
+    path: "/material/TMS-route-form/edit/:slipNo",
+    element: <RouteForm />,
+  },
+  {
+    path: "/material/TMS-route-form/add",
+    element: <RouteForm />,
   },
 ];
 
