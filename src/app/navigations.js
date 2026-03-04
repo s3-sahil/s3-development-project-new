@@ -107,7 +107,7 @@ const navigations = [
           },
           {
             name: "Attendance Status Details",
-            path: "/material/payroll-employee-information-table",
+            path: "/material/TMS-attendance-status-table",
             icon: "arrow_forward",
           },
           {
@@ -117,7 +117,7 @@ const navigations = [
           },
           {
             name: "Route Details",
-            path: "/material/material-item-rate-table",
+            path: "/material/TMS-route-table",
             icon: "arrow_forward",
           },
           {
