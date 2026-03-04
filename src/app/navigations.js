@@ -122,7 +122,7 @@ const navigations = [
           },
           {
             name: "Shift Details",
-            path: "/material/material-share-of-business-table",
+            path: "/material/TMS-Shift-details-table",
             icon: "arrow_forward",
           },
           {

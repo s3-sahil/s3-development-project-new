@@ -2,86 +2,78 @@ import { Fragment, useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Icon from "@mui/material/Icon";
-import ButtonBase from "@mui/material/ButtonBase";
 import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
 import styled from "@mui/material/styles/styled";
 
 import useSettings from "app/hooks/useSettings";
 import { Paragraph, Span } from "../Typography";
 import MatxVerticalNavExpansionPanel from "./MatxVerticalNavExpansionPanel";
 
-// ================= STYLED COMPONENTS =================
+/* ===================== STYLED COMPONENTS ===================== */
 
-const ListLabel = styled(Paragraph)(({ theme, mode }) => ({
-  fontSize: "12px",
-  marginTop: "20px",
-  marginLeft: "15px",
-  marginBottom: "10px",
-  textTransform: "uppercase",
-  display: mode === "compact" && "none",
-  color: theme.palette.text.secondary,
+const ListLabel = styled(Paragraph)(({ theme }) => ({
+  fontSize: 11,
+  fontWeight: 600,
+  margin: "16px 18px 6px",
+  letterSpacing: 1,
+  color: "rgba(255,255,255,0.6)",
 }));
 
-const ExtAndIntCommon = {
-  display: "flex",
-  overflow: "hidden",
-  borderRadius: "4px",
-  height: 44,
-  whiteSpace: "pre",
-  marginBottom: "8px",
-  textDecoration: "none",
-  justifyContent: "space-between",
-  transition: "all 150ms ease-in",
-  "&:hover": { background: "rgba(255, 255, 255, 0.08)" },
-  "&.compactNavItem": {
-    overflow: "hidden",
-    justifyContent: "center !important",
-  },
-  "& .icon": {
-    fontSize: "18px",
-    paddingLeft: "16px",
-    paddingRight: "16px",
-    verticalAlign: "middle",
-  },
-};
+const NavItem = styled(Box)(({ theme }) => ({
+  margin: "2px 12px", // tighter vertical spacing
+  borderRadius: 8,
 
-const ExternalLink = styled("a")(({ theme }) => ({
-  ...ExtAndIntCommon,
-  color: theme.palette.text.primary,
-}));
-
-const InternalLink = styled(Box)(({ theme }) => ({
   "& a": {
-    ...ExtAndIntCommon,
-    color: theme.palette.text.primary,
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    height: 38, // reduced height
+    padding: "0 16px",
+    borderRadius: 8,
+    fontSize: 14,
+    fontWeight: 500,
+    textDecoration: "none",
+    whiteSpace: "nowrap", // prevent wrapping
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    color: "rgba(255,255,255,0.85)",
+    transition: "all 0.2s ease",
   },
+
+  "& a:hover": {
+    backgroundColor: "rgba(255,255,255,0.08)",
+  },
+
   "& .navItemActive": {
-    backgroundColor: "rgb(25 118 210)",
+    backgroundColor: "rgba(255,255,255,0.12)",
+    borderLeft: "3px solid #60a5fa",
+    paddingLeft: "13px", // adjust because of border
   },
 }));
 
-const StyledText = styled(Span)(({ mode }) => ({
-  fontSize: "0.875rem",
-  paddingLeft: "0.8rem",
-  display: mode === "compact" && "none",
+const NavIcon = styled(Icon)(() => ({
+  fontSize: 18,
+  width: 28,
+  display: "flex",
+  justifyContent: "center",
 }));
 
-const BulletIcon = styled("div")(({ theme }) => ({
-  padding: "2px",
-  marginLeft: "24px",
-  marginRight: "8px",
-  overflow: "hidden",
-  borderRadius: "300px",
-  background: theme.palette.text.primary,
+const NavText = styled(Span)(({ mode }) => ({
+  flex: 1,
+  display: mode === "compact" ? "none" : "block",
 }));
 
-const BadgeValue = styled("div")(() => ({
-  padding: "1px 8px",
-  overflow: "hidden",
-  borderRadius: "300px",
+const NavBadge = styled("div")(({ theme }) => ({
+  backgroundColor: theme.palette.error.main,
+  color: "#fff",
+  fontSize: 11,
+  fontWeight: 600,
+  padding: "2px 8px",
+  borderRadius: 20,
 }));
 
-// ================= COMPONENT =================
+/* ===================== COMPONENT ===================== */
 
 export default function MatxVerticalNav({ items }) {
   const { settings } = useSettings();
@@ -89,23 +81,21 @@ export default function MatxVerticalNav({ items }) {
 
   const [search, setSearch] = useState("");
 
-  // ✅ ONLY TOP-LEVEL FILTER (NO SUBMENU TOUCH)
   const filteredItems = useMemo(() => {
     if (!search) return items;
-
     const lower = search.toLowerCase();
-
     return items.filter((item) => item.name?.toLowerCase().includes(lower));
   }, [items, search]);
 
-  const renderLevels = (data) => {
-    return data.map((item, index) => {
-      if (item.type === "label")
+  const renderLevels = (data) =>
+    data.map((item, index) => {
+      if (item.type === "label") {
         return (
-          <ListLabel key={index} mode={mode} className="sidenavHoverShow">
+          <ListLabel key={index} mode={mode}>
             {item.label}
           </ListLabel>
         );
+      }
 
       if (item.children) {
         return (
@@ -113,88 +103,71 @@ export default function MatxVerticalNav({ items }) {
             {renderLevels(item.children)}
           </MatxVerticalNavExpansionPanel>
         );
-      } else if (item.type === "extLink") {
-        return (
-          <ExternalLink
-            key={index}
-            href={item.path}
-            className={`${mode === "compact" && "compactNavItem"}`}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            <ButtonBase key={item.name} name="child" sx={{ width: "100%" }}>
-              {item.icon ? (
-                <Icon className="icon">{item.icon}</Icon>
-              ) : (
-                <span className="item-icon icon-text">{item.iconText}</span>
-              )}
+      }
 
-              <StyledText mode={mode} className="sidenavHoverShow">
-                {item.name}
-              </StyledText>
-
-              <Box mx="auto" />
-              {item.badge && <BadgeValue>{item.badge.value}</BadgeValue>}
-            </ButtonBase>
-          </ExternalLink>
-        );
-      } else {
+      if (item.type === "extLink") {
         return (
-          <InternalLink key={index}>
-            <NavLink
-              to={item.path}
-              className={({ isActive }) =>
-                isActive
-                  ? `navItemActive ${mode === "compact" && "compactNavItem"}`
-                  : `${mode === "compact" && "compactNavItem"}`
-              }
+          <NavItem key={index}>
+            <a
+              href={item.path}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={mode === "compact" ? "compactNavItem" : ""}
             >
-              <ButtonBase key={item.name} name="child" sx={{ width: "100%" }}>
-                {item?.icon ? (
-                  <Icon className="icon" sx={{ width: 36 }}>
-                    {item.icon}
-                  </Icon>
-                ) : (
-                  <Fragment>
-                    <BulletIcon
-                      className="nav-bullet"
-                      sx={{ display: mode === "compact" && "none" }}
-                    />
-                    <Box
-                      className="nav-bullet-text"
-                      sx={{
-                        ml: "20px",
-                        fontSize: "11px",
-                        display: mode !== "compact" && "none",
-                      }}
-                    >
-                      {item.iconText}
-                    </Box>
-                  </Fragment>
-                )}
-
-                <StyledText mode={mode} className="sidenavHoverShow">
-                  {item.name}
-                </StyledText>
-
-                <Box mx="auto" />
-
-                {item.badge && (
-                  <BadgeValue className="sidenavHoverShow">
-                    {item.badge.value}
-                  </BadgeValue>
-                )}
-              </ButtonBase>
-            </NavLink>
-          </InternalLink>
+              {item.icon && <NavIcon>{item.icon}</NavIcon>}
+              <NavText mode={mode}>{item.name}</NavText>
+              {item.badge && <NavBadge>{item.badge.value}</NavBadge>}
+            </a>
+          </NavItem>
         );
       }
+
+      return (
+        <NavItem key={index}>
+          <NavLink
+            to={item.path}
+            className={({ isActive }) => (isActive ? "navItemActive" : "")}
+          >
+            {/* Fixed left spacing for alignment */}
+            <Box
+              sx={{
+                width: item.isChild ? 20 : 0,
+                display: mode === "compact" ? "none" : "block",
+              }}
+            />
+
+            {item.icon ? (
+              <NavIcon>{item.icon}</NavIcon>
+            ) : (
+              <Box
+                sx={{
+                  width: 28, // same width as NavIcon
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    backgroundColor: "text.primary",
+                  }}
+                />
+              </Box>
+            )}
+
+            <NavText mode={mode}>{item.name}</NavText>
+
+            {item.badge && <NavBadge>{item.badge.value}</NavBadge>}
+          </NavLink>
+        </NavItem>
+      );
     });
-  };
 
   return (
-    <div className="navigation">
-      {/* 🔍 MAIN MENU SEARCH */}
+    <Box>
+      {/* SEARCH */}
       <Box px={2} py={2}>
         <TextField
           fullWidth
@@ -202,20 +175,22 @@ export default function MatxVerticalNav({ items }) {
           placeholder="Search menu..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Icon fontSize="small">search</Icon>
+              </InputAdornment>
+            ),
+          }}
           sx={{
             "& .MuiOutlinedInput-root": {
-              borderRadius: "10px",
-              backgroundColor: "rgba(255,255,255,0.05)",
-            },
-            "& input": {
-              fontSize: "14px",
-              padding: "10px",
+              borderRadius: 3,
             },
           }}
         />
       </Box>
-      {/* ✅ Use filteredItems (TOP LEVEL ONLY) */}
+
       {renderLevels(filteredItems)}
-    </div>
+    </Box>
   );
 }

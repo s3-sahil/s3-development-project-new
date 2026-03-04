@@ -4,6 +4,9 @@ import {
   IconButton,
   Tooltip,
   Button,
+  TextField,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -21,8 +24,23 @@ export default function GradeWiseRulesTable() {
     { id: 3, grade: "P", coffApplicable: "Yes", minFullDay: 0.9, minHalfDay: 0.45 },
   ]);
 
+  const [searchText, setSearchText] = useState("");
+  const [searchColumn, setSearchColumn] = useState("grade");
+
   const handleDelete = (id) => {
     setRows(rows.filter((row) => row.id !== id));
+  };
+
+  const handleSearch = () => {
+    if (!searchText) return;
+
+    const filtered = rows.filter((row) =>
+      String(row[searchColumn])
+        .toLowerCase()
+        .includes(searchText.toLowerCase())
+    );
+
+    setRows(filtered);
   };
 
   const columns = [
@@ -64,7 +82,36 @@ export default function GradeWiseRulesTable() {
       </Box>
 
       <Stack spacing={3}>
-        <Box display="flex" justifyContent="flex-end">
+        
+        {/* Top Bar */}
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          
+          {/* Search Section */}
+          <Stack direction="row" spacing={2}>
+            <TextField
+              size="small"
+              placeholder="Search..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+
+            <Select
+              size="small"
+              value={searchColumn}
+              onChange={(e) => setSearchColumn(e.target.value)}
+            >
+              <MenuItem value="grade">Grade</MenuItem>
+              <MenuItem value="coffApplicable">COff Applicable</MenuItem>
+              <MenuItem value="minFullDay">Min Full Day</MenuItem>
+              <MenuItem value="minHalfDay">Min Half Day</MenuItem>
+            </Select>
+
+            <Button variant="contained" onClick={handleSearch}>
+              Search
+            </Button>
+          </Stack>
+
+          {/* New Button */}
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
@@ -74,6 +121,7 @@ export default function GradeWiseRulesTable() {
           </Button>
         </Box>
 
+        {/* Table */}
         <Box sx={{ height: 500 }}>
           <DataGrid
             rows={rows}
