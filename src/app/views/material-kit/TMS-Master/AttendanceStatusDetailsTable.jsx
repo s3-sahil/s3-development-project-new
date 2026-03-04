@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import axiosInstance from "app/api/axiosInstance"; // adjust path
+// import axiosInstance from "app/api/axiosInstance"; // adjust path
 
 export default function AttendanceStatusTable() {
   const [rows, setRows] = useState([]);
@@ -18,24 +18,24 @@ export default function AttendanceStatusTable() {
   const [loading, setLoading] = useState(false);
 
   // 🔹 Fetch Data
-  const fetchAttendanceStatus = async () => {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.get(
-        "/API/TMS/TMS_PARAMETER/GET-ATTENDANCE-STATUS"
-      ); // change API if different
+  // const fetchAttendanceStatus = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await axiosInstance.get(
+  //       "/API/TMS/TMS_PARAMETER/GET-ATTENDANCE-STATUS"
+  //     ); // change API if different
 
-      setRows(response.data || []);
-    } catch (error) {
-      console.error("Error fetching attendance status:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     setRows(response.data || []);
+  //   } catch (error) {
+  //     console.error("Error fetching attendance status:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchAttendanceStatus();
-  }, []);
+  // useEffect(() => {
+  //   fetchAttendanceStatus();
+  // }, []);
 
   // 🔹 Search Filter
   const filteredRows = rows.filter((row) =>
