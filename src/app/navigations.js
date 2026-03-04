@@ -1169,15 +1169,18 @@ const navigations = [
             name: "ISO/TS/QS Document Details",
             path: "/material/sales-project-execution-plan-table",
             icon: "arrow_forward",
-          }, {
+          },
+          {
             name: "Test Master",
             path: "/material/sales-project-execution-plan-table",
             icon: "arrow_forward",
-          }, {
+          },
+          {
             name: "Quality Defect Master",
             path: "/material/sales-project-execution-plan-table",
             icon: "arrow_forward",
-          }, {
+          },
+          {
             name: "Dock Audit Plan (DAP)",
             path: "/material/sales-project-execution-plan-table",
             icon: "arrow_forward",
@@ -1288,7 +1291,7 @@ const navigations = [
     ],
   },
   { name: "Calibration", path: "/material/snackbar", icon: "S" },
-  
+
 ];
 
 export default navigations;
