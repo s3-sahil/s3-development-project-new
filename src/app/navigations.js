@@ -1041,7 +1041,281 @@ const navigations = [
       },
     ],
   },
-  { name: "Finance", path: "/material/menu", icon: "attach_money" },
+  {
+    name: "Finance",
+    path: "/material/menu",
+    icon: "attach_money",
+    children: [
+      {
+        name: "Master",
+        icon: "person",
+        children: [
+          {
+            name: "Schedule Details",
+            path: "/material/TMS-parameter-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Group Details",
+            path: "/material/TMS-card-details-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Sub Group Details",
+            path: "/material/TMS-attendance-status-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "General Ledger",
+            path: "/material/TMS-rotation-details-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Item Details",
+            path: "/material/TMS-route-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Bank Details",
+            path: "/material/TMS-Shift-details-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Item Code Sub-Category Detail",
+            path: "/material/TMS-assign-cards-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "T.D.S. Parameter",
+            path: "/material/TMS-grade-wise-rules-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Depreciation Parameter",
+            path: "/material/material-alternate-item-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Employee Advance Details",
+            path: "/material/TMS-overtime-rules-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Creditors Billwise Entry",
+            path: "/material/TMS-overtime-rules-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Bank Reconciliation Untagging",
+            path: "/material/TMS-overtime-rules-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Bank Reconciliation Master",
+            path: "/material/TMS-overtime-rules-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Bank Reconciliation Close",
+            path: "/material/TMS-overtime-rules-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Opening Balance",
+            path: "/material/TMS-overtime-rules-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Debtors Billwise Entry",
+            path: "/material/TMS-overtime-rules-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Cheque Entry",
+            path: "/material/TMS-overtime-rules-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Daily Cash Close",
+            path: "/material/TMS-overtime-rules-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Monthwise Ledger Close",
+            path: "/material/TMS-overtime-rules-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Financial & Finalization",
+            path: "/material/TMS-overtime-rules-table",
+            icon: "arrow_forward",
+          },
+        ],
+      },
+      {
+        name: "Transaction",
+        icon: "directions_transit",
+        children: [
+          {
+            name: "Sales Voucher",
+            path: "/material/TMS-manual-punching",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Bill Passing",
+            path: "/material/TMS-In-Out-flag-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Bank Payment ",
+            path: "/material/TMS-invalid-punch-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Cash Flow Provision",
+            path: "/material/TMS-leave-application-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Bank Receipt",
+            path: "/material/TMS-OD-details-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Cash Receipt",
+            path: "/material/TMS-tour-details-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Payment Requests",
+            path: "/material/material-purchase-requisition-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Cash Payment",
+            path: "/material/TMS-comp-Off-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "On Account Requests",
+            path: "/material/TMS-overtime-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Credit Note",
+            path: "/material/material-rate-contract-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Debit Note",
+            path: "/material/TMS-generate-muster",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Asset Register Entry",
+            path: "/material/material-goods-receipt-inspection-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Supplier Bills (NO PO) Multiple Tax",
+            path: "/material/TMS-import-attendance-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Supplier Bills",
+            path: "/material/TMS-shift-schedule-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Approval",
+            path: "/material/TMS-shift-schedule-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Current Year Linking",
+            icon: "arrow_forward",
+            children: [
+              {
+                name: "Service Voucher Linking",
+                path: "/finance/service-voucher-linking",
+                icon: "arrow_forward",
+              },
+              {
+                name: "Bank Payment Voucher Linking",
+                path: "/finance/bank-payment-voucher-linking",
+                icon: "arrow_forward",
+              },
+              {
+                name: "Journal Voucher Linking",
+                path: "/finance/journal-voucher-linking",
+                icon: "arrow_forward",
+              },
+              {
+                name: "Bank Receipt Voucher Linking",
+                path: "/finance/bank-receipt-voucher-linking",
+                icon: "arrow_forward",
+              },
+              {
+                name: "Rejection Sales Voucher Linking",
+                path: "/finance/rejection-sales-voucher-linking",
+                icon: "arrow_forward",
+              },
+              {
+                name: "Credit Note Linking",
+                path: "/finance/credit-note-linking",
+                icon: "arrow_forward",
+              },
+              {
+                name: "Debit Note Linking",
+                path: "/finance/debit-note-linking",
+                icon: "arrow_forward",
+              },
+            ],
+          },
+          {
+            name: "DGFT",
+            path: "/material/TMS-shift-schedule-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Current Year Unlinking",
+            path: "/material/TMS-shift-schedule-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "GST",
+            path: "/material/TMS-shift-schedule-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Register",
+            path: "/material/TMS-shift-schedule-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Jounrnal Entry",
+            path: "/material/TMS-shift-schedule-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Rodtep Master Entry",
+            path: "/material/TMS-shift-schedule-table",
+            icon: "arrow_forward",
+          },
+          {
+            name: "Dbk Master Entry",
+            path: "/material/TMS-shift-schedule-table",
+            icon: "arrow_forward",
+          },
+        ],
+      },
+      {
+        name: "Reports",
+        icon: "bug_report",
+        children: [],
+      },
+    ],
+  },
   {
     name: "Production",
     path: "/material/progress",
@@ -1099,9 +1373,7 @@ const navigations = [
         name: "Report",
         path: "/sysadmin/roles",
         icon: "bug_report",
-        children: [
-
-        ],
+        children: [],
       },
       {
         name: "Transaction",
@@ -1119,7 +1391,9 @@ const navigations = [
   },
   { name: "Planning", path: "/material/radio", icon: "report_problem" },
   {
-    name: "TQM", path: "/material/switch", icon: "local_gas_station",
+    name: "TQM",
+    path: "/material/switch",
+    icon: "local_gas_station",
     children: [
       {
         name: "Master",
@@ -1191,9 +1465,7 @@ const navigations = [
         name: "Report",
         path: "/sysadmin/roles",
         icon: "bug_report",
-        children: [
-
-        ],
+        children: [],
       },
       {
         name: "Transaction",
@@ -1210,7 +1482,9 @@ const navigations = [
     ],
   },
   {
-    name: "Maintenance", path: "/material/slider", icon: "domain",
+    name: "Maintenance",
+    path: "/material/slider",
+    icon: "domain",
     children: [
       {
         name: "Master",
@@ -1247,9 +1521,7 @@ const navigations = [
         name: "Report",
         path: "/sysadmin/roles",
         icon: "bug_report",
-        children: [
-
-        ],
+        children: [],
       },
       {
         name: "Transaction",
@@ -1291,7 +1563,6 @@ const navigations = [
     ],
   },
   { name: "Calibration", path: "/material/snackbar", icon: "S" },
-
 ];
 
 export default navigations;
