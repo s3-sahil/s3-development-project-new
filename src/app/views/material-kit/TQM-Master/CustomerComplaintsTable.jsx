@@ -38,7 +38,7 @@ export default function CustomerComplaintsTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/tqm/customer-complaints-form/edit/${params.row.id}`, {
+                navigate(`/material/TQM-customer-complaints-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -67,7 +67,7 @@ export default function CustomerComplaintsTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/tqm/customer-complaints-form/add")}
+            onClick={() => navigate("/material/TQM-customer-complaints-form/add")}
           >
             New
           </Button>

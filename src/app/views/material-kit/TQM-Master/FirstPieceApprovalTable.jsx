@@ -43,7 +43,7 @@ export default function FirstPieceApprovalTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/tqm/first-piece-approval-form/edit/${params.row.id}`, {
+                navigate(`/material/TQM-first-piece-approval-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -72,7 +72,7 @@ export default function FirstPieceApprovalTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/tqm/first-piece-approval-form/add")}
+            onClick={() => navigate("/material/TQM-first-piece-approval-form/add")}
           >
             New
           </Button>

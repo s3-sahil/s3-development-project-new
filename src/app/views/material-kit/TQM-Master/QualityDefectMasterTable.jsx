@@ -12,7 +12,7 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export default function QualityDefectTypeTable() {
+export default function QualityDefectMasterTable() {
   const navigate = useNavigate();
 
   const [rows, setRows] = useState([
@@ -38,7 +38,7 @@ export default function QualityDefectTypeTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/tqm/quality-defect-type-form/edit/${params.row.id}`, {
+                navigate(`/material/TQM-quality-defect-master-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -67,7 +67,7 @@ export default function QualityDefectTypeTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/tqm/quality-defect-type-form/add")}
+            onClick={() => navigate("/material/TQM-quality-defect-master-form/add")}
           >
             New
           </Button>

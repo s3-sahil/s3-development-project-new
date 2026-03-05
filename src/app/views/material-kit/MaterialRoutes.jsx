@@ -24,6 +24,30 @@ import CardDetailsForm from "./TMS-Master/CardDetailsForm";
 import AttendanceStatusTable from "./TMS-Master/AttendanceStatusDetailsTable";
 import RouteTable from "./TMS-Master/RouteTable";
 import RouteForm from "./TMS-Master/RouteForm";
+import CriticalInspectionForm from "./TQM-Master/CriticalInspectionForm";
+import CriticalInspectionTable from "./TQM-Master/CriticalInspectionTable";
+import CustomerComplaintsTable from "./TQM-Master/CustomerComplaintsTable";
+import CustomerComplaintsForm from "./TQM-Master/CustomerComplaintsForm";
+import CustomerSatisfactionTable from "./TQM-Master/CustomerSatisfactionTable";
+import CustomerSatisfactionForm from "./TQM-Master/CustomerSatisfactionForm";
+import DockAuditPlanTable from "./TQM-Master/DockAuditPlanTable";
+import DockAuditPlanForm from "./TQM-Master/DockAuditPlanForm";
+import FirstPieceApprovalTable from "./TQM-Master/FirstPieceApprovalTable";
+import FirstPieceApprovalForm from "./TQM-Master/FirstPieceApprovalForm";
+import IsoDocumentTable from "./TQM-Master/IsoDocumentTable";
+import IsoDocumentForm from "./TQM-Master/IsoDocumentForm";
+import PreDispatchInspectionDetailsTable from "./TQM-Master/PreDispatchInspectionDetailsTable";
+import PreDispatchInspectionDetailsForm from "./TQM-Master/PreDispatchInspectionDetailsForm";
+import PreDispatchInspectionEntryTable from "./TQM-Master/PreDispatchInspectionEntryTable";
+import PreDispatchInspectionEntryForm from "./TQM-Master/PreDispatchInspectionEntryForm";
+import QualityDefectMasterTable from "./TQM-Master/QualityDefectMasterTable";
+import QualityDefectMasterForm from "./TQM-Master/QualityDefectMasterForm";
+import QualityDefectTypeTable from "./TQM-Master/QualityDefectTypeTable";
+import QualityDefectTypeForm from "./TQM-Master/QualityDefectTypeForm";
+import SamplingPlanTable from "./TQM-Master/SamplingPlanTable";
+import SamplingPlanForm from "./TQM-Master/SamplingPlanForm";
+import TestMasterTable from "./TQM-Master/TestMasterTable";
+import TestMasterForm from "./TQM-Master/TestMasterForm";
 // import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
 // import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
 // import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
@@ -2599,7 +2623,7 @@ const materialRoutes = [
     path: "/material/system-admin-new-role-form/add",
     element: <NewRoleForm />,
   },
-   {
+  {
     path: "/material/TMS-card-details-table",
     element: <CardDetailsTable />,
   },
@@ -2611,7 +2635,7 @@ const materialRoutes = [
     path: "/material/TMS-card-details-form/add",
     element: <CardDetailsForm />,
   },
-   {
+  {
     path: "/material/TMS-attendance-status-table",
     element: <AttendanceStatusTable />,
   },
@@ -2626,6 +2650,150 @@ const materialRoutes = [
   {
     path: "/material/TMS-route-form/add",
     element: <RouteForm />,
+  },
+  {
+    path: "/material/TQM-critical-inspection-table",
+    element: <CriticalInspectionTable />,
+  },
+  {
+    path: "/material/TQM-critical-inspection-form/edit/:slipNo",
+    element: <CriticalInspectionForm />,
+  },
+  {
+    path: "/material/TQM-critical-inspection-form/add",
+    element: <CriticalInspectionForm />,
+  },
+  {
+    path: "/material/TQM-customer-complaints-table",
+    element: <CustomerComplaintsTable />,
+  },
+  {
+    path: "/material/TQM-customer-complaints-form/edit/:slipNo",
+    element: <CustomerComplaintsForm />,
+  },
+  {
+    path: "/material/TQM-customer-complaints-form/add",
+    element: <CustomerComplaintsForm />,
+  },
+  {
+    path: "/material/TQM-customer-satisfaction-table",
+    element: <CustomerSatisfactionTable />,
+  },
+  {
+    path: "/material/TQM-customer-satisfaction-form/edit/:slipNo",
+    element: <CustomerSatisfactionForm />,
+  },
+  {
+    path: "/material/TQM-customer-satisfaction-form/add",
+    element: <CustomerSatisfactionForm />,
+  },
+  {
+    path: "/material/TQM-dock-audit-plan-table",
+    element: <DockAuditPlanTable />,
+  },
+  {
+    path: "/material/TQM-dock-audit-plan-form/edit/:slipNo",
+    element: <DockAuditPlanForm />,
+  },
+  {
+    path: "/material/TQM-dock-audit-plan-form/add",
+    element: <DockAuditPlanForm />,
+  },
+  {
+    path: "/material/TQM-first-piece-approval-table",
+    element: <FirstPieceApprovalTable />,
+  },
+  {
+    path: "/material/TQM-first-piece-approval-form/edit/:slipNo",
+    element: <FirstPieceApprovalForm />,
+  },
+  {
+    path: "/material/TQM-first-piece-approval-form/add",
+    element: <FirstPieceApprovalForm />,
+  },
+  {
+    path: "/material/TQM-Iso-document-table",
+    element: <IsoDocumentTable />,
+  },
+  {
+    path: "/material/TQM-Iso-document-form/edit/:slipNo",
+    element: <IsoDocumentForm />,
+  },
+  {
+    path: "/material/TQM-Iso-document-form/add",
+    element: <IsoDocumentForm />,
+  },
+  {
+    path: "/material/TQM-Pre-dispatch-inspection-details-table",
+    element: <PreDispatchInspectionDetailsTable />,
+  },
+  {
+    path: "/material/TQM-Pre-dispatch-inspection-details-form/edit/:slipNo",
+    element: <PreDispatchInspectionDetailsForm />,
+  },
+  {
+    path: "/material/TQM-Pre-dispatch-inspection-details-form/add",
+    element: <PreDispatchInspectionDetailsForm />,
+  },
+  {
+    path: "/material/TQM-Pre-dispatch-inspection-entry-table",
+    element: <PreDispatchInspectionEntryTable />,
+  },
+  {
+    path: "/material/TQM-Pre-dispatch-inspection-entry-form/edit/:slipNo",
+    element: <PreDispatchInspectionEntryForm />,
+  },
+  {
+    path: "/material/TQM-Pre-dispatch-inspection-entry-form/add",
+    element: <PreDispatchInspectionEntryForm />,
+  },
+   {
+    path: "/material/TQM-quality-defect-master-table",
+    element: <QualityDefectMasterTable />,
+  },
+  {
+    path: "/material/TQM-quality-defect-master-form/edit/:slipNo",
+    element: <QualityDefectMasterForm />,
+  },
+  {
+    path: "/material/TQM-quality-defect-master-form/add",
+    element: <QualityDefectMasterForm />,
+  },
+   {
+    path: "/material/TQM-quality-defect-type-table",
+    element: <QualityDefectTypeTable />,
+  },
+  {
+    path: "/material/TQM-quality-defect-type-form/edit/:slipNo",
+    element: <QualityDefectTypeForm />,
+  },
+  {
+    path: "/material/TQM-quality-defect-type-form/add",
+    element: <QualityDefectTypeForm />,
+  },
+   {
+    path: "/material/TQM-sampling-plan-table",
+    element: <SamplingPlanTable />,
+  },
+  {
+    path: "/material/TQM-sampling-plan-form/edit/:slipNo",
+    element: <SamplingPlanForm />,
+  },
+  {
+    path: "/material/TQM-sampling-plan-form/add",
+    element: <SamplingPlanForm />,
+  },
+  {
+    path: "/material/TQM-test-master-table",
+    element: <TestMasterTable />,
+  },
+  {
+    path: "/material/TQM-test-master-form/edit/:slipNo",
+    element: <TestMasterForm />,
+  },
+  {
+    path: "/material/TQM-test-master-form/add",
+    element: <TestMasterForm />,
   },
 ];
 

@@ -37,7 +37,7 @@ export default function QualityDefectTypeTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/tqm/quality-defect-type-form/edit/${params.row.id}`, {
+                navigate(`/material/TQM-quality-defect-type-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -66,7 +66,7 @@ export default function QualityDefectTypeTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/tqm/quality-defect-type-form/add")}
+            onClick={() => navigate("/material/TQM-quality-defect-type-form/add")}
           >
             New
           </Button>

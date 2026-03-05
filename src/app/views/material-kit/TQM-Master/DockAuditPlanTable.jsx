@@ -38,7 +38,7 @@ export default function DockAuditPlanTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/tqm/dock-audit-plan-form/edit/${params.row.id}`, {
+                navigate(`/material/TQM-dock-audit-plan-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -67,7 +67,7 @@ export default function DockAuditPlanTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/tqm/dock-audit-plan-form/add")}
+            onClick={() => navigate("/material/TQM-dock-audit-plan-form/add")}
           >
             New
           </Button>

@@ -41,7 +41,7 @@ export default function CustomerSatisfactionTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/tqm/customer-satisfaction-form/edit/${params.row.id}`, {
+                navigate(`/material/TQM-customer-satisfaction-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -70,7 +70,7 @@ export default function CustomerSatisfactionTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/tqm/customer-satisfaction-form/add")}
+            onClick={() => navigate("/material/TQM-customer-satisfaction-form/add")}
           >
             New
           </Button>

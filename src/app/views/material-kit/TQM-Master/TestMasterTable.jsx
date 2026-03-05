@@ -37,7 +37,7 @@ export default function TestMasterTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/laboratory/test-master-form/edit/${params.row.id}`, {
+                navigate(`/material/TQM-test-master-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -58,7 +58,7 @@ export default function TestMasterTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "LABORATORY" }, { name: "Test Master" }]} />
+        <Breadcrumb routeSegments={[{ name: "TQM" }, { name: "Test Master" }]} />
       </Box>
 
       <Stack spacing={3}>
@@ -66,7 +66,7 @@ export default function TestMasterTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/laboratory/test-master-form/add")}
+            onClick={() => navigate("/material/TQM-test-master-form/add")}
           >
             New
           </Button>

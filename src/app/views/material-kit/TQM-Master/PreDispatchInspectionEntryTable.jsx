@@ -79,7 +79,7 @@ export default function PreDispatchInspectionEntryTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/tqm/pre-dispatch-inspection-entry-form/edit/${params.row.id}`, {
+                navigate(`/material/TQM-Pre-dispatch-inspection-entry-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -113,7 +113,7 @@ export default function PreDispatchInspectionEntryTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/tqm/pre-dispatch-inspection-entry-form/add")}
+            onClick={() => navigate("/material/TQM-Pre-dispatch-inspection-entry-form/add")}
           >
             New
           </Button>

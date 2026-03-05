@@ -35,7 +35,7 @@ export default function TestMasterForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "LABORATORY" }, { name: "Test Master" }]} />
+        <Breadcrumb routeSegments={[{ name: "TQM" }, { name: "Test Master" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

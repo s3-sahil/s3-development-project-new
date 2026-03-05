@@ -41,7 +41,7 @@ export default function CriticalInspectionTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/tqm/critical-inspection-form/edit/${params.row.id}`, {
+                navigate(`/material/TQM-critical-inspection-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -70,7 +70,7 @@ export default function CriticalInspectionTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/tqm/critical-inspection-form/add")}
+            onClick={() => navigate("/material/TQM-critical-inspection-form/add")}
           >
             New
           </Button>

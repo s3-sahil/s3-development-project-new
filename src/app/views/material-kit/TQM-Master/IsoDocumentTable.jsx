@@ -40,7 +40,7 @@ export default function IsoDocumentTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/tqm/iso-document-form/edit/${params.row.id}`, {
+                navigate(`/material/TQM-Iso-document-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -69,7 +69,7 @@ export default function IsoDocumentTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/tqm/iso-document-form/add")}
+            onClick={() => navigate("/material/TQM-Iso-document-form/add")}
           >
             New
           </Button>
