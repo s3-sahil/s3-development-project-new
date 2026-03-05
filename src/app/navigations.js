@@ -1276,6 +1276,18 @@ const navigations = [
             name: "DGFT",
             path: "/material/TMS-shift-schedule-table",
             icon: "arrow_forward",
+            children: [
+              {
+                name: "EPCG Scheme Details",
+                path: "/finance/service-voucher-linking",
+                icon: "arrow_forward",
+              },
+              {
+                name: "Advance Scheme Details",
+                path: "/finance/service-voucher-linking",
+                icon: "arrow_forward",
+              },
+            ],
           },
           {
             name: "Current Year Unlinking",
@@ -1286,11 +1298,40 @@ const navigations = [
             name: "GST",
             path: "/material/TMS-shift-schedule-table",
             icon: "arrow_forward",
+            children: [
+              {
+                name: "Ut1 Bond Entry",
+                path: "/finance/service-voucher-linking",
+                icon: "arrow_forward",
+              },
+            ],
           },
           {
             name: "Register",
             path: "/material/TMS-shift-schedule-table",
             icon: "arrow_forward",
+             children: [
+              {
+                name: "DBK Register",
+                path: "/finance/service-voucher-linking",
+                icon: "arrow_forward",
+              },
+              {
+                name: "Refund Register",
+                path: "/finance/service-voucher-linking",
+                icon: "arrow_forward",
+              },
+               {
+                name: "Advance Authorization Register",
+                path: "/finance/service-voucher-linking",
+                icon: "arrow_forward",
+              },
+              {
+                name: "Epcg Register",
+                path: "/finance/service-voucher-linking",
+                icon: "arrow_forward",
+              },
+            ],
           },
           {
             name: "Jounrnal Entry",
