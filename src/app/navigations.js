@@ -1,5 +1,5 @@
 const navigations = [
-  { name: "Dashboard", path: "/dashboard/default", icon: "dashboard" },
+  // { name: "Dashboard", path: "/dashboard/default", icon: "dashboard" },
   {
     name: "SYS Admin",
     path: "/material/autocomplete",
@@ -1430,7 +1430,7 @@ const navigations = [
       },
     ],
   },
-  { name: "Planning", path: "/material/radio", icon: "report_problem" },
+  // { name: "Planning", path: "/material/radio", icon: "report_problem" },
   {
     name: "TQM",
     path: "/material/switch",
@@ -1603,7 +1603,7 @@ const navigations = [
       },
     ],
   },
-  { name: "Calibration", path: "/material/snackbar", icon: "S" },
+  // { name: "Calibration", path: "/material/snackbar", icon: "S" },
 ];
 
 export default navigations;
