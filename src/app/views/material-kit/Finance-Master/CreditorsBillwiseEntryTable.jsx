@@ -62,7 +62,7 @@ export default function CreditorsBillwiseEntryTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Creditors Billwise Entry" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Creditors Billwise Entry" }]} />
       </Box>
 
       <Stack spacing={3}>

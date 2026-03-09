@@ -63,7 +63,7 @@ export default function SupplierBillsMultipleTaxTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Supplier Bills Multiple Tax" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Supplier Bills Multiple Tax" }]} />
       </Box>
 
       <Stack spacing={3}>

@@ -59,7 +59,7 @@ export default function ChequeOpeningEntryTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Cheque Opening Entry" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Cheque Opening Entry" }]} />
       </Box>
 
       <Stack spacing={3}>

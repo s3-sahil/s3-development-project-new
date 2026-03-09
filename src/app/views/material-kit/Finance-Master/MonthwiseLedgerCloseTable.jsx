@@ -56,7 +56,7 @@ export default function MonthwiseLedgerCloseTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Monthwise Ledger Close" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Monthwise Ledger Close" }]} />
       </Box>
 
       <Stack spacing={3}>

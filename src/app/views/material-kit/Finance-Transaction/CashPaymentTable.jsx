@@ -61,7 +61,7 @@ export default function CashPaymentTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Cash Payment" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Cash Payment" }]} />
       </Box>
 
       <Stack spacing={3}>

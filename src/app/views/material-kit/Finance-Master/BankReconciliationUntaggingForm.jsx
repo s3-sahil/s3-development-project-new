@@ -43,7 +43,7 @@ export default function BankReconciliationUntaggingForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Bank Reconciliation Untagging" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Bank Reconciliation Untagging" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

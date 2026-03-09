@@ -59,7 +59,7 @@ export default function ItemDetailsTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Item Details" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Item Details" }]} />
       </Box>
 
       <Stack spacing={3}>

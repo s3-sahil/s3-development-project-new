@@ -61,7 +61,7 @@ export default function TDSParameterTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "TDS Parameter" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "TDS Parameter" }]} />
       </Box>
 
       <Stack spacing={3}>

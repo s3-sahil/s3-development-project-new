@@ -60,7 +60,7 @@ export default function CloseFinalizationTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Close Finalization" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Close Finalization" }]} />
       </Box>
 
       <Stack spacing={3}>

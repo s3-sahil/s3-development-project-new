@@ -58,7 +58,7 @@ export default function BankReconciliationMasterTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Bank Reconciliation Master" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Bank Reconciliation Master" }]} />
       </Box>
 
       <Stack spacing={3}>

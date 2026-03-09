@@ -69,7 +69,7 @@ export default function DebitNoteForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Debit Note" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Debit Note" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

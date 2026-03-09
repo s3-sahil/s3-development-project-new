@@ -45,7 +45,7 @@ export default function ChequeOpeningEntryForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Cheque Opening Entry" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Cheque Opening Entry" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

@@ -46,7 +46,7 @@ export default function CloseFinancialYearForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Close Financial Year" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Close Financial Year" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

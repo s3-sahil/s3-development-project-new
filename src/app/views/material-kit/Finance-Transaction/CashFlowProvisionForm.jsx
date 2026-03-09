@@ -42,7 +42,7 @@ export default function CashFlowProvisionForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Cash Flow Provision" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Cash Flow Provision" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

@@ -58,7 +58,7 @@ export default function PaymentRequestTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Payment Requests" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Payment Requests" }]} />
       </Box>
 
       <Stack spacing={3}>

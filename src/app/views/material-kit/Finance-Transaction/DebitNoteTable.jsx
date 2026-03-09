@@ -60,7 +60,7 @@ export default function DebitNoteTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Debit Note" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Debit Note" }]} />
       </Box>
 
       <Stack spacing={3}>

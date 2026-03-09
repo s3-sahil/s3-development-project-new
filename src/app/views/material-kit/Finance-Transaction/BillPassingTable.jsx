@@ -61,7 +61,7 @@ export default function BillPassingTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Bill Passing" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Bill Passing" }]} />
       </Box>
 
       <Stack spacing={3}>

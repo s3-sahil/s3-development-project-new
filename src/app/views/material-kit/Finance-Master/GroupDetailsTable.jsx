@@ -59,7 +59,7 @@ export default function GroupDetailsTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Group Details" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Group Details" }]} />
       </Box>
 
       <Stack spacing={3}>

@@ -57,7 +57,7 @@ export default function CashFlowProvisionTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Cash Flow Provision" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Cash Flow Provision" }]} />
       </Box>
 
       <Stack spacing={3}>

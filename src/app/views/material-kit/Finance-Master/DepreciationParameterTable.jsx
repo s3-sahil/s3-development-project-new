@@ -59,7 +59,7 @@ export default function DepreciationParameterTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Depreciation Parameter" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Depreciation Parameter" }]} />
       </Box>
 
       <Stack spacing={3}>

@@ -59,7 +59,7 @@ export default function OpeningBalanceTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Opening Balance" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Opening Balance" }]} />
       </Box>
 
       <Stack spacing={3}>

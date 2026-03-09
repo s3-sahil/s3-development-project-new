@@ -60,7 +60,7 @@ export default function CloseFinancialYearTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Close Financial Year" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Close Financial Year" }]} />
       </Box>
 
       <Stack spacing={3}>

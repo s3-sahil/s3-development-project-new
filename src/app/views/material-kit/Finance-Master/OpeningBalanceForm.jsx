@@ -47,7 +47,7 @@ export default function OpeningBalanceForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Opening Balance" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Opening Balance" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

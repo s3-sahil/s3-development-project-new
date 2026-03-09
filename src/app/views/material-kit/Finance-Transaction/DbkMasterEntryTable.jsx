@@ -60,7 +60,7 @@ export default function DbkMasterEntryTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Dbk Master Entry" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Dbk Master Entry" }]} />
       </Box>
 
       <Stack spacing={3}>

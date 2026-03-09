@@ -58,7 +58,7 @@ export default function CreditNoteTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Credit Note" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Credit Note" }]} />
       </Box>
 
       <Stack spacing={3}>

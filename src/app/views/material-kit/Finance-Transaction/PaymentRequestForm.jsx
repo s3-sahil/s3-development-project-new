@@ -49,7 +49,7 @@ export default function PaymentRequestForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Payment Requests" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Payment Requests" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

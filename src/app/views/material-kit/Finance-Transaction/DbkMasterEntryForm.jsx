@@ -51,7 +51,7 @@ export default function DbkMasterEntryForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Dbk Master Entry" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Dbk Master Entry" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

@@ -56,7 +56,7 @@ export default function RoDTEPMasterEntryTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "RoDTEP Master Entry" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "RoDTEP Master Entry" }]} />
       </Box>
 
       <Stack spacing={3}>

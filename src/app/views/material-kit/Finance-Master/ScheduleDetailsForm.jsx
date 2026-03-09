@@ -39,7 +39,7 @@ export default function ScheduleDetailsForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Schedule Details" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Schedule Details" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

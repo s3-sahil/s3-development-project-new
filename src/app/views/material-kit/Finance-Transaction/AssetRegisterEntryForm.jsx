@@ -52,7 +52,7 @@ export default function AssetRegisterEntryForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Asset Register Entry" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Asset Register Entry" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

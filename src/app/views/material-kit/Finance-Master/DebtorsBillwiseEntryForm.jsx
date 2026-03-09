@@ -57,7 +57,7 @@ export default function DebtorsBillwiseEntryForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Debtors Billwise Entry" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Debtors Billwise Entry" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

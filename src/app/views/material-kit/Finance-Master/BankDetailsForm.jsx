@@ -76,7 +76,7 @@ export default function BankDetailsForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Bank Details" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Bank Details" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

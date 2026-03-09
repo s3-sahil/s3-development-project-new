@@ -48,7 +48,7 @@ export default function TDSParameterForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "TDS Parameter" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "TDS Parameter" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

@@ -58,7 +58,7 @@ export default function SupplierBillForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Supplier Bills" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Supplier Bills" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

@@ -56,7 +56,7 @@ export default function DailyCashCloseTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Daily Cash Close" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Daily Cash Close" }]} />
       </Box>
 
       <Stack spacing={3}>

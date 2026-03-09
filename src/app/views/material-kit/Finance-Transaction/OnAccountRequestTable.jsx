@@ -59,7 +59,7 @@ export default function OnAccountRequestTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "On Account Requests" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "On Account Requests" }]} />
       </Box>
 
       <Stack spacing={3}>

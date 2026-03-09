@@ -34,7 +34,7 @@ export default function DailyCashCloseForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Daily Cash Close" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Daily Cash Close" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

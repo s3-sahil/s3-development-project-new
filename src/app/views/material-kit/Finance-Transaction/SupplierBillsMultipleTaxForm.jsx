@@ -81,7 +81,7 @@ export default function SupplierBillsMultipleTaxForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Supplier Bills Multiple Tax" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Supplier Bills Multiple Tax" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

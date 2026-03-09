@@ -46,7 +46,7 @@ export default function CloseFinalizationForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Close Finalization" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Close Finalization" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

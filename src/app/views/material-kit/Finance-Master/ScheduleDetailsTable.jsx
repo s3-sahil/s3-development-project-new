@@ -56,7 +56,7 @@ export default function ScheduleDetailsTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Schedule Details" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Schedule Details" }]} />
       </Box>
 
       <Stack spacing={3}>

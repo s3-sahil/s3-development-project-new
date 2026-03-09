@@ -44,7 +44,7 @@ export default function OnAccountRequestForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "On Account Requests" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "On Account Requests" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

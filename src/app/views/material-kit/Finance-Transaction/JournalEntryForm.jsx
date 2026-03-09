@@ -59,7 +59,7 @@ export default function JournalEntryForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Journal Entry" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Journal Entry" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

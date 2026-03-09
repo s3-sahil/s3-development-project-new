@@ -58,7 +58,7 @@ export default function BankReconciliationUntaggingTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Bank Reconciliation Untagging" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Bank Reconciliation Untagging" }]} />
       </Box>
 
       <Stack spacing={3}>

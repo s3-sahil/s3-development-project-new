@@ -83,7 +83,7 @@ export default function DebtorsBillwiseEntryTable() {
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
-            { name: "FINANCE" },
+            { name: "Finace" },
             { name: "Debtors Billwise Entry" },
           ]}
         />

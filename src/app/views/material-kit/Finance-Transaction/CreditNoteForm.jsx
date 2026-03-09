@@ -65,7 +65,7 @@ export default function CreditNoteForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Credit Note" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Credit Note" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

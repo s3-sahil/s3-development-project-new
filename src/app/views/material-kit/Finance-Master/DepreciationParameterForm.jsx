@@ -47,7 +47,7 @@ export default function DepreciationParameterForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "Depreciation Parameter" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Depreciation Parameter" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>

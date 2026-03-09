@@ -38,7 +38,7 @@ export default function RoDTEPMasterEntryForm() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "FINANCE" }, { name: "RoDTEP Master Entry" }]} />
+        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "RoDTEP Master Entry" }]} />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>
