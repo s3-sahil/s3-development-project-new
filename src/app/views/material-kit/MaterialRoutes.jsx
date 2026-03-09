@@ -48,6 +48,48 @@ import SamplingPlanTable from "./TQM-Master/SamplingPlanTable";
 import SamplingPlanForm from "./TQM-Master/SamplingPlanForm";
 import TestMasterTable from "./TQM-Master/TestMasterTable";
 import TestMasterForm from "./TQM-Master/TestMasterForm";
+import AssetRegisterEntryForm from "./Finance-Transaction/AssetRegisterEntryForm";
+import AssetRegisterEntryTable from "./Finance-Transaction/AssetRegisterEntryTable";
+import BankReceiptTable from "./Finance-Transaction/BankReceiptTable";
+import BankReceiptForm from "./Finance-Transaction/BankReceiptForm";
+import BillPassingTable from "./Finance-Transaction/BillPassingTable";
+import BillPassingForm from "./Finance-Transaction/BillPassingForm";
+import CashFlowProvisionTable from "./Finance-Transaction/CashFlowProvisionTable";
+import CashFlowProvisionForm from "./Finance-Transaction/CashFlowProvisionForm";
+import CashPaymentTable from "./Finance-Transaction/CashPaymentTable";
+import CashPaymentForm from "./Finance-Transaction/CashPaymentForm";
+import CashReceiptTable from "./Finance-Transaction/CashReceiptTable";
+import CashReceiptForm from "./Finance-Transaction/CashReceiptForm";
+import CreditNoteTable from "./Finance-Transaction/CreditNoteTable";
+import CreditNoteForm from "./Finance-Transaction/CreditNoteForm";
+import DbkMasterEntryTable from "./Finance-Transaction/DbkMasterEntryTable";
+import DbkMasterEntryForm from "./Finance-Transaction/DbkMasterEntryForm";
+import DebitNoteTable from "./Finance-Transaction/DebitNoteTable";
+import DebitNoteForm from "./Finance-Transaction/DebitNoteForm";
+import JournalEntryTable from "./Finance-Transaction/JournalEntryTable";
+import JournalEntryForm from "./Finance-Transaction/JournalEntryForm";
+import OnAccountRequestTable from "./Finance-Transaction/OnAccountRequestTable";
+import OnAccountRequestForm from "./Finance-Transaction/OnAccountRequestForm";
+import PaymentRequestTable from "./Finance-Transaction/PaymentRequestTable";
+import PaymentRequestForm from "./Finance-Transaction/PaymentRequestForm";
+import RoDTEPMasterEntryTable from "./Finance-Transaction/RoDTEPMasterEntryTable";
+import RoDTEPMasterEntryForm from "./Finance-Transaction/RoDTEPMasterEntryForm";
+import SalesVoucherTable from "./Finance-Transaction/SalesVoucherTable";
+import SalesVoucherForm from "./Finance-Transaction/SalesVoucherForm";
+import SupplierBillTable from "./Finance-Transaction/SupplierBillTable";
+import SupplierBillForm from "./Finance-Transaction/SupplierBillForm";
+import SupplierBillsMultipleTaxTable from "./Finance-Transaction/SupplierBillsMultipleTaxTable";
+import SupplierBillsMultipleTaxForm from "./Finance-Transaction/SupplierBillsMultipleTaxForm";
+import BankDetailsTable from "./Finance-Master/BankDetailsTable";
+import BankDetailsForm from "./Finance-Master/BankDetailsForm";
+import BankReconciliationCloseTable from "./Finance-Master/BankReconciliationCloseTable";
+import BankReconciliationCloseForm from "./Finance-Master/BankReconciliationCloseForm";
+import BankReconciliationMasterTable from "./Finance-Master/BankReconciliationMasterTable";
+import BankReconciliationMasterForm from "./Finance-Master/BankReconciliationMasterForm";
+import BankReconciliationUntaggingTable from "./Finance-Master/BankReconciliationUntaggingTable";
+import BankReconciliationUntaggingForm from "./Finance-Master/BankReconciliationUntaggingForm";
+import ChequeOpeningEntryTable from "./Finance-Master/ChequeOpeningEntryTable";
+import ChequeOpeningEntryForm from "./Finance-Master/ChequeOpeningEntryForm";
 // import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
 // import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
 // import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
@@ -2747,7 +2789,7 @@ const materialRoutes = [
     path: "/material/TQM-Pre-dispatch-inspection-entry-form/add",
     element: <PreDispatchInspectionEntryForm />,
   },
-   {
+  {
     path: "/material/TQM-quality-defect-master-table",
     element: <QualityDefectMasterTable />,
   },
@@ -2759,7 +2801,7 @@ const materialRoutes = [
     path: "/material/TQM-quality-defect-master-form/add",
     element: <QualityDefectMasterForm />,
   },
-   {
+  {
     path: "/material/TQM-quality-defect-type-table",
     element: <QualityDefectTypeTable />,
   },
@@ -2771,7 +2813,7 @@ const materialRoutes = [
     path: "/material/TQM-quality-defect-type-form/add",
     element: <QualityDefectTypeForm />,
   },
-   {
+  {
     path: "/material/TQM-sampling-plan-table",
     element: <SamplingPlanTable />,
   },
@@ -2794,6 +2836,258 @@ const materialRoutes = [
   {
     path: "/material/TQM-test-master-form/add",
     element: <TestMasterForm />,
+  },
+  {
+    path: "/material/finance-asset-register-entry-table",
+    element: <AssetRegisterEntryTable />,
+  },
+  {
+    path: "/material/finance-asset-register-entry-form/edit/:slipNo",
+    element: <AssetRegisterEntryForm />,
+  },
+  {
+    path: "/material/finance-asset-register-entry-form/add",
+    element: <AssetRegisterEntryForm />,
+  },
+  {
+    path: "/material/finance-bank-receipt-table",
+    element: <BankReceiptTable />,
+  },
+  {
+    path: "/material/finance-bank-receipt-form/edit/:slipNo",
+    element: <BankReceiptForm />,
+  },
+  {
+    path: "/material/finance-bank-receipt-form/add",
+    element: <BankReceiptForm />,
+  },
+  {
+    path: "/material/finance-bill-passing-table",
+    element: <BillPassingTable />,
+  },
+  {
+    path: "/material/finance-bill-passing-form/edit/:slipNo",
+    element: <BillPassingForm />,
+  },
+  {
+    path: "/material/finance-bill-passing-form/add",
+    element: <BillPassingForm />,
+  },
+  {
+    path: "/material/finance-cash-flow-provision-table",
+    element: <CashFlowProvisionTable />,
+  },
+  {
+    path: "/material/finance-cash-flow-provision-form/edit/:slipNo",
+    element: <CashFlowProvisionForm />,
+  },
+  {
+    path: "/material/finance-cash-flow-provision-form/add",
+    element: <CashFlowProvisionForm />,
+  },
+  {
+    path: "/material/finance-cash-payment-table",
+    element: <CashPaymentTable />,
+  },
+  {
+    path: "/material/finance-cash-payment-form/edit/:slipNo",
+    element: <CashPaymentForm />,
+  },
+  {
+    path: "/material/finance-cash-payment-form/add",
+    element: <CashPaymentForm />,
+  },
+  {
+    path: "/material/finance-cash-receipt-table",
+    element: <CashReceiptTable />,
+  },
+  {
+    path: "/material/finance-cash-receipt-form/edit/:slipNo",
+    element: <CashReceiptForm />,
+  },
+  {
+    path: "/material/finance-cash-receipt-form/add",
+    element: <CashReceiptForm />,
+  },
+  {
+    path: "/material/finance-credit-note-table",
+    element: <CreditNoteTable />,
+  },
+  {
+    path: "/material/finance-credit-note-form/edit/:slipNo",
+    element: <CreditNoteForm />,
+  },
+  {
+    path: "/material/finance-credit-note-form/add",
+    element: <CreditNoteForm />,
+  },
+  {
+    path: "/material/finance-dbk-master-entry-table",
+    element: <DbkMasterEntryTable />,
+  },
+  {
+    path: "/material/finance-dbk-master-entry-form/edit/:slipNo",
+    element: <DbkMasterEntryForm />,
+  },
+  {
+    path: "/material/finance-dbk-master-entry-form/add",
+    element: <DbkMasterEntryForm />,
+  },
+  {
+    path: "/material/finance-debit-note-table",
+    element: <DebitNoteTable />,
+  },
+  {
+    path: "/material/finance-debit-note-form/edit/:slipNo",
+    element: <DebitNoteForm />,
+  },
+  {
+    path: "/material/finance-debit-note-form/add",
+    element: <DebitNoteForm />,
+  },
+  {
+    path: "/material/finance-journal-entry-table",
+    element: <JournalEntryTable />,
+  },
+  {
+    path: "/material/finance-journal-entry-form/edit/:slipNo",
+    element: <JournalEntryForm />,
+  },
+  {
+    path: "/material/finance-journal-entry-form/add",
+    element: <JournalEntryForm />,
+  },
+  {
+    path: "/material/finance-on-account-request-table",
+    element: <OnAccountRequestTable />,
+  },
+  {
+    path: "/material/finance-on-account-request-form/edit/:slipNo",
+    element: <OnAccountRequestForm />,
+  },
+  {
+    path: "/material/finance-on-account-request-form/add",
+    element: <OnAccountRequestForm />,
+  },
+  {
+    path: "/material/finance-payment-request-table",
+    element: <PaymentRequestTable />,
+  },
+  {
+    path: "/material/finance-payment-request-form/edit/:slipNo",
+    element: <PaymentRequestForm />,
+  },
+  {
+    path: "/material/finance-payment-request-form/add",
+    element: <PaymentRequestForm />,
+  },
+  {
+    path: "/material/finance-RoDTEP-master-entry-table",
+    element: <RoDTEPMasterEntryTable />,
+  },
+  {
+    path: "/material/finance-RoDTEP-master-entry-form/edit/:slipNo",
+    element: <RoDTEPMasterEntryForm />,
+  },
+  {
+    path: "/material/finance-RoDTEP-master-entry-form/add",
+    element: <RoDTEPMasterEntryForm />,
+  },
+  {
+    path: "/material/finance-sales-voucher-table",
+    element: <SalesVoucherTable />,
+  },
+  {
+    path: "/material/finance-sales-voucher-form/edit/:slipNo",
+    element: <SalesVoucherForm />,
+  },
+  {
+    path: "/material/finance-sales-voucher-form/add",
+    element: <SalesVoucherForm />,
+  },
+  {
+    path: "/material/finance-supplier-bill-table",
+    element: <SupplierBillTable />,
+  },
+  {
+    path: "/material/finance-supplier-bill-form/edit/:slipNo",
+    element: <SupplierBillForm />,
+  },
+  {
+    path: "/material/finance-supplier-bill-form/add",
+    element: <SupplierBillForm />,
+  },
+  {
+    path: "/material/finance-supplier-bills-multiple-tax-table",
+    element: <SupplierBillsMultipleTaxTable />,
+  },
+  {
+    path: "/material/finance-supplier-bills-multiple-tax-form/edit/:slipNo",
+    element: <SupplierBillsMultipleTaxForm />,
+  },
+  {
+    path: "/material/finance-supplier-bills-multiple-tax-form/add",
+    element: <SupplierBillsMultipleTaxForm />,
+  },
+   {
+    path: "/material/finance-bank-details-table",
+    element: <BankDetailsTable />,
+  },
+  {
+    path: "/material/finance-bank-details-form/edit/:slipNo",
+    element: <BankDetailsForm />,
+  },
+  {
+    path: "/material/finance-bank-details-form/add",
+    element: <BankDetailsForm />,
+  },
+  {
+    path: "/material/finance-bank-reconciliation-close-table",
+    element: <BankReconciliationCloseTable />,
+  },
+  {
+    path: "/material/finance-bank-reconciliation-close-form/edit/:slipNo",
+    element: <BankReconciliationCloseForm />,
+  },
+  {
+    path: "/material/finance-bank-reconciliation-close-form/add",
+    element: <BankReconciliationCloseForm />,
+  },
+  {
+    path: "/material/finance-bank-reconciliation-master-table",
+    element: <BankReconciliationMasterTable />,
+  },
+  {
+    path: "/material/finance-bank-reconciliation-master-form/edit/:slipNo",
+    element: <BankReconciliationMasterForm />,
+  },
+  {
+    path: "/material/finance-bank-reconciliation-master-form/add",
+    element: <BankReconciliationMasterForm />,
+  },
+   {
+    path: "/material/finance-bank-reconciliation-untagging-table",
+    element: <BankReconciliationUntaggingTable />,
+  },
+  {
+    path: "/material/finance-bank-reconciliation-untagging-form/edit/:slipNo",
+    element: <BankReconciliationUntaggingForm />,
+  },
+  {
+    path: "/material/finance-bank-reconciliation-untagging-form/add",
+    element: <BankReconciliationUntaggingForm />,
+  },
+   {
+    path: "/material/finance-cheque-opening-entry-table",
+    element: <ChequeOpeningEntryTable />,
+  },
+  {
+    path: "/material/finance-cheque-opening-entry-form/edit/:slipNo",
+    element: <ChequeOpeningEntryForm />,
+  },
+  {
+    path: "/material/finance-cheque-opening-entry-form/add",
+    element: <ChequeOpeningEntryForm />,
   },
 ];
 

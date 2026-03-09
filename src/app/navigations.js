@@ -1077,7 +1077,7 @@ const navigations = [
           },
           {
             name: "Bank Details",
-            path: "/material/TMS-Shift-details-table",
+            path: "/material/finance-bank-details-table",
             icon: "arrow_forward",
           },
           {
@@ -1107,7 +1107,7 @@ const navigations = [
           },
           {
             name: "Bank Reconciliation Untagging",
-            path: "/material/TMS-overtime-rules-table",
+            path: "/material/finance-bank-reconciliation-untagging-table",
             icon: "arrow_forward",
           },
           {
@@ -1117,7 +1117,7 @@ const navigations = [
           },
           {
             name: "Bank Reconciliation Close",
-            path: "/material/TMS-overtime-rules-table",
+            path: "/material/finance-bank-reconciliation-close-table",
             icon: "arrow_forward",
           },
           {
@@ -1132,7 +1132,7 @@ const navigations = [
           },
           {
             name: "Cheque Entry",
-            path: "/material/TMS-overtime-rules-table",
+            path: "/material/finance-cheque-opening-entry-table",
             icon: "arrow_forward",
           },
           {
@@ -1158,12 +1158,12 @@ const navigations = [
         children: [
           {
             name: "Sales Voucher",
-            path: "/material/TMS-manual-punching",
+            path: "/material/finance-sales-voucher-table",
             icon: "arrow_forward",
           },
           {
             name: "Bill Passing",
-            path: "/material/TMS-In-Out-flag-table",
+            path: "/material/finance-bill-passing-table",
             icon: "arrow_forward",
           },
           {
@@ -1173,57 +1173,57 @@ const navigations = [
           },
           {
             name: "Cash Flow Provision",
-            path: "/material/TMS-leave-application-table",
+            path: "/material/finance-cash-flow-provision-table",
             icon: "arrow_forward",
           },
           {
             name: "Bank Receipt",
-            path: "/material/TMS-OD-details-table",
+            path: "/material/finance-bank-receipt-table",
             icon: "arrow_forward",
           },
           {
             name: "Cash Receipt",
-            path: "/material/TMS-tour-details-table",
+            path: "/material/finance-cash-receipt-table",
             icon: "arrow_forward",
           },
           {
             name: "Payment Requests",
-            path: "/material/material-purchase-requisition-table",
+            path: "/material/finance-payment-request-table",
             icon: "arrow_forward",
           },
           {
             name: "Cash Payment",
-            path: "/material/TMS-comp-Off-table",
+            path: "/material/finance-cash-payment-table",
             icon: "arrow_forward",
           },
           {
             name: "On Account Requests",
-            path: "/material/TMS-overtime-table",
+            path: "/material/finance-on-account-request-table",
             icon: "arrow_forward",
           },
           {
             name: "Credit Note",
-            path: "/material/material-rate-contract-table",
+            path: "/material/finance-credit-note-table",
             icon: "arrow_forward",
           },
           {
             name: "Debit Note",
-            path: "/material/TMS-generate-muster",
+            path: "/material/finance-debit-note-table",
             icon: "arrow_forward",
           },
           {
             name: "Asset Register Entry",
-            path: "/material/material-goods-receipt-inspection-table",
+            path: "/material/finance-asset-register-entry-table",
             icon: "arrow_forward",
           },
           {
             name: "Supplier Bills (NO PO) Multiple Tax",
-            path: "/material/TMS-import-attendance-table",
+            path: "/material/finance-supplier-bills-multiple-tax-table",
             icon: "arrow_forward",
           },
           {
             name: "Supplier Bills",
-            path: "/material/TMS-shift-schedule-table",
+            path: "/material/finance-supplier-bill-table",
             icon: "arrow_forward",
           },
           {
@@ -1335,17 +1335,17 @@ const navigations = [
           },
           {
             name: "Jounrnal Entry",
-            path: "/material/TMS-shift-schedule-table",
+            path: "/material/finance-journal-entry-table",
             icon: "arrow_forward",
           },
           {
             name: "Rodtep Master Entry",
-            path: "/material/TMS-shift-schedule-table",
+            path: "/material/finance-RoDTEP-master-entry-table",
             icon: "arrow_forward",
           },
           {
             name: "Dbk Master Entry",
-            path: "/material/TMS-shift-schedule-table",
+            path: "/material/finance-dbk-master-entry-table",
             icon: "arrow_forward",
           },
         ],
