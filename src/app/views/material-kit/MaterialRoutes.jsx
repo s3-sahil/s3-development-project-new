@@ -90,6 +90,36 @@ import BankReconciliationUntaggingTable from "./Finance-Master/BankReconciliatio
 import BankReconciliationUntaggingForm from "./Finance-Master/BankReconciliationUntaggingForm";
 import ChequeOpeningEntryTable from "./Finance-Master/ChequeOpeningEntryTable";
 import ChequeOpeningEntryForm from "./Finance-Master/ChequeOpeningEntryForm";
+import CloseFinalizationTable from "./Finance-Master/CloseFinalizationTable";
+import CloseFinalizationForm from "./Finance-Master/CloseFinalizationForm";
+import CloseFinancialYearTable from "./Finance-Master/CloseFinancialYearTable";
+import CloseFinancialYearForm from "./Finance-Master/CloseFinancialYearForm";
+import CreditorsBillwiseEntryTable from "./Finance-Master/CreditorsBillwiseEntryTable";
+import CreditorsBillwiseEntryForm from "./Finance-Master/CreditorsBillwiseEntryForm";
+import DailyCashCloseTable from "./Finance-Master/DailyCashCloseTable";
+import DailyCashCloseForm from "./Finance-Master/DailyCashCloseForm";
+import DebtorsBillwiseEntryTable from "./Finance-Master/DebtorsBillwiseEntryTable";
+import DebtorsBillwiseEntryForm from "./Finance-Master/DebtorsBillwiseEntryForm";
+import DepreciationParameterTable from "./Finance-Master/DepreciationParameterTable";
+import DepreciationParameterForm from "./Finance-Master/DepreciationParameterForm";
+import EmployeeAdvanceTable from "./Finance-Master/EmployeeAdvanceTable";
+import EmployeeAdvanceForm from "./Finance-Master/EmployeeAdvanceForm";
+import GeneralLedgerTable from "./Finance-Master/GeneralLedgerTable";
+import GeneralLedgerForm from "./Finance-Master/GeneralLedgerForm";
+import GroupDetailsTable from "./Finance-Master/GroupDetailsTable";
+import GroupDetailsForm from "./Finance-Master/GroupDetailsForm";
+import FinanceItemDetailsForm from "./Finance-Master/FinanceItemDetailsForm";
+import FinanceItemDetailsTable from "./Finance-Master/FinanceItemDetailsTable";
+import MonthwiseLedgerCloseTable from "./Finance-Master/MonthwiseLedgerCloseTable";
+import MonthwiseLedgerCloseForm from "./Finance-Master/MonthwiseLedgerCloseForm";
+import OpeningBalanceTable from "./Finance-Master/OpeningBalanceTable";
+import OpeningBalanceForm from "./Finance-Master/OpeningBalanceForm";
+import ScheduleDetailsTable from "./Finance-Master/ScheduleDetailsTable";
+import ScheduleDetailsForm from "./Finance-Master/ScheduleDetailsForm";
+import SubGroupDetailsTable from "./Finance-Master/SubGroupDetailsTable";
+import SubGroupDetailsForm from "./Finance-Master/SubGroupDetailsForm";
+import TDSParameterTable from "./Finance-Master/TDSParameterTable";
+import TDSParameterForm from "./Finance-Master/TDSParameterForm";
 // import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
 // import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
 // import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
@@ -3029,7 +3059,7 @@ const materialRoutes = [
     path: "/material/finance-supplier-bills-multiple-tax-form/add",
     element: <SupplierBillsMultipleTaxForm />,
   },
-   {
+  {
     path: "/material/finance-bank-details-table",
     element: <BankDetailsTable />,
   },
@@ -3065,7 +3095,7 @@ const materialRoutes = [
     path: "/material/finance-bank-reconciliation-master-form/add",
     element: <BankReconciliationMasterForm />,
   },
-   {
+  {
     path: "/material/finance-bank-reconciliation-untagging-table",
     element: <BankReconciliationUntaggingTable />,
   },
@@ -3077,7 +3107,7 @@ const materialRoutes = [
     path: "/material/finance-bank-reconciliation-untagging-form/add",
     element: <BankReconciliationUntaggingForm />,
   },
-   {
+  {
     path: "/material/finance-cheque-opening-entry-table",
     element: <ChequeOpeningEntryTable />,
   },
@@ -3088,6 +3118,186 @@ const materialRoutes = [
   {
     path: "/material/finance-cheque-opening-entry-form/add",
     element: <ChequeOpeningEntryForm />,
+  },
+  {
+    path: "/material/finance-close-finalization-table",
+    element: <CloseFinalizationTable />,
+  },
+  {
+    path: "/material/finance-close-finalization-form/edit/:slipNo",
+    element: <CloseFinalizationForm />,
+  },
+  {
+    path: "/material/finance-close-finalization-form/add",
+    element: <CloseFinalizationForm />,
+  },
+  {
+    path: "/material/finance-close-financial-year-table",
+    element: <CloseFinancialYearTable />,
+  },
+  {
+    path: "/material/finance-close-financial-year-form/edit/:slipNo",
+    element: <CloseFinancialYearForm />,
+  },
+  {
+    path: "/material/finance-close-financial-year-form/add",
+    element: <CloseFinancialYearForm />,
+  },
+  {
+    path: "/material/finance-creditors-billwise-entry-table",
+    element: <CreditorsBillwiseEntryTable />,
+  },
+  {
+    path: "/material/finance-creditors-billwise-entry-form/edit/:slipNo",
+    element: <CreditorsBillwiseEntryForm />,
+  },
+  {
+    path: "/material/finance-creditors-billwise-entry-form/add",
+    element: <CreditorsBillwiseEntryForm />,
+  },
+  {
+    path: "/material/finance-daily-cash-close-table",
+    element: <DailyCashCloseTable />,
+  },
+  {
+    path: "/material/finance-daily-cash-close-form/edit/:slipNo",
+    element: <DailyCashCloseForm />,
+  },
+  {
+    path: "/material/finance-daily-cash-close-form/add",
+    element: <DailyCashCloseForm />,
+  },
+  {
+    path: "/material/finance-debtors-billwise-entry-table",
+    element: <DebtorsBillwiseEntryTable />,
+  },
+  {
+    path: "/material/finance-debtors-billwise-entry-form/edit/:slipNo",
+    element: <DebtorsBillwiseEntryForm />,
+  },
+  {
+    path: "/material/finance-debtors-billwise-entry-form/add",
+    element: <DebtorsBillwiseEntryForm />,
+  },
+  {
+    path: "/material/finance-depreciation-parameter-table",
+    element: <DepreciationParameterTable />,
+  },
+  {
+    path: "/material/finance-depreciation-parameter-form/edit/:slipNo",
+    element: <DepreciationParameterForm />,
+  },
+  {
+    path: "/material/finance-depreciation-parameter-form/add",
+    element: <DepreciationParameterForm />,
+  },
+  {
+    path: "/material/finance-employee-advance-table",
+    element: <EmployeeAdvanceTable />,
+  },
+  {
+    path: "/material/finance-employee-advance-form/edit/:slipNo",
+    element: <EmployeeAdvanceForm />,
+  },
+  {
+    path: "/material/finance-employee-advance-form/add",
+    element: <EmployeeAdvanceForm />,
+  },
+  {
+    path: "/material/finance-general-ledger-table",
+    element: <GeneralLedgerTable />,
+  },
+  {
+    path: "/material/finance-general-ledger-form/edit/:slipNo",
+    element: <GeneralLedgerForm />,
+  },
+  {
+    path: "/material/finance-general-ledger-form/add",
+    element: <GeneralLedgerForm />,
+  },
+  {
+    path: "/material/finance-group-details-table",
+    element: <GroupDetailsTable />,
+  },
+  {
+    path: "/material/finance-group-details-form/edit/:slipNo",
+    element: <GroupDetailsForm />,
+  },
+  {
+    path: "/material/finance-group-details-form/add",
+    element: <GroupDetailsForm />,
+  },
+  {
+    path: "/material/finance-item-details-table",
+    element: <FinanceItemDetailsTable />,
+  },
+  {
+    path: "/material/finance-item-details-form/edit/:slipNo",
+    element: <FinanceItemDetailsForm />,
+  },
+  {
+    path: "/material/finance-item-details-form/add",
+    element: <FinanceItemDetailsForm />,
+  },
+  {
+    path: "/material/finance-monthwise-ledger-close-table",
+    element: <MonthwiseLedgerCloseTable />,
+  },
+  {
+    path: "/material/finance-monthwise-ledger-close-form/edit/:slipNo",
+    element: <MonthwiseLedgerCloseForm />,
+  },
+  {
+    path: "/material/finance-monthwise-ledger-close-form/add",
+    element: <MonthwiseLedgerCloseForm />,
+  },
+  {
+    path: "/material/finance-opening-balance-table",
+    element: <OpeningBalanceTable />,
+  },
+  {
+    path: "/material/finance-opening-balance-form/edit/:slipNo",
+    element: <OpeningBalanceForm />,
+  },
+  {
+    path: "/material/finance-opening-balance-form/add",
+    element: <OpeningBalanceForm />,
+  },
+  {
+    path: "/material/finance-schedule-details-table",
+    element: <ScheduleDetailsTable />,
+  },
+  {
+    path: "/material/finance-schedule-details-form/edit/:slipNo",
+    element: <ScheduleDetailsForm />,
+  },
+  {
+    path: "/material/finance-schedule-details-form/add",
+    element: <ScheduleDetailsForm />,
+  },
+  {
+    path: "/material/finance-sub-group-details-table",
+    element: <SubGroupDetailsTable />,
+  },
+  {
+    path: "/material/finance-sub-group-details-form/edit/:slipNo",
+    element: <SubGroupDetailsForm />,
+  },
+  {
+    path: "/material/finance-sub-group-details-form/add",
+    element: <SubGroupDetailsForm />,
+  },
+   {
+    path: "/material/finance-TDS-parameter-table",
+    element: <TDSParameterTable />,
+  },
+  {
+    path: "/material/finance-TDS-parameter-form/edit/:slipNo",
+    element: <TDSParameterForm />,
+  },
+  {
+    path: "/material/finance-TDS-parameter-form/add",
+    element: <TDSParameterForm />,
   },
 ];
 

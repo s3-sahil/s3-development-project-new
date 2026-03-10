@@ -1052,27 +1052,27 @@ const navigations = [
         children: [
           {
             name: "Schedule Details",
-            path: "/material/TMS-parameter-table",
+            path: "/material/finance-schedule-details-table",
             icon: "arrow_forward",
           },
           {
             name: "Group Details",
-            path: "/material/TMS-card-details-table",
+            path: "/material/finance-group-details-table",
             icon: "arrow_forward",
           },
           {
             name: "Sub Group Details",
-            path: "/material/TMS-attendance-status-table",
+            path: "/material/finance-sub-group-details-table",
             icon: "arrow_forward",
           },
           {
             name: "General Ledger",
-            path: "/material/TMS-rotation-details-table",
+            path: "/material/finance-general-ledger-table",
             icon: "arrow_forward",
           },
           {
             name: "Item Details",
-            path: "/material/TMS-route-table",
+            path: "/material/finance-item-details-table",
             icon: "arrow_forward",
           },
           {
@@ -1087,22 +1087,22 @@ const navigations = [
           },
           {
             name: "T.D.S. Parameter",
-            path: "/material/TMS-grade-wise-rules-table",
+            path: "/material/finance-TDS-parameter-table",
             icon: "arrow_forward",
           },
           {
             name: "Depreciation Parameter",
-            path: "/material/material-alternate-item-table",
+            path: "/material/finance-depreciation-parameter-table",
             icon: "arrow_forward",
           },
           {
             name: "Employee Advance Details",
-            path: "/material/TMS-overtime-rules-table",
+            path: "/material/finance-employee-advance-table",
             icon: "arrow_forward",
           },
           {
             name: "Creditors Billwise Entry",
-            path: "/material/TMS-overtime-rules-table",
+            path: "/material/finance-creditors-billwise-entry-table",
             icon: "arrow_forward",
           },
           {
@@ -1122,12 +1122,12 @@ const navigations = [
           },
           {
             name: "Opening Balance",
-            path: "/material/TMS-overtime-rules-table",
+            path: "/material/finance-opening-balance-table",
             icon: "arrow_forward",
           },
           {
             name: "Debtors Billwise Entry",
-            path: "/material/TMS-overtime-rules-table",
+            path: "/material/finance-debtors-billwise-entry-table",
             icon: "arrow_forward",
           },
           {
@@ -1137,17 +1137,17 @@ const navigations = [
           },
           {
             name: "Daily Cash Close",
-            path: "/material/TMS-overtime-rules-table",
+            path: "/material/finance-daily-cash-close-table",
             icon: "arrow_forward",
           },
           {
             name: "Monthwise Ledger Close",
-            path: "/material/TMS-overtime-rules-table",
+            path: "/material/finance-monthwise-ledger-close-table",
             icon: "arrow_forward",
           },
           {
             name: "Financial & Finalization",
-            path: "/material/TMS-overtime-rules-table",
+            path: "/material/finance-close-finalization-table",
             icon: "arrow_forward",
           },
         ],

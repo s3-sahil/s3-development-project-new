@@ -37,7 +37,7 @@ export default function GeneralLedgerTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/finance/general-ledger-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-general-ledger-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -66,7 +66,7 @@ export default function GeneralLedgerTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/general-ledger-form/add")}
+            onClick={() => navigate("/material/finance-general-ledger-form/add")}
           >
             New
           </Button>

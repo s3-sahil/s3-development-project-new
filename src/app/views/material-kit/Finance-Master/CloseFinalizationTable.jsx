@@ -39,7 +39,7 @@ export default function CloseFinalizationTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/finance/close-finalization-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-close-finalization-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -68,7 +68,7 @@ export default function CloseFinalizationTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/close-finalization-form/add")}
+            onClick={() => navigate("/material/finance-close-finalization-form/add")}
           >
             New
           </Button>

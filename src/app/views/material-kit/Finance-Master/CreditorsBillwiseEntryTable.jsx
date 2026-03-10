@@ -41,7 +41,7 @@ export default function CreditorsBillwiseEntryTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/finance/creditors-billwise-entry-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-creditors-billwise-entry-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -70,7 +70,7 @@ export default function CreditorsBillwiseEntryTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/creditors-billwise-entry-form/add")}
+            onClick={() => navigate("/material/finance-creditors-billwise-entry-form/add")}
           >
             New
           </Button>

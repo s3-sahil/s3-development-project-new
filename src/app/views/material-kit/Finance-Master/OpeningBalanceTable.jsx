@@ -38,7 +38,7 @@ export default function OpeningBalanceTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/finance/opening-balance-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-opening-balance-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -67,7 +67,7 @@ export default function OpeningBalanceTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/opening-balance-form/add")}
+            onClick={() => navigate("/material/finance-opening-balance-form/add")}
           >
             New
           </Button>

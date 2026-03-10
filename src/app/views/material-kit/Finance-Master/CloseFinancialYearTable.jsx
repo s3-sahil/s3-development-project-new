@@ -39,7 +39,7 @@ export default function CloseFinancialYearTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/finance/close-financial-year-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-close-financial-year-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -68,7 +68,7 @@ export default function CloseFinancialYearTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/close-financial-year-form/add")}
+            onClick={() => navigate("/material/finance-close-financial-year-form/add")}
           >
             New
           </Button>

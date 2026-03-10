@@ -38,7 +38,7 @@ export default function GroupDetailsTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/finance/group-details-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-group-details-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -67,7 +67,7 @@ export default function GroupDetailsTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/group-details-form/add")}
+            onClick={() => navigate("/material/finance-group-details-form/add")}
           >
             New
           </Button>

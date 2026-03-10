@@ -40,7 +40,7 @@ export default function TDSParameterTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/finance/tds-parameter-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-TDS-parameter-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -69,7 +69,7 @@ export default function TDSParameterTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/tds-parameter-form/add")}
+            onClick={() => navigate("/material/finance-TDS-parameter-form/add")}
           >
             New
           </Button>

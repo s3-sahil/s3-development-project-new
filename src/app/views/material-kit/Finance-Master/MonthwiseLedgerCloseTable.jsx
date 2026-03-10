@@ -35,7 +35,7 @@ export default function MonthwiseLedgerCloseTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/finance/monthwise-ledger-close-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-monthwise-ledger-close-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -64,7 +64,7 @@ export default function MonthwiseLedgerCloseTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/monthwise-ledger-close-form/add")}
+            onClick={() => navigate("/material/finance-monthwise-ledger-close-form/add")}
           >
             New
           </Button>

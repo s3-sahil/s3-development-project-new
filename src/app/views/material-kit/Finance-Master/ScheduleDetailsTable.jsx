@@ -35,7 +35,7 @@ export default function ScheduleDetailsTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/finance/schedule-details-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-schedule-details-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -64,7 +64,7 @@ export default function ScheduleDetailsTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/schedule-details-form/add")}
+            onClick={() => navigate("/material/finance-schedule-details-form/add")}
           >
             New
           </Button>

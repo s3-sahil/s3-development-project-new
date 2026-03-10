@@ -58,7 +58,7 @@ export default function DebtorsBillwiseEntryTable() {
             <IconButton
               onClick={() =>
                 navigate(
-                  `/finance/debtors-billwise-entry-form/edit/${params.row.id}`,
+                  `/material/finance-debtors-billwise-entry-form/edit/${params.row.id}`,
                   {
                     state: params.row,
                   },
@@ -94,7 +94,7 @@ export default function DebtorsBillwiseEntryTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/debtors-billwise-entry-form/add")}
+            onClick={() => navigate("/material/finance-debtors-billwise-entry-form/add")}
           >
             New
           </Button>

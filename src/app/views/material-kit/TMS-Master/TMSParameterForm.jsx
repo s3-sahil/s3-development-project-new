@@ -1,3 +1,4 @@
+import React, { useState, useCallback } from "react";
 import {
   Box,
   Container,
@@ -12,36 +13,61 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { saveTmsParameter } from "app/utils/authServices";
-import { useState } from "react";
 
-export default function TMSParameterForm() {
-  const [formData, setFormData] = useState({
-    punchingFileFlag: "No",
-    woffShiftGen: "No",
-    odTourApproval: "No",
-    shiftPlanApplicable: "Yes",
-    holidayShiftGen: "Yes",
-    leaveApproval: "1",
-    lateEarlyRule: "Grade Rules",
-    minPresentFullDay: "",
-    doublePunchDiff: "",
-    addMinutesCoff: "",
-    minPresentHalfDay: "",
-    shortLeaveHrs: "",
-  });
+const INITIAL_FORM = {
+  punchingFileFlag: "No",
+  woffShiftGen: "No",
+  odTourApproval: "No",
+  shiftPlanApplicable: "Yes",
+  holidayShiftGen: "Yes",
+  leaveApproval: "1",
+  lateEarlyRule: "Grade Rules",
+  minPresentFullDay: "",
+  doublePunchDiff: "",
+  addMinutesCoff: "",
+  minPresentHalfDay: "",
+  shortLeaveHrs: "",
+};
+
+export default function TMSParameterForm({
+  resetForm: parentResetForm,
+  fetchUserData: parentFetchUserData,
+}) {
+  const [formData, setFormData] = useState({ ...INITIAL_FORM });
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = async () => {
-    const profcen_cd = localStorage.getItem("PROFCEN_CD") || "";
+  const resetForm = useCallback(() => {
+    setFormData({ ...INITIAL_FORM });
+    if (typeof parentResetForm === "function") parentResetForm();
+  }, [parentResetForm]);
+
+  const fetchUserData = useCallback(
+    (page = 1) => {
+      if (typeof parentFetchUserData === "function") parentFetchUserData(page);
+    },
+    [parentFetchUserData],
+  );
+
+  const handleSave = useCallback(async () => {
+    if (isSaving) return;
+    setIsSaving(true);
+
     try {
+      const profcen_cd =
+        localStorage.getItem("PROFCEN_CD") ||
+        localStorage.getItem("selectedDivision") ||
+        "";
+
       const payload = {
         PROFCEN_CD: profcen_cd,
-        shift_Plan_Appl: formData.shiftPlanApplicable === "Yes",
-        use_Our_Shift: true, // set based on your logic
+
+        shift_Plan_Appl: formData.shiftPlanApplicable === "Yes" ? "Y" : "N",
+        use_Our_Shift: true, 
 
         punching_Diff: Number(formData.doublePunchDiff) || 0,
         full_Day_From: Number(formData.minPresentFullDay) || 0,
@@ -56,30 +82,44 @@ export default function TMSParameterForm() {
 
         additional_Coff_Min: Number(formData.addMinutesCoff) || 0,
 
-        shiftMst_DivWise: true, // set if you have UI for this
+        shiftMst_DivWise: true,
+        inOut_Flag: formData.punchingFileFlag === "Yes" ? "Y" : "N",
 
-        inOut_Flag: formData.punchingFileFlag === "Yes",
-
-        wH_BtnCL_Flag: "Y", // set if required
+        wH_BtnCL_Flag: "Y",
         wH_BtnSL_Flag: "Y",
         wH_BtnPL_Flag: "Y",
 
-        extra_Early_Min: 0, // set if UI available
+        extra_Early_Min: 0,
         extra_Late_Min: 0,
 
         oD_Appr_Flag: formData.odTourApproval === "Yes" ? "Y" : "N",
-
         leave_Appr_Flag: formData.leaveApproval === "1" ? "Y" : "N",
       };
 
+      console.log("Saving payload:", payload);
+
       const result = await saveTmsParameter(payload);
 
-      alert("TMS Parameter Saved Successfully");
-      console.log(result);
-    } catch (error) {
-      alert(error.message);
+      // Defensive success handling
+      if (
+        result &&
+        (result.message || result.success || result.status === "ok")
+      ) {
+        alert("TMS Parameter Saved Successfully");
+        resetForm();
+        fetchUserData(1);
+      } else {
+        console.warn("Unexpected save response:", result);
+        alert("Save completed but server returned an unexpected response.");
+      }
+    } catch (err) {
+      console.error("Save Error:", err);
+      alert(err?.message || "Failed to save data. Please try again.");
+    } finally {
+      setIsSaving(false);
     }
-  };
+  }, [formData, isSaving, resetForm, fetchUserData]);
+
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
@@ -97,13 +137,13 @@ export default function TMSParameterForm() {
             variant="contained"
             startIcon={<Icon>save</Icon>}
             onClick={handleSave}
+            disabled={isSaving}
           >
-            Save
+            {isSaving ? "Saving..." : "Save"}
           </Button>
         </Box>
 
         <Grid container spacing={3}>
-          {/* Radio Options */}
           <Grid item xs={6}>
             <FormLabel>Punching File With In Out Flag</FormLabel>
             <RadioGroup
@@ -116,6 +156,7 @@ export default function TMSParameterForm() {
               <FormControlLabel value="No" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
+
           <Grid item xs={6}>
             <FormLabel>WOff While Shift Generation</FormLabel>
             <RadioGroup
@@ -128,6 +169,7 @@ export default function TMSParameterForm() {
               <FormControlLabel value="No" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
+
           <Grid item xs={6}>
             <FormLabel>OD/Tour Approval</FormLabel>
             <RadioGroup
@@ -140,6 +182,7 @@ export default function TMSParameterForm() {
               <FormControlLabel value="No" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
+
           <Grid item xs={6}>
             <FormLabel>Shift Plan Applicable</FormLabel>
             <RadioGroup
@@ -152,6 +195,7 @@ export default function TMSParameterForm() {
               <FormControlLabel value="No" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
+
           <Grid item xs={6}>
             <FormLabel>Holiday While Shift Generation</FormLabel>
             <RadioGroup
@@ -164,6 +208,7 @@ export default function TMSParameterForm() {
               <FormControlLabel value="No" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
+
           <Grid item xs={6}>
             <FormLabel>Leave Approval</FormLabel>
             <RadioGroup
@@ -176,6 +221,7 @@ export default function TMSParameterForm() {
               <FormControlLabel value="2" control={<Radio />} label="2 Level" />
             </RadioGroup>
           </Grid>
+
           <Grid item xs={6}>
             <FormLabel>Late Early Rule From</FormLabel>
             <RadioGroup
@@ -197,7 +243,6 @@ export default function TMSParameterForm() {
             </RadioGroup>
           </Grid>
 
-          {/* Input Fields */}
           <Grid item xs={6}>
             <TextField
               label="Minimum Presenty Req. For Full Day (%)"
@@ -208,6 +253,7 @@ export default function TMSParameterForm() {
               fullWidth
             />
           </Grid>
+
           <Grid item xs={6}>
             <TextField
               label="Double Punching Difference (minutes)"
@@ -218,6 +264,7 @@ export default function TMSParameterForm() {
               fullWidth
             />
           </Grid>
+
           <Grid item xs={6}>
             <TextField
               label="Additional Minutes If Insufficient Extra Time For COff"
@@ -228,6 +275,7 @@ export default function TMSParameterForm() {
               fullWidth
             />
           </Grid>
+
           <Grid item xs={6}>
             <TextField
               label="Minimum Presenty Req. For Half Day (%)"
@@ -238,6 +286,7 @@ export default function TMSParameterForm() {
               fullWidth
             />
           </Grid>
+
           <Grid item xs={6}>
             <TextField
               label="Short Leave Hrs"

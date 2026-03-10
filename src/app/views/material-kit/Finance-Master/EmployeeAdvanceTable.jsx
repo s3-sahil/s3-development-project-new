@@ -37,7 +37,7 @@ export default function EmployeeAdvanceTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/payroll/employee-advance-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-employee-advance-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -66,7 +66,7 @@ export default function EmployeeAdvanceTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/payroll/employee-advance-form/add")}
+            onClick={() => navigate("/material/finance-employee-advance-form/add")}
           >
             New
           </Button>

@@ -38,7 +38,7 @@ export default function DepreciationParameterTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/finance/depreciation-parameter-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-depreciation-parameter-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -67,7 +67,7 @@ export default function DepreciationParameterTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/depreciation-parameter-form/add")}
+            onClick={() => navigate("/material/finance-depreciation-parameter-form/add")}
           >
             New
           </Button>

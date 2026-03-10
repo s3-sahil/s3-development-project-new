@@ -11,7 +11,7 @@ import {
 import { Breadcrumb } from "app/components";
 import { useState } from "react";
 
-export default function ItemDetailsForm() {
+export default function FinanceItemDetailsForm() {
   const [formData, setFormData] = useState({
     itemCode: "",
     category: "",

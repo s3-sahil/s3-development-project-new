@@ -35,7 +35,7 @@ export default function DailyCashCloseTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/finance/daily-cash-close-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-daily-cash-close-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -64,7 +64,7 @@ export default function DailyCashCloseTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/daily-cash-close-form/add")}
+            onClick={() => navigate("/material/finance-daily-cash-close-form/add")}
           >
             New
           </Button>

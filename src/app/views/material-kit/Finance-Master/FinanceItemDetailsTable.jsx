@@ -12,7 +12,7 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export default function ItemDetailsTable() {
+export default function FinanceItemDetailsTable() {
   const navigate = useNavigate();
 
   const [rows, setRows] = useState([
@@ -38,7 +38,7 @@ export default function ItemDetailsTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/finance/item-details-form/edit/${params.row.id}`, {
+                navigate(`/material/finance-item-details-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -67,7 +67,7 @@ export default function ItemDetailsTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/finance/item-details-form/add")}
+            onClick={() => navigate("/material/finance-item-details-form/add")}
           >
             New
           </Button>
