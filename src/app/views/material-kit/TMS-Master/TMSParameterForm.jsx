@@ -16,7 +16,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { saveTmsParameter } from "app/utils/authServices";
 
 const INITIAL_FORM = {
-  division: "",
   punchingFileFlag: "No",
   woffShiftGen: "No",
   odTourApproval: "No",
@@ -51,7 +50,6 @@ export default function TMSParameterForm() {
       const data = location.state;
 
       setFormData({
-        division: data.PROFCEN_CD || "",
         punchingFileFlag: data.InOut_Flag ? "Yes" : "No",
         woffShiftGen: data.Shift_Plan_WO === "Y" ? "Yes" : "No",
         odTourApproval: data.OD_Appr_Flag === "Y" ? "Yes" : "No",
@@ -85,6 +83,8 @@ export default function TMSParameterForm() {
 
   const newbuttonapi = () => {
     setFormData(INITIAL_FORM);
+    setSaveMode(true);
+    setActionMode("new");
   };
 
   const confirmDelete = () => {
@@ -98,7 +98,7 @@ export default function TMSParameterForm() {
 
     try {
       const payload = {
-        profceN_CD: formData.division,
+        profceN_CD: localStorage.getItem("PROFCEN_CD"),
 
         shift_Plan_Appl: formData.shiftPlanApplicable === "Yes",
         use_Our_Shift: true,
@@ -132,7 +132,7 @@ export default function TMSParameterForm() {
         leave_Appr_Flag: formData.leaveApproval === "1" ? "Y" : "N",
       };
 
-      console.log("Saving Payload:", payload);
+      console.log("Payload:", payload);
 
       const result = await saveTmsParameter(payload);
 
@@ -150,7 +150,6 @@ export default function TMSParameterForm() {
       setIsSaving(false);
     }
   };
-
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
@@ -170,26 +169,14 @@ export default function TMSParameterForm() {
             onClick={() => {
               if (actionMode === "edit") {
                 handleSave();
-              } else if (actionMode === "delete") {
-                confirmDelete();
+              } else if (!saveMode) {
+                newbuttonapi();
               } else {
-                if (saveMode) {
-                  handleSave();
-                } else {
-                  newbuttonapi();
-                  setSaveMode(true);
-                  setActionMode("new");
-                }
+                handleSave();
               }
             }}
           >
-            {actionMode === "edit"
-              ? "Update"
-              : actionMode === "delete"
-                ? "Delete"
-                : saveMode
-                  ? "Save"
-                  : "New"}
+            {actionMode === "edit" ? "Update" : saveMode ? "Save" : "New"}
           </Button>
 
           <Button
