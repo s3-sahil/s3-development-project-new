@@ -14,7 +14,8 @@ import { useState } from "react";
 
 export default function ShiftDetailsTable() {
   const navigate = useNavigate();
-
+ 
+  
   const [rows, setRows] = useState([
     { id: 1, shiftCode: "F", description: "FIRST", shiftStart: "8", shiftEnd: "17", totalHrs: "9", lunchStart: "12.3", lunchEnd: "13", earlyIn: "7.3", division: "C" },
     { id: 2, shiftCode: "G", description: "GENERAL", shiftStart: "8.3", shiftEnd: "17.3", totalHrs: "9", lunchStart: "12.3", lunchEnd: "13", earlyIn: "8", division: "C" },
