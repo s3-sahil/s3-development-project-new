@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { TMSParameterPaginationAPI } from "app/utils/authServices";
 
 export default function TMSParameterTable() {
+  
   const navigate = useNavigate();
   const location = useLocation();
   const [rows, setRows] = useState([]);
