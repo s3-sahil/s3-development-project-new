@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Container,
@@ -12,9 +12,11 @@ import {
   FormLabel,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { useNavigate, useLocation } from "react-router-dom";
 import { saveTmsParameter } from "app/utils/authServices";
 
 const INITIAL_FORM = {
+  division: "",
   punchingFileFlag: "No",
   woffShiftGen: "No",
   odTourApproval: "No",
@@ -29,45 +31,77 @@ const INITIAL_FORM = {
   shortLeaveHrs: "",
 };
 
-export default function TMSParameterForm({
-  resetForm: parentResetForm,
-  fetchUserData: parentFetchUserData,
-}) {
-  const [formData, setFormData] = useState({ ...INITIAL_FORM });
+export default function TMSParameterForm() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [formData, setFormData] = useState(INITIAL_FORM);
   const [isSaving, setIsSaving] = useState(false);
+
+  const [actionMode, setActionMode] = useState("new");
+  const [saveMode, setSaveMode] = useState(false);
+
+  const isEdit = location.pathname.includes("edit");
+
+  useEffect(() => {
+    if (location.state) {
+      setActionMode("edit");
+      setSaveMode(true);
+
+      const data = location.state;
+
+      setFormData({
+        division: data.PROFCEN_CD || "",
+        punchingFileFlag: data.InOut_Flag ? "Yes" : "No",
+        woffShiftGen: data.Shift_Plan_WO === "Y" ? "Yes" : "No",
+        odTourApproval: data.OD_Appr_Flag === "Y" ? "Yes" : "No",
+        shiftPlanApplicable: data.Shift_Plan_Appl ? "Yes" : "No",
+        holidayShiftGen: data.Shift_Plan_PH === "Y" ? "Yes" : "No",
+        leaveApproval:
+          data.leave_Appr_Flag === "Y"
+            ? "1"
+            : data.leave_Appr_Flag === "N"
+              ? "2"
+              : "1",
+        lateEarlyRule:
+          data.Allowed_LE_From === "G" ? "Grade Rules" : "Shift Master",
+        minPresentFullDay: data.Full_Day_From || "",
+        minPresentHalfDay: data.Half_Day_From || "",
+        doublePunchDiff: data.Punching_Diff || "",
+        addMinutesCoff: data.Additional_Coff_Min || "",
+        shortLeaveHrs: data.Short_Leave_Hrs || "",
+      });
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const resetForm = useCallback(() => {
-    setFormData({ ...INITIAL_FORM });
-    if (typeof parentResetForm === "function") parentResetForm();
-  }, [parentResetForm]);
+  const newbuttonapi = () => {
+    setFormData(INITIAL_FORM);
+  };
 
-  const fetchUserData = useCallback(
-    (page = 1) => {
-      if (typeof parentFetchUserData === "function") parentFetchUserData(page);
-    },
-    [parentFetchUserData],
-  );
+  const confirmDelete = () => {
+    alert("Delete functionality not implemented");
+  };
 
-  const handleSave = useCallback(async () => {
+  const handleSave = async () => {
     if (isSaving) return;
+
     setIsSaving(true);
 
     try {
-      const profcen_cd =
-        localStorage.getItem("PROFCEN_CD") ||
-        localStorage.getItem("selectedDivision") ||
-        "";
-
       const payload = {
-        PROFCEN_CD: profcen_cd,
+        profceN_CD: formData.division,
 
-        shift_Plan_Appl: formData.shiftPlanApplicable === "Yes" ? "Y" : "N",
-        use_Our_Shift: true, 
+        shift_Plan_Appl: formData.shiftPlanApplicable === "Yes",
+        use_Our_Shift: true,
 
         punching_Diff: Number(formData.doublePunchDiff) || 0,
         full_Day_From: Number(formData.minPresentFullDay) || 0,
@@ -83,63 +117,87 @@ export default function TMSParameterForm({
         additional_Coff_Min: Number(formData.addMinutesCoff) || 0,
 
         shiftMst_DivWise: true,
-        inOut_Flag: formData.punchingFileFlag === "Yes" ? "Y" : "N",
 
-        wH_BtnCL_Flag: "Y",
-        wH_BtnSL_Flag: "Y",
-        wH_BtnPL_Flag: "Y",
+        inOut_Flag: formData.punchingFileFlag === "Yes",
+
+        wH_BtnCL_Flag: "N",
+        wH_BtnSL_Flag: "N",
+        wH_BtnPL_Flag: "N",
 
         extra_Early_Min: 0,
         extra_Late_Min: 0,
 
         oD_Appr_Flag: formData.odTourApproval === "Yes" ? "Y" : "N",
+
         leave_Appr_Flag: formData.leaveApproval === "1" ? "Y" : "N",
       };
 
-      console.log("Saving payload:", payload);
+      console.log("Saving Payload:", payload);
 
       const result = await saveTmsParameter(payload);
 
-      // Defensive success handling
-      if (
-        result &&
-        (result.message || result.success || result.status === "ok")
-      ) {
-        alert("TMS Parameter Saved Successfully");
-        resetForm();
-        fetchUserData(1);
-      } else {
-        console.warn("Unexpected save response:", result);
-        alert("Save completed but server returned an unexpected response.");
+      if (result) {
+        alert(result.message || "Saved Successfully");
+
+        navigate("/material/TMS-parameter-table", {
+          state: { refresh: true },
+        });
       }
     } catch (err) {
-      console.error("Save Error:", err);
-      alert(err?.message || "Failed to save data. Please try again.");
+      console.error("Save error:", err);
+      alert("Save failed");
     } finally {
       setIsSaving(false);
     }
-  }, [formData, isSaving, resetForm, fetchUserData]);
+  };
 
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[{ name: "TMS" }, { name: "TMS Parameter" }]}
+          routeSegments={[
+            { name: "TMS" },
+            { name: isEdit ? "Edit TMS Parameter" : "Add TMS Parameter" },
+          ]}
         />
       </Box>
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         <Box display="flex" justifyContent="flex-end" gap={2} mb={2}>
-          <Button variant="contained" startIcon={<Icon>print</Icon>}>
-            Print
-          </Button>
           <Button
             variant="contained"
             startIcon={<Icon>save</Icon>}
-            onClick={handleSave}
-            disabled={isSaving}
+            onClick={() => {
+              if (actionMode === "edit") {
+                handleSave();
+              } else if (actionMode === "delete") {
+                confirmDelete();
+              } else {
+                if (saveMode) {
+                  handleSave();
+                } else {
+                  newbuttonapi();
+                  setSaveMode(true);
+                  setActionMode("new");
+                }
+              }
+            }}
           >
-            {isSaving ? "Saving..." : "Save"}
+            {actionMode === "edit"
+              ? "Update"
+              : actionMode === "delete"
+                ? "Delete"
+                : saveMode
+                  ? "Save"
+                  : "New"}
+          </Button>
+
+          <Button
+            variant="outlined"
+            startIcon={<Icon>arrow_back</Icon>}
+            onClick={() => navigate("/material/TMS-parameter-table")}
+          >
+            Back
           </Button>
         </Box>
 
