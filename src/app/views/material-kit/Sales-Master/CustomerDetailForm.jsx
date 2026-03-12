@@ -29,6 +29,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { saveCustomerDetail } from "app/utils/authServices";
 const SAMPLE_TAXES = [
   { code: "T01", desc: "Standard Tax", percent: 5 },
   { code: "T02", desc: "Luxury Tax", percent: 12 },
@@ -162,15 +163,108 @@ const CustomerDetailForm = () => {
 
   const handleClearAll = () => setAddedTaxes([]);
 
-  // Save: combine form data and taxes
-  const handleSave = () => {
-    const payload = {
-      ...formData,
-      taxes: addedTaxes || [],
-      baseAmount,
-    };
-    onSave(payload);
-    onClose();
+  const handleSave = async () => {
+    try {
+      const payload = {
+        cust_mst_ex: {
+          cust_code: formData.code,
+          cust_name: formData.name,
+          cust_add1: formData.bankAdd,
+          cust_add2: formData.bankAdd1,
+          cust_city: formData.city,
+          cust_Pin: formData.pin,
+          cust_state: formData.state,
+          cust_country: formData.country,
+          fax: formData.fax,
+          phone: formData.phone,
+          email: formData.email,
+          ecc_code: formData.eccCode,
+          exci_range: formData.range,
+          division: formData.division,
+          commsrate: formData.commissionerate,
+          our_vend_cd: formData.supplierCode,
+          cust_Type: formData.customerType,
+          state_no: formData.vatNo,
+          central_no: formData.cstNo,
+          category: formData.category,
+          pancode: formData.panNo,
+          contact_person: formData.contactPerson,
+          person_desig: formData.designation,
+          interest_per: Number(formData.interest || 0),
+          outstanding_limit: Number(formData.agingLimit || 0),
+          zone: formData.zone,
+          service_tax_no: formData.serviceTaxNo,
+          cash_disper: Number(formData.cashDisc || 0),
+          banK_NAME: formData.bankName,
+          banK_ADD1: formData.bankAdd,
+          banK_ADD2: formData.bankAdd1,
+          short_name: formData.short,
+          mobile: formData.mobile,
+          dealer_name: formData.dealerName,
+          dealer_add: formData.dealerAdd,
+          dealer_add1: formData.dealerAdd1,
+          bank_acc_no: formData.bankAccNo,
+          web_site: formData.website,
+          woff: formData.weeklyOff,
+          group_cust: formData.groupCustomer,
+          ref_cust_Code: formData.refCustomer,
+          gst_no: formData.gstNo,
+          distance_km: Number(formData.distanceKm || 0),
+          district_name: formData.district,
+          industry_name: formData.industryType,
+          start_dt: formData.startDate,
+          expiry_dt: formData.expiryDate,
+          nda: formData.nda ? "Y" : "N",
+          disc_appl: formData.discountApplicable ? "Y" : "N",
+          insurance: formData.insurance,
+        },
+
+        cust_tax_ex: addedTaxes.map((t) => ({
+          cusT_CODE: formData.code,
+          taX_CODE: t.code,
+          taX_AMT: t.amount,
+        })),
+
+        cust_pay_ex: {
+          cusT_CODE: formData.code,
+          percent: Number(formData.cashDisc || 0),
+          period: 0,
+          mode: "C",
+          dmflag: "D",
+        },
+
+        cust_factory_det_ex: {
+          cust_code: formData.code,
+          name: formData.name,
+          add1: formData.bankAdd,
+          add2: formData.bankAdd1,
+          city: formData.city,
+          state: formData.state,
+          fax: formData.fax,
+          phone: formData.phone,
+          email: formData.email,
+          mobile: formData.mobile,
+          contact_person: formData.contactPerson,
+          designation: formData.designation,
+          pincode: formData.pin,
+          web_site: formData.website,
+          woff: formData.weeklyOff,
+          gst_no: formData.gstNo,
+          panNo: formData.panNo,
+        },
+      };
+
+      console.log("Payload:", payload);
+
+      const result = await saveCustomerDetail(payload);
+
+      alert(result.message || "Customer Saved Successfully");
+
+      handleClose();
+    } catch (error) {
+      console.error("Save Error:", error);
+      alert(error.message);
+    }
   };
 
   const handleSubmit = (e) => {
@@ -183,30 +277,36 @@ const CustomerDetailForm = () => {
   };
 
   const [contactPersons, setContactPersons] = useState([
-  { name: "", designation: "", mobile: "", email: "" }
-]);
+    { name: "", designation: "", mobile: "", email: "" },
+  ]);
 
-// handlers
-const handleChange = (e) => {
-  const { name, value, type, checked } = e.target;
-  setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
-};
+  // handlers
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
   const handleContactChange = (index, field, value) => {
-  setContactPersons((prev) => {
-    const copy = [...prev];
-    copy[index] = { ...copy[index], [field]: value };
-    return copy;
-  });
-};
+    setContactPersons((prev) => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], [field]: value };
+      return copy;
+    });
+  };
 
-const addContactRow = () => {
-  setContactPersons((prev) => [...prev, { name: "", designation: "", mobile: "", email: "" }]);
-};
+  const addContactRow = () => {
+    setContactPersons((prev) => [
+      ...prev,
+      { name: "", designation: "", mobile: "", email: "" },
+    ]);
+  };
 
-const removeContactRow = (index) => {
-  setContactPersons((prev) => prev.filter((_, i) => i !== index));
-};
+  const removeContactRow = (index) => {
+    setContactPersons((prev) => prev.filter((_, i) => i !== index));
+  };
 
   return (
     <Container maxWidth="xl">
@@ -1175,15 +1275,186 @@ const removeContactRow = (index) => {
                   )}
 
                   {tabIndex === 3 && (
-                    <Grid container spacing={2}>
+                    <Grid container spacing={2} mt={1}>
                       <Grid item xs={12} md={6}>
-                        <TextField size="small" label="Discount %" fullWidth />
+                        <TextField
+                          size="small"
+                          name="name"
+                          label="Name"
+                          fullWidth
+                          value={formData.name}
+                          onChange={handleChange}
+                        />
                       </Grid>
+
                       <Grid item xs={12} md={6}>
-                        <TextField size="small" label="Interest %" fullWidth />
+                        <TextField
+                          size="small"
+                          name="bankAdd"
+                          label="Address"
+                          fullWidth
+                          value={formData.bankAdd}
+                          onChange={handleChange}
+                        />
                       </Grid>
+
                       <Grid item xs={12} md={6}>
-                        <TextField size="small" label="Notes" fullWidth />
+                        <TextField
+                          size="small"
+                          name="bankAdd1"
+                          label="Address 1"
+                          fullWidth
+                          value={formData.bankAdd1}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          size="small"
+                          name="city"
+                          label="City"
+                          fullWidth
+                          value={formData.city}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          size="small"
+                          name="pin"
+                          label="Pin Code"
+                          fullWidth
+                          value={formData.pin}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          size="small"
+                          name="state"
+                          label="State"
+                          fullWidth
+                          value={formData.state}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          size="small"
+                          name="fax"
+                          label="Fax"
+                          fullWidth
+                          value={formData.fax}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          size="small"
+                          name="phone"
+                          label="Phone"
+                          fullWidth
+                          value={formData.phone}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          size="small"
+                          name="email"
+                          label="Email"
+                          fullWidth
+                          value={formData.email}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          size="small"
+                          name="mobile"
+                          label="Mobile"
+                          fullWidth
+                          value={formData.mobile}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          size="small"
+                          name="contactPerson"
+                          label="Contact Person"
+                          fullWidth
+                          value={formData.contactPerson}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          size="small"
+                          name="designation"
+                          label="Designation"
+                          fullWidth
+                          value={formData.designation}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          size="small"
+                          name="website"
+                          label="Web Site"
+                          fullWidth
+                          value={formData.website}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <FormControl fullWidth size="small">
+                          <InputLabel>Weekly Off</InputLabel>
+                          <Select
+                            name="weeklyOff"
+                            label="Weekly Off"
+                            value={formData.weeklyOff || ""}
+                            onChange={handleChange}
+                          >
+                            <MenuItem value="Sunday">Sunday</MenuItem>
+                            <MenuItem value="Saturday">Saturday</MenuItem>
+                            <MenuItem value="Friday">Friday</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          size="small"
+                          name="panNo"
+                          label="PAN No"
+                          fullWidth
+                          value={formData.panNo}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          size="small"
+                          name="gstNo"
+                          label="GST No"
+                          fullWidth
+                          value={formData.gstNo}
+                          onChange={handleChange}
+                        />
                       </Grid>
                     </Grid>
                   )}

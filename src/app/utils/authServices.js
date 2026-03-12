@@ -644,3 +644,21 @@ export const manualPunchingSave = async (leadObj) => {
     );
   }
 };
+
+export const saveCustomerDetail = async (customerData) => {
+  try {
+    const response = await axiosInstance.post(
+      "/API/SD/CUSTOMER_DETAIL/ADD-CUSTOMER_DETAIL_ALL",
+      customerData
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to save Customer Detail."
+    );
+  }
+};
