@@ -103,13 +103,13 @@ const CustomerDetailForm = () => {
     }
   }, [open]);
   // helper to update formData fields
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
+  // const handleChange = (e) => {
+  //   const { name, value, type, checked } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: type === "checkbox" ? checked : value,
+  //   }));
+  // };
 
   // small helper for nested setters used in other sections
   const update = (setter) => (field) => (e) =>
@@ -181,6 +181,33 @@ const CustomerDetailForm = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const [contactPersons, setContactPersons] = useState([
+  { name: "", designation: "", mobile: "", email: "" }
+]);
+
+// handlers
+const handleChange = (e) => {
+  const { name, value, type, checked } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+};
+
+  const handleContactChange = (index, field, value) => {
+  setContactPersons((prev) => {
+    const copy = [...prev];
+    copy[index] = { ...copy[index], [field]: value };
+    return copy;
+  });
+};
+
+const addContactRow = () => {
+  setContactPersons((prev) => [...prev, { name: "", designation: "", mobile: "", email: "" }]);
+};
+
+const removeContactRow = (index) => {
+  setContactPersons((prev) => prev.filter((_, i) => i !== index));
+};
+
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
@@ -833,92 +860,316 @@ const CustomerDetailForm = () => {
 
                   {tabIndex === 2 && (
                     <Grid container spacing={2} mt={1}>
-                      <Grid item md={4}>
-                        <TextField label="ECC Code" size="small" fullWidth />
+                      <Grid item xs={12} md={4}>
+                        <TextField
+                          label="ECC Code"
+                          name="eccCode"
+                          size="small"
+                          fullWidth
+                          value={formData.eccCode || ""}
+                          onChange={handleChange}
+                        />
                       </Grid>
 
-                      <Grid item md={4}>
-                        <TextField label="Range" size="small" fullWidth />
+                      <Grid item xs={12} md={4}>
+                        <TextField
+                          label="Range"
+                          name="range"
+                          size="small"
+                          fullWidth
+                          value={formData.range || ""}
+                          onChange={handleChange}
+                        />
                       </Grid>
 
-                      <Grid item md={4}>
+                      <Grid item xs={12} md={4}>
                         <TextField
                           label="Commissionerate"
+                          name="commissionerate"
                           size="small"
                           fullWidth
+                          value={formData.commissionerate || ""}
+                          onChange={handleChange}
                         />
                       </Grid>
 
-                      <Grid item md={4}>
-                        <TextField label="Division" size="small" fullWidth />
+                      <Grid item xs={12} md={4}>
+                        <TextField
+                          label="Division"
+                          name="division"
+                          size="small"
+                          fullWidth
+                          value={formData.division || ""}
+                          onChange={handleChange}
+                        />
                       </Grid>
 
-                      <Grid item md={4}>
-                        <TextField label="Category" size="small" fullWidth />
+                      <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                          <InputLabel id="category-other-label">
+                            Category
+                          </InputLabel>
+                          <Select
+                            labelId="category-other-label"
+                            label="Category"
+                            name="categoryOther"
+                            value={formData.categoryOther || ""}
+                            onChange={handleChange}
+                          >
+                            <MenuItem value="">
+                              <em>None</em>
+                            </MenuItem>
+                            <MenuItem value="A">Category A</MenuItem>
+                            <MenuItem value="B">Category B</MenuItem>
+                          </Select>
+                        </FormControl>
                       </Grid>
 
-                      <Grid item md={4}>
+                      <Grid item xs={12} md={4}>
                         <TextField
                           label="Ref Customer"
+                          name="refCustomer"
                           size="small"
                           fullWidth
+                          value={formData.refCustomer || ""}
+                          onChange={handleChange}
                         />
                       </Grid>
 
-                      <Grid item md={4}>
-                        <TextField label="VAT No" size="small" fullWidth />
+                      <Grid item xs={12} md={4}>
+                        <TextField
+                          label="VAT No"
+                          name="vatNo"
+                          size="small"
+                          fullWidth
+                          value={formData.vatNo || ""}
+                          onChange={handleChange}
+                        />
                       </Grid>
 
-                      <Grid item md={4}>
-                        <TextField label="CST No" size="small" fullWidth />
+                      <Grid item xs={12} md={4}>
+                        <TextField
+                          label="CST No"
+                          name="cstNo"
+                          size="small"
+                          fullWidth
+                          value={formData.cstNo || ""}
+                          onChange={handleChange}
+                        />
                       </Grid>
 
-                      <Grid item md={4}>
+                      <Grid item xs={12} md={4}>
                         <TextField
                           label="Service Tax No"
+                          name="serviceTaxNo"
                           size="small"
                           fullWidth
+                          value={formData.serviceTaxNo || ""}
+                          onChange={handleChange}
                         />
                       </Grid>
 
-                      <Grid item md={4}>
-                        <TextField label="Dealer Name" size="small" fullWidth />
+                      <Grid item xs={12} md={4}>
+                        <TextField
+                          label="Dealer Name"
+                          name="dealerName"
+                          size="small"
+                          fullWidth
+                          value={formData.dealerName || ""}
+                          onChange={handleChange}
+                        />
                       </Grid>
 
-                      <Grid item md={4}>
-                        <TextField label="Dealer Add" size="small" fullWidth />
+                      <Grid item xs={12} md={4}>
+                        <TextField
+                          label="Dealer Add"
+                          name="dealerAdd"
+                          size="small"
+                          fullWidth
+                          value={formData.dealerAdd || ""}
+                          onChange={handleChange}
+                        />
                       </Grid>
 
-                      <Grid item md={4}>
-                        <TextField label="Dealer Add1" size="small" fullWidth />
+                      <Grid item xs={12} md={4}>
+                        <TextField
+                          label="Dealer Add1"
+                          name="dealerAdd1"
+                          size="small"
+                          fullWidth
+                          value={formData.dealerAdd1 || ""}
+                          onChange={handleChange}
+                        />
                       </Grid>
 
-                      <Grid item md={4}>
-                        <TextField label="Weekly Off" size="small" fullWidth />
+                      <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                          <InputLabel id="weekly-off-label">
+                            Weekly Off
+                          </InputLabel>
+                          <Select
+                            labelId="weekly-off-label"
+                            label="Weekly Off"
+                            name="weeklyOff"
+                            value={formData.weeklyOff || ""}
+                            onChange={handleChange}
+                          >
+                            <MenuItem value="">
+                              <em>None</em>
+                            </MenuItem>
+                            <MenuItem value="Sunday">Sunday</MenuItem>
+                            <MenuItem value="Saturday">Saturday</MenuItem>
+                            <MenuItem value="Friday">Friday</MenuItem>
+                          </Select>
+                        </FormControl>
                       </Grid>
 
-                      <Grid item md={4}>
+                      <Grid item xs={12} md={4}>
                         <TextField
                           label="Group Customer"
+                          name="groupCustomer"
                           size="small"
                           fullWidth
+                          value={formData.groupCustomer || ""}
+                          onChange={handleChange}
                         />
                       </Grid>
 
-                      <Grid item md={4}>
+                      <Grid item xs={12} md={4}>
                         <TextField
                           label="Distance in Km"
+                          name="distanceKm"
                           size="small"
                           fullWidth
+                          value={formData.distanceKm || ""}
+                          onChange={handleChange}
                         />
                       </Grid>
 
-                      <Grid item md={4}>
+                      <Grid item xs={12} md={4}>
                         <TextField
                           label="Marketing By"
+                          name="marketingBy"
                           size="small"
                           fullWidth
+                          value={formData.marketingBy || ""}
+                          onChange={handleChange}
                         />
+                      </Grid>
+
+                      {/* Contact Persons section */}
+                      <Grid item xs={12} mt={2}>
+                        <Typography variant="subtitle1">
+                          <strong>Contact Persons</strong>
+                        </Typography>
+
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>
+                                <strong>#</strong>
+                              </TableCell>
+                              <TableCell>
+                                <strong>Contact Person</strong>
+                              </TableCell>
+                              <TableCell>
+                                <strong>Designation</strong>
+                              </TableCell>
+                              <TableCell>
+                                <strong>Mobile</strong>
+                              </TableCell>
+                              <TableCell>
+                                <strong>Email</strong>
+                              </TableCell>
+                              <TableCell align="center">
+                                <strong>Action</strong>
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+
+                          <TableBody>
+                            {contactPersons.map((c, idx) => (
+                              <TableRow key={idx}>
+                                <TableCell>{idx + 1}</TableCell>
+                                <TableCell>
+                                  <TextField
+                                    size="small"
+                                    name={`contact_name_${idx}`}
+                                    value={c.name}
+                                    onChange={(e) =>
+                                      handleContactChange(
+                                        idx,
+                                        "name",
+                                        e.target.value,
+                                      )
+                                    }
+                                    fullWidth
+                                  />
+                                </TableCell>
+                                <TableCell>
+                                  <TextField
+                                    size="small"
+                                    value={c.designation}
+                                    onChange={(e) =>
+                                      handleContactChange(
+                                        idx,
+                                        "designation",
+                                        e.target.value,
+                                      )
+                                    }
+                                    fullWidth
+                                  />
+                                </TableCell>
+                                <TableCell>
+                                  <TextField
+                                    size="small"
+                                    value={c.mobile}
+                                    onChange={(e) =>
+                                      handleContactChange(
+                                        idx,
+                                        "mobile",
+                                        e.target.value,
+                                      )
+                                    }
+                                    fullWidth
+                                  />
+                                </TableCell>
+                                <TableCell>
+                                  <TextField
+                                    size="small"
+                                    value={c.email}
+                                    onChange={(e) =>
+                                      handleContactChange(
+                                        idx,
+                                        "email",
+                                        e.target.value,
+                                      )
+                                    }
+                                    fullWidth
+                                  />
+                                </TableCell>
+                                <TableCell align="center">
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => removeContactRow(idx)}
+                                  >
+                                    Delete
+                                  </IconButton>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          // startIcon={<AddIcon />}
+                          onClick={addContactRow}
+                          sx={{ mt: 1 }}
+                        >
+                          Add Contact
+                        </Button>
                       </Grid>
                     </Grid>
                   )}
