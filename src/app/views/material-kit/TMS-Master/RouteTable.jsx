@@ -38,7 +38,7 @@ export default function RouteTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/route-form/edit/${params.row.id}`, {
+                navigate(`/material/TMS-route-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -67,7 +67,7 @@ export default function RouteTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/route-form/add")}
+            onClick={() => navigate("/material/TMS-route-form/add")}
           >
             New
           </Button>

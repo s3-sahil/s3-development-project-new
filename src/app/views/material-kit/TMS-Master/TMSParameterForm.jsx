@@ -51,7 +51,10 @@ export default function TMSParameterForm() {
       const data = location.state;
 
       setFormData({
+<<<<<<< HEAD
         division:localStorage.getItem("PROFCEN_CD"),
+=======
+>>>>>>> f8edf33447662f4e9793223e38c5c580f15b16d6
         punchingFileFlag: data.InOut_Flag ? "Yes" : "No",
         woffShiftGen: data.Shift_Plan_WO === "Y" ? "Yes" : "No",
         odTourApproval: data.OD_Appr_Flag === "Y" ? "Yes" : "No",
@@ -85,6 +88,11 @@ export default function TMSParameterForm() {
 
   const newbuttonapi = () => {
     setFormData(INITIAL_FORM);
+<<<<<<< HEAD
+=======
+    setSaveMode(true);
+    setActionMode("new");
+>>>>>>> f8edf33447662f4e9793223e38c5c580f15b16d6
   };
 
   const confirmDelete = () => {
@@ -98,7 +106,11 @@ export default function TMSParameterForm() {
 
     try {
       const payload = {
+<<<<<<< HEAD
         profceN_CD: formData.division,
+=======
+        profceN_CD: localStorage.getItem("PROFCEN_CD"),
+>>>>>>> f8edf33447662f4e9793223e38c5c580f15b16d6
 
         shift_Plan_Appl: formData.shiftPlanApplicable === "Yes",
         use_Our_Shift: true,
@@ -132,7 +144,11 @@ export default function TMSParameterForm() {
         leave_Appr_Flag: formData.leaveApproval === "1" ? "Y" : "N",
       };
 
+<<<<<<< HEAD
       console.log("Saving Payload:", payload);
+=======
+      console.log("Payload:", payload);
+>>>>>>> f8edf33447662f4e9793223e38c5c580f15b16d6
 
       const result = await saveTmsParameter(payload);
 
@@ -150,7 +166,10 @@ export default function TMSParameterForm() {
       setIsSaving(false);
     }
   };
+<<<<<<< HEAD
 
+=======
+>>>>>>> f8edf33447662f4e9793223e38c5c580f15b16d6
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
@@ -170,6 +189,7 @@ export default function TMSParameterForm() {
             onClick={() => {
               if (actionMode === "edit") {
                 handleSave();
+<<<<<<< HEAD
               } else if (actionMode === "delete") {
                 confirmDelete();
               } else {
@@ -190,6 +210,16 @@ export default function TMSParameterForm() {
                 : saveMode
                   ? "Save"
                   : "New"}
+=======
+              } else if (!saveMode) {
+                newbuttonapi();
+              } else {
+                handleSave();
+              }
+            }}
+          >
+            {actionMode === "edit" ? "Update" : saveMode ? "Save" : "New"}
+>>>>>>> f8edf33447662f4e9793223e38c5c580f15b16d6
           </Button>
 
           <Button
