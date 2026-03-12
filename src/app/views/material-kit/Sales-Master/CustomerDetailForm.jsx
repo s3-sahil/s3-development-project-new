@@ -12,6 +12,7 @@ import {
   FormControlLabel,
   Grid,
   Icon,
+  IconButton,
   InputLabel,
   MenuItem,
   Radio,
@@ -31,7 +32,7 @@ import { Breadcrumb } from "app/components";
 const SAMPLE_TAXES = [
   { code: "T01", desc: "Standard Tax", percent: 5 },
   { code: "T02", desc: "Luxury Tax", percent: 12 },
-  { code: "T03", desc: "Service Tax", percent: 18 }
+  { code: "T03", desc: "Service Tax", percent: 18 },
 ];
 
 const CustomerDetailForm = () => {
@@ -92,7 +93,6 @@ const CustomerDetailForm = () => {
   // load initialData into formData when dialog opens or initialData changes
   useEffect(() => {
     if (open) {
-      setTabIndex(0);
       setFormData((prev) => ({ ...prev, ...(initialData.formData || {}) }));
       setAvailableTaxes(
         Array.isArray(initialData.availableTaxes)
@@ -101,8 +101,7 @@ const CustomerDetailForm = () => {
       );
       setAddedTaxes(Array.isArray(initialData.taxes) ? initialData.taxes : []);
     }
-  }, [open, initialData]);
-
+  }, [open]);
   // helper to update formData fields
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -116,24 +115,33 @@ const CustomerDetailForm = () => {
   const update = (setter) => (field) => (e) =>
     setter((prev) => ({ ...prev, [field]: e.target.value }));
 
-  // Tab change (do not toggle dialog open here)
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
+    setOpen(true);
   };
 
-  // Tax handlers
   const handleAddTax = () => {
-    if (!selectedTaxCode) return;
-    const tax = (availableTaxes || []).find((t) => t.code === selectedTaxCode);
+    if (!selectedTaxCode) {
+      alert("Please select tax");
+      return;
+    }
+
+    const tax = availableTaxes.find((t) => t.code === selectedTaxCode);
+
     if (!tax) return;
 
-    const amount = parseFloat(((baseAmount * tax.percent) / 100).toFixed(2));
-    const exists = (addedTaxes || []).some(
+    const amount = ((baseAmount * tax.percent) / 100).toFixed(2);
+
+    const exists = addedTaxes.some(
       (t) => t.code === tax.code && t.type === taxType,
     );
-    if (exists) return;
 
-    setAddedTaxes((prev = []) => [
+    if (exists) {
+      alert("Tax already added");
+      return;
+    }
+
+    setAddedTaxes((prev) => [
       ...prev,
       {
         id: `${tax.code}_${taxType}`,
@@ -141,9 +149,10 @@ const CustomerDetailForm = () => {
         code: tax.code,
         desc: tax.desc,
         percent: tax.percent,
-        amount,
+        amount: Number(amount),
       },
     ]);
+
     setSelectedTaxCode("");
   };
 
@@ -169,7 +178,7 @@ const CustomerDetailForm = () => {
     // keep for local submit usage if needed
     console.log("Customer Data (local):", formData);
   };
- const handleClose = () => {
+  const handleClose = () => {
     setOpen(false);
   };
   return (
@@ -775,7 +784,8 @@ const CustomerDetailForm = () => {
                                       size="small"
                                       onClick={() => handleRemoveTax(t.id)}
                                     >
-                                      <DeleteIcon fontSize="small" />
+                                      Delete
+                                      {/* <DeleteIcon fontSize="small" /> */}
                                     </IconButton>
                                   </TableCell>
                                 </TableRow>
@@ -788,29 +798,127 @@ const CustomerDetailForm = () => {
                   )}
 
                   {tabIndex === 1 && (
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} md={6}>
-                        <TextField size="small" label="Email" fullWidth />
+                    <Grid container spacing={2} mt={1}>
+                      <Grid item md={3}>
+                        <TextField label="Percentage" size="small" fullWidth />
                       </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField size="small" label="Phone" fullWidth />
+
+                      <Grid item md={3}>
+                        <TextField label="Description" size="small" fullWidth />
                       </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField size="small" label="Mobile" fullWidth />
+
+                      <Grid item md={3}>
+                        <TextField
+                          label="Payment Mode"
+                          size="small"
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item md={3}>
+                        <TextField label="Period" size="small" fullWidth />
+                      </Grid>
+
+                      <Grid item md={12}>
+                        <Button variant="contained" sx={{ mr: 2 }}>
+                          ADD
+                        </Button>
+
+                        <Button variant="contained" color="error">
+                          REMOVE
+                        </Button>
                       </Grid>
                     </Grid>
                   )}
 
                   {tabIndex === 2 && (
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} md={6}>
-                        <TextField size="small" label="Bank Name" fullWidth />
+                    <Grid container spacing={2} mt={1}>
+                      <Grid item md={4}>
+                        <TextField label="ECC Code" size="small" fullWidth />
                       </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField size="small" label="Account No" fullWidth />
+
+                      <Grid item md={4}>
+                        <TextField label="Range" size="small" fullWidth />
                       </Grid>
-                      <Grid item xs={12} md={6}>
-                        <TextField size="small" label="IFSC Code" fullWidth />
+
+                      <Grid item md={4}>
+                        <TextField
+                          label="Commissionerate"
+                          size="small"
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField label="Division" size="small" fullWidth />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField label="Category" size="small" fullWidth />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField
+                          label="Ref Customer"
+                          size="small"
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField label="VAT No" size="small" fullWidth />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField label="CST No" size="small" fullWidth />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField
+                          label="Service Tax No"
+                          size="small"
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField label="Dealer Name" size="small" fullWidth />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField label="Dealer Add" size="small" fullWidth />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField label="Dealer Add1" size="small" fullWidth />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField label="Weekly Off" size="small" fullWidth />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField
+                          label="Group Customer"
+                          size="small"
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField
+                          label="Distance in Km"
+                          size="small"
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item md={4}>
+                        <TextField
+                          label="Marketing By"
+                          size="small"
+                          fullWidth
+                        />
                       </Grid>
                     </Grid>
                   )}
