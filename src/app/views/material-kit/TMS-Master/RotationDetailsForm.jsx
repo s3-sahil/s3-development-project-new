@@ -1,105 +1,242 @@
 import {
   Box,
-  Container,
-  TextField,
   Button,
-  Icon,
-  Grid,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   Checkbox,
+  Container,
+  FormControlLabel,
   FormGroup,
+  Grid,
+  Icon,
+  Radio,
+  RadioGroup,
+  TextField,
   Typography,
-  Select,
-  MenuItem,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
+import { fetchShift, saveRotationDetails } from "app/utils/authServices";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function RotationDetailsForm() {
-  const [formData, setFormData] = useState({
-    rotationCode: "",
-    description: "",
-    patternType: "",
-    weekdays: [],
-    shifts: [],
-    unit: "UNIT-1",
-  });
+  const [leadObj, setLeadObj] = useState({});
+  const [showDaySelector, setShowDaySelector] = useState(false);
+  const [showShiftSelector, setShowShiftSelector] = useState(false);
 
-  const [showDays, setShowDays] = useState(false);
-  const [showShifts, setShowShifts] = useState(false);
+  const [selectedDays, setSelectedDays] = useState([]);
+  const [selectedShiftCodes, setSelectedShiftCodes] = useState([]);
 
-  const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const shiftOptions = [
-    "F - FIRST",
-    "G - GENERAL",
-    "S - SECOND",
-    "T - THIRD",
-    "P - PIRANGUT",
-    "C - TEMPORARY",
-    "A - TEMP SEC",
-    "B - TEMP FIRST",
-  ];
+  const [shifts, setShifts] = useState([]);
 
-  const handleChange = (field) => (event) => {
-    setFormData({ ...formData, [field]: event.target.value });
+  const slabIdRefs = useRef(null);
+  const navigate = useNavigate();
 
-    if (field === "patternType") {
-      // auto show weekdays if "weekdays" selected
-      setShowDays(event.target.value === "weekdays");
+  const dayOptions = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  useEffect(() => {
+    masterloan();
+  }, []);
+
+  /* UPDATE FORM */
+
+  const updateFormValue = ({ updateType, value }) => {
+    setLeadObj((prev) => ({
+      ...prev,
+      [updateType]: value,
+    }));
+  };
+
+  /* FETCH SHIFTS */
+
+  const masterloan = async () => {
+    try {
+      const response = await fetchShift();
+
+      const normalized = Object.keys(response).reduce((acc, key) => {
+        acc[key.toLowerCase()] = response[key];
+        return acc;
+      }, {});
+
+      if (normalized.data) {
+        setShifts(normalized.data);
+      }
+    } catch (error) {
+      console.error("Shift Fetch Error:", error);
     }
   };
 
-  const handleCheckboxChange = (field, value) => (event) => {
-    const updated = event.target.checked
-      ? [...formData[field], value]
-      : formData[field].filter((v) => v !== value);
-    setFormData({ ...formData, [field]: updated });
+  /* DAY SELECT */
+
+  const handleDayChange = (day) => {
+    let updatedDays = [];
+
+    if (selectedDays.includes(day)) {
+      updatedDays = selectedDays.filter((d) => d !== day);
+    } else {
+      updatedDays = [...selectedDays, day];
+    }
+
+    setSelectedDays(updatedDays);
+
+    updateFormValue({
+      updateType: "rotation_days",
+      value: updatedDays.join(","),
+    });
+  };
+
+  /* SHIFT SELECT */
+
+  const handleShiftChange = (code) => {
+    let updatedShift = [];
+
+    if (selectedShiftCodes.includes(code)) {
+      updatedShift = selectedShiftCodes.filter((s) => s !== code);
+    } else {
+      updatedShift = [...selectedShiftCodes, code];
+    }
+
+    setSelectedShiftCodes(updatedShift);
+
+    updateFormValue({
+      updateType: "shift_pattern",
+      value: updatedShift.join(","),
+    });
+  };
+
+  /* SAVE */
+
+  const handleSave = async () => {
+    try {
+      const payload = {
+        ...leadObj,
+        rotation_days: selectedDays.join(","),
+        shift_pattern: selectedShiftCodes.join(","),
+      };
+
+      console.log("Save Payload:", payload);
+
+      const data = await saveRotationDetails(payload);
+
+      if (data?.message) {
+        alert("Data saved successfully");
+      }
+    } catch (error) {
+      console.error("Save Error:", error);
+    }
   };
 
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "HR" }, { name: "Rotation Details" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "TMS" }, { name: "Rotation Details" }]}
+        />
       </Box>
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
-        <Box display="flex" justifyContent="space-between" mb={2} alignItems="center">
-          <h2></h2>
-          <Box display="flex" gap={2}>
-           
-            <Button variant="contained" startIcon={<Icon>save</Icon>}>Save</Button>
-          </Box>
+        <Box display="flex" justifyContent="space-between" mb={2}>
+          <Typography variant="h6"></Typography>
+
+          <Button
+            variant="contained"
+            startIcon={<Icon>save</Icon>}
+            onClick={handleSave}
+          >
+            Save
+          </Button>
         </Box>
 
         <Grid container spacing={2}>
+          {/* ROTATION CODE */}
+
           <Grid item xs={4}>
-            <TextField label="Rotation Code" size="small" fullWidth value={formData.rotationCode} onChange={handleChange("rotationCode")} />
+            <TextField
+              label="Rotation Code"
+              size="small"
+              fullWidth
+              value={leadObj.rotation_code || ""}
+              inputRef={slabIdRefs}
+              onChange={(e) =>
+                updateFormValue({
+                  updateType: "rotation_code",
+                  value: e.target.value,
+                })
+              }
+            />
           </Grid>
+
+          {/* DESCRIPTION */}
+
           <Grid item xs={4}>
-            <TextField label="Description" size="small" fullWidth value={formData.description} onChange={handleChange("description")} />
+            <TextField
+              label="Description"
+              size="small"
+              fullWidth
+              value={leadObj.description || ""}
+              onChange={(e) =>
+                updateFormValue({
+                  updateType: "description",
+                  value: e.target.value,
+                })
+              }
+            />
           </Grid>
+
+          {/* ROTATION PATTERN */}
 
           <Grid item xs={12}>
             <Typography variant="subtitle1">Rotation Pattern</Typography>
-            <RadioGroup value={formData.patternType} onChange={handleChange("patternType")}>
-              <FormControlLabel value="days" control={<Radio />} label="After Specified No. Of Days" />
-              <FormControlLabel value="monthDates" control={<Radio />} label="On The Specified Dates Of Month" />
-              <FormControlLabel value="weekdays" control={<Radio />} label="On Specified Week Days" />
+
+            <RadioGroup
+              value={leadObj.pattern_type || ""}
+              onChange={(e) =>
+                updateFormValue({
+                  updateType: "pattern_type",
+                  value: e.target.value,
+                })
+              }
+            >
+              <FormControlLabel
+                value="days"
+                control={<Radio />}
+                label="After Specified No. Of Days"
+              />
+
+              <FormControlLabel
+                value="monthDates"
+                control={<Radio />}
+                label="On The Specified Dates Of Month"
+              />
+
+              <FormControlLabel
+                value="weekdays"
+                control={<Radio />}
+                label="On Specified Week Days"
+              />
             </RadioGroup>
-            <Button variant="outlined" sx={{ mt: 1 }} onClick={() => setShowDays(!showDays)}>
-              {showDays ? "Hide Days" : "Select Days"}
+
+            <Button
+              variant="outlined"
+              sx={{ mt: 1 }}
+              onClick={() => setShowDaySelector(!showDaySelector)}
+            >
+              Select Days
             </Button>
           </Grid>
 
-          {showDays && (
+          {/* DAY SELECTOR */}
+
+          {showDaySelector && (
             <Grid item xs={12}>
               <FormGroup row>
-                {weekdays.map((day) => (
+                {dayOptions.map((day) => (
                   <FormControlLabel
                     key={day}
-                    control={<Checkbox checked={formData.weekdays.includes(day)} onChange={handleCheckboxChange("weekdays", day)} />}
+                    control={
+                      <Checkbox
+                        checked={selectedDays.includes(day)}
+                        onChange={() => handleDayChange(day)}
+                      />
+                    }
                     label={day}
                   />
                 ))}
@@ -107,22 +244,63 @@ export default function RotationDetailsForm() {
             </Grid>
           )}
 
+          {/* SHOW SELECTED DAYS */}
+
+          <Grid item xs={12}>
+            <TextField
+              label="Selected Days"
+              size="small"
+              fullWidth
+              value={selectedDays.join(", ")}
+              InputProps={{ readOnly: true }}
+            />
+          </Grid>
+
+          {/* SHIFT PATTERN */}
+
           <Grid item xs={12}>
             <Typography variant="subtitle1">Shift Change Pattern</Typography>
-            <Button variant="outlined" sx={{ mt: 1 }} onClick={() => setShowShifts(!showShifts)}>
-              {showShifts ? "Hide Shifts" : "Select Shifts"}
+
+            <Button
+              variant="outlined"
+              sx={{ mt: 1 }}
+              onClick={() => setShowShiftSelector(!showShiftSelector)}
+            >
+              Select Shifts
             </Button>
-            {showShifts && (
-              <FormGroup row sx={{ mt: 1 }}>
-                {shiftOptions.map((shift) => (
+          </Grid>
+
+          {/* SHIFT SELECTOR */}
+
+          {showShiftSelector && (
+            <Grid item xs={12}>
+              <FormGroup row>
+                {shifts.map((shift) => (
                   <FormControlLabel
-                    key={shift}
-                    control={<Checkbox checked={formData.shifts.includes(shift)} onChange={handleCheckboxChange("shifts", shift)} />}
-                    label={shift}
+                    key={shift.Shift_Code}
+                    control={
+                      <Checkbox
+                        checked={selectedShiftCodes.includes(shift.Shift_Code)}
+                        onChange={() => handleShiftChange(shift.Shift_Code)}
+                      />
+                    }
+                    label={`${shift.Shift_Code} - ${shift.Shift_Desc}`}
                   />
                 ))}
               </FormGroup>
-            )}
+            </Grid>
+          )}
+
+          {/* SHOW SELECTED SHIFTS */}
+
+          <Grid item xs={12}>
+            <TextField
+              label="Selected Shifts"
+              size="small"
+              fullWidth
+              value={selectedShiftCodes.join(", ")}
+              InputProps={{ readOnly: true }}
+            />
           </Grid>
         </Grid>
       </Box>

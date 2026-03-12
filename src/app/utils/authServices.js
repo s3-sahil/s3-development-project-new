@@ -565,3 +565,82 @@ export const TMSParameterPaginationAPI = async (
         return { Data: [], TotalCount: 0 };
     }
 };
+
+export const saveRotationDetails = async (rotationData) => {
+  try {
+    const response = await axiosInstance.post(
+      "/API/TMS/ROTATION_DETAILS/ADD-ROTATIONDETAILS",
+      rotationData
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message || 
+      "Failed to Save Rotation Details."
+    );
+  }
+};
+
+export const fetchShift = async () => {
+  try {
+
+    const response = await axiosInstance.get(
+      "/api/Master/FETCH-SHIFT"
+    );
+
+    return response.data;
+
+  } catch (error) {
+
+    console.error("API Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to fetch shift details."
+    );
+
+  }
+};
+
+export const saveRoute = async (routeDtails) => {
+  try {
+
+    const response = await axiosInstance.post(
+      "/API/TMS/ROUTE_DETAILS/ADD-ROUTEDETAILS",
+      routeDtails
+    );
+
+    return response.data;
+
+  } catch (error) {
+
+    console.error("API Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to save route details. Please try again."
+    );
+
+  }
+};
+
+export const manualPunchingSave = async (leadObj) => {
+  try {
+    const response = await axiosInstance.post(
+      "/API/TMS/MANUAL_PUNCHING/ADD-MANUALPUNCHING",
+      leadObj
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to save manual punching data. Please try again."
+    );
+  }
+};
