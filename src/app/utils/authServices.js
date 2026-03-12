@@ -565,3 +565,86 @@ export const TMSParameterPaginationAPI = async (
         return { Data: [], TotalCount: 0 };
     }
 };
+
+
+export const saveCardDetails = async (cardData) => {
+  try {
+    const response = await axiosInstance.post(     
+      "/API/TMS/CARD_DETAILS/ADD-CARDETAILS?Card_No="+cardData,
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message || 
+      "Failed to save Card Details."
+    );
+  }
+};
+
+
+export const CardDetailPaginationAPI = async (
+    tableName = "Card_Mst",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Card Details pagination fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
+};
+
+export const ProjectActivityPaginationAPI = async (
+    tableName = "Project_activity",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Customer pagination fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
+};

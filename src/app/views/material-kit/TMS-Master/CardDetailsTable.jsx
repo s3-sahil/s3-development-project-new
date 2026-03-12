@@ -10,38 +10,92 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { CardDetailPaginationAPI } from "app/utils/authServices";
 
-export default function CardDetailsTable() {
+
+
+export default function CardDetailTable() {
+  
+
   const navigate = useNavigate();
-
-  const [rows, setRows] = useState([
-    { id: 1, cardNumber: "020033AD3DA1" },
-    { id: 2, cardNumber: "100" },
-    { id: 3, cardNumber: "101" },
-    { id: 4, cardNumber: "103" },
-    { id: 5, cardNumber: "105" },
-  ]);
-
+  const location = useLocation();
+  const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalRows, setTotalRows] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [filteredRows, setFilteredRows] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const [filteredRows, setFilteredRows] = useState(rows);
 
+
+  const fetchData = async () => {
+      setLoading(true);
+
+    try {
+      const response = await CardDetailPaginationAPI(
+        "Card_mst",
+        page + 1,
+        pageSize,
+      );
+
+      const data = response?.Data || [];
+
+      const formattedRows = data.map((item,index) => ({
+        id: item.Card_No,
+        Card_No: item.Card_No,
+        Emp_No: item.Emp_No,
+        Assign_Date: item.Assign_Date
+      }));
+
+      setRows(formattedRows);
+      setFilteredRows(formattedRows);
+      setTotalRows(response?.TotalCount || 0);
+    } catch (error) {
+      console.error("Table fetch error:", error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+      fetchData();
+    }, [page, pageSize, location.state]);
+
+  // // //
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const filtered = rows.filter((row) =>
+        row.Card_No?.toLowerCase().includes(searchText.toLowerCase().trim())
+      );
+      
+      setFilteredRows(filtered);
+
+    }, 300);
+
+    return () => clearTimeout(timer);
+
+  }, [searchText, rows]);
+
+  // // //
   const handleSearch = () => {
     const filtered = rows.filter((row) =>
-      row.cardNumber.toLowerCase().includes(searchText.toLowerCase())
+      row.Card_No?.toLowerCase().includes(searchText.toLowerCase())
     );
+    // setRows(filtered);
+    // setFilteredRows(filtered);
     setFilteredRows(filtered);
   };
 
-  const handleDelete = (id) => {
-    const updatedRows = rows.filter((row) => row.id !== id);
+  const handleDelete = (Card_No) => {
+    const updatedRows = rows.filter((row) => row.Card_No !== Card_No);
     setRows(updatedRows);
     setFilteredRows(updatedRows);
   };
 
   const columns = [
-    { field: "cardNumber", headerName: "Card Number", flex: 1 },
+    { field: "Card_No", headerName: "Card Number", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
@@ -51,7 +105,7 @@ export default function CardDetailsTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/TMS-card-details-form/edit/${params.row.id}`, {
+                navigate(`/material/TMS-card-details-form/edit/${params.row.Card_No}`, {
                   state: params.row,
                 })
               }
@@ -61,7 +115,7 @@ export default function CardDetailsTable() {
           </Tooltip>
 
           <Tooltip title="Delete">
-            <IconButton onClick={() => handleDelete(params.row.id)}>
+            <IconButton onClick={() => handleDelete(params.row.Card_No)}>
               <Icon color="error">delete</Icon>
             </IconButton>
           </Tooltip>
@@ -103,10 +157,19 @@ export default function CardDetailsTable() {
         {/* 📊 Table */}
         <Box sx={{ height: 500 }}>
           <DataGrid
+            //rows={rows}
             rows={filteredRows}
             columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10]}
+            rowCount={totalRows}
+            loading={loading}
+            pagination
+            paginationMode="server"
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
+            }}
           />
         </Box>
       </Stack>

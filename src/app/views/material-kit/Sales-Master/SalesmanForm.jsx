@@ -50,7 +50,7 @@ const SalesmanForm = () => {
   // 🔹 Fetch employee dropdown
   const fetchEmployeeCode = async () => {
     try {
-      const profcenCd = localStorage.getItem("PROFCEN_CD") || "";
+      const profcenCd = localStorage.getItem("PROFCEN_CD") || ""; //"2";
       if (!profcenCd) return;
 
       const res = await Employeelistapichange(profcenCd);

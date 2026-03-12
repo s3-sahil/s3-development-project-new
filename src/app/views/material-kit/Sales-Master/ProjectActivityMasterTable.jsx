@@ -1,31 +1,64 @@
 import { Box, Button, Container, Icon, IconButton, Stack, Tooltip } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
+//import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ProjectActivityPaginationAPI } from "app/utils/authServices";
+import { useEffect, useState } from "react";
 
-const ProjectActivityMasterTable = () => {
+export default function ProjectActivityMasterTable() {
+
   const navigate = useNavigate();
+  const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(11);
+  const [rowCount, setRowCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const [rows] = useState([
-    {
-      id: 1,
-      activityCode: "ACT-001",
-      activityDescription: "Design & Engineering",
-      status: "Active",
-    },
-    {
-      id: 2,
-      activityCode: "ACT-002",
-      activityDescription: "Procurement",
-      status: "Active",
-    },
-  ]);
+  const loadProjectActivity = async () => {
+    setLoading(true);
+    const res = await ProjectActivityPaginationAPI(
+      "Project_activity",
+      page + 1,
+      pageSize
+    );
+
+    if (res?.Data) {
+      setRows(
+        res.Data.map((item, index) => ({
+          id: item.id || index + 1,
+          ...item,
+        }))
+      );
+      setRowCount(res.TotalCount || 0);
+    }
+
+    setLoading(false);
+  };
+
+
+  useEffect(() => {
+    loadProjectActivity();
+  }, [page, pageSize]);
+
+  const handleAdd = () => {
+    navigate("/material/salesman/add");
+  }
+
+  const handleEdit = (row) => {
+    navigate(`/material/salesman/edit/${row.Activity_code}`, {
+      state: row,
+    });
+  };
+
+  const handleDelete = (row) => {
+    console.log("Delete salesman:", row.Activity_code);
+  };
+
 
   const columns = [
-    { field: "activityCode", headerName: "Activity Code", flex: 1 },
-    { field: "activityDescription", headerName: "Activity Description", flex: 2 },
-    { field: "status", headerName: "Status", flex: 1 },
+    { field: "Activity_code", headerName: "Activity Code", flex: 1 },
+    { field: "Description", headerName: "Activity Description", flex: 2 },
     {
       field: "actions",
       headerName: "Actions",
@@ -34,19 +67,13 @@ const ProjectActivityMasterTable = () => {
       renderCell: (params) => (
         <>
           <Tooltip title="Edit">
-            <IconButton
-              onClick={() =>
-                navigate(`/material/sales-project-activity-master-form/edit/${params.row.id}`, {
-                  state: params.row,
-                })
-              }
-            >
+            <IconButton onClick={() => handleEdit(params.row)}>
               <Icon color="primary">edit</Icon>
             </IconButton>
           </Tooltip>
 
           <Tooltip title="Delete">
-            <IconButton>
+            <IconButton onClick={() => handleDelete(params.row)}>
               <Icon color="error">delete</Icon>
             </IconButton>
           </Tooltip>
@@ -73,11 +100,26 @@ const ProjectActivityMasterTable = () => {
         </Box>
 
         <Box sx={{ height: 500, width: "100%" }}>
-          <DataGrid rows={rows} columns={columns} disableRowSelectionOnClick />
+          <DataGrid 
+          //rows={rows} columns={columns} disableRowSelectionOnClick 
+          
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server" 
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
+            }}
+
+          />
         </Box>
       </Stack>
     </Container>
   );
-};
+}
 
-export default ProjectActivityMasterTable;
+

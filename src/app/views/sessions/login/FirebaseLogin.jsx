@@ -77,96 +77,96 @@ export default function FirebaseLogin() {
   //   }
   // };
 
-  // const handleFormSubmit = async (values, { setSubmitting }) => {
-  //   try {
-  //     setSubmitting(true);
-
-  //     // Call your custom API
-  //     const data = await login(values.Login_Name, values.Login_Pwd);
-
-  //     if (data.status === "succeed") {
-  //       const { token, JsonData } = data; // <-- destructure from API response
-
-  //       // Prepare user data for context
-  //       const userData = {
-  //         token,
-  //         JsonData,
-  //         login_name: JsonData.Divisions?.[0]?.login_name || "",
-  //         PROFCEN_CD: JsonData.Divisions?.[0]?.PROFCEN_CD || ""
-  //       };
-
-  //       // ✅ Update AuthContext (AuthGuard will now allow dashboard)
-  //       setUser(userData);
-
-  //       // ✅ Persist in localStorage
-  //       localStorage.setItem("token", token);
-  //       localStorage.setItem("divisions", JSON.stringify(JsonData.Divisions || []));
-  //       localStorage.setItem("modules", JSON.stringify(JsonData.Modules || []));
-  //       localStorage.setItem("departments", JSON.stringify(JsonData.Departments || []));
-  //       localStorage.setItem("PROFCEN_CD", userData.PROFCEN_CD);
-  //       localStorage.setItem("login_name", userData.login_name);
-  //       localStorage.setItem("userData", JSON.stringify(userData)); // optional, for context recovery
-
-  //       enqueueSnackbar("Logged in successfully", { variant: "success" });
-
-  //       // ✅ Navigate to dashboard without page reload
-  //       navigate(state?.from || "/dashboard/default", { replace: true });
-  //     } else {
-  //       enqueueSnackbar(data.message || "Login failed", { variant: "error" });
-  //     }
-  //   } catch (error) {
-  //     console.error("Login error:", error);
-  //     enqueueSnackbar(error.message || "Login failed", { variant: "error" });
-  //   } finally {
-  //     setSubmitting(false);
-  //   }
-  // };
-
   const handleFormSubmit = async (values, { setSubmitting }) => {
-  try {
-    setSubmitting(true);
+    try {
+      setSubmitting(true);
 
-    // 🔴 Skip API — create dummy user
-    const dummyUserData = {
-      token: "dummy-token",
-      JsonData: {
-        Divisions: [
-          {
-            login_name: values.Login_Name || "admin",
-            PROFCEN_CD: "DEFAULT"
-          }
-        ],
-        Modules: [],
-        Departments: []
-      },
-      login_name: values.Login_Name || "admin",
-      PROFCEN_CD: "DEFAULT"
-    };
+      // Call your custom API
+      const data = await login(values.Login_Name, values.Login_Pwd);
 
-    // ✅ Set Auth Context
-    setUser(dummyUserData);
+      if (data.status === "succeed") {
+        const { token, JsonData } = data; // <-- destructure from API response
 
-    // ✅ Save in localStorage (for AuthGuard / refresh)
-    localStorage.setItem("token", dummyUserData.token);
-    localStorage.setItem("divisions", JSON.stringify(dummyUserData.JsonData.Divisions));
-    localStorage.setItem("modules", JSON.stringify([]));
-    localStorage.setItem("departments", JSON.stringify([]));
-    localStorage.setItem("PROFCEN_CD", dummyUserData.PROFCEN_CD);
-    localStorage.setItem("login_name", dummyUserData.login_name);
-    localStorage.setItem("userData", JSON.stringify(dummyUserData));
+        // Prepare user data for context
+        const userData = {
+          token,
+          JsonData,
+          login_name: JsonData.Divisions?.[0]?.login_name || "",
+          PROFCEN_CD: JsonData.Divisions?.[0]?.PROFCEN_CD || ""
+        };
 
-    enqueueSnackbar("Logged in (API bypassed)", { variant: "success" });
+        // ✅ Update AuthContext (AuthGuard will now allow dashboard)
+        setUser(userData);
 
-    // ✅ Directly go to dashboard
-    navigate("/dashboard/default", { replace: true });
+        // ✅ Persist in localStorage
+        localStorage.setItem("token", token);
+        localStorage.setItem("divisions", JSON.stringify(JsonData.Divisions || []));
+        localStorage.setItem("modules", JSON.stringify(JsonData.Modules || []));
+        localStorage.setItem("departments", JSON.stringify(JsonData.Departments || []));
+        localStorage.setItem("PROFCEN_CD", userData.PROFCEN_CD);
+        localStorage.setItem("login_name", userData.login_name);
+        localStorage.setItem("userData", JSON.stringify(userData)); // optional, for context recovery
 
-  } catch (error) {
-    console.error("Login error:", error);
-    enqueueSnackbar("Login failed", { variant: "error" });
-  } finally {
-    setSubmitting(false);
-  }
-};
+        enqueueSnackbar("Logged in successfully", { variant: "success" });
+
+        // ✅ Navigate to dashboard without page reload
+        navigate(state?.from || "/dashboard/default", { replace: true });
+      } else {
+        enqueueSnackbar(data.message || "Login failed", { variant: "error" });
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      enqueueSnackbar(error.message || "Login failed", { variant: "error" });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+//   const handleFormSubmit = async (values, { setSubmitting }) => {
+//   try {
+//     setSubmitting(true);
+
+//     // 🔴 Skip API — create dummy user
+//     const dummyUserData = {
+//       token: "dummy-token",
+//       JsonData: {
+//         Divisions: [
+//           {
+//             login_name: values.Login_Name || "admin",
+//             PROFCEN_CD: "DEFAULT"
+//           }
+//         ],
+//         Modules: [],
+//         Departments: []
+//       },
+//       login_name: values.Login_Name || "admin",
+//       PROFCEN_CD: "DEFAULT"
+//     };
+
+//     // ✅ Set Auth Context
+//     setUser(dummyUserData);
+
+//     // ✅ Save in localStorage (for AuthGuard / refresh)
+//     localStorage.setItem("token", dummyUserData.token);
+//     localStorage.setItem("divisions", JSON.stringify(dummyUserData.JsonData.Divisions));
+//     localStorage.setItem("modules", JSON.stringify([]));
+//     localStorage.setItem("departments", JSON.stringify([]));
+//     localStorage.setItem("PROFCEN_CD", dummyUserData.PROFCEN_CD);
+//     localStorage.setItem("login_name", dummyUserData.login_name);
+//     localStorage.setItem("userData", JSON.stringify(dummyUserData));
+
+//     enqueueSnackbar("Logged in (API bypassed)", { variant: "success" });
+
+//     // ✅ Directly go to dashboard
+//     navigate("/dashboard/default", { replace: true });
+
+//   } catch (error) {
+//     console.error("Login error:", error);
+//     enqueueSnackbar("Login failed", { variant: "error" });
+//   } finally {
+//     setSubmitting(false);
+//   }
+// };
   return (
     <FirebaseRoot>
       <Card className="card">
