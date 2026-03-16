@@ -90,7 +90,14 @@ const CustomerDetailForm = () => {
   const [addedTaxes, setAddedTaxes] = useState(() =>
     Array.isArray(initialData.taxes) ? initialData.taxes : [],
   );
+  const [paymentTerms, setPaymentTerms] = useState([]);
 
+  const [paymentForm, setPaymentForm] = useState({
+    percent: "",
+    description: "",
+    mode: "",
+    period: "",
+  });
   // load initialData into formData when dialog opens or initialData changes
   useEffect(() => {
     if (open) {
@@ -161,6 +168,40 @@ const CustomerDetailForm = () => {
     setAddedTaxes((prev = []) => prev.filter((t) => t.id !== id));
   };
 
+  const handlePaymentChange = (e) => {
+    const { name, value } = e.target;
+
+    setPaymentForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleAddPayment = () => {
+    if (!paymentForm.percent) {
+      alert("Enter percentage");
+      return;
+    }
+
+    setPaymentTerms((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        ...paymentForm,
+      },
+    ]);
+
+    setPaymentForm({
+      percent: "",
+      description: "",
+      mode: "",
+      period: "",
+    });
+  };
+
+  const handleRemovePayment = (id) => {
+    setPaymentTerms((prev) => prev.filter((p) => p.id !== id));
+  };
   const handleClearAll = () => setAddedTaxes([]);
 
   const handleSave = async () => {
@@ -225,13 +266,13 @@ const CustomerDetailForm = () => {
           taX_AMT: t.amount,
         })),
 
-        cust_pay_ex: {
+        cust_pay_ex: paymentTerms.map((p) => ({
           cusT_CODE: formData.code,
-          percent: Number(formData.cashDisc || 0),
-          period: 0,
-          mode: "C",
+          percent: Number(p.percent || 0),
+          period: Number(p.period || 0),
+          mode: p.mode,
           dmflag: "D",
-        },
+        })),
 
         cust_factory_det_ex: {
           cust_code: formData.code,
@@ -927,37 +968,98 @@ const CustomerDetailForm = () => {
                   {tabIndex === 1 && (
                     <Grid container spacing={2} mt={1}>
                       <Grid item md={3}>
-                        <TextField label="Percentage" size="small" fullWidth />
+                        <TextField
+                          label="Percentage"
+                          name="percent"
+                          size="small"
+                          fullWidth
+                          value={paymentForm.percent}
+                          onChange={handlePaymentChange}
+                        />
                       </Grid>
 
                       <Grid item md={3}>
-                        <TextField label="Description" size="small" fullWidth />
+                        <TextField
+                          label="Description"
+                          name="description"
+                          size="small"
+                          fullWidth
+                          value={paymentForm.description}
+                          onChange={handlePaymentChange}
+                        />
                       </Grid>
 
                       <Grid item md={3}>
                         <TextField
                           label="Payment Mode"
+                          name="mode"
                           size="small"
                           fullWidth
+                          value={paymentForm.mode}
+                          onChange={handlePaymentChange}
                         />
                       </Grid>
 
                       <Grid item md={3}>
-                        <TextField label="Period" size="small" fullWidth />
+                        <TextField
+                          label="Period"
+                          name="period"
+                          size="small"
+                          fullWidth
+                          value={paymentForm.period}
+                          onChange={handlePaymentChange}
+                        />
                       </Grid>
 
                       <Grid item md={12}>
-                        <Button variant="contained" sx={{ mr: 2 }}>
+                        <Button variant="contained" onClick={handleAddPayment}>
                           ADD
                         </Button>
+                      </Grid>
 
-                        <Button variant="contained" color="error">
-                          REMOVE
-                        </Button>
+                      {/* Table */}
+                      <Grid item xs={12}>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>%</TableCell>
+                              <TableCell>Description</TableCell>
+                              <TableCell>Mode</TableCell>
+                              <TableCell>Period</TableCell>
+                              <TableCell>Action</TableCell>
+                            </TableRow>
+                          </TableHead>
+
+                          <TableBody>
+                            {paymentTerms.length === 0 ? (
+                              <TableRow>
+                                <TableCell colSpan={5} align="center">
+                                  No Payment Terms Added
+                                </TableCell>
+                              </TableRow>
+                            ) : (
+                              paymentTerms.map((p) => (
+                                <TableRow key={p.id}>
+                                  <TableCell>{p.percent}</TableCell>
+                                  <TableCell>{p.description}</TableCell>
+                                  <TableCell>{p.mode}</TableCell>
+                                  <TableCell>{p.period}</TableCell>
+                                  <TableCell>
+                                    <IconButton
+                                      size="small"
+                                      onClick={() => handleRemovePayment(p.id)}
+                                    >
+                                      Delete
+                                    </IconButton>
+                                  </TableCell>
+                                </TableRow>
+                              ))
+                            )}
+                          </TableBody>
+                        </Table>
                       </Grid>
                     </Grid>
                   )}
-
                   {tabIndex === 2 && (
                     <Grid container spacing={2} mt={1}>
                       <Grid item xs={12} md={4}>
