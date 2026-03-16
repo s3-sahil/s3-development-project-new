@@ -245,7 +245,7 @@ export const addPackingSlip = async (payload) => {
     }
 };
 
-export const addEnquiryDetails = async (enquiryData) => {
+export const addEnquiryDetails = async (enquiryData) => {debugger
     try {
         const response = await axiosInstance.post("/ADD-EQUIRE_DEATILS", enquiryData);
         return response.data;
@@ -756,7 +756,7 @@ export const getExportDocumentsList = async () => {
 export const saveDailyActivityPlan = async (payload) => {
   try {
     const response = await axiosInstance.post(
-      "/API/PLANNING/DAILY_ACTIVITY_PLAN/ADD-DAILY_ACTIVITY_PLAN",
+      "ADD-DAILY_ACTIVITY",
       payload
     );
 
