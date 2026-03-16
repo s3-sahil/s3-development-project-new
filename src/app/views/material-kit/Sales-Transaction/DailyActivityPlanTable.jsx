@@ -3,46 +3,68 @@ import {
   Icon,
   IconButton,
   Tooltip,
-  Button,
+  Button
 } from "@mui/material";
+
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getDailyActivityPlanList, deleteDailyActivityPlan } from "app/utils/authServices";
 
 export default function DailyActivityPlanTable() {
-  const navigate = useNavigate();
 
-  const [rows] = useState([
-    {
-      id: 1,
-      activityNo: "ACT-001",
-      employeeNo: "EMP-101",
-      visitDate: "2026-02-04",
-      visitingTo: "ABC Industries",
-      visitingPerson: "Mr. Sharma",
-      visitStatus: "Planned",
-    },
-    {
-      id: 2,
-      activityNo: "ACT-002",
-      employeeNo: "EMP-102",
-      visitDate: "2026-02-05",
-      visitingTo: "XYZ Pvt Ltd",
-      visitingPerson: "Ms. Patil",
-      visitStatus: "Completed",
-    },
-  ]);
+  const navigate = useNavigate();
+  const [rows, setRows] = useState([]);
+
+  const fetchData = async () => {
+
+    try {
+
+      const data = await getDailyActivityPlanList();
+
+      setRows(data || []);
+
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleDelete = async (id) => {
+
+    try {
+
+      await deleteDailyActivityPlan(id);
+
+      alert("Record Deleted");
+
+      fetchData();
+
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
   const columns = [
+
     { field: "activityNo", headerName: "Activity No", flex: 1 },
+
     { field: "employeeNo", headerName: "Employee No", flex: 1 },
+
     { field: "visitDate", headerName: "Visit Date", flex: 1 },
+
     { field: "visitingTo", headerName: "Visiting To", flex: 1.5 },
+
     { field: "visitingPerson", headerName: "Visiting Person", flex: 1.5 },
+
     { field: "visitStatus", headerName: "Status", flex: 1 },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -61,29 +83,39 @@ export default function DailyActivityPlanTable() {
           </Tooltip>
 
           <Tooltip title="Delete">
-            <IconButton>
+            <IconButton
+              onClick={() => handleDelete(params.row.id)}
+            >
               <Icon color="error">delete</Icon>
             </IconButton>
           </Tooltip>
         </>
       ),
     },
+
   ];
 
   return (
     <Container maxWidth="xl">
+
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[{ name: "Planning" }, { name: "Daily Activity Plan" }]}
+          routeSegments={[
+            { name: "Planning" },
+            { name: "Daily Activity Plan" }
+          ]}
         />
       </Box>
 
       <Stack spacing={3}>
+
         <Box display="flex" justifyContent="flex-end">
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/sales-daily-activity-plan-form/add")}
+            onClick={() =>
+              navigate("/material/sales-daily-activity-plan-form/add")
+            }
           >
             New
           </Button>
@@ -93,10 +125,14 @@ export default function DailyActivityPlanTable() {
           <DataGrid
             rows={rows}
             columns={columns}
+            getRowId={(row) => row.id}
+            pageSizeOptions={[5, 10]}
             disableRowSelectionOnClick
           />
         </Box>
+
       </Stack>
+
     </Container>
   );
 }

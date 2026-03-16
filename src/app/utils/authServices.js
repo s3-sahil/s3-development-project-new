@@ -662,3 +662,137 @@ export const saveCustomerDetail = async (customerData) => {
     );
   }
 };
+
+export const getCustomerList = async () => {
+  try {
+    const response = await axiosInstance.get(
+      "/API/SD/CUSTOMER_DETAIL/GET-CUSTOMER_DETAIL_ALL"
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to fetch Customer Details."
+    );
+  }
+};
+
+export const getCustomerById = async (custCode) => {
+  try {
+    const response = await axiosInstance.get(
+      `/API/SD/CUSTOMER_DETAIL/GET-CUSTOMER_DETAIL/${custCode}`
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to fetch Customer Detail."
+    );
+  }
+};
+
+export const updateCustomerDetail = async (customerData) => {
+  try {
+    const response = await axiosInstance.put(
+      "/API/SD/CUSTOMER_DETAIL/UPDATE-CUSTOMER_DETAIL",
+      customerData
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Update Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to update Customer Detail."
+    );
+  }
+};
+
+export const deleteCustomerDetail = async (custCode) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/API/SD/CUSTOMER_DETAIL/DELETE-CUSTOMER_DETAIL/${custCode}`
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Delete Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to delete Customer Detail."
+    );
+  }
+};
+
+export const getExportDocumentsList = async () => {
+  try {
+
+    const response = await axiosInstance.get(
+      "/API/SALES/EXPORT_DOCUMENTS/GET-EXPORT_DOCUMENTS"
+    );
+
+    return response.data;
+
+  } catch (error) {
+
+    console.error("API Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to fetch Export Documents"
+    );
+  }
+};
+
+
+export const saveDailyActivityPlan = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/API/PLANNING/DAILY_ACTIVITY_PLAN/ADD-DAILY_ACTIVITY_PLAN",
+      payload
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Save Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to save Daily Activity Plan"
+    );
+  }
+};
+
+export const getDailyActivityPlanList = async () => {
+  try {
+    const response = await axiosInstance.get(
+      "/API/PLANNING/DAILY_ACTIVITY_PLAN/GET-DAILY_ACTIVITY_PLAN"
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Error:", error.response || error.message);
+    throw new Error("Failed to fetch Daily Activity Plan");
+  }
+};
+
+export const deleteDailyActivityPlan = async (id) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/API/PLANNING/DAILY_ACTIVITY_PLAN/DELETE/${id}`
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Delete Error:", error.response || error.message);
+    throw new Error("Failed to delete record");
+  }
+};

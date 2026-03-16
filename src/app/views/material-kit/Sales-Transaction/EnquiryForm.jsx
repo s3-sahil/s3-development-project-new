@@ -209,7 +209,7 @@ const EnquiryForm = () => {
 
         try {
             if (isEditMode) {
-                await updateEnquiryDetails(payload);
+                await addEnquiryDetails(payload);
                 alert("Enquiry updated successfully!");
             } else {
                 await addEnquiryDetails(payload);
@@ -368,7 +368,7 @@ const EnquiryForm = () => {
                         name="enquiryNo"
                         value={formData.enquiryNo}
                         size="small"
-                        InputProps={{ readOnly: true }}
+                        onChange={handleChange}
                     />
 
 
