@@ -170,7 +170,7 @@ export const fetchPayCondAPI = async () => {
     }
 };
 
-export const saveCustomerPurchaseOrder = async (payload) => {
+export const saveCustomerPurchaseOrder = async (payload) => {debugger
     try {
         const response = await axiosInstance.post(
             "/ADD-CUSTOMER_PURCHASE_ORDER",
@@ -242,6 +242,34 @@ export const addPackingSlip = async (payload) => {
         }
 
         throw new Error("Failed to add Packing Slip. Please try again.");
+    }
+};
+
+export const PackingSlipPaginationAPI = async (
+    tableName = "packingSlip_ex",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Packing Slip pagination fetch error:", error);
+        return null;
     }
 };
 
