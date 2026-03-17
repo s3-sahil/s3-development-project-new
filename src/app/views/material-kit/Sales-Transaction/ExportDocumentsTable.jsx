@@ -11,37 +11,58 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getExportDocumentsList } from "app/utils/authServices";
+import { ExportDocumentParameterPaginationAPI } from "app/utils/salesTransactionServices";
 
 export default function ExportDocumentsTable() {
 
   const navigate = useNavigate();
+
   const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
+  const [rowCount, setRowCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   // ===== Fetch Data =====
-  const fetchExportDocuments = async () => {
+  const fetchExportDocuments = async (pageNo, size) => {
+
     try {
 
-      const data = await getExportDocumentsList();
+      setLoading(true);
 
-      setRows(data || []);
+      const response = await ExportDocumentParameterPaginationAPI(
+        "invoice_hed",
+        pageNo + 1,
+        size
+      );
+
+      setRows(response?.Data || []);
+      setRowCount(response?.TotalCount || 0);
 
     } catch (error) {
+
       console.error("Fetch Error:", error.message);
+
+    } finally {
+
+      setLoading(false);
+
     }
+
   };
 
   useEffect(() => {
-    fetchExportDocuments();
-  }, []);
+    fetchExportDocuments(page, pageSize);
+  }, [page, pageSize]);
 
   // ===== Navigation =====
+
   const handleAdd = () => {
     navigate("/material/sales-export-documents-form/add");
   };
 
   const handleEdit = (row) => {
-    navigate(`/material/sales-export-documents-form/edit/${row.id}`, {
+    navigate(`/material/sales-export-documents-form/edit/${row.INV_NO}`, {
       state: row,
     });
   };
@@ -50,57 +71,38 @@ export default function ExportDocumentsTable() {
     console.log("Delete:", id);
   };
 
+  // ===== Columns =====
+
   const columns = [
     {
-      field: "functionName",
-      headerName: "Function",
+      field: "INV_NO",
+      headerName: "Invoice No",
+      width: 150,
+    },
+    {
+      field: "INV_TYPE",
+      headerName: "Invoice Type",
+      width: 150,
+    },
+    {
+      field: "SALES_TYPE",
+      headerName: "Sales Type",
+      width: 150,
+    },
+    {
+      field: "CONSIN_NAME",
+      headerName: "Customer",
       flex: 1,
     },
     {
-      field: "objectName",
-      headerName: "Object Name",
-      flex: 1,
-    },
-    {
-      field: "newAccess",
-      headerName: "New",
-      width: 90,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) =>
-        params.value ? <Icon color="success">check</Icon> : null,
-    },
-    {
-      field: "editAccess",
-      headerName: "Edit",
-      width: 90,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) =>
-        params.value ? <Icon color="primary">check</Icon> : null,
-    },
-    {
-      field: "deleteAccess",
-      headerName: "Delete",
-      width: 100,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) =>
-        params.value ? <Icon color="error">check</Icon> : null,
-    },
-    {
-      field: "viewAccess",
-      headerName: "View",
-      width: 90,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params) =>
-        params.value ? <Icon color="action">check</Icon> : null,
-    },
-    {
-      field: "menuLevel",
-      headerName: "Menu Level",
+      field: "CONSIN_CITY",
+      headerName: "City",
       width: 130,
+    },
+    {
+      field: "NET_AMT",
+      headerName: "Net Amount",
+      width: 150,
     },
     {
       field: "actions",
@@ -116,7 +118,7 @@ export default function ExportDocumentsTable() {
           </Tooltip>
 
           <Tooltip title="Delete">
-            <IconButton onClick={() => handleDelete(params.row.id)}>
+            <IconButton onClick={() => handleDelete(params.row.INV_NO)}>
               <Icon color="error">delete</Icon>
             </IconButton>
           </Tooltip>
@@ -149,19 +151,24 @@ export default function ExportDocumentsTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 420, width: "100%" }}>
+        <Box sx={{ height: 500, width: "100%" }}>
+
           <DataGrid
             rows={rows}
             columns={columns}
-            getRowId={(row) => row.id}
-            pageSizeOptions={[5, 10]}
-            disableRowSelectionOnClick
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
+            loading={loading}
+            getRowId={(row) => row.INV_NO}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={{ page, pageSize }}
+            pageSizeOptions={[5, 10, 20]}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
             }}
+            disableRowSelectionOnClick
           />
+
         </Box>
 
       </Stack>
