@@ -10,83 +10,97 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+    PackingSlipPaginationAPI,
+    getPackingSlipDetailsAPI,
+    deletePackingSlipAPI,
+} from "app/utils/authServices"; // Note: Assuming these APIs exist
 
 export default function PackingSlipTable() {
     const navigate = useNavigate();
 
-    // 🔹 Hardcoded Data (Replace with API later)
-    const rows = [
-        {
-            id: 1,
-            functionName: "Packing Slip",
-            objectName: "Dispatch Module",
-            new: true,
-            edit: true,
-            delete: false,
-            view: true,
-            menuLevel: "Level 1",
-        },
-        {
-            id: 2,
-            functionName: "Packing Slip Entry",
-            objectName: "Sales Module",
-            new: true,
-            edit: false,
-            delete: false,
-            view: true,
-            menuLevel: "Level 2",
-        },
-    ];
+    const [rows, setRows] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [rowCount, setRowCount] = useState(0);
+    const [paginationModel, setPaginationModel] = useState({
+        page: 0,
+        pageSize: 10,
+    });
+
+    const fetchPackingSlips = async () => {
+        setLoading(true);
+        try {
+            const response = await PackingSlipPaginationAPI(
+                "packingslip_hed",
+                paginationModel.page + 1,
+                paginationModel.pageSize
+            );
+            if (response?.Data) {
+                setRows(response.Data);
+                setRowCount(response.TotalCount || 0);
+            }
+        } catch (e) {
+            console.error("Error fetching packing slips:", e);
+            setRows([]);
+            setRowCount(0);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchPackingSlips();
+    }, [paginationModel]);
 
     const handleAdd = () => {
         navigate("/material/packing-slip/add");
     };
 
-    const handleEdit = (row) => {
-        navigate(`/material/packing-slip/edit/${row.id}`, {
-            state: row,
-        });
+    const handleEdit = async (row) => {
+        setLoading(true);
+        try {
+            const profcen_cd = localStorage.getItem("PROFCEN_CD");
+            const response = await getPackingSlipDetailsAPI({
+                slip_No: row.slip_No,
+                profcen_cd: profcen_cd,
+            });
+
+            if (response) {
+                navigate(`/material/packing-slip/edit/${row.slip_No}`, {
+                    state: { packingSlipDetails: response },
+                });
+            }
+        } catch (e) {
+            console.error("Failed to fetch packing slip details:", e);
+        }
+        setLoading(false);
     };
 
-    const handleDelete = (id) => {
-        console.log("Delete packing slip:", id);
+    const handleDelete = async (slip_No) => {
+        if (window.confirm("Are you sure you want to delete this packing slip?")) {
+            try {
+                await deletePackingSlipAPI({ slip_No });
+                alert("Packing slip deleted successfully.");
+                fetchPackingSlips();
+            } catch (e) {
+                console.error("Failed to delete packing slip:", e);
+                alert("Failed to delete packing slip.");
+            }
+        }
     };
 
     const columns = [
-        { field: "functionName", headerName: "Function", flex: 1 },
-        { field: "objectName", headerName: "Object Name", flex: 1 },
-
+        { field: "slip_No", headerName: "Slip No", flex: 1 },
         {
-            field: "new",
-            headerName: "New",
-            width: 90,
-            renderCell: (params) =>
-                params.value ? <Icon color="success">check</Icon> : null,
+            field: "slip_dt",
+            headerName: "Date",
+            flex: 1,
+            valueGetter: ({ value }) =>
+                value && new Date(value).toLocaleDateString(),
         },
-        {
-            field: "edit",
-            headerName: "Edit",
-            width: 90,
-            renderCell: (params) =>
-                params.value ? <Icon color="primary">check</Icon> : null,
-        },
-        {
-            field: "delete",
-            headerName: "Delete",
-            width: 100,
-            renderCell: (params) =>
-                params.value ? <Icon color="error">check</Icon> : null,
-        },
-        {
-            field: "view",
-            headerName: "View",
-            width: 90,
-            renderCell: (params) =>
-                params.value ? <Icon color="action">check</Icon> : null,
-        },
-
-        { field: "menuLevel", headerName: "Menu Level", width: 130 },
-
+        { field: "cust_Code", headerName: "Customer", flex: 1 },
+        { field: "po_Id", headerName: "PO No", flex: 1 },
+        { field: "slip_type", headerName: "Type", flex: 1 },
         {
             field: "actions",
             headerName: "Actions",
@@ -101,7 +115,7 @@ export default function PackingSlipTable() {
                     </Tooltip>
 
                     <Tooltip title="Delete">
-                        <IconButton onClick={() => handleDelete(params.row.id)}>
+                        <IconButton onClick={() => handleDelete(params.row.slip_No)}>
                             <Icon color="error">delete</Icon>
                         </IconButton>
                     </Tooltip>
@@ -111,7 +125,7 @@ export default function PackingSlipTable() {
     ];
 
     return (
-        <Container>
+        <Container maxWidth="xl">
             <Box className="breadcrumb">
                 <Breadcrumb
                     routeSegments={[{ name: "Transaction" }, { name: "Packing Slip" }]}
@@ -131,16 +145,18 @@ export default function PackingSlipTable() {
                 </Box>
 
                 {/* Data Grid */}
-                <Box sx={{ height: 420, width: "100%" }}>
+                <Box sx={{ height: 500, width: "100%" }}>
                     <DataGrid
                         rows={rows}
                         columns={columns}
-                        pageSizeOptions={[5, 10]}
-                        initialState={{
-                            pagination: {
-                                paginationModel: { pageSize: 5, page: 0 },
-                            },
-                        }}
+                        getRowId={(row) => row.slip_No}
+                        loading={loading}
+                        rowCount={rowCount}
+                        paginationMode="server"
+                        paginationModel={paginationModel}
+                        onPaginationModelChange={setPaginationModel}
+                        pageSizeOptions={[10, 25, 50]}
+                        disableRowSelectionOnClick
                     />
                 </Box>
             </Stack>

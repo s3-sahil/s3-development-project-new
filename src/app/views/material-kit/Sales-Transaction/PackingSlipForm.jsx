@@ -15,13 +15,14 @@ import Button from "@mui/material/Button";
 import Icon from "@mui/material/Icon";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TransporterModal from "./TransporterModal";
 import { addPackingSlip, fetchItemcodeAPI } from "app/utils/authServices";
 
 const PackingSlipForm = () => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [state, setState] = useState({
         packingType: "",
@@ -49,9 +50,35 @@ const PackingSlipForm = () => {
     const [selectedItems, setSelectedItems] = useState([]);
     const [itemCodes, setItemCodes] = useState([]);
 
+    const isEditMode = !!location.state?.packingSlipDetails;
+
     useEffect(() => {
         loadItemCodes();
-    }, []);
+        if (isEditMode) {
+            const { packingSlipDetails } = location.state;
+            const headerData = packingSlipDetails.Header_Data || {};
+            const itemData = packingSlipDetails.Detail_Data || [];
+
+            // Map API response to form state
+            setState((prev) => ({
+                ...prev,
+                packingType: headerData.slip_type || "",
+                subType: headerData.saleS_TYPE || "",
+                slipNo: headerData.slip_No || "",
+                date: headerData.slip_dt ? headerData.slip_dt.substring(0, 10) : "",
+                customer: headerData.cust_Code || "",
+                // orderNo might not be in header, adjust as needed
+                remark: headerData.remark || "",
+                poNo: headerData.po_Id || "",
+                poDate: headerData.po_id_dt ? headerData.po_id_dt.substring(0, 10) : "",
+                referGrn: headerData.iS_REFERGIN === "Y",
+            }));
+
+            // Populate the items table
+            // Note: You may need to map fields from itemData to match your item structure
+            setItems(itemData.map(item => ({...item, itemCode: item.item_code})));
+        }
+    }, [location.state, isEditMode]);
 
     const loadItemCodes = async () => {
         const data = await fetchItemcodeAPI();
@@ -79,7 +106,15 @@ const PackingSlipForm = () => {
             currency: state.currency,
         };
 
-        setItems([...items, newItem]);
+        if (selectedItems.length === 1) {
+            const index = selectedItems[0];
+            const updatedItems = [...items];
+            updatedItems[index] = newItem;
+            setItems(updatedItems);
+            setSelectedItems([]);
+        } else {
+            setItems([...items, newItem]);
+        }
 
         // Clear only item-related fields
         setState({
@@ -112,19 +147,33 @@ const PackingSlipForm = () => {
             setState((prev) => ({
                 ...prev,
                 itemCode: "",
+                operation: "",
+                quantity: "",
+                formNo: "",
+                formDate: "",
+                formType: "",
+                currency: "",
             }));
         } else {
             // check
             setSelectedItems([index]);
+            const selectedItem = items[index];
             setState((prev) => ({
                 ...prev,
-                itemCode: items[index].itemCode,
+                itemCode: selectedItem.itemCode,
+                operation: selectedItem.operation,
+                quantity: selectedItem.quantity,
+                formNo: selectedItem.formNo,
+                formDate: selectedItem.formDate,
+                formType: selectedItem.formType,
+                currency: selectedItem.currency,
             }));
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const tags = []; // Defined tags to avoid undefined error
 
         const payload = {
             packingSlip_ex: {
@@ -381,7 +430,7 @@ const PackingSlipForm = () => {
                 >
                     <Box display="flex" gap={2}>
                         <Button variant="contained" onClick={handleAddItem}>
-                            ADD
+                            {selectedItems.length === 1 ? "UPDATE" : "ADD"}
                         </Button>
 
                         <Button
