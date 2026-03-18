@@ -11,23 +11,49 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { CustomerRCIAPaginationAPI } from "app/utils/salesTransactionServices";
 
 export default function CustomerRCIAEntryTable() {
   const navigate = useNavigate();
 
-  const [rows] = useState([
-    { id: 1, code: "A001", name: "AAA PVT LTD. A001", state: "TAMIL NADU" },
-    { id: 2, code: "R002", name: "RRR PVT LTD. R002", state: "MAHARASHTRA" },
-    { id: 3, code: "R003", name: "RRR PVT LTD. R003", state: "MAHARASHTRA" },
-    { id: 4, code: "U001", name: "UUU PVT LTD. U001", state: "MAHARASHTRA" },
-    { id: 5, code: "R001", name: "RRR PVT LTD. R001", state: "MAHARASHTRA" },
-  ]);
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [rowCount, setRowCount] = useState(0);
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await CustomerRCIAPaginationAPI(
+        "cust_rcia",
+        paginationModel.page + 1,
+        paginationModel.pageSize
+      );
+
+      if (response && response.Data) {
+        setRows(
+          response.Data.map((row, index) => ({ ...row, id: row.rcia_no || index }))
+        );
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel]);
 
   const columns = [
-    { field: "code", headerName: "Code", flex: 1 },
-    { field: "name", headerName: "Name", flex: 2 },
-    { field: "state", headerName: "State", flex: 1 },
+    { field: "cust_code", headerName: "Customer Code", flex: 1 },
+    { field: "rcia_no", headerName: "RCIA No", flex: 1 },
+    { field: "rcia_date", headerName: "RCIA Date", flex: 1 },
     {
       field: "actions",
       headerName: "Action",
@@ -38,7 +64,7 @@ export default function CustomerRCIAEntryTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/sales-customer-RCIA-entry-form/edit/${params.row.id}`)
+                navigate(`/material/sales-customer-RCIA-entry-form/edit/${params.row.id}`, { state: params.row })
               }
             >
               <Icon color="primary">edit</Icon>
@@ -91,10 +117,12 @@ export default function CustomerRCIAEntryTable() {
           <DataGrid
             rows={rows}
             columns={columns}
-            pageSizeOptions={[10, 25, 50]}
-            initialState={{
-              pagination: { paginationModel: { pageSize: 10, page: 0 } },
-            }}
+            loading={loading}
+            rowCount={rowCount}
+            paginationModel={paginationModel}
+            paginationMode="server"
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[10, 20, 50]}
             disableRowSelectionOnClick
           />
         </Box>

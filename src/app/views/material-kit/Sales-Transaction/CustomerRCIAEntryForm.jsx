@@ -7,9 +7,33 @@ import {
   Grid,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
+import { addCustomerRCIAEntry } from "app/utils/salesTransactionServices";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const CustomerRCIAEntryForm = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const editData = location.state;
+
+  useEffect(() => {
+    if (editData) {
+      setFormData({
+        customerCode: editData.cust_code || "",
+        invoiceNo: editData.inv_no || "",
+        invoiceDate: editData.inv_date ? editData.inv_date.split("T")[0] : "",
+        itemCode: editData.item_code || "",
+        rciaNo: editData.rcia_no || "",
+        rciaDate: editData.rcia_date ? editData.rcia_date.split("T")[0] : "",
+        invoiceQty: editData.challan_qty || "",
+        receivedQty: editData.rec_qty || "",
+        acceptedQty: editData.actual_qty || "",
+        rejectedQty: editData.reject_qty || "",
+        remark: editData.Remark || "",
+      });
+    }
+  }, [editData]);
+
   const [formData, setFormData] = useState({
     customerCode: "",
     invoiceNo: "",
@@ -32,8 +56,38 @@ const CustomerRCIAEntryForm = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log("RCIA Payload:", formData);
+  const handleSave = async () => {
+    const profcen_Cd = localStorage.getItem("profcen_cd") || "str";
+
+    const payload = {
+      cust_code: formData.customerCode,
+      rcia_no: formData.rciaNo,
+      rcia_date: formData.rciaDate ? new Date(formData.rciaDate).toISOString() : null,
+      inv_no: formData.invoiceNo,
+      inv_date: formData.invoiceDate ? new Date(formData.invoiceDate).toISOString() : null,
+      challan_qty: Number(formData.invoiceQty) || 0,
+      rec_qty: Number(formData.receivedQty) || 0,
+      actual_qty: Number(formData.acceptedQty) || 0,
+      reject_qty: Number(formData.rejectedQty) || 0,
+      item_code: formData.itemCode,
+      remark: formData.remark,
+      acc_vou_no: "string", // Default value
+      profcen_Cd: profcen_Cd,
+      indicator: "s", // Default value
+      rej_value: 0, // Default value
+      rate: 0, // Default value
+    };
+
+    try {
+      const response = await addCustomerRCIAEntry([payload]);
+      if (response && response.data.message) {
+        alert(response.data.message);
+        navigate("/material/sales-customer-RCIA-entry-table");
+      }
+    } catch (error) {
+      console.error("Error saving RCIA entry:", error);
+      alert("Failed to save RCIA entry.");
+    }
   };
 
   return (

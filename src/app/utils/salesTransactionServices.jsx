@@ -55,3 +55,46 @@ export const ExportDocumentParameterPaginationAPI = async (
         return { Data: [], TotalCount: 0 };
     }
 };
+
+export const addCustomerRCIAEntry = async (payload) => {
+  try {
+    const response = await axios.post(`${BASE_URL}/ADD-CUSTOMER-RCIA-ENTRY`, payload);
+    return response;
+  } catch (error) {
+    console.error("Error adding Customer RCIA Entry:", error);
+    throw error;
+  }
+};
+
+
+export const CustomerRCIAPaginationAPI = async (
+    tableName = "cust_rcia",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Customer RCIAP fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
+};

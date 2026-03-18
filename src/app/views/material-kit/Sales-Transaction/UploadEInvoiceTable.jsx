@@ -10,21 +10,48 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getEInvoiceListAPI } from "app/utils/authServices";
 
 export default function UploadEInvoiceTable() {
   const navigate = useNavigate();
 
-  const [rows] = useState([
-    {
-      id: 1,
-      invoiceNo: "INV001",
-      customerName: "XYZ Pvt Ltd",
-      invoiceDate: "2026-02-04",
-      amount: 25000,
-      status: "Uploaded",
-    },
-  ]);
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+  const [rowCountState, setRowCountState] = useState(0);
+
+  const fetchEInvoices = async () => {
+    setLoading(true);
+    try {
+      const response = await getEInvoiceListAPI(
+        paginationModel.page + 1,
+        paginationModel.pageSize
+      );
+      if (response && response.Data) {
+        setRows(
+          response.Data.map((row, index) => ({
+            ...row,
+            id: row.invoiceNo || index, // Ensure unique ID
+          }))
+        );
+        setRowCountState(response.TotalCount || 0);
+      } else {
+        setRows([]);
+        setRowCountState(0);
+      }
+    } catch (error) {
+      console.error("Failed to fetch e-invoices:", error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchEInvoices();
+  }, [paginationModel]);
 
   const columns = [
     { field: "invoiceNo", headerName: "Invoice No", flex: 1 },
@@ -79,7 +106,17 @@ export default function UploadEInvoiceTable() {
         </Box>
 
         <Box sx={{ height: 500, width: "100%" }}>
-          <DataGrid rows={rows} columns={columns} disableRowSelectionOnClick />
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCountState}
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            paginationMode="server"
+            pageSizeOptions={[5, 10, 20]}
+            disableRowSelectionOnClick
+          />
         </Box>
       </Stack>
     </Container>

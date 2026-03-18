@@ -1,8 +1,11 @@
 import { Box, Container, TextField, Button, Icon, Grid, Checkbox, FormControlLabel } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { saveEInvoiceAPI } from "app/utils/authServices";
 
 const UploadEInvoiceForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fromNo: "",
     toNo: "",
@@ -18,12 +21,27 @@ const UploadEInvoiceForm = () => {
     }));
   };
 
+  const handleSave = async () => {
+    try {
+      console.log("Saving Payload:", formData);
+      const response = await saveEInvoiceAPI(formData);
+
+      if (response) {
+        alert("E-Invoice details saved successfully!");
+        navigate("/material/sales-upload-e-invoice-table");
+      }
+    } catch (error) {
+      console.error("Error saving e-invoice:", error);
+      alert("Failed to save e-invoice details.");
+    }
+  };
+
   const handlePreview = () => {
     console.log("Preview Payload:", formData);
   };
 
   const handleClose = () => {
-    console.log("Close clicked");
+    navigate("/material/sales-upload-e-invoice-table");
   };
 
   return (
@@ -33,7 +51,7 @@ const UploadEInvoiceForm = () => {
       </Box>
 
       <Box display="flex" justifyContent="flex-end" mb={3}>
-        <Button variant="contained" startIcon={<Icon>save</Icon>}>
+        <Button variant="contained" startIcon={<Icon>save</Icon>} onClick={handleSave}>
           Save
         </Button>
       </Box>
