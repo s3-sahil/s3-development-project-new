@@ -18,6 +18,7 @@ import { Span } from "app/components/Typography";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TransporterModal from "./TransporterModal";
+import TagDetailsModal from "./TagDetailsModal";
 import { addPackingSlip, fetchItemcodeAPI } from "app/utils/authServices";
 
 const PackingSlipForm = () => {
@@ -45,7 +46,9 @@ const PackingSlipForm = () => {
     });
 
     const [items, setItems] = useState([]);
+    const [tags, setTags] = useState([]);
     const [openTransporter, setOpenTransporter] = useState(false);
+    const [openTagModal, setOpenTagModal] = useState(false);
     const [transporterData, setTransporterData] = useState(null);
     const [selectedItems, setSelectedItems] = useState([]);
     const [itemCodes, setItemCodes] = useState([]);
@@ -79,6 +82,47 @@ const PackingSlipForm = () => {
             setItems(itemData.map(item => ({...item, itemCode: item.item_code})));
         }
     }, [location.state, isEditMode]);
+
+    // Data Binding Logic for Edit Mode
+    useEffect(() => {
+        if (location.state) {
+            const data = location.state;
+            console.log("Edit Data Received:", data);
+
+            setState((prev) => ({
+                ...prev,
+                slipNo: data.Slip_No || data.slip_No || "",
+                date: data.Slip_dt ? data.Slip_dt.split("T")[0] : (data.slip_dt ? data.slip_dt.split("T")[0] : ""),
+                customer: data.Cust_Code || data.cust_Code || "",
+                orderNo: data.po_Id || "", // Assuming Order No is mapped here or needs separate field
+                remark: data.remark || "",
+                poNo: data.Po_Id || data.po_Id || "",
+                poDate: data.po_id_dt ? data.po_id_dt.split("T")[0] : "",
+                referGrn: data.IS_REFERGIN === "Y" || data.iS_REFERGIN === "Y",
+                packingType: data.slip_type || "",
+                subType: data.SALES_TYPE || data.saleS_TYPE || "",
+                formNo: data.form_no || "",
+                formDate: data.form_date ? data.form_date.split("T")[0] : "",
+                formType: data.form_type || "",
+                currency: data.CURR_CODE || "",
+            }));
+
+            // Set Transporter Data if available in row
+            if (data.TRANSPORTER_CODE || data.VEHICLE_NO) {
+                setTransporterData({
+                    transporterCode: data.TRANSPORTER_CODE || "",
+                    vehicleNo: data.VEHICLE_NO || "",
+                    transportMode: data.DELEVERY_BY || "",
+                    transporterOn: data.TRANSPORT === "Y" ? "Our A/c" : "N.A", // Logic might vary based on data
+                    packFwdAmt: data.PackFWD_amt || "",
+                    ewayBillNo: data.EwayBill_no || "",
+                    transporterName: data.trans_name || ""
+                });
+            }
+            
+            // Note: Items items (Table rows) might need a separate API call if they are not in the grid data.
+        }
+    }, [location.state]);
 
     const loadItemCodes = async () => {
         const data = await fetchItemcodeAPI();
@@ -288,7 +332,7 @@ const PackingSlipForm = () => {
         try {
             const res = await addPackingSlip(payload);
             alert(res.Message);
-            navigate("/material/packing-slip");
+            navigate("/material/packing-slip-table");
         } catch (err) {
             console.error(err);
             alert(err.message);
@@ -450,6 +494,14 @@ const PackingSlipForm = () => {
                         >
                             TRANSPORTER
                         </Button>
+
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => setOpenTagModal(true)}
+                        >
+                            TAG DETAILS
+                        </Button>
                     </Box>
                 </Box>
                 <Box
@@ -609,6 +661,12 @@ const PackingSlipForm = () => {
                 open={openTransporter}
                 onClose={() => setOpenTransporter(false)}
                 onSave={(data) => setTransporterData(data)}
+            />
+            
+            <TagDetailsModal
+                open={openTagModal}
+                onClose={() => setOpenTagModal(false)}
+                onSave={(newTag) => setTags([...tags, newTag])}
             />
         </Container>
     );
