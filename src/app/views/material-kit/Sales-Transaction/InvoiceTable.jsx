@@ -25,9 +25,6 @@ export default function InvoiceTable() {
         pageSize: 10,
     });
 
-    // =============================
-    // 🔥 Fetch API Data
-    // =============================
     const fetchInvoices = async () => {
         debugger;
         try {
@@ -42,20 +39,19 @@ export default function InvoiceTable() {
             if (response?.Data) {
                 const apiData = response.Data;
 
-                // Map API data to DataGrid format
                 const formattedRows = apiData.map((item, index) => ({
-                    id: item.inV_NO || index,
-                    invoiceNo: item.inV_NO,
-                    invoiceDate: item.inV_DT,
-                    customerCode: item.cusT_CODE,
-                    totalAmount: item.totaL_AMT,
-                    netAmount: item.neT_AMT,
+                     id: index + 1,
+                    invoiceNo: item.INV_NO,
+                    invoiceDate: item.INV_DT,
+                    customerCode: item.CUST_CODE,
+                    totalAmount: item.TOTAL_AMT,
+                    netAmount: item.NET_AMT,
                 }));
 
                 setRows(formattedRows);
 
                 // If API returns totalRecords
-                setRowCount(response.TotalRecords || apiData.length);
+                setRowCount(response.TotalCount || 0);
             }
         } catch (error) {
             console.error("Invoice fetch error:", error);
@@ -68,9 +64,6 @@ export default function InvoiceTable() {
         fetchInvoices();
     }, [paginationModel]);
 
-    // =============================
-    // Navigation
-    // =============================
     const handleAdd = () => {
         navigate("/material/sales-invoice-form/add");
     };
