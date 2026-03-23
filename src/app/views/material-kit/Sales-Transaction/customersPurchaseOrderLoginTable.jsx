@@ -6,43 +6,53 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { deletecustomerpurchaselogindetail } from "app/utils/authServices";
+import { CustomerPurchaseOrderLoginPaginationAPI } from "app/utils/salesTransactionServices";
 import SearchFilter from "../SearchFilter";
 
 export default function CustomersPurchaseOrderLoginTable() {
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
-  const [originalRows, setOriginalRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchColumn, setSearchColumn] = useState("");
+  const [rowCount, setRowCount] = useState(0);
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
 
-  // 🔹 Dummy Data with fields required for deletion (Replace with actual Fetch API)
+  const fetchPurchaseOrders = async () => {
+    setLoading(true);
+    try {
+      const response = await CustomerPurchaseOrderLoginPaginationAPI(
+        "custpo_hed",
+        paginationModel.page + 1,
+        paginationModel.pageSize
+      );
+
+      if (response && response.Data) {
+        const mappedRows = response.Data.map((row, index) => ({
+          ...row,
+          id: row.PO_ID || index, // Ensure unique ID
+        }));
+        setRows(mappedRows);
+        setRowCount(response.TotalCount || 0);
+      } else {
+        setRows([]);
+        setRowCount(0);
+      }
+    } catch (error) {
+      console.error("Failed to fetch purchase orders:", error);
+      setRows([]);
+      setRowCount(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const data = [
-      {
-        id: 1,
-        PO_NO: "PO-2024-001",
-        PO_DT: "2024-02-15",
-        CUST_CODE: "C001",
-        CUST_NAME: "Tech Solutions Ltd",
-        PO_ID: "PID001",
-        PO_ID_DT: "2024-02-15T10:00:00",
-        PROFCEN_CD: "2",
-      },
-      {
-        id: 2,
-        PO_NO: "PO-2024-002",
-        PO_DT: "2024-02-16",
-        CUST_CODE: "C002",
-        CUST_NAME: "Global Corp",
-        PO_ID: "PID002",
-        PO_ID_DT: "2024-02-16T11:30:00",
-        PROFCEN_CD: "2",
-      },
-    ];
-    setRows(data);
-    setOriginalRows(data);
-  }, []);
+    fetchPurchaseOrders();
+  }, [paginationModel]);
 
   const handleAdd = () => {
     navigate("/material/customers-purchase-order-login-form/add");
@@ -58,36 +68,20 @@ export default function CustomersPurchaseOrderLoginTable() {
   };
 
   const handleSearch = () => {
-    if (!searchQuery) {
-      setRows(originalRows);
-      return;
-    }
-
-    const filteredRows = originalRows.filter((row) => {
-      const searchStr = searchQuery.toLowerCase();
-
-      if (searchColumn) {
-        const value = row[searchColumn];
-        return String(value).toLowerCase().includes(searchStr);
-      } else {
-        // If no column selected, search all relevant fields
-        return Object.values(row).some((val) =>
-          String(val).toLowerCase().includes(searchStr)
-        );
-      }
-    });
-
-    setRows(filteredRows);
+    setPaginationModel((prev) => ({ ...prev, page: 0 }));
+    fetchPurchaseOrders();
   };
 
-  const handleDelete = async (row) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this Purchase Order?")) {
       try {
         setLoading(true);
-        await deletecustomerpurchaselogindetail(row);
-        setRows((prev) => prev.filter((r) => r.id !== row.id));
-        setOriginalRows((prev) => prev.filter((r) => r.id !== row.id));
-        alert("Deleted successfully!");
+        const rowToDelete = rows.find((r) => r.id === id);
+        if (rowToDelete) {
+          await deletecustomerpurchaselogindetail(rowToDelete);
+          alert("Deleted successfully!");
+          fetchPurchaseOrders();
+        }
       } catch (error) {
         console.error("Delete Error:", error);
         alert("Failed to delete record.");
@@ -99,7 +93,13 @@ export default function CustomersPurchaseOrderLoginTable() {
 
   const columns = [
     { field: "PO_NO", headerName: "PO No", width: 150 },
-    { field: "PO_DT", headerName: "PO Date", width: 120 },
+    {
+      field: "PO_DT",
+      headerName: "PO Date",
+      width: 120,
+      valueFormatter: (value) =>
+        value ? new Date(value).toLocaleDateString() : "",
+    },
     { field: "CUST_CODE", headerName: "Customer Code", width: 120 },
     { field: "CUST_NAME", headerName: "Customer Name", flex: 1 },
     { field: "PO_ID", headerName: "PO ID", width: 100 },
@@ -118,7 +118,7 @@ export default function CustomersPurchaseOrderLoginTable() {
           </Tooltip>
 
           <Tooltip title="Delete">
-            <IconButton onClick={() => handleDelete(params.row)}>
+            <IconButton onClick={() => handleDelete(params.row.id)}>
               <Icon color="error">delete</Icon>
             </IconButton>
           </Tooltip>
@@ -128,7 +128,7 @@ export default function CustomersPurchaseOrderLoginTable() {
   ];
 
   return (
-    <Container>
+    <Container maxWidth="xl">
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
@@ -161,17 +161,17 @@ export default function CustomersPurchaseOrderLoginTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 420, width: "100%" }}>
+        <Box sx={{ height: 500, width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}
             loading={loading}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
-            }}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[5, 10, 25]}
+            getRowId={(row) => row.id}
           />
         </Box>
       </Stack>

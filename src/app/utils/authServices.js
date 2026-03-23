@@ -271,7 +271,7 @@ export const addPackingSlip = async (payload) => {
 };
 
 export const PackingSlipPaginationAPI = async (
-    tableName = "packingSlip_ex",
+    tableName = "packingSlip",
     pageNumber = 1,
     pageSize = 10
 ) => {

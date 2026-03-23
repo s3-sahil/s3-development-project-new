@@ -132,7 +132,23 @@ const CustomersPurchaseOrderLogin = () => {
 
     // Save schedule to main list if exists
     if (leadObj.List_Schedule_ex && leadObj.List_Schedule_ex.length > 0) {
-      setAllSchedules((prev) => [...prev, ...leadObj.List_Schedule_ex]);
+      setAllSchedules((prev) => {
+        const newSchedules = [...prev, ...leadObj.List_Schedule_ex];
+
+        const unique = [];
+        const seen = new Set();
+
+        newSchedules.forEach((item) => {
+          const key = `${item.ITEM_CODE}_${item.SDate}`;
+
+          if (!seen.has(key)) {
+            seen.add(key);
+            unique.push(item);
+          }
+        });
+
+        return unique;
+      });
     }
 
     // Clear fields
@@ -182,15 +198,30 @@ const CustomersPurchaseOrderLogin = () => {
 
   const handleSubmit = async () => {
     // 1. Validation to prevent 500 Error due to missing keys
-    if (!form.customer) { alert("Please select a Customer"); return; }
-    if (!form.salesman) { alert("Please select Marketing By (Salesman)"); return; }
-    if (!form.orderNo) { alert("Please enter P.O. Login No"); return; }
-    if (!form.orderType) { alert("Please select Order Type"); return; }
-    if (itemTable.length === 0) { alert("Please add at least one item"); return; }
+    if (!form.customer) {
+      alert("Please select a Customer");
+      return;
+    }
+    if (!form.salesman) {
+      alert("Please select Marketing By (Salesman)");
+      return;
+    }
+    if (!form.orderNo) {
+      alert("Please enter P.O. Login No");
+      return;
+    }
+    if (!form.orderType) {
+      alert("Please select Order Type");
+      return;
+    }
+    if (itemTable.length === 0) {
+      alert("Please add at least one item");
+      return;
+    }
 
     try {
       // Use a cleaner ID if possible, or keep Date.now()
-      const poId = "PO" + Date.now(); 
+      const poId = "PO" + Date.now();
       const poDate = new Date().toISOString();
 
       const formatDate = (date) => {
@@ -208,7 +239,7 @@ const CustomersPurchaseOrderLogin = () => {
           pO_AMD_NO: form.amendNo || "",
           pO_AMD_DT: formatDate(form.amendDate),
           pO_VALID: formatDate(form.validDate),
-          
+
           transport: "",
           octroi: "",
           disC_PER: 0,
@@ -221,7 +252,7 @@ const CustomersPurchaseOrderLogin = () => {
           insurance: "",
 
           oa_type: form.orderType || "",
-          profceN_CD: "2",
+          profceN_CD: localStorage.getItem("PROFCEN_CD"),
           useR_NAME: "ADMIN",
 
           deli_Terms: form.dispatchLocation || "",
@@ -254,7 +285,7 @@ const CustomersPurchaseOrderLogin = () => {
           warr_Period1: 0,
           warr_DMY1: "",
           warrCondt1: "",
-          warrCondt2: "", 
+          warrCondt2: "",
 
           qc_req: "",
           gauranty_cert: "",
@@ -290,7 +321,7 @@ const CustomersPurchaseOrderLogin = () => {
           adv_rec: 0,
         },
 
-        // ✅ MATCHED EXACTLY
+        // ================= ITEM =================
         list_Custpo_det_ex: itemTable.map((item, index) => ({
           pO_ID: poId,
           pO_ID_DT: poDate,
@@ -298,17 +329,16 @@ const CustomersPurchaseOrderLogin = () => {
           quoT_NO: "",
           quoT_DT: poDate,
 
-          iteM_NAME: item.ITEM_NAME || "Item",
-          iteM_CODE: item.ITEM_CODE || "0",
+          iteM_NAME: item.ITEM_NAME || "",
+          iteM_CODE: item.ITEM_CODE || "",
 
           quantity: Number(item.QUANTITY) || 0,
           rate: Number(item.RATE) || 0,
 
-          ratE_WEF: formatDate(form.wef) || poDate,
-
+          ratE_WEF: poDate,
           disC_PER: Number(item.DISC_PER) || 0,
-          pC_CODE: "",
 
+          pC_CODE: "",
           dispatcH_QTY: 0,
           cusT_ITEM_CODE: "",
 
@@ -321,13 +351,13 @@ const CustomersPurchaseOrderLogin = () => {
           enq_no: "",
           enq_dt: poDate,
 
-          sr_no: String(index + 1),
+          sr_no: index + 1,
           open_oa: "Y",
 
           oa_type: form.orderType || "",
-          profceN_CD: "2",
+          profceN_CD: localStorage.getItem("PROFCEN_CD"),
 
-          pO_AMD_NO: form.amendNo || "", 
+          pO_AMD_NO: form.amendNo || "",
           pO_AMD_DATE: formatDate(form.amendDate),
 
           uL_LOCATION: "",
@@ -384,7 +414,6 @@ const CustomersPurchaseOrderLogin = () => {
           igsT_Cd: "",
         })),
 
-        // ✅ PAYMENT
         list_Custpo_pay_ex: paymentRows.map((row, index) => ({
           pO_ID: poId,
           pO_ID_DT: poDate,
@@ -396,7 +425,7 @@ const CustomersPurchaseOrderLogin = () => {
           pay_cond: Number(row.pay_cond) || 0,
 
           oa_type: form.orderType || "",
-          profceN_CD: "2",
+          profceN_CD: localStorage.getItem("PROFCEN_CD"),
 
           sr_no: index + 1,
 
@@ -406,73 +435,82 @@ const CustomersPurchaseOrderLogin = () => {
           pro_inv: "",
         })),
 
-        // ✅ TAX
         list_Custpo_tax_ex: taxRows.map((row) => ({
           pO_ID: poId,
           pO_ID_DT: poDate,
+
           taX_CODE: row.code || "",
           taX_AMT: Number(row.amount) || 0,
-          oa_type: row.type || "",
-          profceN_CD: "2",
+
+          oa_type: form.orderType || "",
+          profceN_CD: localStorage.getItem("PROFCEN_CD"),
         })),
 
-        // ✅ SCHEDULE
-        list_Schedule_ex:
-          allSchedules.map((sch, index) => ({
-            sr_No: index + 1,
-            cusT_CODE: form.customer || "",
-            iteM_CODE: sch.ITEM_CODE || "",
+        list_Schedule_ex: allSchedules.map((sch, index) => ({
+          sr_No: index + 1,
 
-            pO_ID: poId,
-            pO_ID_DT: poDate,
+          cusT_CODE: form.customer || "",
+          iteM_CODE: sch.ITEM_CODE || "",
 
-            pC_CODE: "",
-            scH_QTY: Number(sch.QUANTITY) || 0,
-            scH_VALUE: 0,
+          pO_ID: poId,
+          pO_ID_DT: poDate,
 
-            moN_PL_QTY: 0,
-            disP_QTY: 0,
-            disP_VALUE: 0,
-            backloG_QTY: 0,
+          pC_CODE: "",
+          scH_QTY: Number(sch.QUANTITY) || 0,
+          scH_VALUE: 0,
 
-            syear: "",
-            smonth: "",
+          moN_PL_QTY: 0,
+          disP_QTY: 0,
+          disP_VALUE: 0,
+          backloG_QTY: 0,
 
-            po_rate: 0,
-            o_qty: 0,
+          syear: "",
+          smonth: "",
 
-            type: "",
-            week: "",
+          po_rate: 0,
+          o_qty: 0,
 
-            sDate: poDate,
-            profcen_cd: "2",
+          type: sch.type || "",
+          week: index + 1,
 
-            amend_no: 0,
-            user_name: "ADMIN",
-            reason: "",
+          sDate: new Date(Date.now() + index * 1000).toISOString(),
 
-            sch_entry_date: poDate,
-            cust_item_code: "",
+          profcen_cd: localStorage.getItem("PROFCEN_CD"),
 
-            batchqty: "",
-            prod_head: "",
+          amend_no: 0,
+          user_name: "ADMIN",
+          reason: "",
 
-            our_delv_dt: poDate,
-            ul_location: "",
+          sch_entry_date: poDate,
+          cust_item_code: "",
 
-            wo_qty: 0,
-            po_no: form.orderNo || "",
-            po_Dt: poDate,
+          batchqty: "",
+          prod_head: "",
 
-            prod_date: poDate,
-            fps_qty: 0,
-            dispatch_date: poDate,
+          our_delv_dt: formatDate(sch.our_delv_dt),
 
-            division: "",
-            indentqty: 0,
-            planDisp: 0,
-            to_sdate: poDate,
-          })) || [],
+          ul_location: "",
+
+          wo_qty: 0,
+          po_no: form.orderNo || "",
+          po_Dt: poDate,
+
+          prod_date: poDate,
+          fps_qty: 0,
+          dispatch_date: poDate,
+
+          division: "",
+          indentqty: 0,
+          planDisp: 0,
+
+          to_sdate: poDate,
+        })),
+
+        // ================= EXTRA =================
+        period: "",
+        mM_DOC_DOCUMNET: "",
+        mM_DOC_TYPE: "",
+        profceN_CD: localStorage.getItem("PROFCEN_CD"),
       };
 
       console.log("FINAL PAYLOAD:", payload);
@@ -480,9 +518,8 @@ const CustomersPurchaseOrderLogin = () => {
       await saveCustomerPurchaseOrder(payload);
 
       alert("Purchase Order Saved Successfully");
-      
+
       // Optional: Clear form or redirect here
-      
     } catch (error) {
       console.error("ERROR:", error);
       // Show specific error message from backend if available
