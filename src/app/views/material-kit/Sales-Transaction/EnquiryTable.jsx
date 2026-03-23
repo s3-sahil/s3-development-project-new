@@ -13,11 +13,15 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { EnquiryPaginationAPI, GetEnquiryDetailsAPI } from "app/utils/authServices";
+import SearchFilter from "../SearchFilter";
 
 export default function EnquiryTable() {
     const navigate = useNavigate();
 
     const [rows, setRows] = useState([]);
+    const [originalRows, setOriginalRows] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchColumn, setSearchColumn] = useState("");
     const [loading, setLoading] = useState(false);
     const [rowCount, setRowCount] = useState(0);
 
@@ -49,12 +53,36 @@ export default function EnquiryTable() {
             }));
 
             setRows(mappedRows);
+            setOriginalRows(mappedRows);
             setRowCount(response.TotalCount || 0);
         }
 
         setLoading(false);
     };
 
+    const handleSearch = () => {
+        if (!searchQuery) {
+            setRows(originalRows);
+            return;
+        }
+
+        const filteredRows = originalRows.filter((row) => {
+            const searchStr = searchQuery.toLowerCase();
+
+            if (searchColumn) {
+                const value = row[searchColumn];
+                return String(value).toLowerCase().includes(searchStr);
+            } else {
+                // Exclude the 'raw' field from search
+                const { raw, ...searchableRow } = row;
+                return Object.values(searchableRow).some((val) =>
+                    String(val).toLowerCase().includes(searchStr)
+                );
+            }
+        });
+
+        setRows(filteredRows);
+    };
 
     useEffect(() => {
         fetchEnquiries();
@@ -149,7 +177,19 @@ export default function EnquiryTable() {
             </Box>
 
             <Stack spacing={3}>
-                <Box display="flex" justifyContent="flex-end">
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <SearchFilter
+                        searchValue={searchQuery}
+                        setSearchValue={setSearchQuery}
+                        searchColumn={searchColumn}
+                        setSearchColumn={setSearchColumn}
+                        columnOptions={[
+                            { value: "enquiryNo", label: "Enquiry No" },
+                            { value: "customer", label: "Customer" },
+                        ]}
+                        onSearch={handleSearch}
+                    />
+
                     <Button
                         variant="contained"
                         startIcon={<Icon>add</Icon>}

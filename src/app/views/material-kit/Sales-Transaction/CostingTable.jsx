@@ -10,12 +10,15 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import SearchFilter from "../SearchFilter";
 
 export default function CostingTable() {
   const navigate = useNavigate();
 
-  const [rows] = useState([
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+  const initialData = [
     {
       id: 1,
       costingNo: "COST001",
@@ -24,7 +27,31 @@ export default function CostingTable() {
       totalCost: 15000,
       date: "2026-02-04",
     },
-  ]);
+  ];
+  const [rows, setRows] = useState(initialData);
+  const [originalRows, setOriginalRows] = useState(initialData);
+
+  const handleSearch = () => {
+    if (!searchQuery) {
+      setRows(originalRows);
+      return;
+    }
+
+    const filteredRows = originalRows.filter((row) => {
+      const searchStr = searchQuery.toLowerCase();
+
+      if (searchColumn) {
+        const value = row[searchColumn];
+        return String(value).toLowerCase().includes(searchStr);
+      } else {
+        return Object.values(row).some((val) =>
+          String(val).toLowerCase().includes(searchStr)
+        );
+      }
+    });
+
+    setRows(filteredRows);
+  };
 
   const columns = [
     { field: "costingNo", headerName: "Costing No", flex: 1 },
@@ -66,7 +93,20 @@ export default function CostingTable() {
       </Box>
 
       <Stack spacing={3}>
-        <Box display="flex" justifyContent="flex-end">
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              { value: "costingNo", label: "Costing No" },
+              { value: "customerName", label: "Customer Name" },
+              { value: "productName", label: "Product Name" },
+            ]}
+            onSearch={handleSearch}
+          />
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}

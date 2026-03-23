@@ -19,6 +19,8 @@
     "@mui/material": "^6.1.4",
     "@mui/x-data-grid": "^8.25.0",
     "@mui/x-date-pickers": "^7.21.0",
+    "ag-grid-community": "^35.1.0",
+    "ag-grid-react": "^35.1.0",
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.7.7",
     "clsx": "^2.1.1",

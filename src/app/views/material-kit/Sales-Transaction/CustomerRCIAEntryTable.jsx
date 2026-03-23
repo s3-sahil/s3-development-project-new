@@ -4,7 +4,6 @@ import {
   IconButton,
   Tooltip,
   Button,
-  TextField,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -13,11 +12,15 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { CustomerRCIAPaginationAPI } from "app/utils/salesTransactionServices";
+import SearchFilter from "../SearchFilter";
 
 export default function CustomerRCIAEntryTable() {
   const navigate = useNavigate();
 
   const [rows, setRows] = useState([]);
+  const [originalRows, setOriginalRows] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
   const [loading, setLoading] = useState(false);
   const [rowCount, setRowCount] = useState(0);
   const [paginationModel, setPaginationModel] = useState({
@@ -35,9 +38,9 @@ export default function CustomerRCIAEntryTable() {
       );
 
       if (response && response.Data) {
-        setRows(
-          response.Data.map((row, index) => ({ ...row, id: row.rcia_no || index }))
-        );
+        const mappedData = response.Data.map((row, index) => ({ ...row, id: row.rcia_no || index }));
+        setRows(mappedData);
+        setOriginalRows(mappedData);
         setRowCount(response.TotalCount || 0);
       }
     } catch (error) {
@@ -49,6 +52,28 @@ export default function CustomerRCIAEntryTable() {
   useEffect(() => {
     fetchData();
   }, [paginationModel]);
+
+  const handleSearch = () => {
+    if (!searchQuery) {
+      setRows(originalRows);
+      return;
+    }
+
+    const filteredRows = originalRows.filter((row) => {
+      const searchStr = searchQuery.toLowerCase();
+
+      if (searchColumn) {
+        const value = row[searchColumn];
+        return String(value).toLowerCase().includes(searchStr);
+      } else {
+        return Object.values(row).some((val) =>
+          String(val).toLowerCase().includes(searchStr)
+        );
+      }
+    });
+
+    setRows(filteredRows);
+  };
 
   const columns = [
     { field: "cust_code", headerName: "Customer Code", flex: 1 },
@@ -97,11 +122,17 @@ export default function CustomerRCIAEntryTable() {
           alignItems="center"
           gap={2}
         >
-          <Box display="flex" gap={2}>
-            <TextField size="small" placeholder="Search..." />
-            <TextField size="small" placeholder="Select Column" />
-            <Button variant="contained">Search</Button>
-          </Box>
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              { value: "cust_code", label: "Customer Code" },
+              { value: "rcia_no", label: "RCIA No" },
+            ]}
+            onSearch={handleSearch}
+          />
 
           <Button
             variant="contained"

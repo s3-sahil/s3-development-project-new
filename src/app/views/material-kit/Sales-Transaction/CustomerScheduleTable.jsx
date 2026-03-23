@@ -4,45 +4,51 @@ import {
     IconButton,
     Tooltip,
     Button,
-    TextField,
-    MenuItem,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import SearchFilter from "../SearchFilter";
 
 export default function CustomerScheduleTable() {
     const navigate = useNavigate();
+    const [rows, setRows] = useState([]);
+    const [originalRows, setOriginalRows] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchColumn, setSearchColumn] = useState("");
 
-    // 🔹 Dummy Data (replace with API response)
-    const rows = [
-        {
-            id: 1,
-            shiftCode: "F",
-            description: "FIRST",
-            shiftStart: 8,
-            shiftEnd: 17,
-            totalHrs: 9,
-            lunchStart: 12.3,
-            lunchEnd: 13,
-            earlyIn: 7.3,
-            division: "C",
-        },
-        {
-            id: 2,
-            shiftCode: "G",
-            description: "GENERAL",
-            shiftStart: 8.3,
-            shiftEnd: 17.3,
-            totalHrs: 9,
-            lunchStart: 12.3,
-            lunchEnd: 13,
-            earlyIn: 8,
-            division: "C",
-        },
-    ];
+    // Simulate API call
+    useEffect(() => {
+        setLoading(true);
+        // Replace with your actual API call
+        setTimeout(() => {
+            const dummyData = [
+                {
+                    id: 1,
+                    period: "08/2025",
+                    customerName: "ABC Corp",
+                    poNo: "PO-123",
+                    itemCode: "ITEM-001",
+                    totalQuantity: 500,
+                },
+                {
+                    id: 2,
+                    period: "08/2025",
+                    customerName: "XYZ Inc",
+                    poNo: "PO-456",
+                    itemCode: "ITEM-002",
+                    totalQuantity: 1200,
+                },
+            ];
+            setRows(dummyData);
+            setOriginalRows(dummyData);
+            setLoading(false);
+        }, 1000);
+    }, []);
 
     const handleAdd = () => {
         navigate("/material/sales-customer-schedule-detail-form/add");
@@ -55,19 +61,46 @@ export default function CustomerScheduleTable() {
     };
 
     const handleDelete = (id) => {
-        console.log("Delete:", id);
+        if (window.confirm("Are you sure you want to delete this schedule?")) {
+            // API call to delete would go here
+            setRows(rows.filter((row) => row.id !== id));
+            console.log("Deleted:", id);
+        }
+    };
+
+    const handleSearch = () => {
+        if (!searchQuery) {
+            setRows(originalRows);
+            return;
+        }
+
+        const filteredRows = originalRows.filter((row) => {
+            const searchStr = searchQuery.toLowerCase();
+
+            if (searchColumn) {
+                const value = row[searchColumn];
+                return String(value).toLowerCase().includes(searchStr);
+            } else {
+                return Object.values(row).some((val) =>
+                    String(val).toLowerCase().includes(searchStr)
+                );
+            }
+        });
+
+        setRows(filteredRows);
     };
 
     const columns = [
-        { field: "shiftCode", headerName: "Shift Code", width: 110 },
-        { field: "description", headerName: "Description", flex: 1 },
-        { field: "shiftStart", headerName: "Shift Start", width: 120 },
-        { field: "shiftEnd", headerName: "Shift End", width: 120 },
-        { field: "totalHrs", headerName: "Total Hrs", width: 100 },
-        { field: "lunchStart", headerName: "Lunch Start", width: 120 },
-        { field: "lunchEnd", headerName: "Lunch End", width: 120 },
-        { field: "earlyIn", headerName: "Early In", width: 100 },
-        { field: "division", headerName: "Division", width: 100 },
+        { field: "period", headerName: "Period", width: 120 },
+        { field: "customerName", headerName: "Customer Name", flex: 1 },
+        { field: "poNo", headerName: "PO No.", width: 150 },
+        { field: "itemCode", headerName: "Item Code", width: 150 },
+        {
+            field: "totalQuantity",
+            headerName: "Total Quantity",
+            width: 150,
+            align: "right",
+        },
 
         {
             field: "actions",
@@ -112,23 +145,17 @@ export default function CustomerScheduleTable() {
                     alignItems="center"
                 >
                     {/* Search Section */}
-                    <Box display="flex" gap={2}>
-                        <TextField
-                            size="small"
-                            placeholder="Search..."
-                        />
-                        <TextField
-                            size="small"
-                            select
-                            defaultValue=""
-                            sx={{ width: 180 }}
-                        >
-                            <MenuItem value="">Select Column</MenuItem>
-                            <MenuItem value="shiftCode">Shift Code</MenuItem>
-                            <MenuItem value="description">Description</MenuItem>
-                        </TextField>
-                        <Button variant="contained">Search</Button>
-                    </Box>
+                    <SearchFilter
+                        searchValue={searchQuery}
+                        setSearchValue={setSearchQuery}
+                        searchColumn={searchColumn}
+                        setSearchColumn={setSearchColumn}
+                        columnOptions={[
+                            { value: "customerName", label: "Customer Name" },
+                            { value: "poNo", label: "PO No" },
+                        ]}
+                        onSearch={handleSearch}
+                    />
 
                     {/* New Button */}
                     <Button
@@ -145,6 +172,7 @@ export default function CustomerScheduleTable() {
                     <DataGrid
                         rows={rows}
                         columns={columns}
+                        loading={loading}
                         pageSizeOptions={[10, 25, 50]}
                         disableRowSelectionOnClick
                         initialState={{

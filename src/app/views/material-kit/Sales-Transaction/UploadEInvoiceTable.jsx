@@ -11,7 +11,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getEInvoiceListAPI } from "app/utils/authServices";
+// import { getEInvoiceListAPI } from "app/utils/authServices";
 
 export default function UploadEInvoiceTable() {
   const navigate = useNavigate();
@@ -24,34 +24,34 @@ export default function UploadEInvoiceTable() {
   });
   const [rowCountState, setRowCountState] = useState(0);
 
-  const fetchEInvoices = async () => {
-    setLoading(true);
-    try {
-      const response = await getEInvoiceListAPI(
-        paginationModel.page + 1,
-        paginationModel.pageSize
-      );
-      if (response && response.Data) {
-        setRows(
-          response.Data.map((row, index) => ({
-            ...row,
-            id: row.invoiceNo || index, // Ensure unique ID
-          }))
-        );
-        setRowCountState(response.TotalCount || 0);
-      } else {
-        setRows([]);
-        setRowCountState(0);
-      }
-    } catch (error) {
-      console.error("Failed to fetch e-invoices:", error);
-    }
-    setLoading(false);
-  };
+  // const fetchEInvoices = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await getEInvoiceListAPI(
+  //       paginationModel.page + 1,
+  //       paginationModel.pageSize
+  //     );
+  //     if (response && response.Data) {
+  //       setRows(
+  //         response.Data.map((row, index) => ({
+  //           ...row,
+  //           id: row.invoiceNo || index, // Ensure unique ID
+  //         }))
+  //       );
+  //       setRowCountState(response.TotalCount || 0);
+  //     } else {
+  //       setRows([]);
+  //       setRowCountState(0);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to fetch e-invoices:", error);
+  //   }
+  //   setLoading(false);
+  // };
 
-  useEffect(() => {
-    fetchEInvoices();
-  }, [paginationModel]);
+  // useEffect(() => {
+  //   fetchEInvoices();
+  // }, [paginationModel]);
 
   const columns = [
     { field: "invoiceNo", headerName: "Invoice No", flex: 1 },

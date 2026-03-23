@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import Loadable from "app/components/Loadable";
 import ActivityReportsRightsTable from "./Sys-Admin-Master/ActivityFormRightsTable";
-import CustomersPurchaseOrderLogin from "./Sales-Transaction/customersPurchaseOrderLogin";
+import CustomersPurchaseOrderLogin from "./Sales-Transaction/CustomersPurchaseOrderLogin";
 import BreakdownSlipTable from "./Maintenance-Transaction/BreakdownSlipTable";
 import BreakdownSlipForm from "./Maintenance-Transaction/BreakdownSlipForm";
 import BreakdownStartTable from "./Maintenance-Transaction/BreakdownStartTable";
@@ -120,6 +120,7 @@ import SubGroupDetailsTable from "./Finance-Master/SubGroupDetailsTable";
 import SubGroupDetailsForm from "./Finance-Master/SubGroupDetailsForm";
 import TDSParameterTable from "./Finance-Master/TDSParameterTable";
 import TDSParameterForm from "./Finance-Master/TDSParameterForm";
+import CustomersPurchaseOrderLoginTable from "./Sales-Transaction/customersPurchaseOrderLoginTable";
 // import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
 // import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
 // import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
@@ -1104,10 +1105,9 @@ const materialRoutes = [
     path: "/material/activity-reports-rights-table",
     element: <ActivityReportsRightsTable />,
   },
-  {
-    path: "/material/customers-purchase-order-login",
-    element: <CustomersPurchaseOrderLogin />,
-  },
+  { path: "/material/customers-purchase-order-login-table", element: <CustomersPurchaseOrderLoginTable /> },
+  { path: "/material/customers-purchase-order-login-form/add", element: <CustomersPurchaseOrderLogin /> },
+  { path: "/material/customers-purchase-order-login-form/edit/:slipNo", element: <CustomersPurchaseOrderLogin /> },
   { path: "/material/packing-slip-table", element: <PackingSlipTable /> },
   { path: "/material/packing-slip/add", element: <PackingSlipForm /> },
   { path: "/material/packing-slip/edit/:slipNo", element: <PackingSlipForm /> },

@@ -191,6 +191,31 @@ export const saveCustomerPurchaseOrder = async (payload) => {debugger
     }
 };
 
+export const deletecustomerpurchaselogindetail = async (user) => {
+    const PO_ID_DT = user.PO_ID_DT?.substring(0, 10);
+
+    try {
+        const response = await axiosInstance.delete(
+            `/DELETE-CUSTOMER_PURCHASE_ORDER`,
+            {
+                params: {
+                    CUST_CODE: user.CUST_CODE,
+                    PO_ID: user.PO_ID,
+                    PO_ID_DT: PO_ID_DT,
+                    profcen_cd: user.PROFCEN_CD
+                }
+            }
+        );
+
+        console.log("API Response Data:", response.data);
+
+        return { data: response.data.data || [] };
+    } catch (error) {
+        console.error("Error deleting customer purchase order:", error);
+        return { data: [] };
+    }
+};
+
 export const login = async (Login_Name, Login_Pwd) => {
     try {
         console.log("Calling API with:", { Login_Name, Login_Pwd });
@@ -823,4 +848,37 @@ export const deleteDailyActivityPlan = async (id) => {
     console.error("Delete Error:", error.response || error.message);
     throw new Error("Failed to delete record");
   }
+};
+
+
+export const DailyActivityPlanPaginationAPI = async (
+    tableName = "TMS_PARA",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Customer pagination fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
 };

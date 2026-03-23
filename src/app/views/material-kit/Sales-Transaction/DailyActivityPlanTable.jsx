@@ -14,19 +14,23 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   DailyActivityPlanPaginationAPI,
-  getDailyActivityPlanDetailsAPI,
+  getDailyActivityPlanList,
   deleteDailyActivityPlan,
 } from "app/utils/authServices"; // Assuming these APIs exist
+import SearchFilter from "../SearchFilter";
 
 export default function DailyActivityPlanTable() {
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
+  const [originalRows, setOriginalRows] = useState([]);
   const [loading, setLoading] = useState(false);
   const [rowCount, setRowCount] = useState(0);
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 10,
   });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
 
   const fetchData = async () => {
     setLoading(true);
@@ -39,11 +43,13 @@ export default function DailyActivityPlanTable() {
       );
       if (response?.Data) {
         setRows(response.Data);
+        setOriginalRows(response.Data);
         setRowCount(response.TotalCount || 0);
       }
     } catch (error) {
       console.error(error.message);
       setRows([]);
+      setOriginalRows([]);
       setRowCount(0);
     }
     setLoading(false);
@@ -61,7 +67,7 @@ export default function DailyActivityPlanTable() {
     setLoading(true);
     try {
       // Assuming the details API takes the activityNo
-      const response = await getDailyActivityPlanDetailsAPI({
+      const response = await getDailyActivityPlanList({
         activityNo: row.activityNo,
       });
 
@@ -87,6 +93,28 @@ export default function DailyActivityPlanTable() {
         alert("Failed to delete record.");
       }
     }
+  };
+
+  const handleSearch = () => {
+    if (!searchQuery) {
+      setRows(originalRows);
+      return;
+    }
+
+    const filteredRows = originalRows.filter((row) => {
+      const searchStr = searchQuery.toLowerCase();
+
+      if (searchColumn) {
+        const value = row[searchColumn];
+        return String(value).toLowerCase().includes(searchStr);
+      } else {
+        return Object.values(row).some((val) =>
+          String(val).toLowerCase().includes(searchStr)
+        );
+      }
+    });
+
+    setRows(filteredRows);
   };
 
   const columns = [
@@ -146,7 +174,19 @@ export default function DailyActivityPlanTable() {
 
       <Stack spacing={3}>
 
-        <Box display="flex" justifyContent="flex-end">
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              { value: "activityNo", label: "Activity No" },
+              { value: "visitingTo", label: "Visiting To" },
+            ]}
+            onSearch={handleSearch}
+          />
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}

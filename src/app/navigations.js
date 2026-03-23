@@ -964,7 +964,7 @@ const navigations = [
         children: [
           {
             name: "Customer's Purchase Order Login",
-            path: "/material/customers-purchase-order-login",
+            path: "/material/customers-purchase-order-login-table",
             icon: "arrow_forward",
           },
           {

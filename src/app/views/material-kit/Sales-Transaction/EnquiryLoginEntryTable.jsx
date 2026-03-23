@@ -10,11 +10,17 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import SearchFilter from "../SearchFilter";
 
 export default function EnquiryLoginEntryTable() {
     const navigate = useNavigate();
+    const [rows, setRows] = useState([]);
+    const [originalRows, setOriginalRows] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchColumn, setSearchColumn] = useState("");
 
-    const rows = [
+    const initialData = [
         {
             id: 1,
             enquiryNo: "ENQ-001",
@@ -38,6 +44,33 @@ export default function EnquiryLoginEntryTable() {
             status: "Closed",
         },
     ];
+
+    useEffect(() => {
+        setRows(initialData);
+        setOriginalRows(initialData);
+    }, []);
+
+    const handleSearch = () => {
+        if (!searchQuery) {
+            setRows(originalRows);
+            return;
+        }
+
+        const filteredRows = originalRows.filter((row) => {
+            const searchStr = searchQuery.toLowerCase();
+
+            if (searchColumn) {
+                const value = row[searchColumn];
+                return String(value).toLowerCase().includes(searchStr);
+            } else {
+                return Object.values(row).some((val) =>
+                    String(val).toLowerCase().includes(searchStr)
+                );
+            }
+        });
+
+        setRows(filteredRows);
+    };
 
     const handleAdd = () => {
         navigate("/material/sales-enquiry-login-entry-form/add");
@@ -141,7 +174,19 @@ export default function EnquiryLoginEntryTable() {
             </Box>
 
             <Stack spacing={3}>
-                <Box display="flex" justifyContent="flex-end">
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <SearchFilter
+                        searchValue={searchQuery}
+                        setSearchValue={setSearchQuery}
+                        searchColumn={searchColumn}
+                        setSearchColumn={setSearchColumn}
+                        columnOptions={[
+                            { value: "enquiryNo", label: "Enquiry No" },
+                            { value: "customerName", label: "Customer Name" },
+                        ]}
+                        onSearch={handleSearch}
+                    />
+
                     <Button
                         variant="contained"
                         startIcon={<Icon>add</Icon>}
