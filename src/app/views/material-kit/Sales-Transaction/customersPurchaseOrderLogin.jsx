@@ -227,6 +227,11 @@ const CustomersPurchaseOrderLogin = () => {
       return;
     }
 
+    // Helper to get first character for flags/codes to avoid DB length errors
+    const getFlag = (val) => (val ? val.toString().charAt(0).toUpperCase() : "N");
+    // Helper for specific mappings
+    const getUnitChar = (val) => (val ? val.toString().charAt(0).toUpperCase() : "");
+
     try {
       const profcenCd = localStorage.getItem("PROFCEN_CD") || "";
       // Ensure ID isn't too long for database columns
@@ -249,7 +254,7 @@ const CustomersPurchaseOrderLogin = () => {
           pO_AMD_DT: formatDate(form.amendDate),
           pO_VALID: formatDate(form.validDate),
 
-          transport: otherDetails.transport || "",
+          transport: getFlag(otherDetails.transport),
           octroi: "",
 
           disC_PER: 0,
@@ -259,7 +264,7 @@ const CustomersPurchaseOrderLogin = () => {
 
           emP_NO: form.salesman || "",
           suppl_cond: "",
-          insurance: otherDetails.insurance || "",
+          insurance: getFlag(otherDetails.insurance),
 
           oa_type: form.orderType || "",
           profceN_CD: profcenCd,
@@ -271,13 +276,13 @@ const CustomersPurchaseOrderLogin = () => {
 
           adv_amt: Number(otherDetails.advanceAmt) || 0,
 
-          packing_flag: otherDetails.packingType || "",
+          packing_flag: getFlag(otherDetails.packingType),
           packing_amt: Number(otherDetails.packingAmt) || 0,
           packing_per: Number(otherDetails.packingPer) || 0,
 
           warrantyFlg: otherDetails.warrantyApplicable ? "Y" : "N",
           warr_Period: Number(otherDetails.warrantyPeriod) || 0,
-          warr_DMY: otherDetails.warrantyUnit || "",
+          warr_DMY: getUnitChar(otherDetails.warrantyUnit),
           warr_clause: otherDetails.warrantyClause || "",
 
           conv_rate: 0,
@@ -287,10 +292,10 @@ const CustomersPurchaseOrderLogin = () => {
           oA_DELEVERY_BY: "",
           oa_catg: "",
 
-          other_PayCond: otherDetails.otherPaymentTerms || "",
+          other_PayCond: otherDetails.otherTerms || "",
           delivery_remark: otherDetails.deliveryRemark || "",
 
-          transport_amt: Number(otherDetails.transportAmount) || 0,
+          transport_amt: Number(otherDetails.amount) || 0,
           buyer: otherDetails.buyer || "",
 
           warr_Period1: Number(otherDetails.warrantyPeriod2) || 0,
@@ -362,7 +367,7 @@ const CustomersPurchaseOrderLogin = () => {
           enq_no: "",
           enq_dt: poDate,
 
-          sr_no: index + 1,
+          sr_no: String(index + 1),
           open_oa: "Y",
 
           oa_type: form.orderType || "",
@@ -431,7 +436,7 @@ const CustomersPurchaseOrderLogin = () => {
           pO_ID_DT: poDate,
 
           percentage: Number(row.percentage) || 0,
-          mode: row.mode || "",
+          mode: getFlag(row.mode),
           period: Number(row.period) || 0,
 
           dmflag: row.mode === "Immediate" ? "I" : "A", // ✅ FIX
@@ -975,232 +980,3 @@ const CustomersPurchaseOrderLogin = () => {
 };
 
 export default CustomersPurchaseOrderLogin;
-
-
-// curl -X 'POST' \
-//   'https://localhost:7189/ADD-CUSTOMER_PURCHASE_ORDER' \
-//   -H 'accept: */*' \
-//   -H 'Content-Type: application/json-patch+json' \
-//   -d '{
-//   "custpo_hed_ex": {
-//     "cusT_CODE": "stri",
-//     "pO_ID": "string",
-//     "pO_ID_DT": "2026-03-25T13:57:30.533Z",
-//     "pO_NO": "string",
-//     "pO_DT": "2026-03-25T13:57:30.533Z",
-//     "pO_AMD_NO": "string",
-//     "pO_AMD_DT": "2026-03-25T13:57:30.533Z",
-//     "pO_VALID": "2026-03-25T13:57:30.533Z",
-//     "transport": "s",
-//     "octroi": "s",
-//     "disC_PER": 0,
-//     "remark": "string",
-//     "remarK1": "string",
-//     "emP_NO": "strin",
-//     "suppl_cond": "string",
-//     "insurance": "s",
-//     "oa_type": "string",
-//     "profceN_CD": "str",
-//     "useR_NAME": "string",
-//     "deli_Terms": "string",
-//     "curR_CODE": "strin",
-//     "form_type": "strin",
-//     "adv_amt": 0,
-//     "packing_flag": "s",
-//     "packing_amt": 0,
-//     "packing_per": 0,
-//     "warrantyFlg": "s",
-//     "warr_Period": 0,
-//     "warr_DMY": "s",
-//     "warr_clause": "string",
-//     "conv_rate": 0,
-//     "trader_disc": 0,
-//     "trans_name": "string",
-//     "oA_DELEVERY_BY": "string",
-//     "oa_catg": "string",
-//     "other_PayCond": "string",
-//     "delivery_remark": "string",
-//     "transport_amt": 0,
-//     "buyer": "string",
-//     "warr_Period1": 0,
-//     "warr_DMY1": "s",
-//     "warrCondt1": "string",
-//     "warrCondt2": "string",
-//     "qc_req": "string",
-//     "gauranty_cert": "s",
-//     "test_cert": "s",
-//     "manuals": "s",
-//     "penaulty": "s",
-//     "partial_disp": "s",
-//     "adv_bank_gauranty": "s",
-//     "adv_bank_valid_Dt": "2026-03-25T13:57:30.533Z",
-//     "perf_bank_gauranty": "s",
-//     "perf_bank_valid_Dt": "2026-03-25T13:57:30.533Z",
-//     "lc_no": "string",
-//     "lc_date": "2026-03-25T13:57:30.533Z",
-//     "lc_valid_Dt": "2026-03-25T13:57:30.533Z",
-//     "ref_oa_no": "string",
-//     "commissioning_dt": "2026-03-25T13:57:30.533Z",
-//     "adv_bank_gauranty_doc_no": "string",
-//     "adv_bank_gauranty_doc_date": "2026-03-25T13:57:30.533Z",
-//     "perf_bank_gauranty_doc_no": "string",
-//     "perf_bank_gauranty_doc_date": "2026-03-25T13:57:30.533Z",
-//     "penalty_clause": "string",
-//     "oainvamt": 0,
-//     "oainvamt_bal": 0,
-//     "oainv_disp_amt": 0,
-//     "adv_rec": 0
-//   },
-//   "list_Custpo_det_ex": [
-//     {
-//       "pO_ID": "string",
-//       "pO_ID_DT": "2026-03-25T13:57:30.533Z",
-//       "quoT_NO": "string",
-//       "quoT_DT": "2026-03-25T13:57:30.533Z",
-//       "iteM_NAME": "string",
-//       "iteM_CODE": "string",
-//       "quantity": 0,
-//       "rate": 0,
-//       "ratE_WEF": "2026-03-25T13:57:30.533Z",
-//       "disC_PER": 0,
-//       "pC_CODE": "str",
-//       "dispatcH_QTY": 0,
-//       "cusT_ITEM_CODE": "string",
-//       "curR_CODE": "strin",
-//       "uom": "str",
-//       "tarifF_CD": "string",
-//       "tarifF_DESC": "string",
-//       "enq_no": "string",
-//       "enq_dt": "2026-03-25T13:57:30.533Z",
-//       "sr_no": "stri",
-//       "open_oa": "s",
-//       "oa_type": "string",
-//       "profceN_CD": "str",
-//       "pO_AMD_NO": "string",
-//       "pO_AMD_DATE": "2026-03-25T13:57:30.533Z",
-//       "uL_LOCATION": "string",
-//       "invoicE_NO": "string",
-//       "invoicE_DT": "2026-03-25T13:57:30.533Z",
-//       "poentrY_DATE": "2026-03-25T13:57:30.533Z",
-//       "prev_rate": 0,
-//       "deg_issue_no": "string",
-//       "rate_diff_qty": 0,
-//       "cumm_disp_qty": 0,
-//       "approve_flag": "s",
-//       "approve_by": "string",
-//       "approve_date": "2026-03-25T13:57:30.533Z",
-//       "oP_CODE": "strin",
-//       "amend_res": "string",
-//       "amort_rate": 0,
-//       "remark": "string",
-//       "delivery_dt": "2026-03-25T13:57:30.533Z",
-//       "app_flag": "s",
-//       "app_by": "string",
-//       "app_date": "2026-03-25T13:57:30.533Z",
-//       "wo_qty": 0,
-//       "prod_head": "strin",
-//       "tagged_OA_QTY": 0,
-//       "tagged_OA_date": "2026-03-25T13:57:30.533Z",
-//       "custItcdRev": "string",
-//       "logical_item": "string",
-//       "shipping_Cost": 0,
-//       "cust_item_desc": "string",
-//       "indentQty": 0,
-//       "tarifF_CD_NEW": "string",
-//       "tecH_SPEC": "string",
-//       "temp_dispatchqty": 0,
-//       "sgsTdetAmt": 0,
-//       "cgsTdetAmt": 0,
-//       "igsTdetAmt": 0,
-//       "sgsT_Cd": "str",
-//       "cgsT_Cd": "str",
-//       "igsT_Cd": "str"
-//     }
-//   ],
-//   "list_Custpo_pay_ex": [
-//     {
-//       "pO_ID": "string",
-//       "pO_ID_DT": "2026-03-25T13:57:30.533Z",
-//       "percentage": 0,
-//       "mode": "s",
-//       "period": 0,
-//       "dmflag": "s",
-//       "pay_cond": 0,
-//       "oa_type": "string",
-//       "profceN_CD": "str",
-//       "sr_no": 0,
-//       "adv_tax": 0,
-//       "adv_amt": 0,
-//       "adv_amt_recd": 0,
-//       "pro_inv": "string"
-//     }
-//   ],
-//   "list_Custpo_tax_ex": [
-//     {
-//       "pO_ID": "string",
-//       "pO_ID_DT": "2026-03-25T13:57:30.533Z",
-//       "taX_CODE": "str",
-//       "taX_AMT": 0,
-//       "oa_type": "string",
-//       "profceN_CD": "str"
-//     }
-//   ],
-//   "list_Schedule_ex": [
-//     {
-//       "sr_No": 0,
-//       "cusT_CODE": "stri",
-//       "iteM_CODE": "string",
-//       "pO_ID": "string",
-//       "pO_ID_DT": "2026-03-25T13:57:30.533Z",
-//       "pC_CODE": "str",
-//       "scH_QTY": 0,
-//       "scH_VALUE": 0,
-//       "moN_PL_QTY": 0,
-//       "disP_QTY": 0,
-//       "disP_VALUE": 0,
-//       "backloG_QTY": 0,
-//       "syear": "stri",
-//       "smonth": "st",
-//       "po_rate": 0,
-//       "o_qty": 0,
-//       "type": "string",
-//       "week": "st",
-//       "sDate": "2026-03-25T13:57:30.533Z",
-//       "profcen_cd": "str",
-//       "amend_no": 0,
-//       "user_name": "string",
-//       "reason": "string",
-//       "sch_entry_date": "2026-03-25T13:57:30.533Z",
-//       "cust_item_code": "string",
-//       "batchqty": "string",
-//       "prod_head": "strin",
-//       "our_delv_dt": "2026-03-25T13:57:30.533Z",
-//       "ul_location": "string",
-//       "wo_qty": 0,
-//       "po_no": "string",
-//       "po_Dt": "2026-03-25T13:57:30.533Z",
-//       "prod_date": "2026-03-25T13:57:30.533Z",
-//       "fps_qty": 0,
-//       "dispatch_date": "2026-03-25T13:57:30.533Z",
-//       "division": "str",
-//       "indentqty": 0,
-//       "planDisp": 0,
-//       "to_sdate": "2026-03-25T13:57:30.533Z"
-//     }
-//   ],
-//   "period": "string",
-//   "mM_DOC_DOCUMNET": "string",
-//   "mM_DOC_TYPE": "string",
-//   "profceN_CD": "string"
-// }'
-// Request URL
-// https://localhost:7189/ADD-CUSTOMER_PURCHASE_ORDER
-// Server response
-// Code	Details
-// 200	
-// Response body
-// Download
-// {
-//   "StatusCode": 200,
-//   "Message": "CUSTOMER PURCHASE ORDER added successfully."
-// }
