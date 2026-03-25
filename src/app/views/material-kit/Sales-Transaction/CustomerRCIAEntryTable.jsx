@@ -1,10 +1,4 @@
-import {
-  Container,
-  Icon,
-  IconButton,
-  Tooltip,
-  Button,
-} from "@mui/material";
+import { Container, Icon, IconButton, Tooltip, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
@@ -34,13 +28,18 @@ export default function CustomerRCIAEntryTable() {
       const response = await CustomerRCIAPaginationAPI(
         "cust_rcia",
         paginationModel.page + 1,
-        paginationModel.pageSize
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery,
       );
 
       if (response && response.Data) {
-        const mappedData = response.Data.map((row, index) => ({ ...row, id: row.rcia_no || index }));
+        const mappedData = response.Data.map((row, index) => ({
+          ...row,
+          id: `${row.rcia_no}_${index}`,
+        }));
+
         setRows(mappedData);
-        setOriginalRows(mappedData);
         setRowCount(response.TotalCount || 0);
       }
     } catch (error) {
@@ -51,7 +50,7 @@ export default function CustomerRCIAEntryTable() {
 
   useEffect(() => {
     fetchData();
-  }, [paginationModel]);
+  }, [paginationModel, searchQuery, searchColumn]);
 
   const handleSearch = () => {
     if (!searchQuery) {
@@ -67,7 +66,7 @@ export default function CustomerRCIAEntryTable() {
         return String(value).toLowerCase().includes(searchStr);
       } else {
         return Object.values(row).some((val) =>
-          String(val).toLowerCase().includes(searchStr)
+          String(val).toLowerCase().includes(searchStr),
         );
       }
     });
@@ -89,7 +88,10 @@ export default function CustomerRCIAEntryTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/sales-customer-RCIA-entry-form/edit/${params.row.id}`, { state: params.row })
+                navigate(
+                  `/material/sales-customer-RCIA-entry-form/edit/${params.row.id}`,
+                  { state: params.row },
+                )
               }
             >
               <Icon color="primary">edit</Icon>
@@ -131,13 +133,15 @@ export default function CustomerRCIAEntryTable() {
               { value: "cust_code", label: "Customer Code" },
               { value: "rcia_no", label: "RCIA No" },
             ]}
-            onSearch={handleSearch}
+            onSearch={() => fetchData()}
           />
 
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/sales-customer-RCIA-entry-form/add")}
+            onClick={() =>
+              navigate("/material/sales-customer-RCIA-entry-form/add")
+            }
           >
             New
           </Button>

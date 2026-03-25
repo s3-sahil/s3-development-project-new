@@ -109,199 +109,198 @@ const PaymentTermsModal = ({ open, onClose, onSave }) => {
     };
 
     return (
-        <Dialog
-            open={open}
-            onClose={onClose}
-            fullWidth
-            maxWidth={false}
-            PaperProps={{
-                sx: { width: 800, maxWidth: 800 },
-            }}
+      <Dialog
+    open={open}
+    onClose={onClose}
+    fullWidth
+    maxWidth={false}
+    PaperProps={{
+        sx: { width: 800, maxWidth: 800 },
+    }}
+>
+    <DialogTitle>
+        Payment Terms
+        <IconButton
+            onClick={onClose}
+            sx={{ position: "absolute", right: 8, top: 8 }}
         >
-            <DialogTitle>
-                Payment Terms
-                <IconButton
-                    onClick={onClose}
-                    sx={{ position: "absolute", right: 8, top: 8 }}
-                >
-                    <CloseIcon />
-                </IconButton>
-            </DialogTitle>
+            <CloseIcon />
+        </IconButton>
+    </DialogTitle>
 
-            <DialogContent>
+    <DialogContent>
 
-                {/* ================= TABLE ================= */}
-                <Table size="small">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Description</TableCell>
-                            <TableCell>Percentage</TableCell>
-                            <TableCell>Mode</TableCell>
-                            <TableCell>Period</TableCell>
-                            <TableCell align="center">Action</TableCell>
+        {/* ================= TABLE ================= */}
+        <Table size="small">
+            <TableHead>
+                <TableRow>
+                    <TableCell>Description</TableCell>
+                    <TableCell>Percentage</TableCell>
+                    <TableCell>Mode</TableCell>
+                    <TableCell>Period</TableCell>
+                    <TableCell align="center">Action</TableCell>
+                </TableRow>
+            </TableHead>
+
+            <TableBody>
+                {rows.length > 0 ? (
+                    rows.map((row, index) => (
+                        <TableRow key={index}>
+                            <TableCell>{row.description}</TableCell>
+                            <TableCell>{row.percentage}</TableCell>
+                            <TableCell>{row.mode}</TableCell>
+                            <TableCell>{row.period}</TableCell>
+                            <TableCell align="center">
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    size="small"
+                                    onClick={() => handleRemove(index)}
+                                >
+                                    Remove
+                                </Button>
+                            </TableCell>
                         </TableRow>
-                    </TableHead>
+                    ))
+                ) : (
+                    <TableRow>
+                        <TableCell colSpan={5} align="center">
+                            No payment terms added
+                        </TableCell>
+                    </TableRow>
+                )}
+            </TableBody>
+        </Table>
 
-                    <TableBody>
-                        {rows.length > 0 ? (
-                            rows.map((row, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>{row.description}</TableCell>
-                                    <TableCell>{row.percentage}</TableCell>
-                                    <TableCell>{row.mode}</TableCell>
-                                    <TableCell>{row.period}</TableCell>
-                                    <TableCell align="center">
-                                        <Button
-                                            variant="contained"
-                                            color="error"
-                                            size="small"
-                                            onClick={() => handleRemove(index)}
-                                        >
-                                            Remove
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell colSpan={5} align="center">
-                                    No payment terms added
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
+        {/* ================= FORM ================= */}
+        <Box mt={3}>
+            <Grid container spacing={2}>
 
-                {/* ================= FORM ================= */}
-                <Box mt={3}>
-                    <Grid container spacing={2}>
+                {/* Mode */}
+                <Grid item xs={12} md={2}>
+                    <TextField
+                        select
+                        fullWidth
+                        label="Mode"
+                        value={form.mode}
+                        onChange={(e) =>
+                            setForm({ ...form, mode: e.target.value })
+                        }
+                    >
+                        <MenuItem value="Immediate">Immediate</MenuItem>
+                        <MenuItem value="After">After</MenuItem>
+                    </TextField>
+                </Grid>
 
-                        {/* Mode */}
-                        <Grid item xs={12} md={2}>
-                            <TextField
-                                select
-                                fullWidth
-                                label="Mode"
-                                value={form.mode}
-                                onChange={(e) =>
-                                    setForm({ ...form, mode: e.target.value })
-                                }
+                {/* Payment Condition */}
+                <Grid item xs={12} md={3}>
+                    <TextField
+                        select
+                        fullWidth
+                        label="Payment Condition"
+                        value={form.payCondition}
+                        onChange={(e) =>
+                            setForm({
+                                ...form,
+                                payCondition: e.target.value,
+                            })
+                        }
+                    >
+                        <MenuItem value="">-- Select --</MenuItem>
+
+                        {payCondList.map((item) => (
+                            <MenuItem
+                                key={item.PC_CODE}
+                                value={item.PC_CODE}
                             >
-                                <MenuItem value="Immediate">Immediate</MenuItem>
-                                <MenuItem value="After">After</MenuItem>
-                            </TextField>
-                        </Grid>
+                                {item.PCDESC}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Grid>
 
-                        {/* Payment Condition */}
-                        <Grid item xs={12} md={3}>
-                            <TextField
-                                select
-                                fullWidth
-                                label="Payment Condition"
-                                value={form.payCondition}
-                                onChange={(e) =>
-                                    setForm({
-                                        ...form,
-                                        payCondition: e.target.value,
-                                    })
-                                }
-                            >
-                                <MenuItem value="">-- Select --</MenuItem>
-
-                                {payCondList.map((item) => (
-                                    <MenuItem
-                                        key={item.PC_CODE}
-                                        value={item.PC_CODE}
-                                    >
-                                        {item.PCDESC}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid>
-
-                        {/* Percentage */}
+                {/* Percentage */}
+                <Grid item xs={12} md={2}>
+                    <TextField
+                        fullWidth
+                        label="Percentage"
+                        type="number"
+                        value={form.percentage}
+                        onChange={(e) =>
+                            setForm({
+                                ...form,
+                                percentage: e.target.value,
+                            })
+                        }
+                    />
+                </Grid>
+                {form.mode === "After" && (
+                    <>
                         <Grid item xs={12} md={2}>
                             <TextField
                                 fullWidth
-                                label="Percentage"
+                                label="Period"
                                 type="number"
-                                value={form.percentage}
+                                value={form.period}
                                 onChange={(e) =>
                                     setForm({
                                         ...form,
-                                        percentage: e.target.value,
+                                        period: e.target.value,
                                     })
                                 }
                             />
                         </Grid>
-                        {form.mode === "After" && (
-                            <>
-                                <Grid item xs={12} md={2}>
-                                    <TextField
-                                        fullWidth
-                                        label="Period"
-                                        type="number"
-                                        value={form.period}
-                                        onChange={(e) =>
-                                            setForm({
-                                                ...form,
-                                                period: e.target.value,
-                                            })
-                                        }
-                                    />
-                                </Grid>
 
-                                <Grid item xs={12} md={2}>
-                                    <TextField
-                                        select
-                                        fullWidth
-                                        label="Unit"
-                                        value={form.unit || "Days"}
-                                        onChange={(e) =>
-                                            setForm({
-                                                ...form,
-                                                unit: e.target.value,
-                                            })
-                                        }
-                                    >
-                                        <MenuItem value="Days">Days</MenuItem>
-                                        <MenuItem value="Months">Months</MenuItem>
-                                    </TextField>
-                                </Grid>
-                            </>
-                        )}
-
-
-                        {/* Add Button */}
                         <Grid item xs={12} md={2}>
-                            <Button
+                            <TextField
+                                select
                                 fullWidth
-                                variant="contained"
-                                sx={{ height: 56 }}
-                                onClick={handleAdd}
+                                label="Unit"
+                                value={form.unit || "Days"}
+                                onChange={(e) =>
+                                    setForm({
+                                        ...form,
+                                        unit: e.target.value,
+                                    })
+                                }
                             >
-                                Add
-                            </Button>
+                                <MenuItem value="Days">Days</MenuItem>
+                                <MenuItem value="Months">Months</MenuItem>
+                            </TextField>
                         </Grid>
+                    </>
+                )}
 
-                    </Grid>
-                </Box>
-
-                {/* ================= FOOTER ================= */}
-                <Box display="flex" justifyContent="flex-end" gap={2} mt={4}>
+                {/* Add Button */}
+                <Grid item xs={12} md={2}>
                     <Button
+                        fullWidth
                         variant="contained"
-                        onClick={() => onSave(rows)}
+                        sx={{ height: 56 }}
+                        onClick={handleAdd}
                     >
-                        Save
+                        Add
                     </Button>
-                    <Button variant="outlined" onClick={onClose}>
-                        Close
-                    </Button>
-                </Box>
+                </Grid>
 
-            </DialogContent>
-        </Dialog>
+            </Grid>
+        </Box>
+
+        {/* ================= FOOTER ================= */}
+        <Box display="flex" justifyContent="flex-end" gap={2} mt={4}>
+            <Button
+                variant="contained"
+                onClick={() => onSave(rows)}
+            >
+                Save
+            </Button>
+            <Button variant="outlined" onClick={onClose}>
+                Close
+            </Button>
+        </Box>
+
+    </DialogContent>
+</Dialog>
     );
 };
 

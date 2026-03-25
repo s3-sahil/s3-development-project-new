@@ -13,10 +13,10 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
-  DailyActivityPlanPaginationAPI,
   getDailyActivityPlanList,
   deleteDailyActivityPlan,
-} from "app/utils/authServices"; // Assuming these APIs exist
+  DailyActivityPaginationAPI,
+} from "app/utils/authServices";
 import SearchFilter from "../SearchFilter";
 
 export default function DailyActivityPlanTable() {
@@ -35,9 +35,8 @@ export default function DailyActivityPlanTable() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Assuming the table name is 'daily_activity_plan' for the pagination API
-      const response = await DailyActivityPlanPaginationAPI(
-        "daily_activity_plan", // This might need to be adjusted
+      const response = await DailyActivityPaginationAPI(
+        "DAILY_ACTIVITY", 
         paginationModel.page + 1,
         paginationModel.pageSize
       );
@@ -66,13 +65,10 @@ export default function DailyActivityPlanTable() {
   const handleEdit = async (row) => {
     setLoading(true);
     try {
-      // Assuming the details API takes the activityNo
-      const response = await getDailyActivityPlanList({
-        activityNo: row.activityNo,
-      });
+      const response = await getDailyActivityPlanList(row.Activity_No, row.Emp_No);
 
       if (response) {
-        navigate(`/material/sales-daily-activity-plan-form/edit/${row.activityNo}`, {
+        navigate(`/material/sales-daily-activity-plan-form/edit/${row.Activity_No}`, {
           state: { activityPlanDetails: response },
         });
       }
@@ -119,22 +115,26 @@ export default function DailyActivityPlanTable() {
 
   const columns = [
 
-    { field: "activityNo", headerName: "Activity No", flex: 1 },
+    { field: "Activity_No", headerName: "Activity No", flex: 1 },
 
-    { field: "employeeNo", headerName: "Employee No", flex: 1 },
+    { field: "Emp_No", headerName: "Employee No", flex: 1 },
 
     {
-      field: "visitDate",
+      field: "Visit_Date",
       headerName: "Visit Date",
       flex: 1,
-      valueGetter: ({ value }) => value && new Date(value).toLocaleDateString(),
+      valueGetter: (value) => value && new Date(value).toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: '2-digit'
+      }),
     },
 
-    { field: "visitingTo", headerName: "Visiting To", flex: 1.5 },
+    { field: "Visiting_To", headerName: "Visiting To", flex: 1.5 },
 
-    { field: "visitingPerson", headerName: "Visiting Person", flex: 1.5 },
+    { field: "Visiting_Person", headerName: "Visiting Person", flex: 1.5 },
 
-    { field: "visitStatus", headerName: "Status", flex: 1 },
+    { field: "Visit_Status", headerName: "Status", flex: 1 },
 
     {
       field: "actions",
@@ -150,7 +150,7 @@ export default function DailyActivityPlanTable() {
           </Tooltip>
 
           <Tooltip title="Delete">
-            <IconButton onClick={() => handleDelete(params.row.activityNo)}>
+            <IconButton onClick={() => handleDelete(params.row.Activity_No)}>
               <Icon color="error">delete</Icon>
             </IconButton>
           </Tooltip>
@@ -181,8 +181,8 @@ export default function DailyActivityPlanTable() {
             searchColumn={searchColumn}
             setSearchColumn={setSearchColumn}
             columnOptions={[
-              { value: "activityNo", label: "Activity No" },
-              { value: "visitingTo", label: "Visiting To" },
+              { value: "Activity_No", label: "Activity No" },
+              { value: "Visiting_To", label: "Visiting To" },
             ]}
             onSearch={handleSearch}
           />
@@ -200,7 +200,7 @@ export default function DailyActivityPlanTable() {
           <DataGrid
             rows={rows}
             columns={columns}
-            getRowId={(row) => row.activityNo} // Use activityNo as the unique ID
+            getRowId={(row) => row.Activity_No} // Use activityNo as the unique ID
             loading={loading}
             rowCount={rowCount}
             paginationMode="server"

@@ -5,7 +5,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { deletecustomerpurchaselogindetail } from "app/utils/authServices";
+// import { deletecustomerpurchaselogindetail } from "app/utils/authServices";
 import { CustomerPurchaseOrderLoginPaginationAPI } from "app/utils/salesTransactionServices";
 import SearchFilter from "../SearchFilter";
 
@@ -74,20 +74,20 @@ export default function CustomersPurchaseOrderLoginTable() {
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this Purchase Order?")) {
-      try {
-        setLoading(true);
-        const rowToDelete = rows.find((r) => r.id === id);
-        if (rowToDelete) {
-          await deletecustomerpurchaselogindetail(rowToDelete);
-          alert("Deleted successfully!");
-          fetchPurchaseOrders();
-        }
-      } catch (error) {
-        console.error("Delete Error:", error);
-        alert("Failed to delete record.");
-      } finally {
-        setLoading(false);
-      }
+      // try {
+      //   setLoading(true);
+      //   const rowToDelete = rows.find((r) => r.id === id);
+      //   if (rowToDelete) {
+      //     await deletecustomerpurchaselogindetail(rowToDelete);
+      //     alert("Deleted successfully!");
+      //     fetchPurchaseOrders();
+      //   }
+      // } catch (error) {
+      //   console.error("Delete Error:", error);
+      //   alert("Failed to delete record.");
+      // } finally {
+      //   setLoading(false);
+      // }
     }
   };
 

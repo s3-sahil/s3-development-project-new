@@ -26,7 +26,6 @@ export default function InvoiceTable() {
     });
 
     const fetchInvoices = async () => {
-        debugger;
         try {
             setLoading(true);
 

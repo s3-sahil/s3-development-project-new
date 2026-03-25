@@ -170,51 +170,6 @@ export const fetchPayCondAPI = async () => {
     }
 };
 
-export const saveCustomerPurchaseOrder = async (payload) => {debugger
-    try {
-        const response = await axiosInstance.post(
-            "/ADD-CUSTOMER_PURCHASE_ORDER",
-            payload,
-            {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-        );
-
-        return response.data;
-    } catch (error) {
-        console.error("API Error:", error.response?.data || error.message);
-        throw new Error(
-            error.response?.data?.Message || "Failed to save Customer Purchase Order"
-        );
-    }
-};
-
-export const deletecustomerpurchaselogindetail = async (user) => {
-    const PO_ID_DT = user.PO_ID_DT?.substring(0, 10);
-
-    try {
-        const response = await axiosInstance.delete(
-            `/DELETE-CUSTOMER_PURCHASE_ORDER`,
-            {
-                params: {
-                    CUST_CODE: user.CUST_CODE,
-                    PO_ID: user.PO_ID,
-                    PO_ID_DT: PO_ID_DT,
-                    profcen_cd: user.PROFCEN_CD
-                }
-            }
-        );
-
-        console.log("API Response Data:", response.data);
-
-        return { data: response.data.data || [] };
-    } catch (error) {
-        console.error("Error deleting customer purchase order:", error);
-        return { data: [] };
-    }
-};
 
 export const login = async (Login_Name, Login_Pwd) => {
     try {
@@ -824,35 +779,8 @@ export const saveDailyActivityPlan = async (payload) => {
   }
 };
 
-export const getDailyActivityPlanList = async () => {
-  try {
-    const response = await axiosInstance.get(
-      "/API/PLANNING/DAILY_ACTIVITY_PLAN/GET-DAILY_ACTIVITY_PLAN"
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error("Fetch Error:", error.response || error.message);
-    throw new Error("Failed to fetch Daily Activity Plan");
-  }
-};
-
-export const deleteDailyActivityPlan = async (id) => {
-  try {
-    const response = await axiosInstance.delete(
-      `/API/PLANNING/DAILY_ACTIVITY_PLAN/DELETE/${id}`
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error("Delete Error:", error.response || error.message);
-    throw new Error("Failed to delete record");
-  }
-};
-
-
-export const DailyActivityPlanPaginationAPI = async (
-    tableName = "TMS_PARA",
+export const DailyActivityPaginationAPI = async (
+    tableName = "DAILY_ACTIVITY",
     pageNumber = 1,
     pageSize = 10
 ) => {
@@ -881,4 +809,33 @@ export const DailyActivityPlanPaginationAPI = async (
 
         return { Data: [], TotalCount: 0 };
     }
+};
+
+export const getDailyActivityPlanList = async (Activity_No, Emp_No) => {
+  try {
+    const response = await axiosInstance.get(
+      "/GETRETRIVE-DAILY_ACTIVITY",
+      {
+        params: { Activity_No, Emp_No }
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Error:", error.response || error.message);
+    throw new Error("Failed to fetch Daily Activity Plan");
+  }
+};
+
+export const deleteDailyActivityPlan = async (id) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/API/PLANNING/DAILY_ACTIVITY_PLAN/DELETE/${id}`
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Delete Error:", error.response || error.message);
+    throw new Error("Failed to delete record");
+  }
 };

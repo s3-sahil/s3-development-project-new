@@ -1,319 +1,406 @@
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Button,
-    Grid,
-    TextField,
-    MenuItem,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    IconButton,
-    Paper,
-    TableContainer,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  Button,
+  MenuItem,
+  IconButton,
+  Grid,
+  Typography,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 
-const initialForm = {
-    modeTransport: "",
-    deliveryTerm: "",
-    transport: "",
-    amount: "",
-    buyer: "",
-    insurance: "",
-    packingType: "",
-    packingAmount: "",
-    packingPercent: "",
-    traderDisc: "",
-};
-
 const OtherDetailsModal = ({ open, onClose, onSave }) => {
-    const [form, setForm] = useState(initialForm);
-    const [rows, setRows] = useState([]);
+  const [state, setState] = useState({
+    transporterName: "",
+    mode: "By Road",
+    deliveryTerm: "ExW",
+    transport: "Our A/c",
+    insurance: "Our A/c",
+    buyer: "",
+    amount: "",
+    globalDisc: "",
+    packingType: "Inclusive",
+    packingAmt: "",
+    packingPer: "",
+    traderDisc: "",
+    otherTerms: "",
+    deliveryRemark: "",
+    warrantyApplicable: false,
+    warrantyPeriod: "",
+    warrantyUnit: "",
+    warrantyExtra: "",
+    warrantyType: "",
+    warrantyClause: "",
+    advanceAmt: "",
+  });
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
-
-    const handleAdd = () => {
-        setRows([...rows, { ...form, id: Date.now() }]);
-        setForm(initialForm); // reset form
-    };
-
-    const handleDelete = (id) => {
-        setRows(rows.filter((r) => r.id !== id));
-    };
-
-    const cell = (width) => ({
-        width,
-        minWidth: width,
-        maxWidth: width,
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        fontSize: 13,
-        fontWeight: 500,
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setState({
+      ...state,
+      [name]: type === "checkbox" ? checked : value,
     });
+  };
 
-    return (
-        <Dialog
-            open={open}
-            onClose={onClose}
-            fullWidth
-            maxWidth={false}
-            PaperProps={{
-                sx: {
-                    width: 800,
-                    maxWidth: 800,
-                },
-            }}
+  const handleSave = () => {
+    onSave(state);
+    onClose();
+  };
+
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth={false}
+      PaperProps={{
+        sx: { width: 800, maxWidth: 800 },
+      }}
+    >
+      <DialogTitle sx={{ fontWeight: "bold" }}>
+        Others
+        <IconButton
+          onClick={onClose}
+          sx={{ position: "absolute", right: 10, top: 10 }}
         >
-            <DialogTitle>Other Details</DialogTitle>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
 
-            <DialogContent dividers>
-                {/* FORM */}
-                {/* FORM */}
-                <Grid container spacing={3}>
-                    <Grid item xs={6}>
-                        <TextField
-                            select
-                            fullWidth
-                            label="Mode of Transport"
-                            name="modeTransport"
-                            value={form.modeTransport}
-                            onChange={handleChange}
-                        >
-                            {["ByRoad", "ByAir", "BySea", "ByHand", "ByCourier"].map((item) => (
-                                <MenuItem key={item} value={item}>
-                                    {item}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </Grid>
+      <DialogContent>
+        <Grid container spacing={1} alignItems="center">
+          {/* Transporter Name */}
+          <Grid item xs={3}>
+            <Typography>Transporter Name :</Typography>
+          </Grid>
+          <Grid item xs={9}>
+            <TextField
+              fullWidth
+              size="small"
+              name="transporterName"
+              value={state.transporterName}
+              onChange={handleChange}
+            />
+          </Grid>
 
-                    <Grid item xs={6}>
-                        <TextField
-                            select
-                            fullWidth
-                            label="Delivery Term"
-                            name="deliveryTerm"
-                            value={form.deliveryTerm}
-                            onChange={handleChange}
-                        >
-                            {["FOB", "CIF", "EXW", "FCA", "FAS", "CFR", "DD", "DOU", "DOP", "CPT", "DAI", "DAB", "FOR"].map((item) => (
-                                <MenuItem key={item} value={item}>
-                                    {item}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </Grid>
+          {/* Mode */}
+          <Grid item xs={3}>
+            <Typography>Mode of Transport :</Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              name="mode"
+              value={state.mode}
+              onChange={handleChange}
+            >
+              <MenuItem value="By Road">By Road</MenuItem>
+              <MenuItem value="By Air">By Air</MenuItem>
+            </TextField>
+          </Grid>
 
-                    <Grid item xs={6}>
-                        <TextField
-                            select
-                            fullWidth
-                            label="Transport"
-                            name="transport"
-                            value={form.transport}
-                            onChange={handleChange}
-                        >
-                            {["N.A", "OUR A/C", "YOUR A/C"].map((item) => (
-                                <MenuItem key={item} value={item}>
-                                    {item}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </Grid>
+          {/* Delivery Term */}
+          <Grid item xs={3}>
+            <Typography>Delivery Term :</Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              name="deliveryTerm"
+              value={state.deliveryTerm}
+              onChange={handleChange}
+            >
+              <MenuItem value="ExW">ExW</MenuItem>
+              <MenuItem value="FOB">FOB</MenuItem>
+            </TextField>
+          </Grid>
 
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            label="Amount"
-                            name="amount"
-                            value={form.amount}
-                            onChange={handleChange}
-                        />
-                    </Grid>
+          {/* Transport */}
+          <Grid item xs={3}>
+            <Typography>1) Transport :</Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              name="transport"
+              value={state.transport}
+              onChange={handleChange}
+            >
+              <MenuItem value="Our A/c">Our A/c</MenuItem>
+              <MenuItem value="Your A/c">Your A/c</MenuItem>
+            </TextField>
+          </Grid>
 
-                    <Grid item xs={6}>
-                        <TextField
-                            select
-                            fullWidth
-                            label="Insurance"
-                            name="insurance"
-                            value={form.insurance}
-                            onChange={handleChange}
-                        >
-                            {["N.A", "OUR A/C", "YOUR A/C"].map((item) => (
-                                <MenuItem key={item} value={item}>
-                                    {item}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </Grid>
+          {/* Amount */}
+          <Grid item xs={3}>
+            <Typography>Amount :</Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              fullWidth
+              size="small"
+              name="amount"
+              value={state.amount}
+              onChange={handleChange}
+            />
+          </Grid>
 
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            label="Buyer"
-                            name="buyer"
-                            value={form.buyer}
-                            onChange={handleChange}
-                        />
-                    </Grid>
+          {/* Insurance */}
+          <Grid item xs={3}>
+            <Typography>2) Insurance :</Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              name="insurance"
+              value={state.insurance}
+              onChange={handleChange}
+            >
+              <MenuItem value="Our A/c">Our A/c</MenuItem>
+              <MenuItem value="Your A/c">Your A/c</MenuItem>
+            </TextField>
+          </Grid>
 
-                    <Grid item xs={6}>
-                        <TextField
-                            select
-                            fullWidth
-                            label="Packing Type"
-                            name="packingType"
-                            value={form.packingType}
-                            onChange={handleChange}
-                        >
-                            {["Not Applicable", "As Actual", "Your Account", "In"].map((item) => (
-                                <MenuItem key={item} value={item}>
-                                    {item}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </Grid>
+          {/* Buyer */}
+          <Grid item xs={3}>
+            <Typography>Buyer :</Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              fullWidth
+              size="small"
+              name="buyer"
+              value={state.buyer}
+              onChange={handleChange}
+            />
+          </Grid>
 
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            label="Packing Amount"
-                            name="packingAmount"
-                            value={form.packingAmount}
-                            onChange={handleChange}
-                        />
-                    </Grid>
+          {/* Discount */}
+          <Grid item xs={3}>
+            <Typography>3) Global Discount % :</Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              fullWidth
+              size="small"
+              name="globalDisc"
+              value={state.globalDisc}
+              onChange={handleChange}
+            />
+          </Grid>
 
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            label="Packing %"
-                            name="packingPercent"
-                            value={form.packingPercent}
-                            onChange={handleChange}
-                        />
-                    </Grid>
+          {/* Packing Type */}
+          <Grid item xs={3}>
+            <Typography>4) Packing Type :</Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              select
+              fullWidth
+              size="small"
+              name="packingType"
+              value={state.packingType}
+              onChange={handleChange}
+            >
+              <MenuItem value="Inclusive">Inclusive</MenuItem>
+              <MenuItem value="Exclusive">Exclusive</MenuItem>
+            </TextField>
+          </Grid>
 
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            label="Trader Disc %"
-                            name="traderDisc"
-                            value={form.traderDisc}
-                            onChange={handleChange}
-                        />
-                    </Grid>
+          {/* Packing */}
+          <Grid item xs={3}>
+            <Typography>5) Packing Amt & % :</Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <TextField
+              size="small"
+              fullWidth
+              name="packingAmt"
+              value={state.packingAmt}
+              onChange={handleChange}
+            />
+          </Grid>
+          <Grid item xs={1}>
+            <TextField
+              size="small"
+              fullWidth
+              name="packingPer"
+              value={state.packingPer}
+              onChange={handleChange}
+            />
+          </Grid>
 
-                    <Grid item xs={12}>
-                        <Button variant="contained" onClick={handleAdd}>
-                            Add
-                        </Button>
-                    </Grid>
-                </Grid>
+          {/* Trader Discount */}
+          <Grid item xs={3}>
+            <Typography>6) Trader Disc % :</Typography>
+          </Grid>
+          <Grid item xs={3}>
+            <TextField
+              fullWidth
+              size="small"
+              name="traderDisc"
+              value={state.traderDisc}
+              onChange={handleChange}
+            />
+          </Grid>
 
+          {/* Other Terms */}
+          <Grid item xs={3}>
+            <Typography>7) Other Payment Terms :</Typography>
+          </Grid>
+          <Grid item xs={9}>
+            <TextField
+              multiline
+              rows={3}
+              fullWidth
+              size="small"
+              name="otherTerms"
+              value={state.otherTerms}
+              onChange={handleChange}
+            />
+          </Grid>
 
-                {/* TABLE */}
-                <TableContainer
-                    component={Paper}
-                    sx={{
-                        mt: 3,
-                        maxWidth: "100%",
-                        overflowX: "auto",
-                    }}
+          {/* Delivery Remark */}
+          <Grid item xs={3}>
+            <Typography>8) Delivery Remark :</Typography>
+          </Grid>
+          <Grid item xs={9}>
+            <TextField
+              fullWidth
+              size="small"
+              name="deliveryRemark"
+              value={state.deliveryRemark}
+              onChange={handleChange}
+            />
+          </Grid>
+
+          {/* Warranty */}
+          <Grid item xs={3}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="warrantyApplicable"
+                  checked={state.warrantyApplicable}
+                  onChange={handleChange}
+                />
+              }
+              label="Warranty Applicable"
+            />
+          </Grid>
+
+          {state.warrantyApplicable && (
+            <>
+              <Grid item xs={2}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Period"
+                  name="warrantyPeriod"
+                  value={state.warrantyPeriod}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={2}>
+                <TextField
+                  select
+                  size="small"
+                  fullWidth
+                  label="Unit"
+                  name="warrantyUnit"
+                  value={state.warrantyUnit}
+                  onChange={handleChange}
                 >
-                    <Table
-                        sx={{
-                            tableLayout: "fixed",
-                            minWidth: 1300,
-                        }}
-                    >
-                        <TableHead>
-                            <TableRow>
-                                {[
-                                    "#",
-                                    "Mode Transport",
-                                    "Delivery Term",
-                                    "Transport",
-                                    "Amount",
-                                    "Buyer",
-                                    "Insurance",
-                                    "Packing Type",
-                                    "Packing Amt",
-                                    "Packing %",
-                                    "Trader Disc %",
-                                    "Action",
-                                ].map((head) => (
-                                    <TableCell
-                                        key={head}
-                                        sx={{
-                                            whiteSpace: "nowrap",
-                                            fontWeight: 600,
-                                            backgroundColor: "#f5f5f5",
-                                        }}
-                                    >
-                                        {head}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        </TableHead>
+                  <MenuItem value="Days">Days</MenuItem>
+                  <MenuItem value="Months">Months</MenuItem>
+                  <MenuItem value="Years">Years</MenuItem>
+                </TextField>
+              </Grid>
 
+              <Grid item xs={2}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Extra"
+                  name="warrantyExtra"
+                  value={state.warrantyExtra}
+                  onChange={handleChange}
+                />
+              </Grid>
 
-                        <TableBody>
-                            {rows.length === 0 && (
-                                <TableRow>
-                                    <TableCell colSpan={12} align="center">
-                                        No data
-                                    </TableCell>
-                                </TableRow>
-                            )}
-
-                            {rows.map((row, index) => (
-                                <TableRow key={row.id}>
-                                    <TableCell>{index + 1}</TableCell>
-                                    <TableCell sx={cell(60)}>{row.modeTransport}</TableCell>
-                                    <TableCell sx={cell(60)}>{row.deliveryTerm}</TableCell>
-                                    <TableCell sx={cell(60)}>{row.transport}</TableCell>
-                                    <TableCell sx={cell(60)}>{row.amount}</TableCell>
-                                    <TableCell sx={cell(60)}>{row.buyer}</TableCell>
-                                    <TableCell sx={cell(60)}>{row.insurance}</TableCell>
-                                    <TableCell sx={cell(60)}>{row.packingType}</TableCell>
-                                    <TableCell sx={cell(60)}>{row.packingAmount}</TableCell>
-                                    <TableCell sx={cell(60)}>{row.packingPercent}</TableCell>
-                                    <TableCell sx={cell(60)}>{row.traderDisc}</TableCell>
-                                    <TableCell>
-                                        <IconButton color="error" onClick={() => handleDelete(row.id)}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </DialogContent>
-
-            <DialogActions>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => onSave(rows)}
+              <Grid item xs={2}>
+                <TextField
+                  select
+                  size="small"
+                  fullWidth
+                  label="Type"
+                  name="warrantyType"
+                  value={state.warrantyType}
+                  onChange={handleChange}
                 >
-                    Save
-                </Button>
-                <Button variant="outlined" onClick={onClose}>Close</Button>
-            </DialogActions>
-        </Dialog>
-    );
+                  <MenuItem value="Full">Full</MenuItem>
+                  <MenuItem value="Partial">Partial</MenuItem>
+                </TextField>
+              </Grid>
+            </>
+          )}
+
+          {/* Warranty Clause */}
+          <Grid item xs={3}>
+            <Typography>Warranty Clause :</Typography>
+          </Grid>
+          <Grid item xs={9}>
+            <TextField
+              fullWidth
+              size="small"
+              name="warrantyClause"
+              value={state.warrantyClause}
+              onChange={handleChange}
+            />
+          </Grid>
+        </Grid>
+        <br/>
+        <Grid item xs={3}>
+          <Typography>Advance Amt :</Typography>
+        </Grid>
+        <Grid item xs={9}>
+          <TextField
+            fullWidth
+            size="small"
+            name="advanceAmt"
+            value={state.advanceAmt}
+            onChange={handleChange}
+          />
+        </Grid>
+
+        {/* Buttons */}
+        <Grid container justifyContent="flex-end" mt={3} spacing={2}>
+          <Grid item>
+            <Button variant="contained" onClick={handleSave}>
+              Save
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button variant="outlined" onClick={onClose}>
+              Close
+            </Button>
+          </Grid>
+        </Grid>
+      </DialogContent>
+    </Dialog>
+  );
 };
 
 export default OtherDetailsModal;

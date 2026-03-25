@@ -154,7 +154,9 @@ export const updateProformaInvoice = async (payload) => {
 export const CustomerRCIAPaginationAPI = async (
     tableName = "cust_rcia",
     pageNumber = 1,
-    pageSize = 10
+    pageSize = 10,
+    searchColumn = "",
+    searchString = ""
 ) => {
     try {
         const { data } = await axiosInstance.get(
@@ -164,6 +166,8 @@ export const CustomerRCIAPaginationAPI = async (
                     TableNameForPagination: tableName,
                     pageNumber,
                     pageSize,
+                    searchColumn,
+                    searchString,
                 },
             }
         );

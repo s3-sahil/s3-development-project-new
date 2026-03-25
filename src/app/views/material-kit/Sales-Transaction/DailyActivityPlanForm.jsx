@@ -39,26 +39,25 @@ export default function DailyActivityPlanForm() {
   useEffect(() => {
     if (isEditMode) {
       const { activityPlanDetails } = location.state;
-      // Assuming the API response has a flat structure matching the form state
-      // And dates/times are in a format that the input fields can understand
+      const data = activityPlanDetails?.Data || {};
       setFormData({
-        activityNo: activityPlanDetails.activityNo || "",
-        employeeNo: activityPlanDetails.employeeNo || "",
-        visitDate: activityPlanDetails.visitDate ? activityPlanDetails.visitDate.substring(0, 10) : "",
-        fromTime: activityPlanDetails.fromTime || "",
-        toTime: activityPlanDetails.toTime || "",
-        visitingTo: activityPlanDetails.visitingTo || "",
-        visitingPerson: activityPlanDetails.visitingPerson || "",
-        visitingFor: activityPlanDetails.visitingFor || "",
-        visitStatus: activityPlanDetails.visitStatus || "",
-        traveledBy: activityPlanDetails.traveledBy || "",
-        traveledKm: activityPlanDetails.traveledKm || "",
-        busFare: activityPlanDetails.busFare || "",
-        autoFare: activityPlanDetails.autoFare || "",
-        mealExpenses: activityPlanDetails.mealExpenses || "",
-        lodgingExpenses: activityPlanDetails.lodgingExpenses || "",
-        fareRemark: activityPlanDetails.fareRemark || "",
-        remark: activityPlanDetails.remark || "",
+        activityNo: data.Activity_No || "",
+        employeeNo: data.Emp_No || "",
+        visitDate: data.Visit_Date ? data.Visit_Date.substring(0, 10) : "",
+        fromTime: data.From_Time || "",
+        toTime: data.To_Time || "",
+        visitingTo: data.Visiting_To || "",
+        visitingPerson: data.Visiting_Person || "",
+        visitingFor: data.Visiting_For || "",
+        visitStatus: data.Visit_Status || "",
+        traveledBy: data.Travel_By || "",
+        traveledKm: data.Travel_KM || "",
+        busFare: data.Bus_Fare || "",
+        autoFare: data.Auto_Fare || "",
+        mealExpenses: data.Meal_Expenses || "",
+        lodgingExpenses: data.Lodging || "",
+        fareRemark: data.Fare_Remark || "",
+        remark: data.Remark || "",
       });
     }
   }, [location.state, isEditMode]);
@@ -74,18 +73,31 @@ export default function DailyActivityPlanForm() {
 
   const handleSave = async () => {
     try {
-      // The payload structure might need adjustments based on the actual API requirements
       const payload = {
-        ...formData,
-        // Convert number fields from string if necessary
-        traveledKm: Number(formData.traveledKm) || 0,
-        busFare: Number(formData.busFare) || 0,
-        autoFare: Number(formData.autoFare) || 0,
-        mealExpenses: Number(formData.mealExpenses) || 0,
-        lodgingExpenses: Number(formData.lodgingExpenses) || 0,
+        activity_No: Number(formData.activityNo) || 0,
+        emp_No: formData.employeeNo,
+        visit_Date: formData.visitDate ? new Date(formData.visitDate).toISOString() : null,
+        from_Time: formData.fromTime,
+        to_Time: formData.toTime,
+        visiting_To: formData.visitingTo,
+        visiting_Person: formData.visitingPerson,
+        visiting_For: formData.visitingFor,
+        visit_Status: formData.visitStatus,
+        next_Visit_Date: null, // This field is not in the form, assuming null
+        next_Visit_Time: "",   // This field is not in the form, assuming empty string
+        remark: formData.remark,
+        chequeDD: "", // This field is not in the form, assuming empty string
+        amount: 0, // This field is not in the form, assuming 0
+        cust_code: "", // This field is not in the form, assuming empty string
+        bus_Fare: Number(formData.busFare) || 0,
+        auto_Fare: Number(formData.autoFare) || 0,
+        meal_Expenses: Number(formData.mealExpenses) || 0,
+        lodging: Number(formData.lodgingExpenses) || 0,
+        travel_By: formData.traveledBy,
+        travel_KM: Number(formData.traveledKm) || 0,
+        fare_Remark: formData.fareRemark,
       };
 
-      // Assuming saveDailyActivityPlan can handle both create and update
       const data = await saveDailyActivityPlan(payload);
 
       alert(data?.message || (isEditMode ? "Updated Successfully" : "Saved Successfully"));
