@@ -148,6 +148,7 @@ const OtherDetailsModal = ({ open, onClose, onSave }) => {
           <Grid item xs={3}>
             <TextField
               fullWidth
+              type="number"
               size="small"
               name="amount"
               value={state.amount}
@@ -194,6 +195,7 @@ const OtherDetailsModal = ({ open, onClose, onSave }) => {
           <Grid item xs={3}>
             <TextField
               fullWidth
+              type="number"
               size="small"
               name="globalDisc"
               value={state.globalDisc}
@@ -226,6 +228,7 @@ const OtherDetailsModal = ({ open, onClose, onSave }) => {
           <Grid item xs={2}>
             <TextField
               size="small"
+              type="number"
               fullWidth
               name="packingAmt"
               value={state.packingAmt}
@@ -235,6 +238,7 @@ const OtherDetailsModal = ({ open, onClose, onSave }) => {
           <Grid item xs={1}>
             <TextField
               size="small"
+              type="number"
               fullWidth
               name="packingPer"
               value={state.packingPer}
@@ -249,6 +253,7 @@ const OtherDetailsModal = ({ open, onClose, onSave }) => {
           <Grid item xs={3}>
             <TextField
               fullWidth
+              type="number"
               size="small"
               name="traderDisc"
               value={state.traderDisc}
@@ -305,6 +310,7 @@ const OtherDetailsModal = ({ open, onClose, onSave }) => {
               <Grid item xs={2}>
                 <TextField
                   size="small"
+                  type="number"
                   fullWidth
                   label="Period"
                   name="warrantyPeriod"
@@ -378,6 +384,7 @@ const OtherDetailsModal = ({ open, onClose, onSave }) => {
         <Grid item xs={9}>
           <TextField
             fullWidth
+            type="number"
             size="small"
             name="advanceAmt"
             value={state.advanceAmt}

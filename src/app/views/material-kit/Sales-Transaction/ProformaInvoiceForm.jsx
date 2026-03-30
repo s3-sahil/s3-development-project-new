@@ -23,6 +23,7 @@ import InvoicePaymentModal from "./InvoicePaymentModal";
 import InvoiceTaxDetailsModal from "./InvoiceTaxDetailsModal";
 import InvoiceOtherDetailsModal from "./InvoiceOtherDetailsModal";
 import TransporterModal from "./TransporterModal";
+import { addProformaInvoice } from "app/utils/authServices";
 
 const ProformaInvoiceForm = () => {
     const navigate = useNavigate();
@@ -74,6 +75,10 @@ const ProformaInvoiceForm = () => {
     const [openTax, setOpenTax] = useState(false);
     const [openOther, setOpenOther] = useState(false);
     const [openTransport, setOpenTransport] = useState(false);
+    const [paymentTerms, setPaymentTerms] = useState([]);
+    const [taxDetails, setTaxDetails] = useState([]);
+    const [otherDetails, setOtherDetails] = useState({});
+    const [transporterData, setTransporterData] = useState({});
 
     useEffect(() => {
         if (isEdit && location.state) {
@@ -186,12 +191,106 @@ const ProformaInvoiceForm = () => {
         setItems(items.filter(item => item.id !== id));
     };
 
-    const handleSave = () => {
-        console.log("Header:", formData);
-        console.log("Items:", items);
-        // Add API call here
-        alert("Saved Successfully");
-        navigate("/material/sales-proforma-invoice-table");
+    const handleSave = async () => {
+        if (!formData.invNo || !formData.customer) {
+            alert("Please fill required fields (Invoice No, Customer)");
+            return;
+        }
+
+        if (items.length === 0) {
+            alert("Please add at least one item");
+            return;
+        }
+
+        const profcen_cd = localStorage.getItem("PROFCEN_CD") || "";
+        const user_name = localStorage.getItem("username") || "ADMIN";
+        const isoDate = (date) => (date ? new Date(date).toISOString() : new Date().toISOString());
+
+        const payload = {
+            pinvoicE_HED_ex: {
+                inV_TYPE: formData.invoiceType || "",
+                saleS_TYPE: formData.invoiceSubType || "",
+                inV_NO: formData.invNo,
+                inV_DT: isoDate(formData.invDate),
+                pO_DT: isoDate(formData.poDate),
+                cusT_CODE: formData.customer,
+                consiN_NAME: formData.custName || "",
+                transporteR_CODE: transporterData?.transporterCode || "",
+                vehiclE_NO: transporterData?.vehicleNo || "",
+                deleverY_BY: transporterData?.transportMode || "",
+                disC_PER: Number(formData.discountPerSummary || 0),
+                disC_AMT: Number(formData.discountAmountSummary || 0),
+                totaL_AMT: Number(formData.totalAmount || 0),
+                neT_AMT: Number(formData.netTotal || 0),
+                removaL_DT: isoDate(formData.invDate),
+                removaL_TIME: isoDate(formData.invDate),
+                remark: formData.remark || "",
+                tranS_MODE: transporterData?.transportMode || "",
+                pacK_AMT: Number(formData.packingFwd || 0),
+                issuE_DATE: isoDate(formData.invDate),
+                issuE_TIME: isoDate(formData.invDate),
+                pO_ID: formData.poLogin || "",
+                insurance: otherDetails?.insurance === "Our A/c" ? "O" : (otherDetails?.insurance === "Your A/c" ? "Y" : "N"),
+                profcen_cd: profcen_cd,
+                user_name: user_name,
+                po_no: formData.poNo || "",
+                po_no_dt: isoDate(formData.poDate),
+                trader_disc: Number(formData.discountAmountSummary || 0),
+                ewayBill_no: transporterData?.ewayBillNo || "",
+                discAmount: Number(formData.discountAmountSummary || 0),
+                plA_AMT: Number(formData.advanceAmt || 0),
+                pinv: "Y"
+            },
+            list_PINVOICE_DET_ex: items.map((item) => ({
+                inV_NO: formData.invNo,
+                inV_DT: isoDate(formData.invDate),
+                iteM_CODE: item.itemCode,
+                quantity: Number(item.qty || 0),
+                uom: item.uom || "",
+                rate: Number(item.rate || 0),
+                amount: Number(item.amount || 0),
+                disC_PER: Number(item.discountPer || 0),
+                disC_AMT: Number(item.disAmt || 0),
+                neT_AMT: Number(item.netAmt || 0),
+                cusT_ITEM_CODE: item.customerItemCode || "",
+                profcen_cd: profcen_cd,
+                inV_TYPE: formData.invoiceType || "",
+                saleS_TYPE: formData.invoiceSubType || "",
+                remark: item.itemRemark || "",
+                pO_ID: formData.poLogin || "",
+                poNo: formData.poNo || ""
+            })),
+            list_Pinv_tax_ex: taxDetails.map((tax) => ({
+                inV_NO: formData.invNo,
+                inV_DT: isoDate(formData.invDate),
+                taX_CODE: tax.taxCode || tax.code || "",
+                taX_AMT: Number(tax.amount || 0),
+                profcen_cd: profcen_cd,
+                inV_TYPE: formData.invoiceType || "",
+                saleS_TYPE: formData.invoiceSubType || ""
+            })),
+            list_Pinv_pay_ex: paymentTerms.map((pay, index) => ({
+                inV_NO: formData.invNo,
+                inV_DT: isoDate(formData.invDate),
+                percentage: Number(pay.percentage || 0),
+                mode: pay.paymentMode || pay.mode || "",
+                period: Number(pay.period || 0),
+                profcen_cd: profcen_cd,
+                inV_TYPE: formData.invoiceType || "",
+                saleS_TYPE: formData.invoiceSubType || "",
+                cust_code: formData.customer || "",
+                sR_NO: index + 1
+            }))
+        };
+
+        try {
+            const res = await addProformaInvoice(payload);
+            alert(res?.Message || "Proforma Invoice Saved Successfully");
+            navigate("/material/sales-proforma-invoice-table");
+        } catch (error) {
+            console.error("Save Error:", error);
+            alert("Failed to save Proforma Invoice");
+        }
     };
 
     return (
@@ -347,10 +446,10 @@ const ProformaInvoiceForm = () => {
                         <TextField label="Advance Amt." size="small" fullWidth sx={{ mb: 3 }} name="advanceAmt" value={formData.advanceAmt} onChange={handleChange} />
 
                         <Box display="flex" flexDirection="column" gap={1}>
-                            <Button variant="contained" onClick={() => setOpenPayment(true)}>
+                            <Button variant="contained" onClick={() => setOpenPayment(true)} color={paymentTerms.length > 0 ? "success" : "primary"}>
                                 Show Payment Terms
                             </Button>
-                            <Button variant="contained" onClick={() => setOpenTax(true)}>
+                            <Button variant="contained" onClick={() => setOpenTax(true)} color={taxDetails.length > 0 ? "success" : "primary"}>
                                 Show Tax Details
                             </Button>
                             <Button variant="contained" onClick={() => setOpenOther(true)}>
@@ -375,10 +474,38 @@ const ProformaInvoiceForm = () => {
                 </Box>
             </Box>
 
-            <InvoicePaymentModal open={openPayment} onClose={() => setOpenPayment(false)} onSave={(data) => {console.log(data); setOpenPayment(false);}} />
-            <InvoiceTaxDetailsModal open={openTax} onClose={() => setOpenTax(false)} onSave={(data) => {console.log(data); setOpenTax(false);}} />
-            <InvoiceOtherDetailsModal open={openOther} handleClose={() => setOpenOther(false)} onSave={(data) => {console.log(data); setOpenOther(false);}} />
-            <TransporterModal open={openTransport} onClose={() => setOpenTransport(false)} onSave={(data) => {console.log(data); setOpenTransport(false);}} />
+            <InvoicePaymentModal 
+                open={openPayment} 
+                onClose={() => setOpenPayment(false)} 
+                onSave={(data) => {
+                    setPaymentTerms(data);
+                    setOpenPayment(false);
+                }} 
+            />
+            <InvoiceTaxDetailsModal 
+                open={openTax} 
+                onClose={() => setOpenTax(false)} 
+                onSave={(data) => {
+                    setTaxDetails(data);
+                    setOpenTax(false);
+                }} 
+            />
+            <InvoiceOtherDetailsModal 
+                open={openOther} 
+                handleClose={() => setOpenOther(false)} 
+                onSave={(data) => {
+                    setOtherDetails(data);
+                    setOpenOther(false);
+                }} 
+            />
+            <TransporterModal 
+                open={openTransport} 
+                onClose={() => setOpenTransport(false)} 
+                onSave={(data) => {
+                    setTransporterData(data);
+                    setOpenTransport(false);
+                }} 
+            />
         </Container>
     );
 };

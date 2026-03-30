@@ -54,6 +54,8 @@ const CustomersPurchaseOrderLogin = () => {
     discPer: "",
     wef: "",
     shippingCost: "",
+    ulLocation: "",
+    degIssueNo: "",
   });
   const [openTaxModal, setOpenTaxModal] = useState(false);
   const [openPaymentModal, setOpenPaymentModal] = useState(false);
@@ -107,10 +109,10 @@ const CustomersPurchaseOrderLogin = () => {
   };
 
   const handleAdd = () => {
-    // if (!form.itemCode || !form.quantity || !form.rate) {
-    //   alert("Please fill Item Code, Quantity and Rate");
-    //   return;
-    // }
+    if (!form.itemCode || !form.quantity || !form.rate) {
+      alert("Please fill Item Code, Quantity and Rate");
+      return;
+    }
 
     const selectedItem = itemCodes.find(
       (item) => item.ITEM_CODE === form.itemCode,
@@ -120,38 +122,40 @@ const CustomersPurchaseOrderLogin = () => {
       id: itemTable.length + 1,
       ITEM_CODE: form.itemCode,
       ITEM_NAME: selectedItem?.item_name || "",
-      QUANTITY: Number(form.quantity),
-      RATE: Number(form.rate),
+      QUANTITY: Number(form.quantity) || 1,
+      RATE: Number(form.rate) || 0,
       TARIFF_CD: selectedItem?.HSN_CODE || "",
+      UOM: selectedItem?.uom || "PCS",
       DISC_PER: Number(form.discPer) || 0,
       REMARK1: form.remark || "",
+      UL_LOCATION: form.ulLocation?.trim() || "MAIN",
+      deg_issue_no: form.degIssueNo
+        ? String(form.degIssueNo)
+        : String(itemTable.length + 1),
       shipping_Cost: Number(form.shippingCost) || 0,
     };
 
     setItemTable((prev) => [...prev, newItem]);
 
-    // Save schedule to main list if exists
+    // Move temporary schedules from leadObj to global allSchedules
     if (leadObj.List_Schedule_ex && leadObj.List_Schedule_ex.length > 0) {
       setAllSchedules((prev) => {
         const newSchedules = [...prev, ...leadObj.List_Schedule_ex];
-
         const unique = [];
         const seen = new Set();
 
-        newSchedules.forEach((item) => {
-          const key = `${item.ITEM_CODE}_${item.SDate}`;
-
+        newSchedules.forEach((sch) => {
+          const key = `${sch.ITEM_CODE}_${sch.OurDeliveryDate}`;
           if (!seen.has(key)) {
             seen.add(key);
-            unique.push(item);
+            unique.push(sch);
           }
         });
-
         return unique;
       });
     }
 
-    // Clear fields
+    // Reset Item inputs and temporary schedule object
     setForm((prev) => ({
       ...prev,
       itemCode: "",
@@ -159,8 +163,9 @@ const CustomersPurchaseOrderLogin = () => {
       rate: "",
       discPer: "",
       shippingCost: "",
+      degIssueNo: "",
+      ulLocation: "",
     }));
-    // Reset Lead Object for next item
     setLeadObj({ List_Custpo_det_ex: [], List_Schedule_ex: [] });
   };
 
@@ -197,356 +202,244 @@ const CustomersPurchaseOrderLogin = () => {
   ];
 
   const handleSubmit = async () => {
-    // 1. Validation to prevent 500 Error due to missing keys
-    if (!form.customer) {
-      alert("Please select a Customer");
+    // Validation
+    const { orderType, customer, orderNo, orderDate, currency, salesman } = form;
+
+    if (!orderType) {
+      alert("Order Type is required");
       return;
     }
-    if (!form.salesman) {
-      alert("Please select Marketing By (Salesman)");
+    if (!customer) {
+      alert("Customer Code is required");
       return;
     }
-    if (!form.orderNo) {
-      alert("Please enter P.O. Login No");
+    if (!orderNo) {
+      alert("P.O. No is required");
       return;
     }
-    if (!form.orderType) {
-      alert("Please select Order Type");
+    if (!orderDate) {
+      alert("P.O. Date is required");
       return;
     }
-    if (!form.orderDate) {
-      alert("Please select Order Date");
+    if (!currency) {
+      alert("Currency is required");
       return;
     }
-    if (!form.orderDate) {
-      alert("Please select Order Date");
-      return;
-    }
-    if (itemTable.length === 0) {
-      alert("Please add at least one item");
+    if (!salesman) {
+      alert("Marketing By (Salesman) is required");
       return;
     }
 
-    // Helper to get first character for flags/codes to avoid DB length errors
-    const getFlag = (val) => (val ? val.toString().charAt(0).toUpperCase() : "N");
-    // Helper for specific mappings
-    const getUnitChar = (val) => (val ? val.toString().charAt(0).toUpperCase() : "");
+    if (itemTable.length === 0) {
+      alert("Please add at least one item to the list.");
+      return;
+    }
+
+    const profcen_cd = localStorage.getItem("PROFCEN_CD") || "1";
+    const userName = localStorage.getItem("username") || "SYSTEM";
+    const poId = "PO" + Date.now().toString().substring(5);
+    const poDate = new Date().toISOString();
+    const amdNo =
+      form.amendNo && form.amendNo.trim() !== "" ? form.amendNo : "0";
+
+    // Helpers
+    const formatDate = (dateStr, fallback = new Date().toISOString()) => {
+      if (!dateStr) return fallback;
+      const d = new Date(dateStr);
+      return !isNaN(d.valueOf()) ? d.toISOString() : fallback;
+    };
+    const getNumber = (val) =>
+      val === "" || val === null || val === undefined ? 0 : Number(val);
+    const getFlag = (val) =>
+      val ? val.toString().charAt(0).toLowerCase() : "s";
+
+    // Header
+    const custpo_hed_ex = {
+      cusT_CODE: form.customer,
+      pO_ID: poId,
+      pO_ID_DT: poDate,
+      pO_NO: form.orderNo || "",
+      pO_DT: formatDate(form.orderDate, true),
+      pO_AMD_NO: amdNo,
+      pO_AMD_DT: formatDate(form.amendDate, poDate),
+      pO_VALID: formatDate(form.validDate, poDate),
+      transport: getFlag(otherDetails.transport) || "s",
+      octroi: "s",
+      disC_PER: getNumber(otherDetails.globalDisc),
+      remark: form.remark || "",
+      remarK1: "",
+      emP_NO: form.salesman || "",
+      suppl_cond: otherDetails.otherTerms || "",
+      insurance: getFlag(otherDetails.insurance) || "s",
+      oa_type: form.orderType || "",
+      profceN_CD: profcen_cd,
+      useR_NAME: userName,
+      deli_Terms: form.dispatchLocation || "",
+      curR_CODE: form.currency || "",
+      form_type: otherDetails.deliveryTerm || "",
+      adv_amt: getNumber(otherDetails.advanceAmt),
+      packing_flag: otherDetails.packingType
+        ? otherDetails.packingType.charAt(0).toLowerCase()
+        : "s",
+      packing_amt: getNumber(otherDetails.packingAmt),
+      packing_per: getNumber(otherDetails.packingPer),
+      trader_disc: getNumber(otherDetails.traderDisc),
+      trans_name: otherDetails.transporterName || "",
+      transport_amt: getNumber(otherDetails.amount),
+      buyer: otherDetails.buyer || "",
+      conv_rate: 1,
+      gauranty_cert: "N",
+      test_cert: "N",
+      manuals: "N",
+      oainvamt: 0,
+      oainvamt_bal: 0,
+      oainv_disp_amt: 0,
+      adv_rec: 0,
+      adv_bank_gauranty: "N",
+      adv_bank_gauranty_doc_date: poDate,
+      adv_bank_gauranty_doc_no: "",
+      adv_bank_valid_Dt: poDate,
+      perf_bank_gauranty: "N",
+      perf_bank_valid_Dt: poDate,
+      perf_bank_gauranty_doc_no: "",
+      perf_bank_gauranty_doc_date: poDate,
+      lc_no: "",
+      lc_date: poDate,
+      lc_valid_Dt: poDate,
+      ref_oa_no: "",
+      commissioning_dt: poDate,
+      penalty_clause: "",
+      qc_req: "N",
+      penaulty: "N",
+      delivery_remark: "string",
+    };
+
+    // Detail rows
+    const list_Custpo_det_ex = itemTable
+      .map((item, index) => ({
+        sr_no: String(index + 1),
+        pO_ID: poId,
+        pO_ID_DT: poDate,
+        iteM_CODE: item.ITEM_CODE?.trim(),
+        iteM_NAME: item.ITEM_NAME || "",
+        quantity: Number(item.QUANTITY) || 0,
+        rate: Number(item.RATE) || 0,
+        ratE_WEF: poDate,
+        uom: item.UOM || "PCS",
+        curR_CODE: form.currency || "INR",
+        disC_PER: Number(item.DISC_PER) || 0,
+        tarifF_CD: item.TARIFF_CD || "",
+        profceN_CD: profcen_cd,
+        remark: item.REMARK1 || "",
+        pO_AMD_NO: amdNo,
+        pO_AMD_DATE: formatDate(form.amendDate, poDate),
+        uL_LOCATION: item.UL_LOCATION || "MAIN",
+        deg_issue_no: item.deg_issue_no
+          ? String(item.deg_issue_no)
+          : String(index + 1),
+        pC_CODE: profcen_cd,
+        shipping_Cost: Number(item.shipping_Cost) || 0,
+        open_oa: "Y",
+        oa_type: form.orderType,
+      }))
+      .filter((item) => item.iteM_CODE);
+
+    // Schedule rows
+    const list_Schedule_ex = (allSchedules || [])
+      .map((r, index) => {
+        const itemData = itemTable.find((it) => it.ITEM_CODE === r.ITEM_CODE);
+        const itemRate = itemData ? itemData.RATE : 0;
+
+        return {
+          sr_No: index + 1,
+          cusT_CODE: form.customer,
+          pO_ID: poId,
+          pO_ID_DT: poDate,
+          iteM_CODE: r.ITEM_CODE?.trim(),
+          scH_QTY: Number(r.QUANTITY) || 0,
+          scH_VALUE: (Number(r.QUANTITY) || 0) * itemRate,
+          mon_pl_qty: 0,
+          disp_qty: 0,
+          disp_value: 0,
+          backlog_qty: 0,
+          syear: new Date().getFullYear().toString(),
+          smonth: (new Date().getMonth() + 1).toString(),
+          po_rate: itemRate,
+          o_qty: 0,
+          type: "Regular",
+          week: "1",
+          sDate: poDate,
+          our_delv_dt: formatDate(r.OurDeliveryDate, true),
+          user_name: userName,
+          profcen_cd: profcen_cd,
+          pC_CODE: profcen_cd,
+          ul_location: itemData?.UL_LOCATION || "MAIN",
+          amend_no: Number(amdNo),
+          reason: "",
+          sch_entry_date: poDate,
+          cust_item_code: itemData?.TARIFF_CD || "",
+          batchqty: "0",
+          prod_head: "",
+          wo_qty: 0,
+          po_no: form.orderNo,
+          po_Dt: formatDate(form.orderDate, true),
+        };
+      })
+      .filter((r) => r.iteM_CODE && r.scH_QTY > 0);
+
+    // Payments & Taxes
+    const list_Custpo_pay_ex = (paymentRows || []).map((p, index) => ({
+      sr_no: index + 1,
+      pO_ID: poId,
+      pO_ID_DT: poDate,
+      percentage: Number(p.percentage) || 0,
+      mode: "s",
+      period: Number(p.period) || 0,
+      pay_cond: p.pay_cond || 0,
+      oa_type: form.orderType || "",
+      profceN_CD: profcen_cd,
+      dmflag: p.mode === "Immediate" ? "I" : "A",
+      adv_tax: 0,
+      adv_amt: 0,
+      adv_amt_recd: 0,
+      pro_inv: "",
+    }));
+
+    const list_Custpo_tax_ex = (taxRows || []).map((t, index) => ({
+      sr_no: index + 1,
+      pO_ID: poId,
+      pO_ID_DT: poDate,
+      taX_CODE: t.code,
+      taX_AMT: Number(t.amount) || 0,
+      oa_type: form.orderType || "",
+      profceN_CD: profcen_cd,
+    }));
+
+    const payload = {
+      custpo_hed_ex,
+      list_Custpo_det_ex,
+      list_Custpo_pay_ex,
+      list_Custpo_tax_ex,
+      list_Schedule_ex,
+      period: "",
+      mM_DOC_DOCUMNET: "",
+      mM_DOC_TYPE: "",
+      profceN_CD: profcen_cd,
+    };
+
+    console.log("💾 PAYLOAD BEFORE SAVE:", payload);
 
     try {
-      const profcenCd = localStorage.getItem("PROFCEN_CD") || "";
-      // Ensure ID isn't too long for database columns
-      const poId = "PO" + Date.now().toString().substring(5);
-      const poDate = new Date().toISOString();
-
-      const formatDate = (date) => {
-        return date ? new Date(date).toISOString() : null;
-      };
-
-      const payload = {
-        custpo_hed_ex: {
-          cusT_CODE: form.customer || "",
-          pO_ID: poId,
-          pO_ID_DT: poDate,
-          pO_NO: form.orderNo || "",
-
-          pO_DT: formatDate(form.orderDate),
-          pO_AMD_NO: form.amendNo || "",
-          pO_AMD_DT: formatDate(form.amendDate),
-          pO_VALID: formatDate(form.validDate),
-
-          transport: getFlag(otherDetails.transport),
-          octroi: "",
-
-          disC_PER: 0,
-
-          remark: form.remark || "",
-          remarK1: "",
-
-          emP_NO: form.salesman || "",
-          suppl_cond: "",
-          insurance: getFlag(otherDetails.insurance),
-
-          oa_type: form.orderType || "",
-          profceN_CD: profcenCd,
-          useR_NAME: "ADMIN",
-
-          deli_Terms: form.dispatchLocation || "",
-          curR_CODE: form.currency || "",
-          form_type: "",
-
-          adv_amt: Number(otherDetails.advanceAmt) || 0,
-
-          packing_flag: getFlag(otherDetails.packingType),
-          packing_amt: Number(otherDetails.packingAmt) || 0,
-          packing_per: Number(otherDetails.packingPer) || 0,
-
-          warrantyFlg: otherDetails.warrantyApplicable ? "Y" : "N",
-          warr_Period: Number(otherDetails.warrantyPeriod) || 0,
-          warr_DMY: getUnitChar(otherDetails.warrantyUnit),
-          warr_clause: otherDetails.warrantyClause || "",
-
-          conv_rate: 0,
-          trader_disc: Number(otherDetails.traderDisc) || 0,
-
-          trans_name: otherDetails.transporterName || "",
-          oA_DELEVERY_BY: "",
-          oa_catg: "",
-
-          other_PayCond: otherDetails.otherTerms || "",
-          delivery_remark: otherDetails.deliveryRemark || "",
-
-          transport_amt: Number(otherDetails.amount) || 0,
-          buyer: otherDetails.buyer || "",
-
-          warr_Period1: Number(otherDetails.warrantyPeriod2) || 0,
-          warr_DMY1: otherDetails.warrantyUnit2 || "",
-          warrCondt1: otherDetails.warrantyCond1 || "",
-          warrCondt2: otherDetails.warrantyCond2 || "",
-
-          qc_req: "",
-          gauranty_cert: "N",
-          test_cert: "N",
-          manuals: "N",
-          penaulty: "N",
-          partial_disp: "N",
-
-          adv_bank_gauranty: "N",
-          adv_bank_valid_Dt: null,
-
-          perf_bank_gauranty: "N",
-          perf_bank_valid_Dt: null,
-
-          lc_no: "",
-          lc_date: null,
-          lc_valid_Dt: null,
-
-          ref_oa_no: "",
-          commissioning_dt: null,
-
-          adv_bank_gauranty_doc_no: "",
-          adv_bank_gauranty_doc_date: null,
-
-          perf_bank_gauranty_doc_no: "",
-          perf_bank_gauranty_doc_date: null,
-
-          penalty_clause: "",
-
-          oainvamt: 0,
-          oainvamt_bal: 0,
-          oainv_disp_amt: 0,
-          adv_rec: 0,
-        },
-
-        // ================= ITEMS =================
-        list_Custpo_det_ex: itemTable.map((item, index) => ({
-          pO_ID: poId,
-          pO_ID_DT: poDate,
-
-          quoT_NO: "",
-          quoT_DT: poDate,
-
-          iteM_NAME: item.ITEM_NAME || "",
-          iteM_CODE: item.ITEM_CODE || "",
-
-          quantity: Number(item.QUANTITY) || 0,
-          rate: Number(item.RATE) || 0,
-
-          ratE_WEF: poDate,
-          disC_PER: Number(item.DISC_PER) || 0,
-
-          pC_CODE: "",
-          dispatcH_QTY: 0,
-          cusT_ITEM_CODE: "",
-
-          curR_CODE: form.currency || "",
-          uom: "",
-
-          tarifF_CD: item.TARIFF_CD || "",
-          tarifF_DESC: "",
-
-          enq_no: "",
-          enq_dt: poDate,
-
-          sr_no: String(index + 1),
-          open_oa: "Y",
-
-          oa_type: form.orderType || "",
-          profceN_CD: profcenCd,
-
-          pO_AMD_NO: form.amendNo || "",
-          pO_AMD_DATE: formatDate(form.amendDate),
-
-          uL_LOCATION: "",
-          invoicE_NO: "",
-          invoicE_DT: poDate,
-
-          poentrY_DATE: poDate,
-          prev_rate: 0,
-
-          deg_issue_no: "",
-          rate_diff_qty: 0,
-          cumm_disp_qty: 0,
-
-          approve_flag: "",
-          approve_by: "",
-          approve_date: null,
-
-          oP_CODE: "",
-          amend_res: "",
-
-          amort_rate: 0,
-          remark: item.REMARK1 || "",
-
-          delivery_dt: poDate,
-
-          app_flag: "",
-          app_by: "",
-          app_date: null,
-
-          wo_qty: 0,
-          prod_head: "",
-
-          tagged_OA_QTY: 0,
-          tagged_OA_date: null,
-
-          custItcdRev: "",
-          logical_item: "",
-
-          shipping_Cost: Number(item.shipping_Cost) || 0,
-          cust_item_desc: "",
-
-          indentQty: 0,
-          tarifF_CD_NEW: "",
-
-          tecH_SPEC: "",
-          temp_dispatchqty: 0,
-
-          sgsTdetAmt: 0,
-          cgsTdetAmt: 0,
-          igsTdetAmt: 0,
-
-          sgsT_Cd: "",
-          cgsT_Cd: "",
-          igsT_Cd: "",
-        })),
-
-        // ================= PAYMENT =================
-        list_Custpo_pay_ex: paymentRows.map((row, index) => ({
-          pO_ID: poId,
-          pO_ID_DT: poDate,
-
-          percentage: Number(row.percentage) || 0,
-          mode: getFlag(row.mode),
-          period: Number(row.period) || 0,
-
-          dmflag: row.mode === "Immediate" ? "I" : "A", // ✅ FIX
-
-          pay_cond: Number(row.pay_cond) || 0,
-
-          oa_type: form.orderType || "",
-          profceN_CD: profcenCd,
-
-          sr_no: index + 1,
-
-          adv_tax: 0,
-          adv_amt: 0,
-          adv_amt_recd: 0,
-          pro_inv: "",
-        })),
-
-        // ================= TAX =================
-        list_Custpo_tax_ex: taxRows.map((row) => ({
-          pO_ID: poId,
-          pO_ID_DT: poDate,
-
-          taX_CODE: row.code || "",
-          taX_AMT: Number(row.amount) || 0,
-
-          oa_type: form.orderType || "",
-          profceN_CD: profcenCd,
-        })),
-
-        // ================= SCHEDULE =================
-        list_Schedule_ex: allSchedules.map((sch, index) => ({
-          sr_No: index + 1,
-
-          cusT_CODE: form.customer || "",
-          iteM_CODE: sch.ITEM_CODE || "",
-
-          pO_ID: poId,
-          pO_ID_DT: poDate,
-
-          pC_CODE: "",
-          scH_QTY: Number(sch.QUANTITY) || 0,
-          scH_VALUE: 0,
-
-          moN_PL_QTY: 0,
-          disP_QTY: 0,
-          disP_VALUE: 0,
-          backloG_QTY: 0,
-
-          syear: new Date().getFullYear().toString(),
-          smonth: (new Date().getMonth() + 1).toString().padStart(2, '0'),
-
-          po_rate: 0,
-          o_qty: 0,
-
-          type: sch.type || "",
-          week: String(index + 1),
-
-          sDate: new Date().toISOString(),
-
-          profcen_cd: profcenCd,
-
-          amend_no: 0,
-          user_name: "ADMIN",
-          reason: "",
-
-          sch_entry_date: poDate,
-          cust_item_code: "",
-
-          batchqty: "",
-          prod_head: "",
-
-          our_delv_dt: formatDate(sch.OurDeliveryDate || sch.our_delv_dt),
-
-          remark: sch.Packing || sch.remark || "",
-
-          ul_location: "",
-
-          wo_qty: 0,
-          po_no: form.orderNo || "",
-          po_Dt: poDate,
-
-          prod_date: poDate,
-          fps_qty: 0,
-          dispatch_date: poDate,
-
-          division: "",
-          indentqty: 0,
-          planDisp: 0,
-
-          to_sdate: poDate,
-        })),
-
-        // ================= EXTRA =================
-        period: "",
-        mM_DOC_DOCUMNET: "",
-        mM_DOC_TYPE: "",
-        profceN_CD: profcenCd,
-      };
-
-      console.log("FINAL PAYLOAD:", payload);
-
-      await saveCustomerPurchaseOrder(payload);
-
-      alert("Purchase Order Saved Successfully");
-
-      // Optional: Clear form or redirect here
-    } catch (error) {
-      console.error("ERROR:", error);
-      // Show specific error message from backend if available
-      alert(error.message || "Error saving Purchase Order");
+      const res = await saveCustomerPurchaseOrder(payload);
+      if (res?.StatusCode === 200) {
+        alert("✅ Saved successfully");
+        // Optional: Reset form or navigate back
+      } else {
+        alert(res?.Message || "Save failed");
+      }
+    } catch (err) {
+      console.error(" SAVE ERROR:", err);
+      alert(" Failed to save data. Check console for details.");
     }
   };
 
@@ -606,7 +499,10 @@ const CustomersPurchaseOrderLogin = () => {
                 <MenuItem value="">Select</MenuItem>
 
                 {orderTypes.map((item) => (
-                  <MenuItem key={item.custpo_oa_type} value={item.custpo_oa_type}>
+                  <MenuItem
+                    key={item.custpo_oa_type}
+                    value={item.custpo_oa_type}
+                  >
                     {item.oa_type_desc} - {item.custpo_oa_type}
                   </MenuItem>
                 ))}
@@ -825,7 +721,14 @@ const CustomersPurchaseOrderLogin = () => {
               </Grid>
 
               <Grid item xs={12} md={2}>
-                <TextField size="small" fullWidth label="Item Serial No" />
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Drawing/Issue No"
+                  name="degIssueNo"
+                  value={form.degIssueNo}
+                  onChange={handleChange}
+                />
               </Grid>
 
               <Grid item xs={12} md={2}>
@@ -836,6 +739,7 @@ const CustomersPurchaseOrderLogin = () => {
                 <TextField
                   size="small"
                   fullWidth
+                  type="number"
                   label="Quantity"
                   name="quantity"
                   value={form.quantity}
@@ -847,6 +751,7 @@ const CustomersPurchaseOrderLogin = () => {
                 <TextField
                   size="small"
                   fullWidth
+                  type="number"
                   label="Rate"
                   name="rate"
                   value={form.rate}
@@ -858,6 +763,7 @@ const CustomersPurchaseOrderLogin = () => {
                 <TextField
                   size="small"
                   fullWidth
+                  type="number"
                   label="Disc. %"
                   name="discPer"
                   value={form.discPer}
@@ -882,6 +788,7 @@ const CustomersPurchaseOrderLogin = () => {
                 <TextField
                   size="small"
                   fullWidth
+                  type="number"
                   label="Shipping Cost"
                   name="shippingCost"
                   value={form.shippingCost}
@@ -894,7 +801,13 @@ const CustomersPurchaseOrderLogin = () => {
               </Grid>
 
               <Grid item xs={12} md={4}>
-                <TextField size="small" fullWidth label="Unloading Loc" />
+                <TextField
+                  fullWidth
+                  label="Unloading Loc"
+                  name="ulLocation"
+                  value={form.ulLocation}
+                  onChange={handleChange}
+                />
               </Grid>
 
               <Grid item xs={12}>

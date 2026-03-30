@@ -1,27 +1,26 @@
 import axiosInstance from "./axiosInstance";
 
 export const saveCustomerPurchaseOrder = async (purchaseOrderData) => {
-    try {
+  try {
+    const response = await axiosInstance.post(
+      "/ADD-CUSTOMER_PURCHASE_ORDER",
+      purchaseOrderData,
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json", // ✅ IMPORTANT
+        },
+      }
+    );
 
-        const response = await axiosInstance.post(
-            "/ADD-CUSTOMER_PURCHASE_ORDER",
-            purchaseOrderData
-        );
+    return response.data;
 
-        return response.data;
+  } catch (error) {
+    console.error("❌ API FULL ERROR:", error.response?.data || error);
 
-    } catch (error) {
-
-        console.error(
-            "API Error:",
-            error.response?.data || error.message
-        );
-
-        throw new Error(
-            error.response?.data?.message ||
-            "Failed to save Customer Purchase Order."
-        );
-    }
+    throw error.response?.data || {
+      Message: "Failed to save Customer Purchase Order",
+    };
+  }
 };
 
 export const CustomerPurchaseOrderLoginPaginationAPI = async (

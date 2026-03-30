@@ -839,3 +839,47 @@ export const deleteDailyActivityPlan = async (id) => {
     throw new Error("Failed to delete record");
   }
 };
+
+export const ProjectExecutionPaginationAPI = async (
+    tableName = "project_execution_Head",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Packing Slip pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const getProjectExecutionList = async (po_id, item_Code,Proj_code) => {
+  try {
+    const response = await axiosInstance.get(
+      "/GETRETRIVE-DAILY_ACTIVITY",
+      {
+        params: { po_id, item_Code,Proj_code    }
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Error:", error.response || error.message);
+    throw new Error("Failed to fetch Daily Activity Plan");
+  }
+};

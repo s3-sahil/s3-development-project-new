@@ -2,27 +2,45 @@ import { Container, Box, Icon, IconButton, Tooltip, Button } from "@mui/material
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ProjectExecutionPaginationAPI } from "app/utils/authServices";
 
 const ProjectExecutionPlanTable = () => {
   const navigate = useNavigate();
+ const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0); 
+  const [pageSize, setPageSize] = useState(5);
+   const [loading, setLoading] = useState(false);
+    const [rowCount, setRowCount] = useState(0);
+ const loadSalesman = async () => {
+    setLoading(true);
+    const res = await ProjectExecutionPaginationAPI(
+      "project_execution_Head",
+      page + 1, 
+      pageSize
+    );
 
-  const [rows] = useState([
-    {
-      id: 1,
-      customer: "ABC Industries",
-      orderNo: "ORD-101",
-      project: "Project Alpha",
-      productName: "Machine X",
-      deliveryDate: "2026-02-20",
-      status: "Open",
-    },
-  ]);
+    if (res?.Data) {
+      setRows(
+        res.Data.map((item, index) => ({
+          id: item.id || index + 1, 
+          ...item,
+        }))
+      );
+      setRowCount(res.TotalCount || 0);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadSalesman();
+  }, [page, pageSize]);
 
   const columns = [
-    { field: "customer", headerName: "Customer", flex: 1 },
-    { field: "orderNo", headerName: "Order No", flex: 1 },
-    { field: "project", headerName: "Project", flex: 1 },
+    { field: "cust_code", headerName: "Customer", flex: 1 },
+    { field: "item_Code", headerName: "Order No", flex: 1 },
+    { field: "Proj_code", headerName: "Project", flex: 1 },
     { field: "productName", headerName: "Product Name", flex: 1 },
     { field: "deliveryDate", headerName: "Delivery Date", flex: 1 },
     { field: "status", headerName: "Status", flex: 1 },
@@ -72,7 +90,19 @@ const ProjectExecutionPlanTable = () => {
       </Box>
 
       <Box sx={{ height: 520, width: "100%", background: "#fff", borderRadius: 2 }}>
-        <DataGrid rows={rows} columns={columns} disableRowSelectionOnClick />
+        <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server" 
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
+            }}
+          />
       </Box>
     </Container>
   );
