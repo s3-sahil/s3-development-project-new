@@ -2,7 +2,7 @@ import { Box, Container, TextField, Button, Icon, Grid, Checkbox, FormControlLab
 import { Breadcrumb } from "app/components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { saveEInvoiceAPI } from "app/utils/authServices";
+// import { saveEInvoiceAPI } from "app/utils/authServices";
 
 const UploadEInvoiceForm = () => {
   const navigate = useNavigate();
@@ -22,18 +22,18 @@ const UploadEInvoiceForm = () => {
   };
 
   const handleSave = async () => {
-    try {
-      console.log("Saving Payload:", formData);
-      const response = await saveEInvoiceAPI(formData);
+    // try {
+    //   console.log("Saving Payload:", formData);
+    //   const response = await saveEInvoiceAPI(formData);
 
-      if (response) {
-        alert("E-Invoice details saved successfully!");
-        navigate("/material/sales-upload-e-invoice-table");
-      }
-    } catch (error) {
-      console.error("Error saving e-invoice:", error);
-      alert("Failed to save e-invoice details.");
-    }
+    //   if (response) {
+    //     alert("E-Invoice details saved successfully!");
+    //     navigate("/material/sales-upload-e-invoice-table");
+    //   }
+    // } catch (error) {
+    //   console.error("Error saving e-invoice:", error);
+    //   alert("Failed to save e-invoice details.");
+    // }
   };
 
   const handlePreview = () => {

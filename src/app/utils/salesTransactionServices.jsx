@@ -289,3 +289,70 @@ export const EnquiryLoginEntryPaginationAPI = async (
         return { Data: [], TotalCount: 0 };
     }
 };
+
+export const addEnquiry = async (enquiryData) => {
+  try {
+    const response = await axiosInstance.post(
+      "/ADD-ENQUIRY",
+      enquiryData,
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message || "Failed to add enquiry."
+    );
+  }
+};
+
+export const EnquiryPaginationAPI = async (
+    tableName = "enquiry_hed",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Enquiry pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const getEnquiryById = async (Enq_no, Enq_dt, profcen_cd) => {
+  try {
+    const response = await axiosInstance.get("/GET-ENQUIRY", {
+      params: {
+        Enq_no,
+        Enq_dt,
+        profcen_cd,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("GET Enquiry Error:", error);
+    throw error;
+  }
+};
