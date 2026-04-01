@@ -6,22 +6,88 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import SearchFilter from "../SearchFilter";
+import {
+  BusinessPlanPaginationAPI,
+  getBusinessPlan,
+} from "app/utils/salesTransactionServices";
 
 export default function BusinessPlanTable() {
   const navigate = useNavigate();
 
-  const initialRows = [
-    { id: 1, empNo: "00001", cardNumber: "1" },
-    { id: 2, empNo: "00100", cardNumber: "100" },
-    { id: 3, empNo: "00101", cardNumber: "101" },
-    { id: 4, empNo: "00103", cardNumber: "103" },
-    { id: 5, empNo: "00105", cardNumber: "105" },
-  ];
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const [rows, setRows] = useState(initialRows);
-  const [originalRows, setOriginalRows] = useState(initialRows);
+  const [page, setPage] = useState(0); // DataGrid starts from 0
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchColumn, setSearchColumn] = useState("");
+
+  const fetchData = async (pageNo = page, size = pageSize) => {
+    try {
+      setLoading(true);
+
+      const res = await BusinessPlanPaginationAPI(
+        "BUSINESS_PLAN",
+        pageNo + 1,
+        size,
+      );
+      if (res?.Data) {
+        const formattedRows = res.Data.map((item, index) => ({
+          id: item.id || index + 1,
+          Period: item.Period,
+          Cust_Code: item.Cust_Code,
+          Item_Code: item.Item_Code,
+          Profcen_Cd:item.Profcen_Cd
+        }));
+
+        setRows(formattedRows);
+        setRowCount(res.TotalCount || 0);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(page, pageSize);
+  }, [page, pageSize]);
+
+  const handleEdit = async (row) => {
+    try {
+      setLoading(true);
+
+      const payload = {
+        Cust_Code: row?.Cust_Code,
+        Profcen_Cd: row?.Profcen_Cd,
+        Period: row?.Period
+      };
+
+      console.log("Edit Payload:", payload);
+
+      const response = await getBusinessPlan(
+        payload.Cust_Code,
+        payload.Profcen_Cd,
+        payload.Period,
+      );
+
+      if (!response?.data || response?.data?.length === 0) {
+        alert("No data found for selected record");
+        return;
+      }
+
+      navigate(`/material/sales-business-plan-form/edit/${row.id}`, {
+        state: { businessplan: response?.data },
+      });
+    } catch (e) {
+      console.error("Failed to fetch business plan:", e.message);
+      alert(e.message); // show backend error
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSearch = () => {
     if (!searchQuery) {
@@ -45,8 +111,10 @@ export default function BusinessPlanTable() {
   };
 
   const columns = [
-    { field: "empNo", headerName: "Emp No", flex: 1 },
-    { field: "cardNumber", headerName: "Card Number", flex: 1 },
+    { field: "Period", headerName: "Period", flex: 1 },
+    { field: "Cust_Code", headerName: "Customer Code", flex: 1 },
+    { field: "Item_Code", headerName: "Item Code", flex: 1 },
+    { field: "Profcen_Cd", headerName: "Profcen_Cd", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
@@ -55,14 +123,7 @@ export default function BusinessPlanTable() {
       renderCell: (params) => (
         <>
           <Tooltip title="Edit">
-            <IconButton
-              onClick={() =>
-                navigate(
-                  `/material/sales-business-plan-form/edit/${params.row.id}`,
-                  { state: params.row },
-                )
-              }
-            >
+            <IconButton onClick={() => handleEdit(params.row)}>
               <Icon color="primary">edit</Icon>
             </IconButton>
           </Tooltip>
@@ -115,9 +176,13 @@ export default function BusinessPlanTable() {
             rows={rows}
             columns={columns}
             loading={loading}
+            paginationMode="server"
+            rowCount={rowCount}
             pageSizeOptions={[10, 25, 50]}
-            initialState={{
-              pagination: { paginationModel: { pageSize: 10, page: 0 } },
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
             }}
             disableRowSelectionOnClick
           />

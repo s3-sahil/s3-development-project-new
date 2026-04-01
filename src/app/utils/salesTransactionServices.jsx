@@ -399,13 +399,13 @@ export const updateBusinessPlan = async (businessPlanData) => {
   }
 };
 
-export const getBusinessPlan = async (params) => {
+export const getBusinessPlan = async (Cust_Code,Profcen_Cd,Period) => {
   try {
     const response = await axiosInstance.get("/GET-BUSINESS_PLAN", {
       params: {
-        Cust_Code: params?.custCode || "",
-        Profcen_Cd: params?.profcenCd || "",
-        Period: params?.period || "",
+        Cust_Code,
+        Profcen_Cd,
+        Period,
       },
     });
 
@@ -416,4 +416,32 @@ export const getBusinessPlan = async (params) => {
       error.response?.data?.message || "Failed to fetch business plan."
     );
   }
+};
+
+export const BusinessPlanPaginationAPI = async (
+    tableName = "BUSINESS_PLAN",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Busniess Plan pagination fetch error:", error);
+        return null;
+    }
 };

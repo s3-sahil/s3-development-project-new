@@ -14,10 +14,16 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Breadcrumb } from "app/components";
-import { addBusinessPlan } from "app/utils/salesTransactionServices";
-import { useState } from "react";
+import {
+  addBusinessPlan,
+  updateBusinessPlan,
+} from "app/utils/salesTransactionServices";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function BusinessPlanForm() {
+  const location = useLocation();
+  const isEditMode = !!location?.state?.businessplan;
   const [formData, setFormData] = useState({
     period: "",
     customer: "",
@@ -35,29 +41,20 @@ export default function BusinessPlanForm() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await getBusinessPlan({
-        custCode: "", // optional filter
-        profcenCd: "",
-        period: "",
-      });
-
-      console.log("GET API 👉", res);
-
-      const mappedRows = res?.map((item, index) => ({
-        id: index + 1, // ⚠️ better use unique id if available
+      const mappedRows = location?.state?.businessplan?.map((item, index) => ({
+        id: index + 1,
         empNo: item.cust_Code,
         cardNumber: item.item_Code,
 
-        // keep original data for edit
         period: item.period,
-        cust_Code: item.cust_Code,
-        item_Code: item.item_Code,
-        cust_item_Code: item.cust_item_Code,
-        plan_qty: item.plan_qty,
-        amt: item.amt,
-        rate: item.rate,
-        plan_type: item.plan_type,
-        order_Status: item.order_Status,
+        cust_Code: item.Cust_Code,
+        item_Code: item.Item_Code,
+        cust_item_Code: item.Cust_item_Code,
+        plan_qty: item.Plan_qty,
+        amt: item.Amt,
+        rate: item.Rate,
+        plan_type: item.Plan_type,
+        order_Status: item.Order_Status,
       }));
 
       setRows(mappedRows);
@@ -70,7 +67,7 @@ export default function BusinessPlanForm() {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const handleAdd = () => {
     const newRow = {
       period: formData.period,
@@ -114,6 +111,35 @@ export default function BusinessPlanForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // const handleSave = async () => {
+  //   try {
+  //     if (rows.length === 0) {
+  //       alert("Please add at least one row");
+  //       return;
+  //     }
+
+  //     // const res = await addBusinessPlan(rows); // ✅ send full array
+  //     let res;
+
+  //     if (isEditMode) {
+  //       // 🔥 UPDATE API
+  //       res = await updateBusinessPlan(rows);
+  //       alert("Updated successfully ✅");
+  //     } else {
+  //       // ➕ ADD API
+  //       res = await addBusinessPlan(rows);
+  //       alert("Saved successfully ✅");
+  //     }
+  //     console.log("Success 👉", res);
+  //     alert("Saved successfully ✅");
+
+  //     setRows([]); // clear after save
+  //   } catch (error) {
+  //     console.error(error);
+  //     alert(error.message);
+  //   }
+  // };
+
   const handleSave = async () => {
     try {
       if (rows.length === 0) {
@@ -121,12 +147,43 @@ export default function BusinessPlanForm() {
         return;
       }
 
-      const res = await addBusinessPlan(rows); // ✅ send full array
+     const payload = rows.map((row) => {
+  if (!row.period) {
+    throw new Error("Period is required for all rows");
+  }
 
-      console.log("Success 👉", res);
-      alert("Saved successfully ✅");
+  return {
+    period: formatPeriod(row.period), // ✅ IMPORTANT
+    cust_Code: row.cust_Code,
+    item_Code: row.item_Code,
+    cust_item_Code: row.cust_item_Code,
+    profcen_Cd: row.profcen_Cd || "str",
+    plan_qty: Number(row.plan_qty),
+    amt: Number(row.amt),
+    curr_Code: row.curr_Code || "INR",
+    curr_amt: Number(row.curr_amt || row.amt),
+    curr_rate: Number(row.curr_rate || row.rate),
+    order_qty: Number(row.order_qty || 0),
+    order_amt: Number(row.order_amt || 0),
+    rate: Number(row.rate),
+    plan_type: row.plan_type,
+    order_Status: row.order_Status,
+  };
+});
 
-      setRows([]); // clear after save
+      let res;
+
+      if (isEditMode) {
+        res = await updateBusinessPlan(payload);
+        alert("Updated successfully ✅");
+      } else {
+        res = await addBusinessPlan(payload);
+        alert("Saved successfully ✅");
+      }
+
+      console.log("Response 👉", res);
+
+      setRows([]);
     } catch (error) {
       console.error(error);
       alert(error.message);
@@ -147,7 +204,7 @@ export default function BusinessPlanForm() {
           startIcon={<Icon>save</Icon>}
           onClick={handleSave}
         >
-          Save
+           {isEditMode ? "Update" : "Save"}
         </Button>
       </Box>
 

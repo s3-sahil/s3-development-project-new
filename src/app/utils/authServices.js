@@ -263,33 +263,7 @@ export const addEnquiryDetails = async (enquiryData) => {debugger
     }
 };
 
-export const EnquiryPaginationAPI = async (
-    tableName = "enquiry_hed",
-    pageNumber = 1,
-    pageSize = 10
-) => {
-    try {
-        const { data } = await axiosInstance.get(
-            "/api/PaginationByTable/GetPaginationByTable",
-            {
-                params: {
-                    TableNameForPagination: tableName,
-                    pageNumber,
-                    pageSize,
-                },
-            }
-        );
 
-        if (data?.StatusCode === 200 || data?.Data) {
-            return data;
-        }
-
-        return null;
-    } catch (error) {
-        console.error("Enquiry pagination fetch error:", error);
-        return null;
-    }
-};
 
 export const GetEnquiryDetailsAPI = async ({
     Enq_no,
