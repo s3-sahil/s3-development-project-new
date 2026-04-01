@@ -1,10 +1,4 @@
-import {
-  Container,
-  Icon,
-  IconButton,
-  Tooltip,
-  Button,
-} from "@mui/material";
+import { Container, Icon, IconButton, Tooltip, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
@@ -31,24 +25,23 @@ export default function BusinessPlanTable() {
 
   const handleSearch = () => {
     if (!searchQuery) {
-      setRows(originalRows);
+      fetchData(); // reload original
       return;
     }
 
-    const filteredRows = originalRows.filter((row) => {
+    const filtered = rows.filter((row) => {
       const searchStr = searchQuery.toLowerCase();
 
       if (searchColumn) {
-        const value = row[searchColumn];
-        return String(value).toLowerCase().includes(searchStr);
-      } else {
-        return Object.values(row).some((val) =>
-          String(val).toLowerCase().includes(searchStr)
-        );
+        return String(row[searchColumn]).toLowerCase().includes(searchStr);
       }
+
+      return Object.values(row).some((val) =>
+        String(val).toLowerCase().includes(searchStr),
+      );
     });
 
-    setRows(filteredRows);
+    setRows(filtered);
   };
 
   const columns = [
@@ -57,10 +50,23 @@ export default function BusinessPlanTable() {
     {
       field: "actions",
       headerName: "Actions",
-      width: 120,
+      width: 150,
       sortable: false,
-      renderCell: () => (
+      renderCell: (params) => (
         <>
+          <Tooltip title="Edit">
+            <IconButton
+              onClick={() =>
+                navigate(
+                  `/material/sales-business-plan-form/edit/${params.row.id}`,
+                  { state: params.row },
+                )
+              }
+            >
+              <Icon color="primary">edit</Icon>
+            </IconButton>
+          </Tooltip>
+
           <Tooltip title="Delete">
             <IconButton>
               <Icon color="error">delete</Icon>
@@ -74,7 +80,9 @@ export default function BusinessPlanTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Planning" }, { name: "Business Plan" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Planning" }, { name: "Business Plan" }]}
+        />
       </Box>
 
       <Stack spacing={3}>
@@ -106,6 +114,7 @@ export default function BusinessPlanTable() {
           <DataGrid
             rows={rows}
             columns={columns}
+            loading={loading}
             pageSizeOptions={[10, 25, 50]}
             initialState={{
               pagination: { paginationModel: { pageSize: 10, page: 0 } },
