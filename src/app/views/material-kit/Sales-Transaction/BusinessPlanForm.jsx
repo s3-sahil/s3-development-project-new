@@ -18,12 +18,15 @@ import {
   addBusinessPlan,
   updateBusinessPlan,
 } from "app/utils/salesTransactionServices";
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function BusinessPlanForm() {
+  const navigate = useNavigate();
   const location = useLocation();
+  const itemRef = useRef(null);
   const isEditMode = !!location?.state?.businessplan;
+
   const [formData, setFormData] = useState({
     period: "",
     customer: "",
@@ -35,17 +38,39 @@ export default function BusinessPlanForm() {
     rate: "",
     amount: "",
   });
+
   const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [editIndex, setEditIndex] = useState(null); // ✅ Track edit row
 
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const mappedRows = location?.state?.businessplan?.map((item, index) => ({
+  // ✅ Format Period
+  const formatPeriod = (period) => {
+    if (!period) return "";
+
+    // If already in YYYY-MM → return directly
+    if (/^\d{4}-\d{2}$/.test(period)) {
+      return period;
+    }
+
+    // If full date → convert to YYYY-MM
+    const date = new Date(period);
+
+    if (isNaN(date.getTime())) {
+      throw new Error("Invalid Period format");
+    }
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+
+    return `${year}-${month}`;
+  };
+
+  // ✅ Load Edit Data
+  useEffect(() => {
+    if (isEditMode) {
+      const data = location?.state?.businessplan || [];
+
+      const mappedRows = data.map((item, index) => ({
         id: index + 1,
-        empNo: item.cust_Code,
-        cardNumber: item.item_Code,
-
         period: item.period,
         cust_Code: item.Cust_Code,
         item_Code: item.Item_Code,
@@ -58,16 +83,53 @@ export default function BusinessPlanForm() {
       }));
 
       setRows(mappedRows);
-    } catch (error) {
-      console.error(error);
+
+      if (mappedRows.length > 0) {
+        handleRowClick(mappedRows[0], 0);
+      }
     }
-    setLoading(false);
+  }, [isEditMode, location]);
+
+  // ✅ Input Change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "qty" || name === "rate") {
+      const qty = name === "qty" ? value : formData.qty;
+      const rate = name === "rate" ? value : formData.rate;
+
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+        amount: qty && rate ? Number(qty) * Number(rate) : "",
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const handleFocus = (fieldName) => {
+    inputRefs.current[fieldName]?.focus();
+  };
 
+  // ✅ Row Click → Fill Form
+  const handleRowClick = (row, index) => {
+    setFormData({
+      period: row.period || "",
+      customer: row.cust_Code || "",
+      type: row.plan_type || "",
+      status: row.order_Status || "",
+      item: row.item_Code || "",
+      custItemCode: row.cust_item_Code || "",
+      qty: row.plan_qty || "",
+      rate: row.rate || "",
+      amount: row.amt || "",
+    });
+
+    setEditIndex(index); // ✅ set edit mode
+  };
+
+  // ✅ Add OR Update Row
   const handleAdd = () => {
     const newRow = {
       period: formData.period,
@@ -87,8 +149,17 @@ export default function BusinessPlanForm() {
       order_Status: formData.status,
     };
 
-    setRows((prev) => [...prev, newRow]);
+    if (editIndex !== null) {
+      // ✅ Update row
+      const updatedRows = [...rows];
+      updatedRows[editIndex] = newRow;
+      setRows(updatedRows);
+    } else {
+      // ➕ Add new row
+      setRows((prev) => [...prev, newRow]);
+    }
 
+    // Reset form
     setFormData({
       period: "",
       customer: "",
@@ -100,45 +171,14 @@ export default function BusinessPlanForm() {
       rate: "",
       amount: "",
     });
+
+    setEditIndex(null); // reset edit mode
   };
 
   const handleRemove = () => {
     setRows((prev) => prev.slice(0, -1));
+    setEditIndex(null);
   };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // const handleSave = async () => {
-  //   try {
-  //     if (rows.length === 0) {
-  //       alert("Please add at least one row");
-  //       return;
-  //     }
-
-  //     // const res = await addBusinessPlan(rows); // ✅ send full array
-  //     let res;
-
-  //     if (isEditMode) {
-  //       // 🔥 UPDATE API
-  //       res = await updateBusinessPlan(rows);
-  //       alert("Updated successfully ✅");
-  //     } else {
-  //       // ➕ ADD API
-  //       res = await addBusinessPlan(rows);
-  //       alert("Saved successfully ✅");
-  //     }
-  //     console.log("Success 👉", res);
-  //     alert("Saved successfully ✅");
-
-  //     setRows([]); // clear after save
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert(error.message);
-  //   }
-  // };
 
   const handleSave = async () => {
     try {
@@ -147,41 +187,33 @@ export default function BusinessPlanForm() {
         return;
       }
 
-     const payload = rows.map((row) => {
-  if (!row.period) {
-    throw new Error("Period is required for all rows");
-  }
-
-  return {
-    period: formatPeriod(row.period), // ✅ IMPORTANT
-    cust_Code: row.cust_Code,
-    item_Code: row.item_Code,
-    cust_item_Code: row.cust_item_Code,
-    profcen_Cd: row.profcen_Cd || "str",
-    plan_qty: Number(row.plan_qty),
-    amt: Number(row.amt),
-    curr_Code: row.curr_Code || "INR",
-    curr_amt: Number(row.curr_amt || row.amt),
-    curr_rate: Number(row.curr_rate || row.rate),
-    order_qty: Number(row.order_qty || 0),
-    order_amt: Number(row.order_amt || 0),
-    rate: Number(row.rate),
-    plan_type: row.plan_type,
-    order_Status: row.order_Status,
-  };
-});
-
-      let res;
+      const payload = rows.map((row) => ({
+        period: formatPeriod(row.period),
+        cust_Code: row.cust_Code,
+        item_Code: row.item_Code,
+        cust_item_Code: row.cust_item_Code,
+        profcen_Cd: row.profcen_Cd || "str",
+        plan_qty: Number(row.plan_qty),
+        amt: Number(row.amt),
+        curr_Code: row.curr_Code || "INR",
+        curr_amt: Number(row.curr_amt || row.amt),
+        curr_rate: Number(row.curr_rate || row.rate),
+        order_qty: Number(row.order_qty || 0),
+        order_amt: Number(row.order_amt || 0),
+        rate: Number(row.rate),
+        plan_type: row.plan_type,
+        order_Status: row.order_Status,
+      }));
 
       if (isEditMode) {
-        res = await updateBusinessPlan(payload);
+        await updateBusinessPlan(payload);
         alert("Updated successfully ✅");
+        navigate("/material/sales-business-plan-table");
       } else {
-        res = await addBusinessPlan(payload);
+        await addBusinessPlan(payload);
         alert("Saved successfully ✅");
+        navigate("/material/sales-business-plan-table");
       }
-
-      console.log("Response 👉", res);
 
       setRows([]);
     } catch (error) {
@@ -189,6 +221,7 @@ export default function BusinessPlanForm() {
       alert(error.message);
     }
   };
+
   return (
     <Container maxWidth="lg">
       <Box className="breadcrumb">
@@ -204,78 +237,33 @@ export default function BusinessPlanForm() {
           startIcon={<Icon>save</Icon>}
           onClick={handleSave}
         >
-           {isEditMode ? "Update" : "Save"}
+          {isEditMode ? "Update" : "Save"}
         </Button>
       </Box>
 
-      {/* Form Card */}
+      {/* Form */}
       <Box p={3} boxShadow={2} borderRadius={2}>
         <Grid container spacing={3}>
-          <Grid item xs={6}>
-            <TextField
-              label="Period"
-              name="period"
-              value={formData.period}
-              onChange={handleChange}
-              size="small"
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={6}>
-            <TextField
-              label="Customer"
-              name="customer"
-              value={formData.customer}
-              onChange={handleChange}
-              size="small"
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={6}>
-            <TextField
-              label="Type"
-              name="type"
-              value={formData.type}
-              onChange={handleChange}
-              size="small"
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={6}>
-            <TextField
-              label="Status"
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              size="small"
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={6}>
-            <TextField
-              label="Item"
-              name="item"
-              value={formData.item}
-              onChange={handleChange}
-              size="small"
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={6}>
-            <TextField
-              label="Cust Item Code"
-              name="custItemCode"
-              value={formData.custItemCode}
-              onChange={handleChange}
-              size="small"
-              fullWidth
-            />
-          </Grid>
+          {[
+            { label: "Period", name: "period" },
+            { label: "Customer", name: "customer" },
+            { label: "Type", name: "type" },
+            { label: "Status", name: "status" },
+            { label: "Item", name: "item" },
+            { label: "Cust Item Code", name: "custItemCode" },
+          ].map((field) => (
+            <Grid item xs={6} key={field.name}>
+              <TextField
+                label={field.label}
+                name={field.name}
+                value={formData[field.name]}
+                onChange={handleChange}
+                size="small"
+                fullWidth
+                inputRef={(el) => (inputRefs.current[field.name] = el)}
+              />
+            </Grid>
+          ))}
 
           <Grid item xs={4}>
             <TextField
@@ -303,23 +291,28 @@ export default function BusinessPlanForm() {
 
           <Grid item xs={4}>
             <TextField
-              label="Amount (INR)"
-              name="amount"
-              type="number"
+              label="Amount"
               value={formData.amount}
-              onChange={handleChange}
               size="small"
               fullWidth
+              disabled
             />
           </Grid>
 
-          {/* Action Buttons */}
           <Grid item xs={12} display="flex" gap={2} justifyContent="flex-end">
-            <Button variant="contained">Change Item</Button>
-            <Button variant="contained">Change Customer</Button>
-            <Button variant="contained">Change Period</Button>
+            <Button variant="contained" onClick={() => handleFocus("item")}>
+              Change Item
+            </Button>
+
+            <Button variant="contained" onClick={() => handleFocus("customer")}>
+              Change Customer
+            </Button>
+
+            <Button variant="contained" onClick={() => handleFocus("period")}>
+              Change Period
+            </Button>
             <Button variant="contained" color="success" onClick={handleAdd}>
-              Add
+              {editIndex !== null ? "Update Row" : "Add"}
             </Button>
 
             <Button variant="contained" color="error" onClick={handleRemove}>
@@ -328,9 +321,9 @@ export default function BusinessPlanForm() {
           </Grid>
         </Grid>
       </Box>
-      <Box mt={3}>
-        <h4>Added Rows:</h4>
 
+      {/* Table */}
+      <Box mt={3}>
         <TableContainer component={Paper}>
           <Table size="small">
             <TableHead>
@@ -348,7 +341,11 @@ export default function BusinessPlanForm() {
             <TableBody>
               {rows.length > 0 ? (
                 rows.map((row, index) => (
-                  <TableRow key={index}>
+                  <TableRow
+                    key={index}
+                    onClick={() => handleRowClick(row, index)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <TableCell>{row.item_Code}</TableCell>
                     <TableCell>{row.cust_Code}</TableCell>
                     <TableCell>{row.plan_qty}</TableCell>
