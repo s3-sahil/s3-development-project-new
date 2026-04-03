@@ -237,7 +237,6 @@ const CustomersPurchaseOrderLogin = () => {
 
     const profcen_cd = localStorage.getItem("PROFCEN_CD") || "1";
     const userName = localStorage.getItem("username") || "SYSTEM";
-    const poId = "PO" + Date.now().toString().substring(5);
     const poDate = new Date().toISOString();
     const amdNo =
       form.amendNo && form.amendNo.trim() !== "" ? form.amendNo : "0";
@@ -256,7 +255,7 @@ const CustomersPurchaseOrderLogin = () => {
     // Header
     const custpo_hed_ex = {
       cusT_CODE: form.customer,
-      pO_ID: poId,
+      pO_ID: "string",
       pO_ID_DT: poDate,
       pO_NO: form.orderNo || "",
       pO_DT: formatDate(form.orderDate, true),
@@ -318,7 +317,7 @@ const CustomersPurchaseOrderLogin = () => {
     const list_Custpo_det_ex = itemTable
       .map((item, index) => ({
         sr_no: String(index + 1),
-        pO_ID: poId,
+        pO_ID: "string",
         pO_ID_DT: poDate,
         iteM_CODE: item.ITEM_CODE?.trim(),
         iteM_NAME: item.ITEM_NAME || "",
@@ -353,7 +352,7 @@ const CustomersPurchaseOrderLogin = () => {
         return {
           sr_No: index + 1,
           cusT_CODE: form.customer,
-          pO_ID: poId,
+          pO_ID: "string",
           pO_ID_DT: poDate,
           iteM_CODE: r.ITEM_CODE?.trim(),
           scH_QTY: Number(r.QUANTITY) || 0,
@@ -390,7 +389,7 @@ const CustomersPurchaseOrderLogin = () => {
     // Payments & Taxes
     const list_Custpo_pay_ex = (paymentRows || []).map((p, index) => ({
       sr_no: index + 1,
-      pO_ID: poId,
+      pO_ID: "string",
       pO_ID_DT: poDate,
       percentage: Number(p.percentage) || 0,
       mode: "s",
@@ -407,7 +406,7 @@ const CustomersPurchaseOrderLogin = () => {
 
     const list_Custpo_tax_ex = (taxRows || []).map((t, index) => ({
       sr_no: index + 1,
-      pO_ID: poId,
+      pO_ID: "string",
       pO_ID_DT: poDate,
       taX_CODE: t.code,
       taX_AMT: Number(t.amount) || 0,
@@ -474,6 +473,15 @@ const CustomersPurchaseOrderLogin = () => {
         />
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
+      
+      <TextField
+                size="small"
+                fullWidth
+                label="P.O. Login No"
+                name="orderNo"
+                value={form.orderNo}
+                onChange={handleChange}
+              />
         <Button
           variant="contained"
           startIcon={<Icon>save</Icon>}
