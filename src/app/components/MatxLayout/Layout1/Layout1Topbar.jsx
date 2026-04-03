@@ -29,7 +29,7 @@ import { topBarHeight } from "app/utils/constant";
 
 // STYLED COMPONENTS
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
-  color: theme.palette.text.primary
+  color: theme.palette.text.primary,
 }));
 
 const TopbarRoot = styled("div")({
@@ -37,7 +37,7 @@ const TopbarRoot = styled("div")({
   zIndex: 96,
   height: topBarHeight,
   boxShadow: themeShadows[8],
-  transition: "all 0.3s ease"
+  transition: "all 0.3s ease",
 });
 
 const TopbarContainer = styled("div")(({ theme }) => ({
@@ -50,7 +50,7 @@ const TopbarContainer = styled("div")(({ theme }) => ({
   justifyContent: "space-between",
   background: theme.palette.primary.main,
   [theme.breakpoints.down("sm")]: { paddingLeft: 16, paddingRight: 16 },
-  [theme.breakpoints.down("xs")]: { paddingLeft: 14, paddingRight: 16 }
+  [theme.breakpoints.down("xs")]: { paddingLeft: 14, paddingRight: 16 },
 }));
 
 const UserMenu = styled("div")({
@@ -59,7 +59,7 @@ const UserMenu = styled("div")({
   borderRadius: 24,
   cursor: "pointer",
   alignItems: "center",
-  "& span": { margin: "0 8px" }
+  "& span": { margin: "0 8px" },
 });
 
 const StyledItem = styled(MenuItem)(({ theme }) => ({
@@ -70,14 +70,14 @@ const StyledItem = styled(MenuItem)(({ theme }) => ({
     width: "100%",
     display: "flex",
     alignItems: "center",
-    textDecoration: "none"
+    textDecoration: "none",
   },
-  "& span": { marginRight: "10px", color: theme.palette.text.primary }
+  "& span": { marginRight: "10px", color: theme.palette.text.primary },
 }));
 
 const IconBox = styled("div")(({ theme }) => ({
   display: "inherit",
-  [theme.breakpoints.down("md")]: { display: "none !important" }
+  [theme.breakpoints.down("md")]: { display: "none !important" },
 }));
 
 const Layout1Topbar = () => {
@@ -87,7 +87,9 @@ const Layout1Topbar = () => {
   const isMdScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const updateSidebarMode = (sidebarSettings) => {
-    updateSettings({ layout1Settings: { leftSidebar: { ...sidebarSettings } } });
+    updateSettings({
+      layout1Settings: { leftSidebar: { ...sidebarSettings } },
+    });
   };
 
   const handleSidebarToggle = () => {
@@ -117,7 +119,11 @@ const Layout1Topbar = () => {
 
     // ✅ Sort: Move selected division to the first position
     const sortedDivisions = storedDivisions.sort((a, b) =>
-      a.PROFCEN_CD === savedDivision ? -1 : b.PROFCEN_CD === savedDivision ? 1 : 0
+      a.PROFCEN_CD === savedDivision
+        ? -1
+        : b.PROFCEN_CD === savedDivision
+          ? 1
+          : 0,
     );
 
     setDivisions(sortedDivisions);
@@ -125,6 +131,21 @@ const Layout1Topbar = () => {
     setProfileName(profileName);
   }, []);
 
+  const handleDivisionChange = (division) => {
+    const selected = division.PROFCEN_CD;
+
+    // ✅ update state
+    setSelectedDivision(selected);
+
+    // ✅ store in localStorage
+    localStorage.setItem("selectedDivision", selected);
+
+    // ✅ optional: update userData also (recommended)
+    const userData = JSON.parse(localStorage.getItem("userData")) || {};
+    userData.PROFCEN_CD = selected;
+    localStorage.setItem("userData", JSON.stringify(userData));
+
+  };
   return (
     <TopbarRoot>
       <TopbarContainer>
@@ -132,31 +153,9 @@ const Layout1Topbar = () => {
           <StyledIconButton onClick={handleSidebarToggle}>
             <Menu />
           </StyledIconButton>
-
-          {/* <IconBox>
-            <StyledIconButton>
-              <MailOutline />
-            </StyledIconButton>
-
-            <StyledIconButton>
-              <WebAsset />
-            </StyledIconButton>
-
-            <StyledIconButton>
-              <StarOutline />
-            </StyledIconButton>
-          </IconBox> */}
         </Box>
 
         <Box display="flex" alignItems="center">
-          {/* <MatxSearchBox />
-
-          <NotificationProvider>
-            <NotificationBar />
-          </NotificationProvider> */}
-
-          {/* <ShoppingCart /> */}
-
           <MatxMenu
             menuButton={
               <UserMenu>
@@ -166,25 +165,31 @@ const Layout1Topbar = () => {
 
                 <Avatar src={user.avatar} sx={{ cursor: "pointer" }} />
               </UserMenu>
-            }>
-            {/* <StyledItem>
-              <Link to="/">
-                <Home />
-                <Span sx={{ marginInlineStart: 1 }}>Home</Span>
-              </Link>
-            </StyledItem> */}
+            }
+          >
+            {divisions.map((division) => {
+              const isSelected = division.PROFCEN_CD === selectedDivision;
 
-            {divisions.map((division) => (
-              <StyledItem key={division.PROFCEN_CD} onClick={() => handleDivisionChange(division)}>
-                <Person />
-                <Span sx={{ marginInlineStart: 1 }}>{division.DESC}</Span>
-              </StyledItem>
-            ))}
-            {/* 
-            <StyledItem onClick={logout}>
-              <PowerSettingsNew />
-              <Span sx={{ marginInlineStart: 1 }}>Logout</Span>
-            </StyledItem> */}
+              return (
+                <StyledItem
+                  key={division.PROFCEN_CD}
+                  onClick={() => handleDivisionChange(division)}
+                  sx={{
+                    backgroundColor: isSelected ? "#60a5fa" : "transparent",
+                  }}
+                >
+                  <Person />
+                  <Span
+                    sx={{
+                      marginInlineStart: 1,
+                      color: isSelected ? "white" : "inherit",
+                    }}
+                  >
+                    {division.DESC}
+                  </Span>
+                </StyledItem>
+              );
+            })}
           </MatxMenu>
         </Box>
       </TopbarContainer>

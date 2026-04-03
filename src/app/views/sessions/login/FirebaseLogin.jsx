@@ -17,8 +17,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import { styled, useTheme } from "@mui/material/styles";
 
-import { login } from "app/utils/authServices";
 import useAuth from "app/hooks/useAuth";
+import { loginApi } from "app/utils/authServices";
 
 // Styled Components
 const FirebaseRoot = styled("div")(() => ({
@@ -40,7 +40,7 @@ const initialValues = {
 const validationSchema = Yup.object().shape({
   Login_Name: Yup.string().required("Login Name is required!"),
   Login_Pwd: Yup.string()
-    .min(6, "Password must be at least 6 characters")
+    // .min(6, "Password must be at least 6 characters")
     .required("Password is required!"),
 });
 
@@ -57,7 +57,7 @@ export default function FirebaseLogin() {
   const [selectedDivision, setSelectedDivision] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-
+  const [financeYears, setFinanceYears] = useState([]);
   useEffect(() => {
     const today = new Date();
     const year = today.getFullYear();
@@ -65,49 +65,73 @@ export default function FirebaseLogin() {
     setFromDate(`${year}-04-01`);
     setToDate(`${year + 1}-03-31`);
   }, []);
-  // ✅ Login Submit
   const handleFormSubmit = async (values, { setSubmitting }) => {
     try {
       setSubmitting(true);
-      setOpenModal(true);
 
-      // const data = await login(values.Login_Name, values.Login_Pwd);
+      const data = await loginApi(values.Login_Name, values.Login_Pwd);
+      console.log("LOGIN RESPONSE:", data);
 
-      // if (data.status === "succeed") {
-      //   const { token, JsonData } = data;
+      if (!data) throw new Error("No response from server");
 
-      //   const userData = {
-      //     token,
-      //     JsonData,
-      //     login_name: JsonData.Divisions?.[0]?.login_name || "",
-      //     PROFCEN_CD: JsonData.Divisions?.[0]?.PROFCEN_CD || ""
-      //   };
+      if (data.status === "succeed") {
+        const { token, JsonData } = data;
 
-      //   setUser(userData);
+        const userData = {
+          token,
+          JsonData,
+          login_name: JsonData.Divisions?.[0]?.login_name || "",
+          PROFCEN_CD: JsonData.Divisions?.[0]?.PROFCEN_CD || "",
+        };
 
-      //   localStorage.setItem("token", token);
-      //   localStorage.setItem("divisions", JSON.stringify(JsonData.Divisions || []));
-      //   localStorage.setItem("modules", JSON.stringify(JsonData.Modules || []));
-      //   localStorage.setItem("departments", JSON.stringify(JsonData.Departments || []));
-      //   localStorage.setItem("userData", JSON.stringify(userData));
+        setUser(userData);
 
-      //   enqueueSnackbar("Logged in successfully", { variant: "success" });
+        localStorage.setItem("token", token);
+        localStorage.setItem("login_name", userData.login_name);
+        localStorage.setItem(
+          "divisions",
+          JSON.stringify(JsonData.Divisions || []),
+        );
+        localStorage.setItem("modules", JSON.stringify(JsonData.Modules || []));
+        localStorage.setItem(
+          "departments",
+          JSON.stringify(JsonData.Departments || []),
+        );
+        localStorage.setItem("userData", JSON.stringify(userData));
 
-      //   // ✅ Open Modal instead of navigating
-      //   setDivisions(JsonData.Divisions || []);
-      //   setSelectedDivision(JsonData.Divisions?.[0]?.PROFCEN_CD || "");
-      //   setOpenModal(true);
-      // } else {
-      //   enqueueSnackbar(data.message || "Login failed", { variant: "error" });
-      // }
+        enqueueSnackbar("Logged in successfully", { variant: "success" });
+
+        // ✅ SET DATA FOR MODAL
+        setDivisions(JsonData.Divisions || []);
+
+        const fyList = JsonData.FINANCE_YEAR || [];
+        setFinanceYears(fyList);
+
+        // ✅ AUTO SELECT LAST FY
+        if (fyList.length > 0) {
+          const lastFY = fyList[fyList.length - 1];
+
+          setFromDate(formatFYDate(lastFY.FROM_DATE, true));
+          setToDate(formatFYDate(lastFY.TO_DATE, false));
+        }
+
+        setSelectedDivision(JsonData.Divisions?.[0]?.PROFCEN_CD || "");
+        setOpenModal(true);
+      } else {
+        enqueueSnackbar(data.message || "Login failed", { variant: "error" });
+      }
     } catch (error) {
       console.error("Login error:", error);
       enqueueSnackbar(error.message || "Login failed", { variant: "error" });
     } finally {
-      setSubmitting(false);
+      setSubmitting(false); // ✅ FIX LOADING ISSUE
     }
   };
 
+  const formatFYDate = (str, isFrom) => {
+    const [month, year] = str.split("/");
+    return `${year}-${month}-${isFrom ? "01" : "31"}`;
+  };
   // ✅ Continue after selecting division
   const handleContinue = () => {
     if (!selectedDivision) {
@@ -197,98 +221,134 @@ export default function FirebaseLogin() {
       </Card>
 
       {/* ✅ Modal */}
-     <Dialog open={openModal} maxWidth="sm" fullWidth>
-  <DialogTitle sx={{ fontWeight: 600 }}>
-    Setup Details
-  </DialogTitle>
+      <Dialog open={openModal} maxWidth="sm" fullWidth>
+        <DialogTitle sx={{ fontWeight: 600 }}>SIBS</DialogTitle>
 
-  <DialogContent dividers>
-    <Box
-      display="flex"
-      flexDirection="column"
-      gap={3}
-      mt={1}
-    >
-      {/* Subtitle */}
-      <Box sx={{ color: "text.secondary", fontSize: 14 }}>
-        Select Division & Financial Year
-      </Box>
+        <DialogContent dividers>
+          <Box display="flex" flexDirection="column" gap={3} mt={1}>
+            <Box sx={{ color: "text.secondary", fontSize: 14 }}>
+              Select Division & Financial Year
+            </Box>
 
-      {/* Division */}
-      <TextField
-        select
-        label="Division"
-        fullWidth
-        value={selectedDivision}
-        onChange={(e) => setSelectedDivision(e.target.value)}
-      >
-        <MenuItem value="">Select Division</MenuItem>
-        {divisions.map((div, index) => (
-          <MenuItem key={index} value={div.PROFCEN_CD}>
-            {div.DESC}
-          </MenuItem>
-        ))}
-      </TextField>
+            {/* Division */}
+            <TextField
+              select
+              label="Division"
+              fullWidth
+              value={selectedDivision}
+              onChange={(e) => setSelectedDivision(e.target.value)}
+            >
+              <MenuItem value="">Select Division</MenuItem>
+              {divisions.map((div, index) => (
+                <MenuItem key={index} value={div.PROFCEN_CD}>
+                  {div.DESC}
+                </MenuItem>
+              ))}
+            </TextField>
 
-      {/* Date Fields */}
-      <Box display="flex" gap={2}>
-        <TextField
-          label="From Date"
-          type="date"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          value={fromDate}
-          onChange={(e) => setFromDate(e.target.value)}
-        />
+            {/* Financial Year */}
+            <Box display="flex" gap={2}>
+              <TextField
+                select
+                label="From Date"
+                fullWidth
+                value={fromDate}
+                  sx={{
+                    "& .MuiInputBase-root.Mui-disabled": {
+                      backgroundColor: "#fff",
+                      color: "#000",
+                      cursor: "text !important",
+                    },
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#000",
+                      cursor: "text !important",
+                    },
+                    "& .MuiInputBase-root.Mui-disabled *": {
+                      cursor: "text !important", // ✅ force override all children
+                    },
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#ccc !important",
+                    },
+                  }}
+                onChange={(e) => {
+                  const selected = financeYears.find(
+                    (fy) => formatFYDate(fy.FROM_DATE, true) === e.target.value,
+                  );
 
-        <TextField
-          label="To Date"
-          type="date"
-          fullWidth
-          InputLabelProps={{ shrink: true }}
-          value={toDate}
-          onChange={(e) => setToDate(e.target.value)}
-        />
-      </Box>
-    </Box>
-  </DialogContent>
+                  if (selected) {
+                    setFromDate(formatFYDate(selected.FROM_DATE, true));
+                    setToDate(formatFYDate(selected.TO_DATE, false));
+                  }
+                }}
+              >
+                {financeYears.map((fy, index) => (
+                  <MenuItem
+                    key={index}
+                    value={formatFYDate(fy.FROM_DATE, true)}
+                  >
+                    {fy.FROM_DATE}
+                  </MenuItem>
+                ))}
+              </TextField>
 
-  <DialogActions sx={{ px: 3, py: 2 }}>
-    <Button
-      onClick={() => setOpenModal(false)}
-      variant="outlined"
-    >
-      Cancel
-    </Button>
+              <TextField
+                select
+                label="To Date"
+                fullWidth
+                value={toDate}
+                onChange={(e) => setToDate(e.target.value)}
+                disabled
+                sx={{
+                  "& .MuiInputBase-root.Mui-disabled": {
+                    backgroundColor: "#fff",
+                    color: "#000",
+                    cursor: "text !important",
+                  },
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#000",
+                    cursor: "text !important",
+                  },
+                  "& .MuiInputBase-root.Mui-disabled *": {
+                    cursor: "text !important", // ✅ force override all children
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#ccc !important",
+                  },
+                }}
+              >
+                {financeYears.map((fy, index) => (
+                  <MenuItem key={index} value={formatFYDate(fy.TO_DATE, false)}>
+                    {fy.TO_DATE}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Box>
+          </Box>
+        </DialogContent>
 
-    <Button
-      variant="contained"
-      onClick={() => {
-        if (!selectedDivision) {
-          enqueueSnackbar("Please select division", { variant: "warning" });
-          return;
-        }
+        <DialogActions>
+          <Button onClick={() => setOpenModal(false)}>Cancel</Button>
 
-        if (!fromDate || !toDate) {
-          enqueueSnackbar("Please select dates", { variant: "warning" });
-          return;
-        }
+          <Button
+            variant="contained"
+            onClick={() => {
+              if (!selectedDivision) {
+                enqueueSnackbar("Select division", { variant: "warning" });
+                return;
+              }
 
-        localStorage.setItem("selectedDivision", selectedDivision);
-        localStorage.setItem("fromDate", fromDate);
-        localStorage.setItem("toDate", toDate);
+              localStorage.setItem("selectedDivision", selectedDivision);
+              localStorage.setItem("fromDate", fromDate);
+              localStorage.setItem("toDate", toDate);
 
-        setOpenModal(false);
-
-        navigate(state?.from || "/dashboard/default", {
-          replace: true
-        });
-      }}
-    >
-      Continue
-    </Button>
-  </DialogActions>
-</Dialog>
+              setOpenModal(false);
+              navigate("/dashboard/default");
+            }}
+          >
+            Continue
+          </Button>
+        </DialogActions>
+      </Dialog>
     </FirebaseRoot>
   );
 }
