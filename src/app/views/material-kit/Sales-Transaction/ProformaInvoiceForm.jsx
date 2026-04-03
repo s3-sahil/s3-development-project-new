@@ -23,7 +23,7 @@ import InvoicePaymentModal from "./InvoicePaymentModal";
 import InvoiceTaxDetailsModal from "./InvoiceTaxDetailsModal";
 import InvoiceOtherDetailsModal from "./InvoiceOtherDetailsModal";
 import TransporterModal from "./TransporterModal";
-import { addProformaInvoice } from "app/utils/authServices";
+import { addProformaInvoice } from "app/utils/salesTransactionServices";
 
 const ProformaInvoiceForm = () => {
     const navigate = useNavigate();

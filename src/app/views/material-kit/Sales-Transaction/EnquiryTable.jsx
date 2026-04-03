@@ -12,8 +12,9 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { EnquiryPaginationAPI, GetEnquiryDetailsAPI } from "app/utils/authServices";
+import {  GetEnquiryDetailsAPI } from "app/utils/authServices";
 import SearchFilter from "../SearchFilter";
+import { EnquiryPaginationAPI } from "app/utils/salesTransactionServices";
 
 export default function EnquiryTable() {
     const navigate = useNavigate();
