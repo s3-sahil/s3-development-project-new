@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Button,
   Card,
@@ -56,6 +57,7 @@ const CustomersPurchaseOrderLogin = () => {
     shippingCost: "",
     ulLocation: "",
     degIssueNo: "",
+    hsnCode: "",
   });
   const [openTaxModal, setOpenTaxModal] = useState(false);
   const [openPaymentModal, setOpenPaymentModal] = useState(false);
@@ -104,8 +106,35 @@ const CustomersPurchaseOrderLogin = () => {
     setCurrencies(data);
   };
 
+  // const handleChange = (e) => {
+  //   setForm({ ...form, [e.target.name]: e.target.value });
+  // };
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    // If Order Date changes → auto calculate Valid Date
+    if (name === "orderDate") {
+      let validDate = "";
+
+      if (value) {
+        const date = new Date(value);
+        date.setFullYear(date.getFullYear() + 1);
+
+        // format to yyyy-MM-dd (required for input type="date")
+        validDate = date.toISOString().split("T")[0];
+      }
+
+      setForm((prev) => ({
+        ...prev,
+        orderDate: value,
+        validDate: validDate,
+      }));
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleAdd = () => {
@@ -203,7 +232,8 @@ const CustomersPurchaseOrderLogin = () => {
 
   const handleSubmit = async () => {
     // Validation
-    const { orderType, customer, orderNo, orderDate, currency, salesman } = form;
+    const { orderType, customer, orderNo, orderDate, currency, salesman } =
+      form;
 
     if (!orderType) {
       alert("Order Type is required");
@@ -473,15 +503,6 @@ const CustomersPurchaseOrderLogin = () => {
         />
       </Box>
       <Box display="flex" justifyContent="flex-end" mb={2}>
-      
-      <TextField
-                size="small"
-                fullWidth
-                label="P.O. Login No"
-                name="orderNo"
-                value={form.orderNo}
-                onChange={handleChange}
-              />
         <Button
           variant="contained"
           startIcon={<Icon>save</Icon>}
@@ -530,7 +551,7 @@ const CustomersPurchaseOrderLogin = () => {
               />
             </Grid>
 
-            <Grid item xs={12} md={3}>
+            {/* <Grid item xs={12} md={3}>
               <TextField
                 size="small"
                 select
@@ -547,8 +568,42 @@ const CustomersPurchaseOrderLogin = () => {
                   </MenuItem>
                 ))}
               </TextField>
-            </Grid>
+            </Grid> */}
+            <Grid item xs={12} md={3}>
+              <Autocomplete
+                size="small"
+                fullWidth
+                options={customers || []}
+                getOptionLabel={(option) =>
+                  `${option.Cust_code} - ${option.Cust_name || ""}`
+                }
+                // ✅ FIX: match value correctly
+                isOptionEqualToValue={(option, value) =>
+                  option.Cust_code === value.Cust_code
+                }
+                value={
+                  customers.find((c) => c.Cust_code === form.customer) || null
+                }
+                onChange={(event, newValue) => {
+                  setForm((prev) => ({
+                    ...prev,
+                    customer: newValue ? newValue.Cust_code : "",
+                  }));
+                }}
+                filterOptions={(options, state) => {
+                  const input = state.inputValue.toLowerCase();
 
+                  return options.filter((cust) =>
+                    `${cust.Cust_code} ${cust.Cust_name || ""}`
+                      .toLowerCase()
+                      .includes(input),
+                  );
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Customer" />
+                )}
+              />
+            </Grid>
             <Grid item xs={12} md={3}>
               <TextField
                 size="small"
@@ -579,10 +634,9 @@ const CustomersPurchaseOrderLogin = () => {
               </TextField>
             </Grid>
 
-            {/* Duplicate Field Removed/Commented to avoid confusion */}
-            {/* <Grid item xs={12} md={3}>
+            <Grid item xs={12} md={3}>
               <TextField size="small" fullWidth label="Order No" />
-            </Grid> */}
+            </Grid>
 
             <Grid item xs={12} md={3}>
               <TextField
@@ -696,7 +750,7 @@ const CustomersPurchaseOrderLogin = () => {
           </Grid>
           <Box mt={4}>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={4}>
+              {/* <Grid item xs={12} md={4}>
                 <TextField
                   size="small"
                   select
@@ -714,8 +768,46 @@ const CustomersPurchaseOrderLogin = () => {
                     </MenuItem>
                   ))}
                 </TextField>
-              </Grid>
+              </Grid> */}
+              <Grid item xs={12} md={4}>
+                <Autocomplete
+                  size="small"
+                  fullWidth
+                  options={itemCodes || []}
+                  getOptionLabel={(option) =>
+                    `${option.ITEM_CODE} - ${option.DESC || ""} - ${option.UOM || ""}`
+                  }
+                  isOptionEqualToValue={(option, value) =>
+                    option.ITEM_CODE === value.ITEM_CODE
+                  }
+                  value={
+                    itemCodes.find((i) => i.ITEM_CODE === form.itemCode) || null
+                  }
+                  onChange={(event, newValue) => {
+                    setForm((prev) => ({
+                      ...prev,
+                      itemCode: newValue ? newValue.ITEM_CODE : "",
 
+                      // ✅ AUTO FILL DATA
+                      hsnCode: newValue?.HSN_Code || "",
+                      itemName: newValue?.DESC || "",
+                      uom: newValue?.UOM || "",
+                    }));
+                  }}
+                  filterOptions={(options, state) => {
+                    const input = state.inputValue.toLowerCase();
+
+                    return options.filter((item) =>
+                      `${item.ITEM_CODE} ${item.DESC || ""}`
+                        .toLowerCase()
+                        .includes(input),
+                    );
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Item Code" />
+                  )}
+                />
+              </Grid>
               <Grid item xs={12} md={4}>
                 <TextField size="small" fullWidth label="Cust Item" />
               </Grid>
@@ -805,7 +897,30 @@ const CustomersPurchaseOrderLogin = () => {
               </Grid>
 
               <Grid item xs={12} md={4}>
-                <TextField size="small" fullWidth label="HSN Code" disabled />
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="HSN Code"
+                  value={form.hsnCode || ""}
+                  disabled
+                  sx={{
+                    "& .MuiInputBase-root.Mui-disabled": {
+                      backgroundColor: "#fff",
+                      color: "#000",
+                      cursor: "text !important",
+                    },
+                    "& .MuiInputBase-input.Mui-disabled": {
+                      WebkitTextFillColor: "#000",
+                      cursor: "text !important",
+                    },
+                    "& .MuiInputBase-root.Mui-disabled *": {
+                      cursor: "text !important", // ✅ force override all children
+                    },
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#ccc !important",
+                    },
+                  }}
+                />
               </Grid>
 
               <Grid item xs={12} md={4}>

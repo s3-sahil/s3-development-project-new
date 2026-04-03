@@ -86,10 +86,10 @@ const InvoiceForm = () => {
   };
 
   const handleAddItem = () => {
-    if (!formData.itemCode || !formData.quantity) {
-      alert("Item Code and Quantity required");
-      return;
-    }
+    // if (!formData.itemCode || !formData.quantity) {
+    //   alert("Item Code and Quantity required");
+    //   return;
+    // }
 
     const newItem = {
       itemCode: formData.itemCode,
@@ -121,15 +121,15 @@ const InvoiceForm = () => {
 
   const handleSaveInvoice = async () => {
     try {
-      if (!formData.invoiceNo) {
-        alert("Invoice Number required");
-        return;
-      }
+      // if (!formData.invoiceNo) {
+      //   alert("Invoice Number required");
+      //   return;
+      // }
 
-      if (invoiceItems.length === 0) {
-        alert("Add at least one item");
-        return;
-      }
+      // if (invoiceItems.length === 0) {
+      //   alert("Add at least one item");
+      //   return;
+      // }
 
       const invoiceNo = formData.invoiceNo;
       const invoiceDate = formData.invoiceDate
