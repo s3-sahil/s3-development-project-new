@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   TextField,
   MenuItem,
+  Autocomplete,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Icon from "@mui/material/Icon";
@@ -19,7 +20,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import TransporterModal from "./TransporterModal";
 import TagDetailsModal from "./TagDetailsModal";
-import { addPackingSlip, fetchItemcodeAPI } from "app/utils/authServices";
+import {
+  addPackingSlip,
+  fetchCustomerAPI,
+  fetchItemcodeAPI,
+} from "app/utils/authServices";
+import {
+  fetchItemCodesByCustomer,
+  fetchPackingAndSubType,
+} from "app/utils/salesTransactionServices";
 
 const PackingSlipForm = () => {
   const navigate = useNavigate();
@@ -52,11 +61,49 @@ const PackingSlipForm = () => {
   const [transporterData, setTransporterData] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [itemCodes, setItemCodes] = useState([]);
-
+  const [packingList, setPackingList] = useState([]);
+  const [filteredSubTypes, setFilteredSubTypes] = useState([]);
   const isEditMode = !!location.state?.packingSlipDetails;
+  const [customers, setCustomers] = useState([]);
+  const [loadingItems, setLoadingItems] = useState(false);
 
   useEffect(() => {
+    if (state.packingType) {
+      loadPackingData();
+    }
+  }, [state.packingType]);
+
+  const loadPackingData = async () => {
+    try {
+      const res = await fetchPackingAndSubType(
+        localStorage.getItem("login_name"),
+      );
+
+      let list = res?.Data || [];
+
+      setPackingList(list);
+
+      // ✅ FILTER based on selected packingType
+      const filtered = packingList.filter(
+        (item) =>
+          item.INV_TYPE?.toUpperCase() === state.packingType?.toUpperCase(),
+      );
+
+      setFilteredSubTypes(filtered);
+
+      // reset subtype
+      setState((prev) => ({
+        ...prev,
+        subType: "",
+      }));
+    } catch (error) {
+      console.error(error);
+      setFilteredSubTypes([]);
+    }
+  };
+  useEffect(() => {
     loadItemCodes();
+    loadCustomers();
     if (isEditMode) {
       const { packingSlipDetails } = location.state;
       const headerData = packingSlipDetails.Header_Data || {};
@@ -128,9 +175,46 @@ const PackingSlipForm = () => {
     }
   }, [location.state]);
 
-  const loadItemCodes = async () => {
-    const data = await fetchItemcodeAPI();
-    setItemCodes(data);
+  // const loadItemCodes = async () => {
+  //   const data = await fetchItemcodeAPI();
+  //   setItemCodes(data);
+  // };
+
+  const loadCustomers = async () => {
+    const data = await fetchCustomerAPI();
+    setCustomers(data);
+  };
+
+  const loadItemCodes = async (custCode) => {
+    try {
+      setLoadingItems(true);
+
+      const res = await fetchItemCodesByCustomer(custCode);
+
+      let list = [];
+
+      if (Array.isArray(res?.Data)) {
+        list = res.Data;
+      } else if (Array.isArray(res?.data)) {
+        list = res.data;
+      } else if (Array.isArray(res)) {
+        list = res;
+      }
+
+      // optional normalization
+      const normalized = list.map((x) => ({
+        ITEM_CODE: x.ITEM_CODE || x.ItemCode || "",
+        DESC: x.DESC || x.Description || "",
+        UOM: x.UOM || "",
+      }));
+
+      setItemCodes(normalized);
+    } catch (error) {
+      console.error(error);
+      setItemCodes([]);
+    } finally {
+      setLoadingItems(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -381,8 +465,13 @@ const PackingSlipForm = () => {
               size="small"
               fullWidth
             >
-              <MenuItem value="Domestic">Domestic</MenuItem>
+              <MenuItem value="DOMESTIC">DOMESTIC</MenuItem>
               <MenuItem value="Export">Export</MenuItem>
+              <MenuItem value="PROFORMA">PROFORMA</MenuItem>
+              <MenuItem value="NON-EXCISE">NON-EXCISE</MenuItem>
+              <MenuItem value="SEZ">SEZ</MenuItem>
+              <MenuItem value="SERVICE">SERVICE</MenuItem>
+              <MenuItem value="DEPOT">DEPOT</MenuItem>
             </TextField>
 
             <TextField
@@ -390,9 +479,18 @@ const PackingSlipForm = () => {
               name="subType"
               value={state.subType}
               onChange={handleChange}
+              select
               fullWidth
               size="small"
-            />
+            >
+              <MenuItem value="">-- Select Sub Type --</MenuItem>
+
+              {filteredSubTypes.map((item, index) => (
+                <MenuItem key={index} value={item.SALES_TYPE}>
+                  {item.SALES_TYPE}
+                </MenuItem>
+              ))}
+            </TextField>
 
             <TextField
               label="Slip No"
@@ -414,13 +512,56 @@ const PackingSlipForm = () => {
               size="small"
             />
 
-            <TextField
+            {/* <TextField
               label="Customer"
               name="customer"
               value={state.customer}
               onChange={handleChange}
               fullWidth
               size="small"
+            /> */}
+
+            <Autocomplete
+              size="small"
+              fullWidth
+              options={customers || []}
+              getOptionLabel={(option) =>
+                `${option.Cust_code} - ${option.Cust_name || ""}`
+              }
+              // ✅ FIX: match value correctly
+              isOptionEqualToValue={(option, value) =>
+                option.Cust_code === value.Cust_code
+              }
+              value={
+                customers.find((c) => c.Cust_code === state.customer) || null
+              }
+              onChange={async (event, newValue) => {
+                const custCode = newValue ? newValue.Cust_code : "";
+
+                setState((prev) => ({
+                  ...prev,
+                  customer: custCode,
+                  itemCode: "", // ✅ reset item code
+                }));
+
+                if (custCode) {
+                  await loadItemCodes(custCode);
+                } else {
+                  setItemCodes([]);
+                }
+              }}
+              filterOptions={(options, state) => {
+                const input = state.inputValue.toLowerCase();
+
+                return options.filter((cust) =>
+                  `${cust.Cust_code} ${cust.Cust_name || ""}`
+                    .toLowerCase()
+                    .includes(input),
+                );
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Customer" />
+              )}
             />
 
             <TextField
@@ -506,13 +647,13 @@ const PackingSlipForm = () => {
               TRANSPORTER
             </Button>
 
-            <Button
+            {/* <Button
               variant="contained"
               color="primary"
               onClick={() => setOpenTagModal(true)}
             >
               TAG DETAILS
-            </Button>
+            </Button> */}
           </Box>
         </Box>
         <Box
@@ -527,23 +668,34 @@ const PackingSlipForm = () => {
             gap={3}
             alignItems="center"
           >
-            <TextField
+            <Autocomplete
               size="small"
-              select
               fullWidth
-              label="Item Code"
-              name="itemCode"
-              value={state.itemCode || ""}
-              onChange={handleChange}
-            >
-              <MenuItem value="">Select</MenuItem>
-
-              {itemCodes.map((item, index) => (
-                <MenuItem key={index} value={item.ITEM_CODE}>
-                  {item.ITEM_CODE} - {item.CATG_CODE}
-                </MenuItem>
-              ))}
-            </TextField>
+              options={itemCodes || []}
+              loading={loadingItems} // ✅ loader
+              getOptionLabel={(option) =>
+                `${option.ITEM_CODE} - ${option.DESC || ""} - ${option.UOM || ""}`
+              }
+              isOptionEqualToValue={(option, value) =>
+                option.ITEM_CODE === value.ITEM_CODE
+              }
+              value={
+                itemCodes.find((i) => i.ITEM_CODE === state.itemCode) || null
+              }
+              onChange={(event, newValue) => {
+                setState((prev) => ({
+                  ...prev,
+                  itemCode: newValue ? newValue.ITEM_CODE : "",
+                }));
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Item Code"
+                  disabled={!state.customer} // ✅ disable until customer selected
+                />
+              )}
+            />
 
             <TextField
               label="Operation"
@@ -671,18 +823,16 @@ const PackingSlipForm = () => {
         onSave={(data) => setTransporterData(data)}
       />
 
-      <TagDetailsModal
+      {/* <TagDetailsModal
         open={openTagModal}
         onClose={() => setOpenTagModal(false)}
         onSave={(newTag) => setTags([...tags, newTag])}
-      />
+      /> */}
     </Container>
   );
 };
 
 export default PackingSlipForm;
-
-
 
 // {
 //   "packingSlip_ex": {

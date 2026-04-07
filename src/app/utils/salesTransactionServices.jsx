@@ -460,3 +460,37 @@ export const getTaxTermByHSNCode = async (hsn) => {
     return [];
   }
 };
+
+export const fetchPackingAndSubType = async (loginName) => {
+  try {
+    const response = await axiosInstance.get(
+      `/api/Master/Fetch-PACKING_TYPE_AND_SUB_TYPE?LOGIN_NAME=${loginName}`
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Packing/SubType Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to fetch Packing Type and Sub Type."
+    );
+  }
+};
+
+export const fetchItemCodesByCustomer = async (custCode) => {
+  try {
+    const response = await axiosInstance.get(
+      `/Fetch-PACKING_SLIP_ITEM_CODE_LIST?Cust_code=${custCode}`
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Item Codes Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+        "Failed to fetch item codes."
+    );
+  }
+};
