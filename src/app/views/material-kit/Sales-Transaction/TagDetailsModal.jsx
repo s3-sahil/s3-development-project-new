@@ -33,7 +33,12 @@ const TagDetailsModal = ({ open, onClose, onSave }) => {
     };
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth  PaperProps={{
+                sx: {
+                    width: 800,
+                    maxWidth: 800,
+                },
+            }}>
             <DialogTitle>Tag Details</DialogTitle>
             <DialogContent>
                 <Grid container spacing={2} sx={{ mt: 1 }}>

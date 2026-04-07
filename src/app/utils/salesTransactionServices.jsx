@@ -445,3 +445,18 @@ export const BusinessPlanPaginationAPI = async (
         return null;
     }
 };
+
+
+export const getTaxTermByHSNCode = async (hsn) => {
+  try {
+    const { data } = await axiosInstance.get(
+      `/api/Master/Fetch-Tariff_Tax_By_HSN_CODE?HSN_CODE=${hsn}`
+    );
+
+    // ✅ your API returns: { list: [...] }
+    return data?.Data || [];
+  } catch (error) {
+    console.error("Error fetching tax by HSN:", error);
+    return [];
+  }
+};

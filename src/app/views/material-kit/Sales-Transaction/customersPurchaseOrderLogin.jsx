@@ -27,7 +27,10 @@ import PaymentTermsModal from "./PaymentTermsModal";
 import TaxTermModal from "./TaxTermModal";
 import OtherDetailsManufacturingModal from "./OtherDetailsManufacturingModal";
 import { DataGrid } from "@mui/x-data-grid";
-import { saveCustomerPurchaseOrder } from "app/utils/salesTransactionServices";
+import {
+  getTaxTermByHSNCode,
+  saveCustomerPurchaseOrder,
+} from "app/utils/salesTransactionServices";
 
 const CustomersPurchaseOrderLogin = () => {
   const [leadObj, setLeadObj] = useState({
@@ -230,6 +233,27 @@ const CustomersPurchaseOrderLogin = () => {
     },
   ];
 
+  const fetchTaxByHSN = async (hsn) => {
+    try {
+      const res = await getTaxTermByHSNCode(hsn);
+
+      const mappedTax = (res?.Data || []).map((t, index) => ({
+        id: index + 1,
+        code: t.TAX_CODE || t.TaxCode, // ✅ FIX
+        desc: t.DESC, // ✅ FIX
+        percent: Number(t.PERCENT), // ✅ FIX
+        type: t.TaxType, // ✅ IMPORTANT
+        amount: Number(t.PERCENT).toFixed(2),
+      }));
+
+      console.log("✅ mappedTax:", mappedTax);
+
+      setTaxRows(mappedTax);
+    } catch (err) {
+      console.error("HSN TAX ERROR:", err);
+    }
+  };
+
   const handleSubmit = async () => {
     // Validation
     const { orderType, customer, orderNo, orderDate, currency, salesman } =
@@ -281,7 +305,6 @@ const CustomersPurchaseOrderLogin = () => {
       val === "" || val === null || val === undefined ? 0 : Number(val);
     const getFlag = (val) =>
       val ? val.toString().charAt(0).toLowerCase() : "s";
-
     // Header
     const custpo_hed_ex = {
       cusT_CODE: form.customer,
@@ -462,6 +485,7 @@ const CustomersPurchaseOrderLogin = () => {
       const res = await saveCustomerPurchaseOrder(payload);
       if (res?.StatusCode === 200) {
         alert("✅ Saved successfully");
+
         // Optional: Reset form or navigate back
       } else {
         alert(res?.Message || "Save failed");
@@ -784,15 +808,19 @@ const CustomersPurchaseOrderLogin = () => {
                     itemCodes.find((i) => i.ITEM_CODE === form.itemCode) || null
                   }
                   onChange={(event, newValue) => {
+                    const hsn = newValue?.HSN_Code || "";
                     setForm((prev) => ({
                       ...prev,
                       itemCode: newValue ? newValue.ITEM_CODE : "",
 
                       // ✅ AUTO FILL DATA
-                      hsnCode: newValue?.HSN_Code || "",
+                      hsnCode: hsn,
                       itemName: newValue?.DESC || "",
                       uom: newValue?.UOM || "",
                     }));
+                    if (hsn) {
+                      fetchTaxByHSN(hsn);
+                    }
                   }}
                   filterOptions={(options, state) => {
                     const input = state.inputValue.toLowerCase();
@@ -977,11 +1005,20 @@ const CustomersPurchaseOrderLogin = () => {
           </Box>
         </CardContent>
 
-        <TaxTermModal
+        {/* <TaxTermModal
           open={openTaxModal}
           onClose={() => setOpenTaxModal(false)}
           onSave={(rows) => {
             console.log("Saved Tax Data:", rows);
+            setTaxRows(rows);
+            setOpenTaxModal(false);
+          }}
+        /> */}
+        <TaxTermModal
+          open={openTaxModal}
+          defaultRows={taxRows}
+          onClose={() => setOpenTaxModal(false)}
+          onSave={(rows) => {
             setTaxRows(rows);
             setOpenTaxModal(false);
           }}

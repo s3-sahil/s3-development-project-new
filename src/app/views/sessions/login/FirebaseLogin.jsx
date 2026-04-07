@@ -253,23 +253,23 @@ export default function FirebaseLogin() {
                 label="From Date"
                 fullWidth
                 value={fromDate}
-                  sx={{
-                    "& .MuiInputBase-root.Mui-disabled": {
-                      backgroundColor: "#fff",
-                      color: "#000",
-                      cursor: "text !important",
-                    },
-                    "& .MuiInputBase-input.Mui-disabled": {
-                      WebkitTextFillColor: "#000",
-                      cursor: "text !important",
-                    },
-                    "& .MuiInputBase-root.Mui-disabled *": {
-                      cursor: "text !important", // ✅ force override all children
-                    },
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#ccc !important",
-                    },
-                  }}
+                sx={{
+                  "& .MuiInputBase-root.Mui-disabled": {
+                    backgroundColor: "#fff",
+                    color: "#000",
+                    cursor: "text !important",
+                  },
+                  "& .MuiInputBase-input.Mui-disabled": {
+                    WebkitTextFillColor: "#000",
+                    cursor: "text !important",
+                  },
+                  "& .MuiInputBase-root.Mui-disabled *": {
+                    cursor: "text !important", // ✅ force override all children
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#ccc !important",
+                  },
+                }}
                 onChange={(e) => {
                   const selected = financeYears.find(
                     (fy) => formatFYDate(fy.FROM_DATE, true) === e.target.value,
