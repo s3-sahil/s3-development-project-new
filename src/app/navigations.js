@@ -896,14 +896,19 @@ const navigations = [
             path: "/material/customers",
             icon: "arrow_forward",
           },
+           {
+            name: "Product Price List Details",
+            path: "/material/sales-product-price-list-details-table",
+            icon: "arrow_forward",
+          },
           {
             name: "Contract Review",
             path: "/material/sales-Contract-review-table",
             icon: "arrow_forward",
           },
-          {
+         {
             name: "Salesman",
-            path: "/material/salesman",
+            path: "/Sales/material/salesman",
             icon: "arrow_forward",
           },
           {
@@ -931,6 +936,11 @@ const navigations = [
           {
             name: "Project Activity Master",
             path: "/material/sales-project-activity-master-table",
+            icon: "arrow_forward",
+          },
+           {
+            name: "Product Wise Packing" ,
+            path: "/material/sales-product-wise-packing-table",
             icon: "arrow_forward",
           },
           {

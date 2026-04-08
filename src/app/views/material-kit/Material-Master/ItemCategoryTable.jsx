@@ -10,18 +10,57 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ITEM_CATEGORY_PaginationAPI } from "app/utils/authServices";
 
 export default function ItemCategoryTable() {
   const navigate = useNavigate();
+  const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0); 
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  // 🔹 Dummy Data
-  const rows = [
-    { id: 1, categoryCode: "01", description: "Body Assembly", indicator: "BO", inUse: true },
-    { id: 2, categoryCode: "10", description: "PERFORATED CABLE TRAY", indicator: "FP", inUse: true },
-    { id: 3, categoryCode: "11", description: "SHEET", indicator: "RM", inUse: true },
-    { id: 4, categoryCode: "12", description: "COIL", indicator: "RM", inUse: false },
-    { id: 5, categoryCode: "13", description: "STRIP", indicator: "RM", inUse: true },
-  ];
+
+  const loadItemCategory = async () => {
+    setLoading(true);
+    const res = await ITEM_CATEGORY_PaginationAPI(
+      "CATEGORY",
+      page + 1, 
+      pageSize
+    );
+
+    if (res?.Data) {
+      setRows(
+        res.Data.map((item, index) => ({
+          id: item.id || index + 1, 
+          ...item,
+        }))
+      );
+      setRowCount(res.TotalCount || 0);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadItemCategory();
+  }, [page, pageSize]);
+
+
+
+  const handleDelete = async (id) => {debugger
+    if (window.confirm("Are you sure you want to delete this Salesman?")) {
+      try {
+        await deleteSalesman(id);
+        loadSalesman();
+        alert("Salesman deleted successfully.");
+      } catch (error) {
+        console.error("Delete Error:", error);
+        alert("Failed to delete salesman.");
+      }
+    }
+  };
 
   const handleEdit = (row) => {
     navigate(`/material/material-item-category-form/edit/${row.id}`, {
@@ -29,20 +68,16 @@ export default function ItemCategoryTable() {
     });
   };
 
-  const handleDelete = (id) => {
-    console.log("Delete record:", id);
-  };
-
   const handleAddNew = () => {
     navigate("/material/material-item-category-form/add");
   };
 
   const columns = [
-    { field: "categoryCode", headerName: "Category Code", width: 150 },
-    { field: "description", headerName: "Description", width: 300 },
+    { field: "CATG_CODE", headerName: "Category Code", width: 150 },
+    { field: "DESC", headerName: "Description", width: 300 },
     { field: "indicator", headerName: "Indicator", width: 120 },
     {
-      field: "inUse",
+      field: "IN_use",
       headerName: "In Use",
       width: 120,
       renderCell: (params) => (params.value ? "Yes" : "—"),

@@ -11,11 +11,18 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
+import { ITEM_CATEGORY_SAVE } from "app/utils/authServices";
 import { useState } from "react";
 
 const ItemCategoryForm = () => {
+
+  const [loading, setLoading] = useState(false);
+  const [actionMode, setActionMode] = useState("new");
+
+
   const [formData, setFormData] = useState({
     materialGroup: "",
+    indicator:"",
     categoryCode: "",
     categoryName: "",
     otherIndicator: "",
@@ -31,10 +38,49 @@ const ItemCategoryForm = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+  // 🔹 Save (Add / Update)
+  const handleSave = async () => {
+    if (
+      !formData.categoryCode ||
+      !formData.indicator 
+    ) {
+      alert("Please fill all required fields");
+      return;
+    }
 
-  const handleSave = () => {
-    console.log("Item Category Save:", formData);
-    alert("Item Category Saved (UI Only)");
+   // const nameParts = formData.employeeName.trim().split(" ");
+
+    const payload = {
+  catG_CODE: formData.categoryCode || "",
+  desc: formData.categoryName || "",
+  indicator: formData.otherIndicator || "",                  // if you have an indicator field in formData, map it here
+  raw_ind: "",                    // optional, if not in UI leave blank
+  //other_ind: formData.otherIndicator || "",
+  iN_use: !!formData.inUse,
+  loc: formData.locationCompulsory ? "Y" : "N", // or true/false if API expects boolean
+  imp_Material: formData.importMaterial ? "Y" : "N", // or true/false
+  auto_Subcatg_no: formData.categoryCode || "",
+  lW_Value: formData.lW_Value || "", // add field if UI has it
+};
+
+    try {
+      setLoading(true);
+
+      await ITEM_CATEGORY_SAVE(payload); // same API for add/update
+
+      alert(
+        actionMode === "edit"
+          ? "Item Catg updated successfully!"
+          : "Item Catg added successfully!"
+      );
+
+      navigate("/material/material-item-category-table"); // go back to table
+    } catch (error) {
+      console.error("Save Error:", error);
+      alert("Failed to save Item Catg");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,6 +101,7 @@ const ItemCategoryForm = () => {
             variant="contained"
             startIcon={<Icon>save</Icon>}
             onClick={handleSave}
+              disabled={loading}
           >
             <Span>Save</Span>
           </Button>
@@ -121,8 +168,8 @@ const ItemCategoryForm = () => {
             <TextField
               select
               label="Other Indicator"
-              name="otherIndicator"
-              value={formData.otherIndicator}
+              name="indicator"
+              value={formData.indicator}
               onChange={handleChange}
               size="small"
               fullWidth

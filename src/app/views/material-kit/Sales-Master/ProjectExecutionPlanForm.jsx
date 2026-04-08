@@ -2,8 +2,14 @@ import { Box, Container, TextField, Button, Icon, Grid } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ProjectExecutionPlan_SAVE } from "app/utils/authServices"
+
+
 
 const ProjectExecutionPlanForm = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     customer: "",
     orderNo: "",
@@ -50,10 +56,54 @@ const ProjectExecutionPlanForm = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log("Project Execution Plan Save:", formData, activities);
-    alert("Project Execution Plan Saved (UI Only)");
-  };
+  const formatDate = (date) => {
+  if (!date) return null;
+  return new Date(date).toISOString();
+};
+
+const handleSave = async () => {
+  try {
+    const payload = {
+  project_execution_Head_ex: {
+    cust_code: formData.customer || "",
+    po_no: formData.poNo || "",
+    po_Dt: formatDate(formData.poDate),
+    po_id: formData.orderNo || "",
+    po_id_Dt: formatDate(formData.orderDate),
+    item_Code: formData.productCode || "",
+    proj_code: formData.project || "",
+    approval_Date: formatDate(formData.approvalDate),
+    delivery_Date: formatDate(formData.deliveryDate),
+    weeks_req: formData.totalWeeksRequired
+      ? Number(formData.totalWeeksRequired)
+      : 0,
+    profcen_cd: "str",
+  },
+
+  list_Project_execution_det_ex: activities.map((a, i) => ({
+    po_id: formData.orderNo || "",
+    item_Code: formData.productCode || "",
+    proj_Code: formData.project || "",
+    activity_Code: i + 1,
+    fromtarget_Date: formatDate(a.fromTargetDate),
+    totarget_Date: formatDate(a.toTargetDate),
+    sr_no: i + 1,
+    profcen_cd: "str",
+  })),
+};
+
+    console.log("Final Payload:", payload);
+
+    const res = await ProjectExecutionPlan_SAVE(payload);
+
+    alert("Saved successfully ✅");
+
+    navigate("/material/sales-project-execution-plan-table");
+  } catch (error) {
+    console.error("Save Error:", error);
+    alert(error.message);
+  }
+};
 
   return (
     <Container maxWidth="xl">

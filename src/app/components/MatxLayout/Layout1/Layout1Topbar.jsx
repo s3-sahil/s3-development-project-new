@@ -26,10 +26,11 @@ import { MatxMenu, MatxSearchBox } from "app/components";
 import { NotificationBar } from "app/components/NotificationBar";
 import { themeShadows } from "app/components/MatxTheme/themeColors";
 import { topBarHeight } from "app/utils/constant";
+import { TextField } from "@mui/material";
 
 // STYLED COMPONENTS
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
-  color: theme.palette.text.primary
+  color: theme.palette.text.primary,
 }));
 
 const TopbarRoot = styled("div")({
@@ -37,7 +38,7 @@ const TopbarRoot = styled("div")({
   zIndex: 96,
   height: topBarHeight,
   boxShadow: themeShadows[8],
-  transition: "all 0.3s ease"
+  transition: "all 0.3s ease",
 });
 
 const TopbarContainer = styled("div")(({ theme }) => ({
@@ -50,7 +51,7 @@ const TopbarContainer = styled("div")(({ theme }) => ({
   justifyContent: "space-between",
   background: theme.palette.primary.main,
   [theme.breakpoints.down("sm")]: { paddingLeft: 16, paddingRight: 16 },
-  [theme.breakpoints.down("xs")]: { paddingLeft: 14, paddingRight: 16 }
+  [theme.breakpoints.down("xs")]: { paddingLeft: 14, paddingRight: 16 },
 }));
 
 const UserMenu = styled("div")({
@@ -59,7 +60,7 @@ const UserMenu = styled("div")({
   borderRadius: 24,
   cursor: "pointer",
   alignItems: "center",
-  "& span": { margin: "0 8px" }
+  "& span": { margin: "0 8px" },
 });
 
 const StyledItem = styled(MenuItem)(({ theme }) => ({
@@ -70,14 +71,14 @@ const StyledItem = styled(MenuItem)(({ theme }) => ({
     width: "100%",
     display: "flex",
     alignItems: "center",
-    textDecoration: "none"
+    textDecoration: "none",
   },
-  "& span": { marginRight: "10px", color: theme.palette.text.primary }
+  "& span": { marginRight: "10px", color: theme.palette.text.primary },
 }));
 
 const IconBox = styled("div")(({ theme }) => ({
   display: "inherit",
-  [theme.breakpoints.down("md")]: { display: "none !important" }
+  [theme.breakpoints.down("md")]: { display: "none !important" },
 }));
 
 const Layout1Topbar = () => {
@@ -85,11 +86,62 @@ const Layout1Topbar = () => {
   const { settings, updateSettings } = useSettings();
   const { logout, user } = useAuth();
   const isMdScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [financeYears, setFinanceYears] = useState([]);
 
+  useEffect(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+
+    setFromDate(`${year}-04-01`);
+    setToDate(`${year + 1}-03-31`);
+  }, []);
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("userData")) || {};
+    const financeYearData = userData?.JsonData?.FINANCE_YEAR || [];
+
+    setFinanceYears(financeYearData);
+
+    // ✅ check if already saved in localStorage
+    const savedFrom = localStorage.getItem("fromDate");
+    const savedTo = localStorage.getItem("toDate");
+
+    if (savedFrom && savedTo) {
+      setFromDate(savedFrom);
+      setToDate(savedTo);
+    } else if (financeYearData.length > 0) {
+      const firstFY = financeYearData[0];
+
+      const from = formatFYDate(firstFY.FROM_DATE, true);
+      const to = formatFYDate(firstFY.TO_DATE, false);
+
+      setFromDate(from);
+      setToDate(to);
+
+      // ✅ store default
+      localStorage.setItem("fromDate", from);
+      localStorage.setItem("toDate", to);
+    }
+  }, []);
   const updateSidebarMode = (sidebarSettings) => {
-    updateSettings({ layout1Settings: { leftSidebar: { ...sidebarSettings } } });
+    updateSettings({
+      layout1Settings: { leftSidebar: { ...sidebarSettings } },
+    });
   };
 
+  const formatFYDate = (value, isFrom) => {
+    if (!value) return "";
+
+    const [month, year] = value.split("/");
+
+    if (isFrom) {
+      return `${year}-${month}-01`; // 2008-04-01
+    } else {
+      return `${year}-${month}-31`; // 2009-03-31
+    }
+  };
   const handleSidebarToggle = () => {
     let { layout1Settings } = settings;
     let mode;
@@ -117,7 +169,11 @@ const Layout1Topbar = () => {
 
     // ✅ Sort: Move selected division to the first position
     const sortedDivisions = storedDivisions.sort((a, b) =>
-      a.PROFCEN_CD === savedDivision ? -1 : b.PROFCEN_CD === savedDivision ? 1 : 0
+      a.PROFCEN_CD === savedDivision
+        ? -1
+        : b.PROFCEN_CD === savedDivision
+          ? 1
+          : 0,
     );
 
     setDivisions(sortedDivisions);
@@ -125,6 +181,18 @@ const Layout1Topbar = () => {
     setProfileName(profileName);
   }, []);
 
+  const handleDivisionChange = (division) => {
+    const selected = division.PROFCEN_CD;
+
+    setSelectedDivision(selected);
+
+    localStorage.setItem("selectedDivision", selected);
+
+    // ✅ optional: update userData also (recommended)
+    const userData = JSON.parse(localStorage.getItem("userData")) || {};
+    userData.PROFCEN_CD = selected;
+    localStorage.setItem("userData", JSON.stringify(userData));
+  };
   return (
     <TopbarRoot>
       <TopbarContainer>
@@ -132,31 +200,88 @@ const Layout1Topbar = () => {
           <StyledIconButton onClick={handleSidebarToggle}>
             <Menu />
           </StyledIconButton>
-
-          {/* <IconBox>
-            <StyledIconButton>
-              <MailOutline />
-            </StyledIconButton>
-
-            <StyledIconButton>
-              <WebAsset />
-            </StyledIconButton>
-
-            <StyledIconButton>
-              <StarOutline />
-            </StyledIconButton>
-          </IconBox> */}
         </Box>
+        {/* <Box display="flex" gap={2}>
+          <TextField
+            select
+            label="From Date"
+            fullWidth
+            value={fromDate}
+            sx={{
+              "& .MuiInputBase-root.Mui-disabled": {
+                backgroundColor: "#fff",
+                color: "#000",
+                cursor: "text !important",
+              },
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "#000",
+                cursor: "text !important",
+              },
+              "& .MuiInputBase-root.Mui-disabled *": {
+                cursor: "text !important", // ✅ force override all children
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#ccc !important",
+              },
+            }}
+            onChange={(e) => {
+              const selected = financeYears.find(
+                (fy) => formatFYDate(fy.FROM_DATE, true) === e.target.value,
+              );
 
-        <Box display="flex" alignItems="center">
-          {/* <MatxSearchBox />
+              if (selected) {
+                const from = formatFYDate(selected.FROM_DATE, true);
+                const to = formatFYDate(selected.TO_DATE, false);
 
-          <NotificationProvider>
-            <NotificationBar />
-          </NotificationProvider> */}
+                setFromDate(from);
+                setToDate(to);
 
-          {/* <ShoppingCart /> */}
+                // ✅ save to localStorage
+                localStorage.setItem("fromDate", from);
+                localStorage.setItem("toDate", to);
+              }
+            }}
+          >
+            {financeYears.map((fy, index) => (
+              <MenuItem key={index} value={formatFYDate(fy.FROM_DATE, true)}>
+                {fy.FROM_DATE}
+              </MenuItem>
+            ))}
+          </TextField>
 
+          <TextField
+            select
+            label="To Date"
+            fullWidth
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            disabled
+            sx={{
+              "& .MuiInputBase-root.Mui-disabled": {
+                backgroundColor: "#fff",
+                color: "#000",
+                cursor: "text !important",
+              },
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "#000",
+                cursor: "text !important",
+              },
+              "& .MuiInputBase-root.Mui-disabled *": {
+                cursor: "text !important", // ✅ force override all children
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#ccc !important",
+              },
+            }}
+          >
+            {financeYears.map((fy, index) => (
+              <MenuItem key={index} value={formatFYDate(fy.TO_DATE, false)}>
+                {fy.TO_DATE}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Box> */}
+        {/* <Box display="flex" alignItems="center">
           <MatxMenu
             menuButton={
               <UserMenu>
@@ -166,26 +291,199 @@ const Layout1Topbar = () => {
 
                 <Avatar src={user.avatar} sx={{ cursor: "pointer" }} />
               </UserMenu>
-            }>
-            {/* <StyledItem>
-              <Link to="/">
-                <Home />
-                <Span sx={{ marginInlineStart: 1 }}>Home</Span>
-              </Link>
-            </StyledItem> */}
+            }
+          >
+            {divisions.map((division) => {
+              const isSelected = division.PROFCEN_CD === selectedDivision;
 
-            {divisions.map((division) => (
-              <StyledItem key={division.PROFCEN_CD} onClick={() => handleDivisionChange(division)}>
-                <Person />
-                <Span sx={{ marginInlineStart: 1 }}>{division.DESC}</Span>
-              </StyledItem>
-            ))}
-            {/* 
-            <StyledItem onClick={logout}>
-              <PowerSettingsNew />
-              <Span sx={{ marginInlineStart: 1 }}>Logout</Span>
-            </StyledItem> */}
+              return (
+                <StyledItem
+                  key={division.PROFCEN_CD}
+                  onClick={() => handleDivisionChange(division)}
+                  sx={{
+                    backgroundColor: isSelected ? "#60a5fa" : "transparent",
+                  }}
+                >
+                  <Person />
+                  <Span
+                    sx={{
+                      marginInlineStart: 1,
+                      color: isSelected ? "white" : "inherit",
+                    }}
+                  >
+                    {division.DESC}
+                  </Span>
+                </StyledItem>
+              );
+            })}
           </MatxMenu>
+          <TextField
+            select
+            label="From Date"
+            fullWidth
+            value={fromDate}
+            sx={{
+              "& .MuiInputBase-root.Mui-disabled": {
+                backgroundColor: "#fff",
+                color: "#000",
+                cursor: "text !important",
+              },
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "#000",
+                cursor: "text !important",
+              },
+              "& .MuiInputBase-root.Mui-disabled *": {
+                cursor: "text !important", // ✅ force override all children
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#ccc !important",
+              },
+            }}
+            onChange={(e) => {
+              const selected = financeYears.find(
+                (fy) => formatFYDate(fy.FROM_DATE, true) === e.target.value,
+              );
+
+              if (selected) {
+                const from = formatFYDate(selected.FROM_DATE, true);
+                const to = formatFYDate(selected.TO_DATE, false);
+
+                setFromDate(from);
+                setToDate(to);
+
+                // ✅ save to localStorage
+                localStorage.setItem("fromDate", from);
+                localStorage.setItem("toDate", to);
+              }
+            }}
+          >
+            {financeYears.map((fy, index) => (
+              <MenuItem key={index} value={formatFYDate(fy.FROM_DATE, true)}>
+                {fy.FROM_DATE}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <TextField
+            select
+            label="To Date"
+            fullWidth
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            disabled
+            sx={{
+              "& .MuiInputBase-root.Mui-disabled": {
+                backgroundColor: "#fff",
+                color: "#000",
+                cursor: "text !important",
+              },
+              "& .MuiInputBase-input.Mui-disabled": {
+                WebkitTextFillColor: "#000",
+                cursor: "text !important",
+              },
+              "& .MuiInputBase-root.Mui-disabled *": {
+                cursor: "text !important", // ✅ force override all children
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#ccc !important",
+              },
+            }}
+          >
+            {financeYears.map((fy, index) => (
+              <MenuItem key={index} value={formatFYDate(fy.TO_DATE, false)}>
+                {fy.TO_DATE}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Box> */}
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={2}
+          sx={{ flexWrap: "wrap" }}
+        >
+          {/* 👤 USER MENU */}
+          <MatxMenu
+            menuButton={
+              <UserMenu>
+                <Span>
+                  Hi <strong>{profileName}</strong>
+                </Span>
+                <Avatar src={user.avatar} sx={{ cursor: "pointer" }} />
+              </UserMenu>
+            }
+          >
+            {divisions.map((division) => {
+              const isSelected = division.PROFCEN_CD === selectedDivision;
+
+              return (
+                <StyledItem
+                  key={division.PROFCEN_CD}
+                  onClick={() => handleDivisionChange(division)}
+                  sx={{
+                    backgroundColor: isSelected ? "#60a5fa" : "transparent",
+                  }}
+                >
+                  <Person />
+                  <Span
+                    sx={{
+                      marginInlineStart: 1,
+                      color: isSelected ? "white" : "inherit",
+                    }}
+                  >
+                    {division.DESC}
+                  </Span>
+                </StyledItem>
+              );
+            })}
+          </MatxMenu>
+
+          {/* 📅 FROM DATE */}
+          <TextField
+            select
+            label="From"
+            size="small"
+            value={fromDate}
+            sx={{ minWidth: 140, background: "#fff", borderRadius: 1 }}
+            onChange={(e) => {
+              const selected = financeYears.find(
+                (fy) => formatFYDate(fy.FROM_DATE, true) === e.target.value,
+              );
+
+              if (selected) {
+                const from = formatFYDate(selected.FROM_DATE, true);
+                const to = formatFYDate(selected.TO_DATE, false);
+
+                setFromDate(from);
+                setToDate(to);
+
+                localStorage.setItem("fromDate", from);
+                localStorage.setItem("toDate", to);
+              }
+            }}
+          >
+            {financeYears.map((fy, index) => (
+              <MenuItem key={index} value={formatFYDate(fy.FROM_DATE, true)}>
+                {fy.FROM_DATE}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {/* 📅 TO DATE */}
+          <TextField
+            select
+            label="To"
+            size="small"
+            value={toDate}
+            disabled
+            sx={{ minWidth: 140, background: "#fff", borderRadius: 1 }}
+          >
+            {financeYears.map((fy, index) => (
+              <MenuItem key={index} value={formatFYDate(fy.TO_DATE, false)}>
+                {fy.TO_DATE}
+              </MenuItem>
+            ))}
+          </TextField>
         </Box>
       </TopbarContainer>
     </TopbarRoot>

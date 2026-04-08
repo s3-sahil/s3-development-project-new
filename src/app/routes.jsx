@@ -15,7 +15,7 @@ const AppEchart = Loadable(lazy(() => import("app/views/charts/echarts/AppEchart
 const Analytics = Loadable(lazy(() => import("app/views/dashboard/Analytics")));
 
 const routes = [
-  { path: "/", element: <Navigate to="dashboard/default" /> },
+  { path: "/", element: <Navigate to="/session/signin" /> },
   {
     element: (
       <AuthGuard>

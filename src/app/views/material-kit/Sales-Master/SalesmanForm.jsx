@@ -50,7 +50,7 @@ const SalesmanForm = () => {
   // 🔹 Fetch employee dropdown
   const fetchEmployeeCode = async () => {
     try {
-      const profcenCd = localStorage.getItem("PROFCEN_CD") || ""; //"2";
+      const profcenCd = localStorage.getItem("PROFCEN_CD") || "";
       if (!profcenCd) return;
 
       const res = await Employeelistapichange(profcenCd);
@@ -122,7 +122,7 @@ const SalesmanForm = () => {
           : "Salesman added successfully!"
       );
 
-      navigate("/material/salesman"); // go back to table
+      navigate("/Sales/material/salesman"); // go back to table
     } catch (error) {
       console.error("Save Error:", error);
       alert("Failed to save salesman");
@@ -136,9 +136,9 @@ const SalesmanForm = () => {
     fetchEmployeeCode();
 
     // If coming from Edit
-    if (location.state?.employeeCode) {
+    if (location.state?.Emp_no) {
       setActionMode("edit");
-      fetchEditData(location.state.employeeCode);
+      fetchEditData(location.state.Emp_no);
     }
   }, []);
 

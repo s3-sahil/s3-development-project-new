@@ -2,30 +2,74 @@ import { Container, Box, Icon, IconButton, Tooltip, Button } from "@mui/material
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { ProjectExecutionPlan_PaginationAPI, ProjectExecutionPlan_Delete } from "app/utils/authServices";
 
 const ProjectExecutionPlanTable = () => {
   const navigate = useNavigate();
+  const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0); 
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const [rows] = useState([
-    {
-      id: 1,
-      customer: "ABC Industries",
-      orderNo: "ORD-101",
-      project: "Project Alpha",
-      productName: "Machine X",
-      deliveryDate: "2026-02-20",
-      status: "Open",
-    },
-  ]);
 
+  const loadProjectExecutionPlan = async () => {
+    setLoading(true);
+    const res = await ProjectExecutionPlan_PaginationAPI(
+      "Project_execution_Head",
+      page + 1, 
+      pageSize
+    );
+
+    if (res?.Data) {
+      setRows(
+        res.Data.map((item, index) => ({
+          id: item.id || index + 1, 
+          ...item,
+        }))
+      );
+      setRowCount(res.TotalCount || 0);
+    }
+    setLoading(false);
+  };
+
+ useEffect(() => {
+    loadProjectExecutionPlan();
+  }, [page, pageSize]);
+
+  const handleAdd = () => {
+    navigate("/Sales/material/salesman/add");
+  };
+
+  const handleEdit = (row) => {
+    navigate(`/Sales/material/salesman/edit/${row.Emp_no}`, {
+      state: { employeeCode: row.Emp_no },
+    });
+  };
+
+  const handleDelete = async (row) => {
+    if (window.confirm("Are you sure you want to delete this Project Execution Plan?")) {
+      try {
+        debugger;
+        await ProjectExecutionPlan_Delete(row);
+        loadProjectExecutionPlan();
+        alert("Project Execution Plan deleted successfully.");
+      } catch (error) {
+        console.error("Delete Error:", error);
+        alert("Failed to delete Project Execution Plan.");
+      }
+    }
+  };
+  
   const columns = [
-    { field: "customer", headerName: "Customer", flex: 1 },
-    { field: "orderNo", headerName: "Order No", flex: 1 },
-    { field: "project", headerName: "Project", flex: 1 },
-    { field: "productName", headerName: "Product Name", flex: 1 },
-    { field: "deliveryDate", headerName: "Delivery Date", flex: 1 },
-    { field: "status", headerName: "Status", flex: 1 },
+    { field: "cust_code", headerName: "Customer", flex: 1 },
+    { field: "po_no", headerName: "PO No", flex: 1 },
+    { field: "po_Dt", headerName: "PO Date", flex: 1 },
+    { field: "po_id", headerName: "PO Id", flex: 1 },
+    { field: "item_Code", headerName: "Item Code", flex: 1 },
+    { field: "Proj_code", headerName: "Project Code", flex: 1 },
+    { field: "profcen_cd", headerName: "Division", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
@@ -36,7 +80,7 @@ const ProjectExecutionPlanTable = () => {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/sales-project-execution-plan-form/edit/${params.row.id}`, {
+                navigate(`/material/sales-project-execution-plan-form/edit/${params.row.cust_code}`, {
                   state: params.row,
                 })
               }
@@ -46,7 +90,7 @@ const ProjectExecutionPlanTable = () => {
           </Tooltip>
 
           <Tooltip title="Delete">
-            <IconButton>
+            <IconButton onClick={() => handleDelete(params.row)}>
               <Icon color="error">delete</Icon>
             </IconButton>
           </Tooltip>
@@ -72,7 +116,19 @@ const ProjectExecutionPlanTable = () => {
       </Box>
 
       <Box sx={{ height: 520, width: "100%", background: "#fff", borderRadius: 2 }}>
-        <DataGrid rows={rows} columns={columns} disableRowSelectionOnClick />
+        <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    loading={loading}
+                    rowCount={rowCount}
+                    paginationMode="server" 
+                    pageSizeOptions={[5, 10, 20]}
+                    paginationModel={{ page, pageSize }}
+                    onPaginationModelChange={(model) => {
+                      setPage(model.page);
+                      setPageSize(model.pageSize);
+                    }}
+                  />
       </Box>
     </Container>
   );

@@ -2,8 +2,15 @@ import { Box, Container, TextField, Button, Icon, Grid, Paper } from "@mui/mater
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
 import { useState } from "react";
+import {  ProjectActivityAdd} from "app/utils/authServices";
+import { useLocation, useNavigate } from "react-router-dom";
+
 
 const ProjectActivityMasterForm = () => {
+
+  const [actionMode, setActionMode] = useState("new"); // new | edit
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     activityCode: "",
     activityDescription: "",
@@ -14,10 +21,46 @@ const ProjectActivityMasterForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Project Activity Master Save:", formData);
-    alert("Saved (UI Only)");
-  };
+   // 🔹 Save (Add / Update)
+    const handleSave = async () => {
+      if (
+        !formData.activityCode ||
+        !formData.activityDescription 
+      ) {
+        alert("Please fill all required fields");
+        return;
+      }
+  
+      const nameParts = formData.activityDescription.trim().split(" ");
+  
+      const payload = {
+        activity_code: formData.activityCode,
+        description: formData.activityDescription
+      };
+  
+      try {
+        setLoading(true);
+  
+        const result =  await ProjectActivityAdd(payload); // same API for add/update
+
+            if (result) {
+              alert(result.message || "Project Activity Saved Successfully");
+              navigate("/material/sales-project-activity-master-table"); // go back to table
+            }
+
+            // alert(
+            // actionMode === "edit"
+            //   ? "Project Activity updated successfully!"
+            //   : "Project Activity added successfully!"
+            // );  
+  
+      } catch (error) {
+        console.error("Save Error:", error);
+        alert("Failed to save Project Activity");
+      } finally {
+        setLoading(false);
+      }
+    };
 
   return (
     <Container maxWidth="xl">
@@ -32,6 +75,7 @@ const ProjectActivityMasterForm = () => {
             variant="contained"
             startIcon={<Icon>save</Icon>}
             onClick={handleSave}
+            disabled={loading}
           >
             Save
           </Button>

@@ -10,60 +10,74 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { deleteCustomerDetail, CUSTOMER_DETAILPaginationAPI } from "app/utils/authServices";
 
 export default function CustomerDetailTable() {
-    const navigate = useNavigate();
+    
 
-    // 🔹 HARD CODED DATA
-    const rows = [
-        {
-            code: "C001",
-            name: "ABC Pvt Ltd",
-            city: "Pune",
-            phone: "9876543210",
-            email: "abc@gmail.com",
-        },
-        {
-            code: "C002",
-            name: "XYZ Traders",
-            city: "Mumbai",
-            phone: "9123456780",
-            email: "xyz@gmail.com",
-        },
-        {
-            code: "C003",
-            name: "Global Corp",
-            city: "Delhi",
-            phone: "9988776655",
-            email: "global@gmail.com",
-        },
-        {
-            code: "C004",
-            name: "Sunrise Industries",
-            city: "Bangalore",
-            phone: "9001122334",
-            email: "sunrise@gmail.com",
-        },
-    ];
+  const navigate = useNavigate();
+  const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+   
+  const loadCustomerDetail = async () => {
+    setLoading(true);
+    const res = await CUSTOMER_DETAILPaginationAPI(
+      "cust_mst",
+      page + 1, 
+      pageSize
+    );
 
-    const handleEdit = (row) => {
-        navigate(`/material/customer/edit/${row.code}`, { state: row });
-    };
+    if (res?.Data) {
+      setRows(
+        res.Data.map((item, index) => ({
+          id: item.id || index + 1, 
+          ...item,
+        }))
+      );
+      setRowCount(res.TotalCount || 0);
+    }
 
-    const handleDelete = (code) => {
-        console.log("Delete customer:", code);
-    };
+    setLoading(false);
+  };
 
-    const handleAddNew = () => {
-        navigate("/material/customer/add");
-    };
+  useEffect(() => {
+    loadCustomerDetail();
+  }, [page, pageSize]);
 
+  
+  const handleEdit = (row) => {
+    navigate(`/material/customer/edit/${row.Cust_code}`, { state:row });    
+  };
+
+  const handleAdd = () => {
+    navigate("/material/customer/add");
+  };
+      //state: { employeeCode: row.Emp_no },
+  const handleDelete = async (id) => {debugger
+    if (window.confirm("Are you sure you want to delete this Customer Detail?")) {
+      try {
+        await deleteCustomerDetail(id);
+        loadCustomerDetail();
+        alert("Customer Detail deleted successfully.");
+      } catch (error) {
+        console.error("Delete Error:", error);
+        alert("Failed to delete Customer Detail.");
+      }
+    }
+  };
+  
+  
+   
     const columns = [
-        { field: "code", headerName: "Code", width: 120 },
-        { field: "name", headerName: "Name", width: 180 },
-        { field: "city", headerName: "City", width: 150 },
-        { field: "phone", headerName: "Phone", width: 160 },
-        { field: "email", headerName: "Email", width: 220 },
+        { field: "Cust_code", headerName: "Code", width: 120 },
+        { field: "Cust_name", headerName: "Name", width: 180 },
+        { field: "Cust_country", headerName: "Country", width: 150 },
+        { field: "Email", headerName: "Email", width: 160 },
+        { field: "gst_no", headerName: "GST", width: 220 },
 
         {
             field: "actions",
@@ -79,7 +93,7 @@ export default function CustomerDetailTable() {
                     </Tooltip>
 
                     <Tooltip title="Delete">
-                        <IconButton onClick={() => handleDelete(params.row.code)}>
+                        <IconButton onClick={() => handleDelete(params.row.Cust_code)}>
                             <Icon color="error">delete</Icon>
                         </IconButton>
                     </Tooltip>
@@ -104,7 +118,7 @@ export default function CustomerDetailTable() {
                     <Button
                         variant="contained"
                         startIcon={<Icon>add</Icon>}
-                        onClick={handleAddNew}
+                        onClick={handleAdd}
                     >
                         Add New
                     </Button>
@@ -112,16 +126,18 @@ export default function CustomerDetailTable() {
 
                 <Box sx={{ height: 420, width: "100%" }}>
                     <DataGrid
-                        rows={rows}
-                        columns={columns}
-                        getRowId={(row) => row.code}
-                        pageSizeOptions={[5, 10]}
-                        initialState={{
-                            pagination: {
-                                paginationModel: { pageSize: 5, page: 0 },
-                            },
-                        }}
-                    />
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server" 
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
+            }}
+          />
                 </Box>
             </Stack>
         </Container>

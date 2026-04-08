@@ -26,10 +26,32 @@ import {
   TableRow,
   Tabs,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { saveCustomerDetail } from "app/utils/authServices";
+import {
+  checkPanExists,
+  CustomerDetailsEdit,
+  fetchCategoryCustomerDetails,
+  getCustomerMaxCode,
+  saveCustomerDetail,
+  fetchIndustry_typeCustomer,
+  UpdatedCustomerDetail,
+  fetchSGST,
+  fetchCGST,
+  fetchIGST,
+  fetch_state,
+  checkGSTExists,
+  Fetch_District,
+  Fetch_Country,
+  Fetch_PAYCOND
+} from "app/utils/authServices";
+import { Stack } from "@mui/material";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Span } from "app/components/Typography";
+
+
 const SAMPLE_TAXES = [
   { code: "T01", desc: "Standard Tax", percent: 5 },
   { code: "T02", desc: "Luxury Tax", percent: 12 },
@@ -39,12 +61,42 @@ const SAMPLE_TAXES = [
 const CustomerDetailForm = () => {
   const initialData = {};
   const baseAmount = 1000;
+  const location = useLocation(); // for edit data
+
+
+  const [categoryDropdownValue, setCategoryDropdownValue] = useState([]);
+  const [industrytypeDropdownValue, setindustrytypeDropdownValue] = useState([]);
+  const [stateDropdownValue, setstateDropdownValue] = useState([]);
+  const [districtDropdownValue, setdistrictDropdownValue] = useState([]);
+  const [countryDropdownValue, setcountryDropdownValue] = useState([]);
+  const [paycondDropdownValue, setpaycondDropdownValue] = useState([]);
+
+  const [open, setOpen] = useState(false);
+  const [tabIndex, setTabIndex] = useState(0);
+  const [taxType, setTaxType] = useState("SGST");
+  const [selectedTaxCode, setSelectedTaxCode] = useState("");
+
+  //pay //////////////////////
+  const [payPercent, setPayPercent] = useState("");
+  const [payperioda, setPayperioda] = useState("");
+  const [payDesc, setPayDesc] = useState("");
+  const [payMode, setPayMode] = useState("");
+  const [payPeriod, setPayPeriod] = useState("");
+  const [addedPays, setAddedPays] = useState([]);
+
+//const [payDesc, setPayDesc] = useState("");   // Description text
+const [payCode, setPayCode] = useState("");   // PC_CODE
+  //Edit
+  const [actionMode, setActionMode] = useState("new"); // new | edit
+
   const [formData, setFormData] = useState({
     code: "",
-    type: "Domestic",
+    trng_flg:"",
+    type: "",
     category: "",
     zone: "",
     merchantExporter: false,
+    inuse_flag: false,
     insurance: "",
     nda: false,
     startDate: "",
@@ -54,10 +106,12 @@ const CustomerDetailForm = () => {
     city: "",
     pin: "",
     country: "",
+    comp_nonComp:"",
     district: "",
     panNo: "",
     customerType: "",
     state: "",
+    fstate:"",
     gstNo: "",
     fax: "",
     phone: "",
@@ -74,51 +128,300 @@ const CustomerDetailForm = () => {
     bankAdd: "",
     bankAdd1: "",
     bankAccNo: "",
+    doc_thru:"",
     website: "",
+    one:"",
     discountApplicable: false,
   });
+const handleAddPay = () => {
+  if (!payPercent || !payCode || !payDesc || !payMode || !payPeriod || !payperioda) {
+    alert("Please fill all fields");
+    return;
+  }
 
-  const [open, setOpen] = useState(false);
-  const [tabIndex, setTabIndex] = useState(0);
-  const [taxType, setTaxType] = useState("SGST");
-  const [selectedTaxCode, setSelectedTaxCode] = useState("");
-  const [availableTaxes, setAvailableTaxes] = useState(() =>
-    Array.isArray(initialData.availableTaxes)
-      ? initialData.availableTaxes
-      : SAMPLE_TAXES,
-  );
-  const [addedTaxes, setAddedTaxes] = useState(() =>
-    Array.isArray(initialData.taxes) ? initialData.taxes : [],
+  const exists = addedPays.some(
+    (p) =>
+      p.percent === payPercent &&
+      p.code === payCode &&
+      p.desc === payDesc &&
+      p.mode === payMode &&
+      p.perioda === payperioda &&
+      p.period === payPeriod
   );
 
-  // load initialData into formData when dialog opens or initialData changes
+  if (exists) {
+    alert("Payment already added");
+    return;
+  }
+
+  setAddedPays((prev) => [
+    ...prev,
+    {
+      id: Date.now(),
+      percent: payPercent,
+      code: payCode,
+      desc: payDesc,
+      mode: payMode,
+      period: payPeriod,
+      perioda: payperioda,
+    },
+  ]);
+
+  // ✅ Reset ALL fields (you missed payCode)
+  setPayPercent("");
+  setPayDesc("");
+  setPayCode("");   // ⭐ IMPORTANT
+  setPayMode("");
+  setPayPeriod("");
+   setPayperioda("");
+};
+
+  // Category dropdown
+  const fetchCategoryDropdown = async () => {
+    try {
+      const res = await fetchCategoryCustomerDetails();
+      
+      const filteredData =
+      res?.Data?.filter((item) => item.flag === "C") || [];
+
+    setCategoryDropdownValue(filteredData);
+      //setCategoryDropdownValue(res || []);
+    } catch (error) {
+      console.error("Category fetch error:", error);
+      setCategoryDropdownValue([]);
+    }
+  };
+
+  // Industry dropdown
+  const fetchindustrytypeDropdown = async () => {
+    try {
+      const res = await fetchIndustry_typeCustomer();
+
+      setindustrytypeDropdownValue(res || []);
+    } catch (error) {
+      console.error("Industry Type fetch error:", error);
+      setindustrytypeDropdownValue([]);
+    }
+  };
+
+  //state
+  const fetchstateDropdown = async () => {
+    try {
+      const res = await fetch_state();
+
+      setstateDropdownValue(res || []);
+    } catch (error) {
+      console.error("State Type fetch error:", error);
+      setindustrytypeDropdownValue([]);
+    }
+  };
+
+  //District
+  const fetchdistrictDropdown = async () => {
+    try {
+      const res = await Fetch_District();
+
+      setdistrictDropdownValue(res || []);
+    } catch (error) {
+      console.error("District Type fetch error:", error);
+      setdistrictDropdownValue([]);
+    }
+  };
+
+  //Country
+  const fetchcountryDropdown = async () => {
+    try {
+      const res = await Fetch_Country();
+
+      setcountryDropdownValue(res || []);
+    } catch (error) {
+      console.error("Country Type fetch error:", error);
+      setcountryDropdownValue([]);
+    }
+  };
+
+//Fetch_PAYCOND
+const fetchpaycondDropdown = async () => {
+    try {
+      const res = await Fetch_PAYCOND();
+
+      setpaycondDropdownValue(res || []);
+    } catch (error) {
+      console.error("Paycond Type fetch error:", error);
+      setpaycondDropdownValue([]);
+    }
+  };
+
+  //edit
+
+  const fetchEditData = async (cust_code) => {
+    try {
+      const res = await CustomerDetailsEdit(cust_code);
+
+      if (res?.data) {
+        const data = res.data;
+
+        const cust = data.cust_mst_ex || {};
+        const factory = data.cust_factory_det_ex || {};
+
+        setFormData({
+          code: cust.Cust_code ?? "",
+          name: cust.Cust_name ?? "",
+          bankAdd: cust.Cust_add1 ?? "",
+          bankAdd1: cust.Cust_add2 ?? "",
+          city: cust.Cust_city ?? "",
+          trng_flg:cust.trng_flg ?? "",
+          pin: cust.Cust_Pin ?? "",
+          state: cust.Cust_state ?? "",
+          country: cust.Cust_country ?? "",
+          comp_nonComp:cust.comp_nonComp ?? "",
+          fax: cust.Fax ?? "",
+          phone: cust.Phone ?? "",
+          email: cust.Email ?? "",
+          eccCode: cust.Ecc_code ?? "",
+          range: cust.Exci_range ?? "",
+          division: cust.Division ?? "",
+          commissionerate: cust.Commsrate ?? "",
+          supplierCode: cust.Our_vend_cd ?? "",
+          customerType: cust.Cust_Type ?? "",
+          vatNo: cust.State_no ?? "",
+          cstNo: cust.Central_no ?? "",
+          category: cust.CATEGORY ?? "",
+          panNo: cust.PANCODE ?? "",
+          contactPerson: cust.contact_person ?? "",
+          designation: cust.person_desig ?? "",
+          interest: cust.interest_per ?? "",
+          agingLimit: cust.outstanding_limit ?? "",
+          zone: cust.zone ?? "",
+          serviceTaxNo: cust.Service_tax_no ?? "",
+          cashDisc: cust.cash_disper ?? "",
+          bankName: cust.BANK_NAME ?? "",
+          short: cust.Short_name ?? "",
+          mobile: cust.Mobile ?? "",
+          dealerName: cust.Dealer_name ?? "",
+          dealerAdd: cust.dealer_add ?? "",
+          dealerAdd1: cust.dealer_add1 ?? "",
+          bankAccNo: cust.Bank_acc_no ?? "",
+          website: cust.web_site ?? "",
+          weeklyOff: cust.Woff ?? "",
+          odoc_thru:cust.Doc_thru ?? "",
+          groupCustomer: cust.group_cust ?? "",
+          refCustomer: cust.Ref_cust_Code ?? "",
+          gstNo: cust.gst_no ?? "",
+          distanceKm: cust.distance_km ?? "",
+          district: cust.District_name ?? "",
+          industryType: cust.Industry_name ?? "",
+          startDate: cust.start_dt
+  ? new Date(cust.start_dt).toISOString().split("T")[0]
+  : "",
+          expiryDate: cust.expiry_dt
+  ? new Date(cust.expiry_dt).toISOString().split("T")[0]
+  : "",
+          nda: cust.nda === "Y",
+          discountApplicable: cust.disc_appl === "Y",
+          fstate: factory.state ?? "",
+          insurance: cust.insurance ?? ""
+        });
+
+        // ✅ Taxes
+        setAddedTaxes(
+          (data.list_cust_tax_ex || []).map((t) => ({
+            code: t.TAX_CODE ?? "",
+            amount: t.TAX_AMT ?? "",
+            cust: t.CUST_CODE ?? ""
+          }))
+        );
+
+        // ✅ Payment Terms
+        setAddedPays(
+          (data.list_cust_pay_ex || []).map((p) => ({
+            percent: p.PERCENT ?? "",
+            period: p.DMFLAG ?? "",
+            perioda: p.PERIOD ?? "",
+            mode: p.MODE ?? "",
+            code: p.PC_CODE ?? ""
+          }))
+        );
+      }
+    } catch (error) {
+      console.error("Edit fetch error:", error);
+    }
+  };
+
+  //edit
+
+  //// TAX
+
+  const [availableTaxes, setAvailableTaxes] = useState([]);
+  const [addedTaxes, setAddedTaxes] = useState([]);
+  const [taxLoaded, setTaxLoaded] = useState(false);
+
+
+  // useEffect(() => {
+  //   if (open && !taxLoaded) {
+  //     setAvailableTaxes(initialData.availableTaxes || SAMPLE_TAXES);
+  //     //setAddedTaxes(initialData.taxes || []);
+  //     setTaxLoaded(true);
+  //   }
+  // }, [open, taxLoaded]);
+
   useEffect(() => {
-    if (open) {
-      setFormData((prev) => ({ ...prev, ...(initialData.formData || {}) }));
-      setAvailableTaxes(
-        Array.isArray(initialData.availableTaxes)
-          ? initialData.availableTaxes
-          : SAMPLE_TAXES,
-      );
-      setAddedTaxes(Array.isArray(initialData.taxes) ? initialData.taxes : []);
+    if (taxType) {
+      loadTaxData();
+    }
+  }, [taxType]);
+  //RESET taxLoaded WHEN MODAL CLOSES
+
+  useEffect(() => {
+    fetchCategoryDropdown();
+    fetchindustrytypeDropdown();
+    fetchstateDropdown();
+    fetchdistrictDropdown();
+    fetchcountryDropdown();
+    fetchpaycondDropdown();
+    if (!open) {
+      setTaxLoaded(false);
     }
   }, [open]);
-  // helper to update formData fields
-  // const handleChange = (e) => {
-  //   const { name, value, type, checked } = e.target;
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [name]: type === "checkbox" ? checked : value,
-  //   }));
-  // };
-
-  // small helper for nested setters used in other sections
-  const update = (setter) => (field) => (e) =>
-    setter((prev) => ({ ...prev, [field]: e.target.value }));
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
-    setOpen(true);
+
+    if (!open) {
+      setOpen(true);
+    }
+  };
+
+  const loadTaxData = async () => {
+    try {
+      let apiResponse;
+
+      if (taxType === "SGST") apiResponse = await fetchSGST();
+      if (taxType === "CGST") apiResponse = await fetchCGST();
+      if (taxType === "IGST") apiResponse = await fetchIGST();
+
+      let list = [];
+
+      if (Array.isArray(apiResponse)) {
+        list = apiResponse;
+      } else if (Array.isArray(apiResponse?.Data)) {
+        list = apiResponse.Data;
+      } else if (Array.isArray(apiResponse?.data)) {
+        list = apiResponse.data;
+      }
+
+      const normalized = list.map((x) => ({
+        code: String(x.TAX_CODE || x.TaxCode || x.Code || ""),
+        desc: x.DESC || x.Description || "",
+        percent: Number(x.PERCENT || x.Percent || x.Rate || 0),
+      }));
+
+      setAvailableTaxes(normalized);   // ✅ use same state as dropdown
+      setSelectedTaxCode("");          // reset dropdown
+    } catch (error) {
+      console.error("Failed loading tax list:", error);
+      setAvailableTaxes([]);
+    }
   };
 
   const handleAddTax = () => {
@@ -131,7 +434,8 @@ const CustomerDetailForm = () => {
 
     if (!tax) return;
 
-    const amount = ((baseAmount * tax.percent) / 100).toFixed(2);
+    const amount = (baseAmount * tax.percent) / 100;
+    //const amount = ((baseAmount * tax.percent) / 100).toFixed(2);
 
     const exists = addedTaxes.some(
       (t) => t.code === tax.code && t.type === taxType,
@@ -150,7 +454,7 @@ const CustomerDetailForm = () => {
         code: tax.code,
         desc: tax.desc,
         percent: tax.percent,
-        amount: Number(amount),
+        amount: amount
       },
     ]);
 
@@ -158,12 +462,18 @@ const CustomerDetailForm = () => {
   };
 
   const handleRemoveTax = (id) => {
-    setAddedTaxes((prev = []) => prev.filter((t) => t.id !== id));
+    //setAddedTaxes((prev = []) => prev.filter((t) => t.id !== id));
+    setAddedTaxes((prev) => prev.filter((t) => t.id !== id));
+  };
+
+  const handleRemovePay = (id) => {
+    setAddedPays((prev) => prev.filter((p) => p.id !== id));
   };
 
   const handleClearAll = () => setAddedTaxes([]);
 
   const handleSave = async () => {
+
     try {
       const payload = {
         cust_mst_ex: {
@@ -175,10 +485,12 @@ const CustomerDetailForm = () => {
           cust_Pin: formData.pin,
           cust_state: formData.state,
           cust_country: formData.country,
+          comp_nonComp:formData.comp_nonComp,
           fax: formData.fax,
           phone: formData.phone,
           email: formData.email,
           ecc_code: formData.eccCode,
+          category:formData.category,
           exci_range: formData.range,
           division: formData.division,
           commsrate: formData.commissionerate,
@@ -186,7 +498,7 @@ const CustomerDetailForm = () => {
           cust_Type: formData.customerType,
           state_no: formData.vatNo,
           central_no: formData.cstNo,
-          category: formData.category,
+          trng_flg: formData.trng_flg,
           pancode: formData.panNo,
           contact_person: formData.contactPerson,
           person_desig: formData.designation,
@@ -212,26 +524,28 @@ const CustomerDetailForm = () => {
           distance_km: Number(formData.distanceKm || 0),
           district_name: formData.district,
           industry_name: formData.industryType,
+          doc_thru: formData.odoc_thru,
           start_dt: formData.startDate,
           expiry_dt: formData.expiryDate,
           nda: formData.nda ? "Y" : "N",
           disc_appl: formData.discountApplicable ? "Y" : "N",
-          insurance: formData.insurance,
+          insurance: formData.insurance
         },
 
-        cust_tax_ex: addedTaxes.map((t) => ({
+        list_cust_tax_ex: addedTaxes.map((t) => ({
           cusT_CODE: formData.code,
           taX_CODE: t.code,
-          taX_AMT: t.amount,
+          taX_AMT: Number(t.amount || 0)
         })),
 
-        cust_pay_ex: {
+        list_cust_pay_ex: addedPays.map((p, index) => ({
           cusT_CODE: formData.code,
-          percent: Number(formData.cashDisc || 0),
-          period: 0,
-          mode: "C",
-          dmflag: "D",
-        },
+          pC_CODE: p.code,//Number(p.code || 0),//index + 1,
+          percent: p.percent, //Number(p.percent || 0),
+          period: p.perioda,
+          mode: p.mode,
+          dmflag: p.period,
+        })),
 
         cust_factory_det_ex: {
           cust_code: formData.code,
@@ -239,7 +553,7 @@ const CustomerDetailForm = () => {
           add1: formData.bankAdd,
           add2: formData.bankAdd1,
           city: formData.city,
-          state: formData.state,
+          state: formData.fstate,
           fax: formData.fax,
           phone: formData.phone,
           email: formData.email,
@@ -250,15 +564,20 @@ const CustomerDetailForm = () => {
           web_site: formData.website,
           woff: formData.weeklyOff,
           gst_no: formData.gstNo,
-          panNo: formData.panNo,
-        },
+          panNo: formData.panNo
+        }
       };
 
       console.log("Payload:", payload);
 
-      const result = await saveCustomerDetail(payload);
+      let result;
 
-      alert(result.message || "Customer Saved Successfully");
+      result =
+        actionMode === "edit"
+          ? await UpdatedCustomerDetail(payload)
+          : await saveCustomerDetail(payload);
+
+      alert(result.message || (actionMode === "edit" ? "Customer Updated Successfully*" : "Customer Saved Successfully*"));
 
       handleClose();
     } catch (error) {
@@ -287,7 +606,120 @@ const CustomerDetailForm = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+    if (name === "name" && value.length === 1) {
+      handleFetchMaxCode(value); // pass value directly
+    }
   };
+
+//checkGSTExists
+
+  let panTimeout;
+  let GSTTimeout;
+
+  const [panError, setPanError] = useState("");
+  const [GSTError, setGSTError] = useState("");
+
+  const handleChangePan = async (e) => {
+    let { name, value } = e.target;
+
+    value = value.toUpperCase();
+
+    if (value.length > 10) return;
+
+    let customerType = "";
+    if (value.length >= 4) {
+      const fourthChar = value.charAt(3);
+      customerType =
+        fourthChar === "C" || fourthChar === "F"
+          ? "COMPANY"
+          : "NON COMPANY";
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      customerType,
+    }));
+
+    // Validate only when length reaches 10
+    if (value.length === 10) {
+      try {
+        const res = await checkPanExists(value);
+        console.log("PAN API:", res);
+
+        if (
+          res?.Message ===
+          "Approved, PAN CARD Number NOT EXISTS in database."
+        ) {
+          setPanError("PAN not exists");
+          alert("Please check Pan Card No");
+          setFormData((prev) => ({
+            ...prev,
+            panNo: "",
+            customerType: "",
+          }));
+        } else {
+          setPanError("PAN already exists");
+          alert("PanNo exist in database");
+        }
+      } catch (error) {
+        console.error(error);
+        setPanError("Error checking PAN");
+      }
+    } else if (value.length > 0 && value.length < 10) {
+      setPanError("PAN must be exactly 10 characters");
+    } else {
+      setPanError("");
+    }
+  };
+
+  //GST
+   const handleChangeGST = async (e) => {
+    let { name, value } = e.target;
+
+    value = value.toUpperCase();
+
+    if (value.length > 15) return;
+
+      setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+
+    // Validate only when length reaches 10
+    if (value.length === 15) {
+      try {
+        const res = await checkGSTExists(value);
+        console.log("GST API:", res);
+
+        if (
+          res?.Message ===
+          "Approved, GST Number NOT EXISTS in database."
+        ) {
+          setGSTError("GST not exists");
+          alert("Please check GST Card No");
+          setFormData((prev) => ({
+            ...prev,
+            panNo: "",
+            customerType: "",
+          }));
+        } else {
+          setGSTError("GST");
+          alert("GST exist in database");
+        }
+      } catch (error) {
+        console.error(error);
+        setGSTError("Error checking GST");
+      }
+    } else if (value.length > 0 && value.length < 15) {
+      setGSTError("GST must be exactly 15 characters");
+    } else {
+      setGSTError("");
+    }
+  };
+
+
 
   const handleContactChange = (index, field, value) => {
     setContactPersons((prev) => {
@@ -298,6 +730,11 @@ const CustomerDetailForm = () => {
   };
 
   const addContactRow = () => {
+    if (contactPersons.length >= 4) {
+      alert("Only 4 contact persons allowed");
+      return;
+    }
+
     setContactPersons((prev) => [
       ...prev,
       { name: "", designation: "", mobile: "", email: "" },
@@ -307,6 +744,36 @@ const CustomerDetailForm = () => {
   const removeContactRow = (index) => {
     setContactPersons((prev) => prev.filter((_, i) => i !== index));
   };
+
+  const handleFetchMaxCode = async (nameValue) => {
+    const firstLetter = nameValue.charAt(0).toUpperCase();
+
+    try {
+      const res = await getCustomerMaxCode(firstLetter);
+      console.log("MaxCode API:", res);
+
+      if (res?.MaxCode) {
+        setFormData((prev) => ({
+          ...prev,
+          code: res.MaxCode,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching code:", error);
+    }
+  };
+
+  // 🔹 On load
+  useEffect(() => {
+    //fetchEmployeeCode();
+
+    // If coming from Edit
+    if (location.state?.Cust_code) {
+      setActionMode("edit");
+      fetchEditData(location.state.Cust_code);
+    }
+  }, []);
+
 
   return (
     <Container maxWidth="xl">
@@ -330,7 +797,7 @@ const CustomerDetailForm = () => {
             startIcon={<Icon>save</Icon>}
             onClick={handleSave}
           >
-            Save
+            <Span>{actionMode === "edit" ? "Update" : "Save"}</Span>
           </Button>
         </Box>
 
@@ -346,23 +813,24 @@ const CustomerDetailForm = () => {
                   fullWidth
                   value={formData.code}
                   onChange={handleChange}
+                  disabled={actionMode === "edit"}
                 />
               </Grid>
               <Grid item xs={12} md={3}>
                 <RadioGroup
                   row
-                  name="type"
-                  value={formData.type}
+                  name="Cust_Type"
+                  value={formData.Cust_Type}
                   onChange={handleChange}
                   sx={{ gap: 2 }}
                 >
                   <FormControlLabel
-                    value="Domestic"
+                    value="D"
                     control={<Radio />}
                     label="Domestic"
                   />
                   <FormControlLabel
-                    value="Export"
+                    value="E"
                     control={<Radio />}
                     label="Export"
                   />
@@ -370,36 +838,52 @@ const CustomerDetailForm = () => {
               </Grid>
               <Grid item xs={12} md={2}>
                 <TextField
-                  size="small"
                   select
-                  name="category"
+                  size="small"
+                  name="trng_flg"
                   label="Category"
                   fullWidth
-                  value={formData.category}
+                  value={formData.trng_flg}
                   onChange={handleChange}
                 >
-                  <MenuItem value="A">A</MenuItem>
-                  <MenuItem value="B">B</MenuItem>
+                  <MenuItem value="">
+                    <em>Select Category</em>
+                  </MenuItem>
+
+                  {categoryDropdownValue.map((item) => (
+                    <MenuItem key={item.code} value={item.type_id}>
+                      {item.type_desc} - {item.flag} - {item.type_id}
+                    </MenuItem>
+                  ))}
                 </TextField>
               </Grid>
 
               {/* Row 2 */}
               <Grid item xs={12} md={2}>
                 <TextField
+                  select
                   size="small"
                   name="zone"
                   label="Zone"
                   fullWidth
                   value={formData.zone}
                   onChange={handleChange}
-                />
+                >
+                  <MenuItem value=""><em>Select ZONE</em></MenuItem>
+                  <MenuItem value="NORTH">NORTH</MenuItem>
+                  <MenuItem value="EAST">EAST</MenuItem>
+                  <MenuItem value="WEST">WEST</MenuItem>
+                  <MenuItem value="SOUTH">SOUTH</MenuItem>
+                  <MenuItem value="EXPORT">EXPORT</MenuItem>
+                  <MenuItem value="CENTER">CENTER</MenuItem>
+                </TextField>
               </Grid>
               <Grid item xs={12} md={2}>
                 <FormControlLabel
                   control={
                     <Checkbox
-                      name="merchantExporter"
-                      checked={formData.merchantExporter}
+                      name="inuse_flag"
+                      checked={formData.inuse_flag}
                       onChange={handleChange}
                     />
                   }
@@ -420,13 +904,19 @@ const CustomerDetailForm = () => {
               </Grid>
               <Grid item xs={12} md={2}>
                 <TextField
+                  select
                   size="small"
                   name="insurance"
                   label="Insurance"
                   fullWidth
                   value={formData.insurance}
                   onChange={handleChange}
-                />
+                >
+                  <MenuItem value=""><em>Select Insurance</em></MenuItem>
+                  <MenuItem value="O">Our</MenuItem>
+                  <MenuItem value="Y">Your</MenuItem>
+                  <MenuItem value="N">Not Applicable</MenuItem>
+                </TextField>
               </Grid>
 
               {/* Row 3 */}
@@ -476,6 +966,7 @@ const CustomerDetailForm = () => {
                   fullWidth
                   value={formData.name}
                   onChange={handleChange}
+                  onFocus={handleFetchMaxCode}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -490,13 +981,18 @@ const CustomerDetailForm = () => {
               </Grid>
               <Grid item xs={12} md={4}>
                 <TextField
+                  select
                   size="small"
-                  name="city"
+                  name="comp_nonComp"
                   label="Type"
                   fullWidth
-                  value={formData.city}
+                  value={formData.comp_nonComp}
                   onChange={handleChange}
-                />
+                >
+                  <MenuItem value=""><em>Select Type</em></MenuItem>
+                  <MenuItem value="COMPANY">COMPANY</MenuItem>
+                  <MenuItem value="NON-COMPANY">NON-COMPANY</MenuItem>
+                </TextField>
               </Grid>
 
               <Grid item xs={12} md={2}>
@@ -522,24 +1018,62 @@ const CustomerDetailForm = () => {
                 />
               </Grid>
               <Grid item xs={12} md={2}>
-                <TextField
+                {/* <TextField
                   size="small"
                   name="country"
                   label="Country"
                   fullWidth
                   value={formData.country}
                   onChange={handleChange}
-                />
+                /> */}
+                <TextField
+                  select
+                  size="small"
+                  name="country"
+                  label="Country"
+                  fullWidth
+                  value={formData.country}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="">
+                    <em>Select Country</em>
+                  </MenuItem>
+
+                  {countryDropdownValue.map((item) => (
+                    <MenuItem key={item.country_code} value={item.country_code}>
+                      {item.country_code} | {item.country}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
               <Grid item xs={12} md={2}>
-                <TextField
+                {/* <TextField
                   size="small"
                   name="district"
                   label="District"
                   fullWidth
                   value={formData.district}
                   onChange={handleChange}
-                />
+                /> */}
+                 <TextField
+                  select
+                  size="small"
+                  name="district"
+                  label="District"
+                  fullWidth
+                  value={formData.district}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="">
+                    <em>Select District</em>
+                  </MenuItem>
+
+                  {districtDropdownValue.map((item) => (
+                    <MenuItem key={item.District_cd} value={item.District_cd}>
+                      { item.District_cd } | { item.District_name }
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
 
               {/* Row 6 */}
@@ -550,10 +1084,11 @@ const CustomerDetailForm = () => {
                   label="PAN No"
                   fullWidth
                   value={formData.panNo}
-                  onChange={handleChange}
+                  onChange={handleChangePan}
+                  inputProps={{ maxLength: 10 }} // 👈 restrict typing
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
+              {/* <Grid item xs={12} md={4}>
                 <TextField
                   size="small"
                   name="customerType"
@@ -562,16 +1097,35 @@ const CustomerDetailForm = () => {
                   value={formData.customerType}
                   onChange={handleChange}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} md={4}>
-                <TextField
+                {/* <TextField
                   size="small"
                   name="state"
                   label="State"
                   fullWidth
                   value={formData.state}
                   onChange={handleChange}
-                />
+                /> */}
+                <TextField
+                  select
+                  size="small"
+                  name="state"
+                  label="State"
+                  fullWidth
+                  value={formData.state}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="">
+                    <em>Select State</em>
+                  </MenuItem>
+
+                  {stateDropdownValue.map((item) => (
+                    <MenuItem key={item.state_code} value={item.state_code}>
+                      {item.state_code} | {item.State}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
 
               {/* Row 7 */}
@@ -582,7 +1136,7 @@ const CustomerDetailForm = () => {
                   label="GST No"
                   fullWidth
                   value={formData.gstNo}
-                  onChange={handleChange}
+                  onChange={handleChangeGST}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -692,14 +1246,33 @@ const CustomerDetailForm = () => {
                 />
               </Grid>
               <Grid item xs={12} md={4}>
-                <TextField
+                {/* <TextField
                   size="small"
                   name="industryType"
                   label="Industry Type"
                   fullWidth
                   value={formData.industryType}
                   onChange={handleChange}
-                />
+                /> */}
+                <TextField
+                  select
+                  size="small"
+                  name="industryType"
+                  label="Industry Type"
+                  fullWidth
+                  value={formData.industryType}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="">
+                    <em>Select industryType</em>
+                  </MenuItem>
+
+                  {industrytypeDropdownValue.map((item) => (
+                    <MenuItem key={item.Industry_name} value={item.Industry_name}>
+                      {item.Industry_name}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Grid>
 
               {/* Row 11 */}
@@ -789,15 +1362,9 @@ const CustomerDetailForm = () => {
                 <DialogContent dividers>
                   {tabIndex === 0 && (
                     <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        <Typography variant="subtitle1" gutterBottom>
-                          <strong>Base Amount</strong>: {baseAmount}
-                        </Typography>
-                      </Grid>
-
                       <Grid item xs={12} md={6}>
                         <FormControl component="fieldset">
-                          <RadioGroup
+                          {/* <RadioGroup
                             row
                             value={taxType}
                             onChange={(e) => setTaxType(e.target.value)}
@@ -819,6 +1386,14 @@ const CustomerDetailForm = () => {
                               control={<Radio />}
                               label="IGST"
                             />
+                          </RadioGroup> */}
+                          <RadioGroup
+                            value={taxType}
+                            onChange={(e) => setTaxType(e.target.value)}
+                          >
+                            <FormControlLabel value="SGST" control={<Radio />} label="SGST" />
+                            <FormControlLabel value="CGST" control={<Radio />} label="CGST" />
+                            <FormControlLabel value="IGST" control={<Radio />} label="IGST" />
                           </RadioGroup>
                         </FormControl>
                       </Grid>
@@ -845,40 +1420,35 @@ const CustomerDetailForm = () => {
                       </Grid>
 
                       <Grid item xs={12} md={6}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={handleAddTax}
-                        >
-                          Add
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="secondary"
-                          onClick={handleClearAll}
-                          sx={{ ml: 2 }}
-                        >
-                          Clear All
-                        </Button>
+                        <Stack direction="row" spacing={2}>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleAddTax}
+                          >
+                            Add
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            color="secondary"
+                            onClick={handleClearAll}
+                          >
+                            Clear All
+                          </Button>
+                        </Stack>
                       </Grid>
 
                       <Grid item xs={12}>
                         <Table size="small">
                           <TableHead>
                             <TableRow>
-                              <TableCell>
-                                <strong>Tax Type</strong>
-                              </TableCell>
-                              <TableCell>
+                              <TableCell align="center">
                                 <strong>Tax Code</strong>
                               </TableCell>
-                              <TableCell>
-                                <strong>Description</strong>
-                              </TableCell>
-                              <TableCell align="right">
-                                <strong>%</strong>
-                              </TableCell>
-                              <TableCell align="right">
+                              <TableCell align="center">
+                                <strong>Tax Type</strong>
+                              </TableCell>                              
+                              <TableCell align="center">
                                 <strong>Amount</strong>
                               </TableCell>
                               <TableCell align="center">
@@ -888,24 +1458,19 @@ const CustomerDetailForm = () => {
                           </TableHead>
 
                           <TableBody>
-                            {!addedTaxes || addedTaxes.length === 0 ? (
+                            {addedTaxes.length === 0 ? (
                               <TableRow>
                                 <TableCell colSpan={6} align="center">
                                   No tax added
                                 </TableCell>
                               </TableRow>
                             ) : (
-                              (addedTaxes || []).map((t) => (
+                              // (addedTaxes || []).map((t) => (
+                              addedTaxes.map((t) => (
                                 <TableRow key={t.id}>
-                                  <TableCell>{t.type}</TableCell>
-                                  <TableCell>{t.code}</TableCell>
-                                  <TableCell>{t.desc}</TableCell>
-                                  <TableCell align="right">
-                                    {t.percent}
-                                  </TableCell>
-                                  <TableCell align="right">
-                                    {Number(t.amount).toFixed(2)}
-                                  </TableCell>
+                                  <TableCell align="center">{t.code}</TableCell>
+                                  <TableCell align="center">{t.type}</TableCell>
+                                  <TableCell align="right">{t.amount}</TableCell>
                                   <TableCell align="center">
                                     <IconButton
                                       size="small"
@@ -927,33 +1492,159 @@ const CustomerDetailForm = () => {
                   {tabIndex === 1 && (
                     <Grid container spacing={2} mt={1}>
                       <Grid item md={3}>
-                        <TextField label="Percentage" size="small" fullWidth />
-                      </Grid>
-
-                      <Grid item md={3}>
-                        <TextField label="Description" size="small" fullWidth />
-                      </Grid>
-
-                      <Grid item md={3}>
                         <TextField
-                          label="Payment Mode"
+                          label="Percentage"
                           size="small"
                           fullWidth
+                          value={payPercent}
+                          onChange={(e) => setPayPercent(e.target.value)}
                         />
                       </Grid>
 
-                      <Grid item md={3}>
-                        <TextField label="Period" size="small" fullWidth />
+                      <Grid item xs={12} md={3}>
+                        {/* <TextField
+                          label="Description"
+                          size="small"
+                          fullWidth
+                          value={payDesc}
+                          onChange={(e) => setPayDesc(e.target.value)}
+                        /> */}
+                        <TextField
+                          select
+                          size="small"
+                          label="Description"
+                          fullWidth
+                          value={payCode}
+                          onChange={(e) => {
+                            const selected = paycondDropdownValue.find(
+                              (item) => item.PC_CODE === e.target.value
+                            );
+
+                            setPayCode(selected?.PC_CODE || "");
+                            setPayDesc(selected?.PCDESC || "");
+                          }}
+                        >
+                          <MenuItem value="">
+                            <em>Select Description</em>
+                          </MenuItem>
+
+                          {paycondDropdownValue.map((item) => (
+                            <MenuItem key={item.PC_CODE} value={item.PC_CODE}>
+                              {item.PC_CODE} | {item.PCDESC}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+
                       </Grid>
 
-                      <Grid item md={12}>
-                        <Button variant="contained" sx={{ mr: 2 }}>
+                      <Grid item xs={12} md={3}>
+                        <FormControl fullWidth size="small">
+                          <InputLabel id="pay-mode-label">Payment Mode</InputLabel>
+
+                          <Select
+                            id="pay-mode"
+                            labelId="pay-mode-label"
+                            value={payMode}
+                            label="Payment Mode"
+                            onChange={(e) => setPayMode(e.target.value)}
+                          >
+                            <MenuItem value="">
+                              <em>Select Mode</em>
+                            </MenuItem>
+
+                            <MenuItem value="I">Immediate</MenuItem>
+                            <MenuItem value="W">Within</MenuItem>
+                            <MenuItem value="A">After</MenuItem>
+                            <MenuItem value="B">Before</MenuItem>
+                          </Select>
+
+                        </FormControl>
+                      </Grid>
+
+                     <Grid item md={3}>
+                        <TextField
+                          Number
+                          label="Period"
+                          size="small"
+                          fullWidth
+                          value={payperioda}
+                          onChange={(e) => setPayperioda(e.target.value)}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} md={3}>
+                        <TextField
+                          select
+                          label="dmflag"
+                          size="small"
+                          fullWidth
+                          value={payPeriod}
+                          onChange={(e) => setPayPeriod(e.target.value)}
+                        >
+                          <MenuItem value="D">Days</MenuItem>
+                          <MenuItem value="M">Months</MenuItem>
+                        </TextField>
+                      </Grid>
+
+                      <Grid item xs={12}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleAddPay}
+                          sx={{ mr: 2 }}
+                        >
                           ADD
                         </Button>
 
                         <Button variant="contained" color="error">
                           REMOVE
                         </Button>
+                      </Grid>
+
+                      <Grid item xs={12}>
+                        <Table size="small">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Percentage</TableCell>
+                              <TableCell>PC Code</TableCell>
+                              <TableCell>Mode</TableCell>
+                              <TableCell>Period</TableCell>
+                              <TableCell>Dm Flag</TableCell>
+                              <TableCell align="center">Action</TableCell>
+
+                            </TableRow>
+                          </TableHead>
+
+                          <TableBody>
+                            {addedPays.length === 0 ? (
+                              <TableRow>
+                                <TableCell colSpan={5} align="center">
+                                  No payment added
+                                </TableCell>
+                              </TableRow>
+                            ) : (
+                              addedPays.map((p) => (
+                                <TableRow key={p.id}>
+                                  <TableCell>{p.percent}</TableCell>
+                                  <TableCell>{p.code}</TableCell>
+                                  <TableCell>{p.mode}</TableCell>
+                                  <TableCell>{p.perioda}</TableCell>
+                                  <TableCell>{p.period}</TableCell>
+
+                                  <TableCell align="center">
+                                    <Button
+                                      size="small"
+                                      color="error"
+                                      onClick={() => handleRemovePay(p.id)}
+                                    >
+                                      Delete
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))
+                            )}
+                          </TableBody>
+                        </Table>
                       </Grid>
                     </Grid>
                   )}
@@ -1010,17 +1701,19 @@ const CustomerDetailForm = () => {
                             Category
                           </InputLabel>
                           <Select
+                            id="category-other"
                             labelId="category-other-label"
                             label="Category"
-                            name="categoryOther"
-                            value={formData.categoryOther || ""}
+                            name="category"
+                            value={formData.category ?? ""}
                             onChange={handleChange}
                           >
                             <MenuItem value="">
                               <em>None</em>
                             </MenuItem>
-                            <MenuItem value="A">Category A</MenuItem>
-                            <MenuItem value="B">Category B</MenuItem>
+                            <MenuItem value="Wholesale Dealer">Wholesale Dealer</MenuItem>
+                            <MenuItem value="Industrial Consumer">Industrial Consumer</MenuItem>
+                            <MenuItem value="Government">Government</MenuItem>
                           </Select>
                         </FormControl>
                       </Grid>
@@ -1070,6 +1763,30 @@ const CustomerDetailForm = () => {
                       </Grid>
 
                       <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                          <InputLabel id="doc-label">
+                            Document Through
+                          </InputLabel>
+                          <Select
+                            labelId="doc-label"
+                            label="Document Through"
+                            name="odoc_thru"
+                            value={formData.odoc_thru}
+                            onChange={handleChange}
+                          >
+                            <MenuItem value="">
+                              <em>None</em>
+                            </MenuItem>
+                            <MenuItem value="Bank">Bank</MenuItem>
+                            <MenuItem value="Direct">Direct</MenuItem>
+                            <MenuItem value="Dealer">Dealer</MenuItem>
+                            <MenuItem value="Office">Office</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+
+
+                      <Grid item xs={12} md={4}>
                         <TextField
                           label="Dealer Name"
                           name="dealerName"
@@ -1117,9 +1834,13 @@ const CustomerDetailForm = () => {
                             <MenuItem value="">
                               <em>None</em>
                             </MenuItem>
-                            <MenuItem value="Sunday">Sunday</MenuItem>
-                            <MenuItem value="Saturday">Saturday</MenuItem>
-                            <MenuItem value="Friday">Friday</MenuItem>
+                            <MenuItem value="MONDAY">MONDAY</MenuItem>
+                            <MenuItem value="TUESDAY">TUESDAY</MenuItem>
+                            <MenuItem value="WEDNESDAY">WEDNESDAY</MenuItem>
+                            <MenuItem value="THURSDAY">THURSDAY</MenuItem>
+                            <MenuItem value="FRIDAY">FRIDAY</MenuItem>
+                            <MenuItem value="SATURDAY">SATURDAY</MenuItem>
+                            <MenuItem value="SUNDAY">SUNDAY</MenuItem>
                           </Select>
                         </FormControl>
                       </Grid>
@@ -1170,7 +1891,7 @@ const CustomerDetailForm = () => {
                                 <strong>#</strong>
                               </TableCell>
                               <TableCell>
-                                <strong>Contact Person</strong>
+                                <strong>Cont Person</strong>
                               </TableCell>
                               <TableCell>
                                 <strong>Designation</strong>
@@ -1249,12 +1970,15 @@ const CustomerDetailForm = () => {
                                   />
                                 </TableCell>
                                 <TableCell align="center">
-                                  <IconButton
-                                    size="small"
-                                    onClick={() => removeContactRow(idx)}
-                                  >
-                                    Delete
-                                  </IconButton>
+                                  <Tooltip title="Delete">
+                                    <IconButton
+                                      onClick={() =>
+                                        removeContactRow(idx)
+                                      }
+                                    >
+                                      <Icon color="error">delete</Icon>
+                                    </IconButton>
+                                  </Tooltip>
                                 </TableCell>
                               </TableRow>
                             ))}
@@ -1279,10 +2003,10 @@ const CustomerDetailForm = () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="name"
+                          name="one"
                           label="Name"
                           fullWidth
-                          value={formData.name}
+                          value={formData.one}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -1332,14 +2056,33 @@ const CustomerDetailForm = () => {
                       </Grid>
 
                       <Grid item xs={12} md={6}>
-                        <TextField
+                        {/* <TextField
                           size="small"
                           name="state"
                           label="State"
                           fullWidth
                           value={formData.state}
                           onChange={handleChange}
-                        />
+                        /> */}
+                        <TextField
+                          select
+                          size="small"
+                          name="fstate"
+                          label="State"
+                          fullWidth
+                          value={formData.fstate}
+                          onChange={handleChange}
+                        >
+                          <MenuItem value="">
+                            <em>Select State</em>
+                          </MenuItem>
+
+                          {stateDropdownValue.map((item) => (
+                            <MenuItem key={item.state_code} value={item.state_code}>
+                              {item.state_code} | {item.State}
+                            </MenuItem>
+                          ))}
+                        </TextField>
                       </Grid>
 
                       <Grid item xs={12} md={6}>
@@ -1428,9 +2171,16 @@ const CustomerDetailForm = () => {
                             value={formData.weeklyOff || ""}
                             onChange={handleChange}
                           >
-                            <MenuItem value="Sunday">Sunday</MenuItem>
-                            <MenuItem value="Saturday">Saturday</MenuItem>
-                            <MenuItem value="Friday">Friday</MenuItem>
+                            <MenuItem value="">
+                              <em>None</em>
+                            </MenuItem>
+                            <MenuItem value="MONDAY">MONDAY</MenuItem>
+                            <MenuItem value="TUESDAY">TUESDAY</MenuItem>
+                            <MenuItem value="WEDNESDAY">WEDNESDAY</MenuItem>
+                            <MenuItem value="THURSDAY">THURSDAY</MenuItem>
+                            <MenuItem value="FRIDAY">FRIDAY</MenuItem>
+                            <MenuItem value="SATURDAY">SATURDAY</MenuItem>
+                            <MenuItem value="SUNDAY">SUNDAY</MenuItem>
                           </Select>
                         </FormControl>
                       </Grid>
@@ -1471,18 +2221,6 @@ const CustomerDetailForm = () => {
                   </Button>
                 </DialogActions>
               </Dialog>
-            </Box>
-
-            {/* Save button */}
-            <Box sx={{ mt: 4, textAlign: "right" }}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                startIcon={<Icon>save</Icon>}
-              >
-                Save
-              </Button>
             </Box>
           </form>
         </Grid>

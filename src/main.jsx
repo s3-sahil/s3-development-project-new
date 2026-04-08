@@ -5,13 +5,19 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./app/App";
 // THIRD PARTY CSS
 import "perfect-scrollbar/css/perfect-scrollbar.css";
+import ErrorBoundary from "app/ErrorBoundary";
+
+
+
 
 const root = createRoot(document.getElementById("root"));
 
 root.render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </BrowserRouter>
   </StrictMode>
 );

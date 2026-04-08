@@ -120,6 +120,10 @@ import SubGroupDetailsTable from "./Finance-Master/SubGroupDetailsTable";
 import SubGroupDetailsForm from "./Finance-Master/SubGroupDetailsForm";
 import TDSParameterTable from "./Finance-Master/TDSParameterTable";
 import TDSParameterForm from "./Finance-Master/TDSParameterForm";
+import ProductWisePackingForm from "./Sales-Master/ProductWisePackingForm";
+import ProductWisePackingTable from "./Sales-Master/ProductWisePackingTable";
+import ProductPriceListTable from "./Sales-Master/ProductPriceListTable";
+import ProductPriceListDetailsForm from "./Sales-Master/ProductPriceListDetailsForm";
 // import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
 // import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
 // import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
@@ -1094,12 +1098,14 @@ const materialRoutes = [
   { path: "/material/expansion-panel", element: <AppExpansionPanel /> },
   { path: "/material/dialog", element: <AppDialog /> },
   { path: "/material/snackbar", element: <AppSnackbar /> },
-  { path: "/material/salesman", element: <SalesmanTable /> },
-  { path: "/material/salesman/add", element: <SalesmanForm /> },
-  { path: "/material/salesman/edit/:employeeCode", element: <SalesmanForm /> },
+ { path: "/Sales/material/salesman", element: <SalesmanTable /> },
+  { path: "/Sales/Master/SalesmanForm/add", element: <SalesmanForm /> },
+  { path: "/Sales/Master/SalesmanForm/edit/:employeeCode", element: <SalesmanForm /> },
+ 
   { path: "/material/customers", element: <CustomerDetailTable /> },
   { path: "/material/customer/add", element: <CustomerDetailForm /> },
-  { path: "/material/customer/edit/:code", element: <CustomerDetailForm /> },
+  { path: "/material/customer/edit/:cust_code", element: <CustomerDetailForm /> },
+   { path: "/material/customer/delete/:cust_code", element: <CustomerDetailForm /> },
   {
     path: "/material/activity-reports-rights-table",
     element: <ActivityReportsRightsTable />,
@@ -1186,7 +1192,7 @@ const materialRoutes = [
   { path: "/material/sales-consignee-table", element: <ConsigneeTable /> },
   { path: "/material/sales-consignee-form/add", element: <ConsigneeForm /> },
   {
-    path: "/material/sales-consignee-form/edit/:slipNo",
+    path: "/material/sales-consignee-form/edit/:cust_code/:con_code",
     element: <ConsigneeForm />,
   },
   {
@@ -3298,6 +3304,30 @@ const materialRoutes = [
   {
     path: "/material/finance-TDS-parameter-form/add",
     element: <TDSParameterForm />,
+  },
+  {
+    path: "/material/sales-product-wise-packing-table",
+    element: <ProductWisePackingTable />,
+  },
+  {
+    path: "/material/sales-product-wise-packing-form/edit/:slipNo",
+    element: <ProductWisePackingForm />,
+  },
+  {
+    path: "/material/sales-product-wise-packing-form/add",
+    element: <ProductWisePackingForm />,
+  },
+     {
+    path: "/material/sales-product-price-list-details-table",
+    element: <ProductPriceListTable />,
+  },
+  {
+    path: "/material/sales-product-price-list-details-form/edit/:slipNo",
+    element: <ProductPriceListDetailsForm />,
+  },
+  {
+    path: "/material/sales-product-price-list-details-form/add",
+    element: <ProductPriceListDetailsForm />,
   },
 ];
 

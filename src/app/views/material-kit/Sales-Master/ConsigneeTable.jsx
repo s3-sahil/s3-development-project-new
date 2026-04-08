@@ -3,36 +3,70 @@ import {
   Icon,
   IconButton,
   Tooltip,
-  Button,
+  Button,TextField,
+  MenuItem,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ConsigneeTablePaginationAPI } from "app/utils/authServices";
 
 export default function ConsigneeTable() {
   const navigate = useNavigate();
-
+  const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0); 
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
+  const [loading, setLoading] = useState(false);
   // UI-only mock rows
-  const [rows] = useState([
-    {
-      id: 1,
-      consigneeCode: "C001",
-      name: "ABC Traders",
-      city: "Pune",
-      mobile: "9876543210",
-      gstNo: "27ABCDE1234F1Z5",
-    },
-  ]);
+  
+    const load_ConsigneeTable = async () => {
+      setLoading(true);
+      const res = await ConsigneeTablePaginationAPI(
+        "Cust_Consignee",
+        page + 1, 
+        pageSize
+      );
+  
+      if (res?.Data) {
+        setRows(
+          res.Data.map((item, index) => ({
+            id: item.id || index + 1, 
+            ...item,
+          }))
+        );
+        setRowCount(res.TotalCount || 0);
+      }
+  
+      setLoading(false);
+    };
+  
+    useEffect(() => {
+      load_ConsigneeTable();
+    }, [page, pageSize]);
+  
+    const handleAdd = () => {
+      navigate("/material/sales-consignee-form/add");
+    };
+
+    const handleEdit = (row) => {
+      navigate(
+        `/material/sales-consignee-form/edit/${row.cust_code}/${row.Con_code}`,
+        {
+          state: row,
+        }
+      );
+  };
 
   const columns = [
-    { field: "consigneeCode", headerName: "Consignee Code", flex: 1 },
-    { field: "name", headerName: "Name", flex: 1 },
-    { field: "city", headerName: "City", flex: 1 },
-    { field: "mobile", headerName: "Mobile", flex: 1 },
-    { field: "gstNo", headerName: "GST No", flex: 1 },
+    { field: "cust_code", headerName: "Costomer Code", flex: 1 },
+    { field: "Con_code", headerName: "Consignee Code", flex: 1 },
+    { field: "cname", headerName: "Name", flex: 1 },
+    { field: "cadd1", headerName: "Address", flex: 1 },
+    { field: "phone", headerName: "Phone No", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
@@ -41,7 +75,7 @@ export default function ConsigneeTable() {
       renderCell: (params) => (
         <>
           <Tooltip title="Edit">
-            <IconButton onClick={() => navigate(`/material/sales-consignee-form/edit/${params.row.id}`)}>
+            <IconButton onClick={() => handleEdit(params.row)}>
               <Icon color="primary">edit</Icon>
             </IconButton>
           </Tooltip>
@@ -67,17 +101,48 @@ export default function ConsigneeTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/sales-consignee-form/add")}
+            onClick={handleAdd}
           >
             New
           </Button>
         </Box>
-
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          {/* Search Section */}
+          <Box display="flex" gap={2}>
+            <TextField
+              size="small"
+              placeholder="Search..."
+            />
+            <TextField
+              size="small"
+              select
+              defaultValue=""
+              sx={{ width: 180 }}
+            >
+              <MenuItem value="">Select Column</MenuItem>
+              <MenuItem value="cust_code">cust_code</MenuItem>
+              <MenuItem value="cname">cname</MenuItem>
+            </TextField>
+            <Button variant="contained">Search</Button>
+          </Box>
+        </Box>
         <Box sx={{ height: 500, width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}
-            disableRowSelectionOnClick
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server" 
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
+            }}
           />
         </Box>
       </Stack>

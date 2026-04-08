@@ -1,7 +1,13 @@
 import { Box, Container, TextField, Button, Icon, Grid } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  ContractReviewChecklistDetailsAdd,
+} from "app/utils/authServices";
+import { useLocation, useNavigate } from "react-router-dom";
+
+
 
 const ContractReviewChecklistForm = () => {
   const [formData, setFormData] = useState({
@@ -9,15 +15,64 @@ const ContractReviewChecklistForm = () => {
     checklistDescription: "",
   });
 
+    const [actionMode, setActionMode] = useState("new"); // new | edit
+    const navigate = useNavigate();
+    const location = useLocation(); // for edit data
+    const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Checklist Save:", formData);
-    alert("Saved (UI Only)");
+   // 🔹 Save (Add / Update)
+  const handleSave = async () => {
+    if (
+      !formData.checklistCode ||
+      !formData.checklistDescription
+    ) {
+      alert("Please fill all required fields");
+      return;
+    }
+
+    //const nameParts = formData.Description.trim().split(" ");
+
+    const payload = {
+      check_list_code: formData.checklistCode,
+      Description: formData.checklistDescription,
+    };
+
+    try {
+      setLoading(true);
+
+      await ContractReviewChecklistDetailsAdd(payload); // same API for add/update
+
+      alert(
+        actionMode === "edit"
+          ? "Contract Review Checklist updated successfully!"
+          : "Contract Review Checklist added successfully!"
+      );
+
+      navigate("/material/sales-contract-review-checklist-form-table"); // go back to table
+    } catch (error) {
+      console.error("Save Error:", error);
+      alert("Failed to save salesman");
+    } finally {
+      setLoading(false);
+    }
   };
+
+ // 🔹 On load
+  useEffect(() => {
+    //fetchEmployeeCode();
+
+    // If coming from Edit
+    if (location.state?.checklistCode) {
+      setActionMode("edit");
+      //fetchEditData(location.state.checklistCode);
+    }
+  }, []);
+
 
   return (
     <Container maxWidth="xl">
