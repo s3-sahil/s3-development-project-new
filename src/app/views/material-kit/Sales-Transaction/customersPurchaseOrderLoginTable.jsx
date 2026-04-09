@@ -24,10 +24,20 @@ export default function CustomersPurchaseOrderLoginTable() {
   const fetchPurchaseOrders = async () => {
     setLoading(true);
     try {
+       const profcen_cd = localStorage.getItem("PROFCEN_CD");
+    const fstartDate = localStorage.getItem("fromDate");
+    const fendDate = localStorage.getItem("toDate");
+    const financeDTColumn = "PO_ID_DT";
       const response = await CustomerPurchaseOrderLoginPaginationAPI(
-        "custpo_hed",
-        paginationModel.page + 1,
-        paginationModel.pageSize
+         "custpo_hed",
+      paginationModel.page + 1,
+      paginationModel.pageSize,
+      profcen_cd,
+      financeDTColumn,
+      fstartDate,
+      fendDate,
+      searchColumn,   
+  searchQuery
       );
 
       if (response && response.Data) {
@@ -52,7 +62,7 @@ export default function CustomersPurchaseOrderLoginTable() {
 
   useEffect(() => {
     fetchPurchaseOrders();
-  }, [paginationModel]);
+  }, [paginationModel, searchColumn, searchQuery]);
 
   const handleAdd = () => {
     navigate("/material/customers-purchase-order-login-form/add");

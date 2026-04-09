@@ -1,38 +1,33 @@
 import {
+  Autocomplete,
   Box,
+  Checkbox,
   Container,
+  FormControlLabel,
+  MenuItem,
   Table,
+  TableBody,
+  TableCell,
   TableHead,
   TableRow,
-  TableCell,
-  TableBody,
-  Checkbox,
-  FormControlLabel,
-  TextField,
-  MenuItem,
-  Autocomplete,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Grid,
+  TextField
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Icon from "@mui/material/Icon";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import TransporterModal from "./TransporterModal";
-import TagDetailsModal from "./TagDetailsModal";
 import {
   addPackingSlip,
-  fetchCustomerAPI,
-  fetchItemcodeAPI,
+  fetchCustomerAPI
 } from "app/utils/authServices";
 import {
   fetchItemCodesByCustomer,
   fetchPackingAndSubType,
 } from "app/utils/salesTransactionServices";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import PackingTypeModal from "./PackingTypeModal";
+import TransporterModal from "./TransporterModal";
 
 const PackingSlipForm = () => {
   const navigate = useNavigate();
@@ -59,13 +54,12 @@ const PackingSlipForm = () => {
   });
 
   const [items, setItems] = useState([]);
-  const [tags, setTags] = useState([]);
   const [openTransporter, setOpenTransporter] = useState(false);
-  const [openTagModal, setOpenTagModal] = useState(false);
   const [transporterData, setTransporterData] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
-  // const [itemCodes, setItemCodes] = useState([]);
+  const [itemCodes, setItemCodes] = useState([]);
   const [packingList, setPackingList] = useState([]);
+  const [packingListData, setPackingListData] = useState([]);
   const [filteredSubTypes, setFilteredSubTypes] = useState([]);
   const isEditMode = !!location.state?.packingSlipDetails;
   const [customers, setCustomers] = useState([]);
@@ -78,29 +72,29 @@ const PackingSlipForm = () => {
     { srNo: 1, qtyLoose: "", totLoose: "", itemCode: "" },
   ]);
 
-  const itemCodes = [
-    {
-      ITEM_CODE: "1001",
-      DESC: "Pipe Fitting",
-      UOM: "NOS",
-    },
-    {
-      ITEM_CODE: "1002",
-      DESC: "Flange",
-      UOM: "PCS",
-    },
-    {
-      ITEM_CODE: "1003",
-      DESC: "Valve",
-      UOM: "SET",
-    },
-  ];
-
   useEffect(() => {
-    if (state.packingType) {
-      loadPackingData();
+    loadPackingData();
+  }, []);
+  
+  useEffect(() => {
+    if (!state.packingType) {
+      setFilteredSubTypes([]);
+      return;
     }
-  }, [state.packingType]);
+
+    const filtered = packingList.filter(
+      (item) =>
+        item.INV_TYPE?.toUpperCase() === state.packingType?.toUpperCase(),
+    );
+
+    setFilteredSubTypes(filtered);
+
+    // reset subtype
+    setState((prev) => ({
+      ...prev,
+      subType: "",
+    }));
+  }, [state.packingType, packingList]);
 
   const loadPackingData = async () => {
     try {
@@ -112,23 +106,15 @@ const PackingSlipForm = () => {
 
       setPackingList(list);
 
-      const filtered = packingList.filter(
-        (item) =>
-          item.INV_TYPE?.toUpperCase() === state.packingType?.toUpperCase(),
-      );
+      // ✅ unique packing types (NO duplicates)
+      const uniqueTypes = [...new Set(list.map((item) => item.INV_TYPE))];
 
-      setFilteredSubTypes(filtered);
-
-      // reset subtype
-      setState((prev) => ({
-        ...prev,
-        subType: "",
-      }));
+      setPackingListData(uniqueTypes);
     } catch (error) {
       console.error(error);
-      setFilteredSubTypes([]);
     }
   };
+
   useEffect(() => {
     loadItemCodes();
     loadCustomers();
@@ -456,49 +442,13 @@ const PackingSlipForm = () => {
     }
   };
 
-  const handleAddRow = () => {
-    setRows([
-      ...rows,
-      {
-        srNo: rows.length + 1,
-        qty: "",
-        total: "",
-        itemCode: state?.itemCode || "",
-      },
-    ]);
+  const handleSetQuantity = (value) => {
+    console.log("Received from modal:", value);
+    setState((prev) => ({
+      ...prev,
+      quantity: value,
+    }));
   };
-
-  // REMOVE ROW
-  const handleRemoveRow = () => {
-    if (rows.length > 1) {
-      setRows(rows.slice(0, -1));
-    }
-  };
-
-  // HANDLE INPUT CHANGE
-  const handleRowChange = (index, field, value) => {
-    const updatedRows = [...rows];
-    updatedRows[index][field] = value;
-    setRows(updatedRows);
-  };
-
-  // CALCULATE
-  const handleCalculate = () => {
-    const updatedRows = rows.map((row) => {
-      let total = 0;
-
-      if (packingType === "Box") {
-        total = Number(row.qty || 0) * Number(boxes || 0);
-      } else {
-        total = Number(row.qty || 0) + Number(looseQty || 0);
-      }
-
-      return { ...row, total };
-    });
-
-    setRows(updatedRows);
-  };
-
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
@@ -524,13 +474,13 @@ const PackingSlipForm = () => {
               size="small"
               fullWidth
             >
-              <MenuItem value="DOMESTIC">DOMESTIC</MenuItem>
-              <MenuItem value="Export">Export</MenuItem>
-              <MenuItem value="PROFORMA">PROFORMA</MenuItem>
-              <MenuItem value="NON-EXCISE">NON-EXCISE</MenuItem>
-              <MenuItem value="SEZ">SEZ</MenuItem>
-              <MenuItem value="SERVICE">SERVICE</MenuItem>
-              <MenuItem value="DEPOT">DEPOT</MenuItem>
+              <MenuItem value="">-- Select Packing Type --</MenuItem>
+
+              {packingListData.map((type, index) => (
+                <MenuItem key={index} value={type}>
+                  {type}
+                </MenuItem>
+              ))}
             </TextField>
 
             <TextField
@@ -718,7 +668,7 @@ const PackingSlipForm = () => {
             gap={3}
             alignItems="center"
           >
-            {/* <Autocomplete
+            <Autocomplete
               size="small"
               fullWidth
               options={itemCodes || []}
@@ -748,8 +698,8 @@ const PackingSlipForm = () => {
                   disabled={!state.customer} // ✅ disable until customer selected
                 />
               )}
-            /> */}
-            <Autocomplete
+            />
+            {/* <Autocomplete
               size="small"
               fullWidth
               options={itemCodes} // ✅ hardcoded
@@ -782,7 +732,7 @@ const PackingSlipForm = () => {
                   disabled={false}
                 />
               )}
-            />
+            /> */}
 
             <TextField
               label="Operation"
@@ -915,179 +865,21 @@ const PackingSlipForm = () => {
         onClose={() => setOpenTagModal(false)}
         onSave={(newTag) => setTags([...tags, newTag])}
       /> */}
-      <Dialog
+
+      <PackingTypeModal
         open={openModal}
         onClose={() => setOpenModal(false)}
-        maxWidth="md"
-        fullWidth
-      >
-        {/* Header */}
-        <DialogTitle
-          sx={{
-            textAlign: "center",
-            fontWeight: "bold",
-            background: "#dcdcdc",
-            borderBottom: "1px solid #999",
-            fontSize: "18px",
-            p: 1,
-          }}
-        >
-          PACKING TYPE
-        </DialogTitle>
-
-        <DialogContent sx={{ background: "#efefef", p: 1.5 }}>
-          {/* Top Section */}
-          <Box
-            sx={{
-              border: "1px solid #999",
-              p: 1,
-              mb: 1.5,
-              background: "#f7f7f7",
-            }}
-          >
-            <Grid container spacing={1}>
-              {/* Packing Type */}
-              <Grid item xs={6}>
-                <TextField
-                  select
-                  size="small"
-                  fullWidth
-                  label="Packing Type"
-                  value={packingType}
-                  onChange={(e) => setPackingType(e.target.value)}
-                >
-                  <MenuItem value="Loose">Loose</MenuItem>
-                  <MenuItem value="Box">Box</MenuItem>
-                </TextField>
-              </Grid>
-
-              {/* Dynamic Field */}
-              <Grid item xs={6}>
-                {packingType === "Box" ? (
-                  <TextField
-                    size="small"
-                    fullWidth
-                    label="Boxes"
-                    value={boxes}
-                    onChange={(e) => setBoxes(e.target.value)}
-                  />
-                ) : (
-                  <TextField
-                    size="small"
-                    fullWidth
-                    label="Loose Qty"
-                    value={looseQty}
-                    onChange={(e) => setLooseQty(e.target.value)}
-                  />
-                )}
-              </Grid>
-            </Grid>
-          </Box>
-
-          {/* Table */}
-          <Box sx={{ border: "1px solid #999", background: "#fff" }}>
-            <Table size="small">
-              <TableHead>
-                <TableRow sx={{ background: "#dcdcdc" }}>
-                  <TableCell sx={{ border: "1px solid #999", p: 0.5 }}>
-                    Sr No.
-                  </TableCell>
-                  <TableCell sx={{ border: "1px solid #999", p: 0.5 }}>
-                    Qty
-                  </TableCell>
-                  <TableCell sx={{ border: "1px solid #999", p: 0.5 }}>
-                    Total
-                  </TableCell>
-                  <TableCell sx={{ border: "1px solid #999", p: 0.5 }}>
-                    Item Code
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {rows.map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell sx={{ border: "1px solid #999", p: 0.5 }}>
-                      {row.srNo}
-                    </TableCell>
-
-                    <TableCell sx={{ border: "1px solid #999", p: 0.5 }}>
-                      <TextField
-                        size="small"
-                        fullWidth
-                        value={row.qty}
-                        onChange={(e) =>
-                          handleRowChange(index, "qty", e.target.value)
-                        }
-                        sx={{ "& input": { p: "6px" } }}
-                      />
-                    </TableCell>
-
-                    <TableCell sx={{ border: "1px solid #999", p: 0.5 }}>
-                      <TextField
-                        size="small"
-                        fullWidth
-                        value={row.total}
-                        disabled
-                        sx={{ "& input": { p: "6px" } }}
-                      />
-                    </TableCell>
-
-                    <TableCell sx={{ border: "1px solid #999", p: 0.5 }}>
-                      <TextField
-                        size="small"
-                        fullWidth
-                        value={row.itemCode}
-                        disabled
-                        sx={{ "& input": { p: "6px" } }}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Box>
-
-          {/* Buttons */}
-          <Box mt={1.5} display="flex" gap={1}>
-            <Button
-              variant="contained"
-              size="small"
-              sx={{ minWidth: 70, p: "4px 10px" }}
-              onClick={handleAddRow}
-            >
-              ADD
-            </Button>
-
-            <Button
-              variant="outlined"
-              size="small"
-              sx={{ minWidth: 80, p: "4px 10px" }}
-              onClick={handleRemoveRow}
-            >
-              REMOVE
-            </Button>
-
-            <Button
-              variant="contained"
-              size="small"
-              sx={{ background: "#2e7d32", minWidth: 100, p: "4px 10px" }}
-              onClick={handleCalculate}
-            >
-              CALCULATE
-            </Button>
-
-            <Button
-              variant="contained"
-              size="small"
-              sx={{ background: "#d32f2f", minWidth: 80, p: "4px 10px" }}
-              onClick={() => setOpenModal(false)}
-            >
-              CLOSE
-            </Button>
-          </Box>
-        </DialogContent>
-      </Dialog>
+        rows={rows}
+        setRows={setRows}
+        packingType={packingType}
+        setPackingType={setPackingType}
+        boxes={boxes}
+        setBoxes={setBoxes}
+        looseQty={looseQty}
+        setLooseQty={setLooseQty}
+        itemCode={state.itemCode}
+        setFinalQuantity={handleSetQuantity}
+      />
     </Container>
   );
 };

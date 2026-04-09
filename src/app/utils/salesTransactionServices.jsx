@@ -24,35 +24,39 @@ export const saveCustomerPurchaseOrder = async (purchaseOrderData) => {
 };
 
 export const CustomerPurchaseOrderLoginPaginationAPI = async (
-    tableName = "custpo_hed",
-    pageNumber = 1,
-    pageSize = 10
+  tableName,
+  pageNumber,
+  pageSize,
+  profcen_cd,
+  financeDTColumn,
+  fstartDate,
+  fendDate,
+  columnNameForSearch,
+  searchString
 ) => {
-    try {
-        const { data } = await axiosInstance.get(
-            "/api/PaginationByTable/GetPaginationByTable",
-            {
-                params: {
-                    TableNameForPagination: tableName,
-                    pageNumber,
-                    pageSize,
-                },
-            }
-        );
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: tableName,
+          pageNumber,
+          pageSize,
+          ...(profcen_cd && { Profcen_cd: profcen_cd }),
+          ...(financeDTColumn && { financeDTColumn }),
+          ...(fstartDate && { fstartDate }),
+          ...(fendDate && { fendDate }),
+          ...(columnNameForSearch && { columnNameForSearch }),
+          ...(searchString && { searchString }),
+        },
+      }
+    );
 
-        if (data?.StatusCode === 200 || data?.Data) {
-            return data;
-        }
-
-        return { Data: [], TotalCount: 0 };
-    } catch (error) {
-        console.error(
-            "Customer Purchase Order Login fetch error:",
-            error.response || error.message
-        );
-
-        return { Data: [], TotalCount: 0 };
-    }
+    return data;
+  } catch (error) {
+    console.error("Pagination API Error:", error);
+    return { Data: [], TotalCount: 0 };
+  }
 };
 
 export const ExportDocumentParameterPaginationAPI = async (
@@ -491,6 +495,42 @@ export const fetchItemCodesByCustomer = async (custCode) => {
     throw new Error(
       error.response?.data?.message ||
         "Failed to fetch item codes."
+    );
+  }
+};
+
+export const fetchPackingSlipQuantity = async ({
+  Pay_type,
+  Item_Catg_Type,
+  Profcen_cd,
+  Period,
+  Item_Code,
+}) => {
+  try {
+    const response = await axiosInstance.get(
+      `/api/Master/Fetch-PACKING_SLIP_QUANTITY`,
+      {
+        params: {
+          Pay_type,
+          Item_Catg_Type,
+          Profcen_cd,
+          Period,
+          Item_Code,
+        },
+      }
+    );
+
+    return response.data;
+
+  } catch (error) {
+    console.error(
+      "Fetch Packing Slip Quantity Error:",
+      error.response || error.message
+    );
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to fetch Packing Slip Quantity."
     );
   }
 };
