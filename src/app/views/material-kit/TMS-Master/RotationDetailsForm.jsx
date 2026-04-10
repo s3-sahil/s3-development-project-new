@@ -13,7 +13,6 @@ import {
   Typography,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { fetchShift, saveRotationDetails } from "app/utils/authServices";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -43,25 +42,6 @@ export default function RotationDetailsForm() {
       ...prev,
       [updateType]: value,
     }));
-  };
-
-  /* FETCH SHIFTS */
-
-  const masterloan = async () => {
-    try {
-      const response = await fetchShift();
-
-      const normalized = Object.keys(response).reduce((acc, key) => {
-        acc[key.toLowerCase()] = response[key];
-        return acc;
-      }, {});
-
-      if (normalized.data) {
-        setShifts(normalized.data);
-      }
-    } catch (error) {
-      console.error("Shift Fetch Error:", error);
-    }
   };
 
   /* DAY SELECT */
@@ -104,25 +84,7 @@ export default function RotationDetailsForm() {
 
   /* SAVE */
 
-  const handleSave = async () => {
-    try {
-      const payload = {
-        ...leadObj,
-        rotation_days: selectedDays.join(","),
-        shift_pattern: selectedShiftCodes.join(","),
-      };
-
-      console.log("Save Payload:", payload);
-
-      const data = await saveRotationDetails(payload);
-
-      if (data?.message) {
-        alert("Data saved successfully");
-      }
-    } catch (error) {
-      console.error("Save Error:", error);
-    }
-  };
+  const handleSave = async () => {};
 
   return (
     <Container maxWidth="xl">

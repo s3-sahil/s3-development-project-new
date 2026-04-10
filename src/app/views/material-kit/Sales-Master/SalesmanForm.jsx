@@ -27,6 +27,8 @@ const INITIAL_FORM = {
   contactNo: "",
   gender: "",
   agreedToTerms: false,
+  externalSalesman: false,
+  inUseFlag: true,
 };
 
 const SalesmanForm = () => {
@@ -104,8 +106,8 @@ const SalesmanForm = () => {
         nameParts.length === 3
           ? nameParts[2]
           : nameParts.length === 2
-          ? nameParts[1]
-          : "",
+            ? nameParts[1]
+            : "",
       semail: formData.email,
       scontact_no: formData.contactNo,
       gender: formData.gender,
@@ -119,7 +121,7 @@ const SalesmanForm = () => {
       alert(
         actionMode === "edit"
           ? "Salesman updated successfully!"
-          : "Salesman added successfully!"
+          : "Salesman added successfully!",
       );
 
       navigate("/Sales/material/salesman"); // go back to table
@@ -167,7 +169,29 @@ const SalesmanForm = () => {
             <Span>{actionMode === "edit" ? "Update" : "Save"}</Span>
           </Button>
         </Box>
+        <Box display="flex" gap={4} mb={2}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="externalSalesman"
+                checked={formData.externalSalesman}
+                onChange={handleChange}
+              />
+            }
+            label="External Salesman"
+          />
 
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="inUseFlag"
+                checked={formData.inUseFlag}
+                onChange={handleChange}
+              />
+            }
+            label="In Use Flag"
+          />
+        </Box>
         <Grid container spacing={2}>
           <Grid size={{ md: 6, xs: 12 }} sx={{ mt: 2 }}>
             <Stack spacing={3}>
@@ -215,44 +239,6 @@ const SalesmanForm = () => {
                 label="Contact No"
                 value={formData.contactNo}
                 onChange={handleChange}
-              />
-            </Stack>
-          </Grid>
-
-          <Grid size={{ md: 6, xs: 12 }} sx={{ mt: 2 }}>
-            <Stack spacing={3}>
-              <RadioGroup
-                row
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-              >
-                <FormControlLabel
-                  value="Male"
-                  label="Male"
-                  control={<Radio />}
-                />
-                <FormControlLabel
-                  value="Female"
-                  label="Female"
-                  control={<Radio />}
-                />
-                <FormControlLabel
-                  value="Others"
-                  label="Others"
-                  control={<Radio />}
-                />
-              </RadioGroup>
-
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="agreedToTerms"
-                    checked={formData.agreedToTerms}
-                    onChange={handleChange}
-                  />
-                }
-                label="I have read and agree to the terms of service."
               />
             </Stack>
           </Grid>
