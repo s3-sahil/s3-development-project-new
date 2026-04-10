@@ -3322,7 +3322,7 @@ const materialRoutes = [
     element: <ProductPriceListTable />,
   },
   {
-    path: "/material/sales-product-price-list-details-form/edit/:slipNo",
+    path: "/material/sales-product-price-list-details-form/edit/:ITEM_CODE/:batchqty",
     element: <ProductPriceListDetailsForm />,
   },
   {

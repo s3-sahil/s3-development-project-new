@@ -856,6 +856,43 @@ export const ContractReviewChecklistDetailsAdd = async (payload) => {
     }
 };
 
+// GET ContactReviewCheckList
+export const ContactReviewCheckListEdit = async (check_list_code) => {
+    try {
+        const response = await axiosInstance.get(
+            "/GETRETRIVE-CONTACT_REVIEW_CHECKLIST",
+            {
+                params: { check_list_code: check_list_code },
+            }
+        );
+
+        const data = response.data;
+        console.log("API Response Data:", data);
+
+        // Lowercase top-level keys
+        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+            acc[key.toLowerCase()] = data[key];
+            return acc;
+        }, {});
+
+        // Lowercase nested Data keys
+        const normalizedData = Object.keys(
+            lowerCaseResponse.data || {}
+        ).reduce((acc, key) => {
+            acc[key.toLowerCase()] = lowerCaseResponse.data[key];
+            return acc;
+        }, {});
+
+        return { data: normalizedData };
+    } catch (error) {
+        console.error(
+            "Contect Review Checklist Edit API Error:",
+            error.response || error.message
+        );
+        return { data: {} };
+    }
+};
+
 export const ConsigneeTablePaginationAPI = async (
     tableName = "Cust_Consignee",
     pageNumber = 1,
@@ -1008,6 +1045,43 @@ export const ProductPriceListPaginationAPI = async (
         );
 
         return { Data: [], TotalCount: 0 };
+    }
+};
+
+// GET Product Price List
+export const ProductPriceListEdit = async (ITEM_CODE, batchqty) => {
+    try {
+        const response = await axiosInstance.get(
+            "/API/SD/PRODUCT_PRICE_LIST_DETAILS/GETRETRIVE-PRODUCT_PRICE_LIST_DETAILS",
+            {
+                params: { ITEM_CODE: ITEM_CODE , batchqty: batchqty}
+            }
+        );
+
+        const data = response.data;
+        console.log("API Response Data:", data);
+
+        // Lowercase top-level keys
+        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+            acc[key.toLowerCase()] = data[key];
+            return acc;
+        }, {});
+
+        // Lowercase nested Data keys
+        const normalizedData = Object.keys(
+            lowerCaseResponse.data || {}
+        ).reduce((acc, key) => {
+            acc[key.toLowerCase()] = lowerCaseResponse.data[key];
+            return acc;
+        }, {});
+
+        return { data: normalizedData };
+    } catch (error) {
+        console.error(
+            "Product Price List Edit API Error:",
+            error.response || error.message
+        );
+        return { data: {} };
     }
 };
 
@@ -1237,7 +1311,7 @@ export const CustomerDetailsEdit = async (cust_code) => {
         return { data: normalizedData };
     } catch (error) {
         console.error(
-            "Consignee Edit API Error:",
+            "Costomer Detail Edit API Error:",
             error.response || error.message
         );
         return { data: {} };

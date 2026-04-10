@@ -47,13 +47,13 @@ const ContractReviewChecklistTable = () => {
   }
 
   const handleEdit = (row) => {
-    navigate(`/material/sales-contract-review-checklist-form/edit/${row.Activity_code}`, {
+    navigate(`/material/sales-contract-review-checklist-form/edit/${row.check_list_code}`, {
       state: row,
     });
   };
 
   const handleDelete = (row) => {
-    console.log("Delete contract review checklist:", row.Activity_code);
+    console.log("Delete contract review checklist:", row.check_list_code);
   };
 
 

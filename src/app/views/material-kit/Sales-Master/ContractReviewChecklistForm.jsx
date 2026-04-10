@@ -62,14 +62,33 @@ const ContractReviewChecklistForm = () => {
     }
   };
 
+
+  // 🔹 If Edit mode, fetch full record
+        const fetchEditData = async (check_list_code) => {
+          try {
+            const res = await ContactReviewCheckListEdit(check_list_code);
+      
+            if (res?.data) {
+              const data = res.data;
+              setFormData({
+              checklistCode: data.item_code,
+              checklistDescription: data.sales_rate
+              });
+            }
+          } catch (error) {
+            console.error("Edit fetch error:", error);
+          }
+        };
+  
+
  // 🔹 On load
   useEffect(() => {
     //fetchEmployeeCode();
 
     // If coming from Edit
-    if (location.state?.checklistCode) {
+    if (location.state?.check_list_code) {
       setActionMode("edit");
-      //fetchEditData(location.state.checklistCode);
+      fetchEditData(location.state.check_list_code);
     }
   }, []);
 

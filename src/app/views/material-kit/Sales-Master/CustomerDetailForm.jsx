@@ -1160,7 +1160,7 @@ const CustomerDetailForm = () => {
                   </MenuItem>
 
                   {stateDropdownValue.map((item) => (
-                    <MenuItem key={item.state_code} value={item.state_code}>
+                    <MenuItem key={item.state_code} value={item.State}>
                       {item.state_code} | {item.State}
                     </MenuItem>
                   ))}
@@ -2117,7 +2117,7 @@ const CustomerDetailForm = () => {
                           </MenuItem>
 
                           {stateDropdownValue.map((item) => (
-                            <MenuItem key={item.state_code} value={item.state_code}>
+                            <MenuItem key={item.state_code} value={item.State}>
                               {item.state_code} | {item.State}
                             </MenuItem>
                           ))}

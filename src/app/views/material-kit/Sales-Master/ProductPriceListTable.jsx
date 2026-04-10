@@ -88,7 +88,7 @@ const handleDelete = (id) => {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/sales-product-price-list-details-form/edit/${params.row.id}`, {
+                navigate(`/material/sales-product-price-list-details-form/edit/${params.row.ITEM_CODE}/${params.row.batchqty}`, {
                   state: params.row,
                 })
               }

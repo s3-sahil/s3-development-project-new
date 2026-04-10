@@ -11,8 +11,9 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { useEffect, useState } from "react";
-import { ProductPriceListSAVE, fetchItemcodeAPI } from "app/utils/authServices"
-import { useNavigate } from "react-router-dom"
+import { ProductPriceListEdit, ProductPriceListSAVE, fetchItemcodeAPI } from "app/utils/authServices"
+import { useLocation, useNavigate } from "react-router-dom"
+import { Span } from "app/components/Typography";
 
 
 
@@ -30,6 +31,14 @@ const ProductPriceListDetailsForm = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [itemCodes, setItemCodes] = useState([]);
+  const [actionMode, setActionMode] = useState("new"); // new | edit
+  const location = useLocation(); // for edit data
+
+
+
+
+
+
 
   const loadItemCodes = async () => {
           const data = await fetchItemcodeAPI();
@@ -37,6 +46,13 @@ const ProductPriceListDetailsForm = () => {
       };
 
       useEffect(() => {
+                if (
+          location.state?.ITEM_CODE != null &&
+          location.state?.batchqty != null
+          ){
+      setActionMode("edit");
+      fetchEditData(location.state.ITEM_CODE,location.state.batchqty);
+    }
         loadItemCodes();
           }, []);
 
@@ -48,6 +64,27 @@ const ProductPriceListDetailsForm = () => {
     }));
   };
 
+     // 🔹 If Edit mode, fetch full record
+      const fetchEditData = async (ITEM_CODE, batchqty) => {
+        try {
+          const res = await ProductPriceListEdit(ITEM_CODE, batchqty);
+    
+          if (res?.data) {
+            const data = res.data;
+            setFormData({
+             ITEM_CODE: data.item_code,
+            //productName: "",
+            sales_rate: data.sales_rate,
+            stock_trans_rate: data.stock_trans_rate,
+            discount_per: data.discount_per,
+            wef: data.wef ? new Date(data.wef).toISOString().split("T")[0]
+            : ""
+            });
+          }
+        } catch (error) {
+          console.error("Edit fetch error:", error);
+        }
+      };
 
      // 🔹 Save (Add / Update)
       const handleSave = async () => {
@@ -100,7 +137,7 @@ const ProductPriceListDetailsForm = () => {
           onClick={handleSave}
           disabled={loading}
         >
-          Save
+            <Span>{actionMode === "edit" ? "Update" : "Save"}</Span>
         </Button>
       </Box>
 
@@ -116,7 +153,7 @@ const ProductPriceListDetailsForm = () => {
               size="small"
               fullWidth
             /> */}
-                      {/* <TextField
+                      <TextField
                                     size="small"
                                     select
                                     fullWidth
@@ -135,48 +172,9 @@ const ProductPriceListDetailsForm = () => {
                                             {item.ITEM_CODE} | {item.DESC} | {item.UOM}
                                         </MenuItem>
                                     ))}
-                                </TextField> */}
+                                </TextField>
 
-                               <Autocomplete
-  options={itemCodes}
-  getOptionLabel={(option) => option.DESC || ""}
-  value={
-    itemCodes.find(
-      (item) => item.ITEM_CODE === formData.ITEM_CODE
-    ) || null
-  }
-  onChange={(e, newValue) => {
-    setFormData((prev) => ({
-      ...prev,
-      ITEM_CODE: newValue ? newValue.ITEM_CODE : "",
-    }));
-  }}
-  sx={{ width: "100%" }}
-  slotProps={{
-    paper: {
-      sx: { width: 500 } // 👈 wider dropdown
-    }
-  }}
-  renderOption={(props, option) => (
-    <li {...props}>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "120px 1fr 80px",
-          gap: "10px",
-          width: "100%",
-        }}
-      >
-        <span>{option.ITEM_CODE}</span>
-        <span>{option.DESC}</span>
-        <span>{option.UOM}</span>
-      </div>
-    </li>
-  )}
-  renderInput={(params) => (
-    <TextField {...params} label="Select Item" size="small" />
-  )}
-/>
+                              
                                             
           </Grid>
 
