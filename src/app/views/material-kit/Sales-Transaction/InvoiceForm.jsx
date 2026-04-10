@@ -8,10 +8,11 @@ import {
   Grid,
   Card,
   Stack,
+  MenuItem,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import InvoiceTaxDetailsModal from "./InvoiceTaxDetailsModal";
 import InvoicePaymentModal from "./InvoicePaymentModal";
@@ -21,6 +22,7 @@ import { addInvoice } from "app/utils/authServices";
 import { DataGrid } from "@mui/x-data-grid";
 import InvoiceTransporterModal from "./InvoiceTransporterModal";
 import InvoiceGSTModal from "./InvoiceGSTModal";
+import { fetchPackingAndSubType } from "app/utils/salesTransactionServices";
 
 const InvoiceForm = () => {
   const [openPaymentModal, setOpenPaymentModal] = useState(false);
@@ -35,6 +37,11 @@ const InvoiceForm = () => {
   const [gstDetails, setGstDetails] = useState({});
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [gstData, setGstData] = useState({});
+
+  const [packingList, setPackingList] = useState([]);
+  const [invoiceTypeList, setInvoiceTypeList] = useState([]);
+  const [filteredSubTypes, setFilteredSubTypes] = useState([]);
+
   const [formData, setFormData] = useState({
     invoiceType: "",
     invoiceSubType: "",
@@ -76,6 +83,49 @@ const InvoiceForm = () => {
     vehicleNo: "",
     transportMode: "",
   });
+
+  useEffect(() => {
+    loadPackingData();
+  }, []);
+
+  useEffect(() => {
+    if (!formData.invoiceType) {
+      setFilteredSubTypes([]);
+      return;
+    }
+
+    const filtered = packingList.filter(
+      (item) =>
+        item.INV_TYPE?.toUpperCase() === formData.invoiceType?.toUpperCase(),
+    );
+
+    setFilteredSubTypes(filtered);
+
+    // reset subtype
+    setFormData((prev) => ({
+      ...prev,
+      invoiceSubType: "",
+    }));
+  }, [formData.invoiceType, packingList]);
+
+  const loadPackingData = async () => {
+    try {
+      const res = await fetchPackingAndSubType(
+        localStorage.getItem("login_name"),
+      );
+
+      const list = res?.Data || [];
+
+      setPackingList(list);
+
+      // UNIQUE invoice types
+      const uniqueTypes = [...new Set(list.map((item) => item.INV_TYPE))];
+
+      setInvoiceTypeList(uniqueTypes);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -136,7 +186,6 @@ const InvoiceForm = () => {
         ? new Date(formData.invoiceDate).toISOString()
         : new Date().toISOString();
 
-      const profcen_cd = localStorage.getItem("PROFCEN_CD") || "01";
       const userName = "ADMIN";
 
       const payload = {
@@ -491,10 +540,10 @@ const InvoiceForm = () => {
         },
 
         paytype_sales_inv: "",
-        period: "",
+        period: new Date(localStorage.getItem("toDate")).toISOString().slice(0, 7),
         mM_DOC_DOCUMNET: "",
         mM_DOC_TYPE: "",
-        profceN_CD: profcen_cd,
+        profceN_CD: localStorage.getItem("PROFCEN_CD") ,
       };
 
       console.log("FINAL PAYLOAD:", payload);
@@ -524,11 +573,49 @@ const InvoiceForm = () => {
             <Card variant="outlined" sx={{ p: 2 }}>
               {/* HEADER SECTION */}
               <Grid container spacing={2}>
-                <Grid item xs={3}>
+                {/* <Grid item xs={3}>
                   <TextField label="Invoice Type" fullWidth size="small" />
                 </Grid>
                 <Grid item xs={3}>
                   <TextField label="Invoice Sub Type" fullWidth size="small" />
+                </Grid> */}
+                <Grid item xs={3}>
+                  <TextField
+                    label="Invoice Type"
+                    name="invoiceType"
+                    value={formData.invoiceType}
+                    onChange={handleChange}
+                    select
+                    size="small"
+                    fullWidth
+                  >
+                    <MenuItem value="">-- Select Invoice Type --</MenuItem>
+
+                    {invoiceTypeList.map((type, index) => (
+                      <MenuItem key={index} value={type}>
+                        {type}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    label="Invoice Sub Type"
+                    name="invoiceSubType"
+                    value={formData.invoiceSubType}
+                    onChange={handleChange}
+                    select
+                    fullWidth
+                    size="small"
+                  >
+                    <MenuItem value="">-- Select Sub Type --</MenuItem>
+
+                    {filteredSubTypes.map((item, index) => (
+                      <MenuItem key={index} value={item.SALES_TYPE}>
+                        {item.SALES_TYPE}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 </Grid>
                 <Grid item xs={3}>
                   <TextField label="Packing No." fullWidth size="small" />

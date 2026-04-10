@@ -534,3 +534,42 @@ export const fetchPackingSlipQuantity = async ({
     );
   }
 };
+
+export const getCustomerPurchaseOrder = async ({
+  CUST_CODE,
+  PO_ID,
+  PO_ID_DT,
+  PO_NO,
+  PO_DT,
+  oa_type,
+  PROFCEN_CD,
+}) => {
+  try {
+    const response = await axiosInstance.get(
+      `/GET-CUSTOMER_PURCHASE_ORDER`,
+      {
+        params: {
+          CUST_CODE,
+          PO_ID,
+          PO_ID_DT,
+          PO_NO,
+          PO_DT,
+          oa_type,
+          PROFCEN_CD,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "GET CUSTOMER PURCHASE ORDER ERROR:",
+      error.response || error.message
+    );
+
+    throw new Error(
+      error.response?.data?.Message ||
+      "Failed to fetch Customer Purchase Order."
+    );
+  }
+};

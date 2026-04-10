@@ -24,20 +24,23 @@ export default function CustomersPurchaseOrderLoginTable() {
   const fetchPurchaseOrders = async () => {
     setLoading(true);
     try {
-       const profcen_cd = localStorage.getItem("PROFCEN_CD");
-    const fstartDate = localStorage.getItem("fromDate");
-    const fendDate = localStorage.getItem("toDate");
-    const financeDTColumn = "PO_ID_DT";
+      const profcen_cd = localStorage.getItem("PROFCEN_CD");
+
+      const fstartDate = localStorage.getItem("fromDate");
+
+      const fendDate = localStorage.getItem("toDate");
+
+      const financeDTColumn = "PO_ID_DT";
       const response = await CustomerPurchaseOrderLoginPaginationAPI(
-         "custpo_hed",
-      paginationModel.page + 1,
-      paginationModel.pageSize,
-      profcen_cd,
-      financeDTColumn,
-      fstartDate,
-      fendDate,
-      searchColumn,   
-  searchQuery
+        "custpo_hed",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        profcen_cd,
+        financeDTColumn,
+        fstartDate,
+        fendDate,
+        searchColumn,
+        searchQuery,
       );
 
       if (response && response.Data) {
@@ -83,7 +86,9 @@ export default function CustomersPurchaseOrderLoginTable() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this Purchase Order?")) {
+    if (
+      window.confirm("Are you sure you want to delete this Purchase Order?")
+    ) {
       // try {
       //   setLoading(true);
       //   const rowToDelete = rows.find((r) => r.id === id);
@@ -110,8 +115,24 @@ export default function CustomersPurchaseOrderLoginTable() {
       valueFormatter: (value) =>
         value ? new Date(value).toLocaleDateString() : "",
     },
+    {
+      field: "PO_ID_DT",
+      headerName: "PO ID Date",
+      width: 120,
+      valueFormatter: (value) =>
+        value ? new Date(value).toLocaleDateString() : "",
+    },
+    {
+      field: "PO_VALID",
+      headerName: "PO Valid Date",
+      width: 120,
+      valueFormatter: (value) =>
+        value ? new Date(value).toLocaleDateString() : "",
+    },
     { field: "CUST_CODE", headerName: "Customer Code", width: 120 },
-    { field: "CUST_NAME", headerName: "Customer Name", flex: 1 },
+    { field: "oa_type", headerName: "OA Type", width: 120 },
+
+    // { field: "CUST_NAME", headerName: "Customer Name", flex: 1 },
     { field: "PO_ID", headerName: "PO ID", width: 100 },
 
     {
@@ -157,7 +178,7 @@ export default function CustomersPurchaseOrderLoginTable() {
             setSearchColumn={setSearchColumn}
             columnOptions={[
               { value: "PO_NO", label: "PO No" },
-              { value: "CUST_NAME", label: "Customer Name" },
+              { value: "CUST_CODE", label: "Customer Code" },
             ]}
             onSearch={handleSearch}
           />

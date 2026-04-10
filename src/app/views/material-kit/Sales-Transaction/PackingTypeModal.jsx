@@ -16,6 +16,7 @@ import {
   Typography,
   Icon,
 } from "@mui/material";
+import { fetchPackingSlipQuantity } from "app/utils/salesTransactionServices";
 import { useEffect, useState } from "react";
 
 const PackingTypeModal = ({
@@ -31,9 +32,14 @@ const PackingTypeModal = ({
   setLooseQty,
   itemCode,
   setFinalQuantity,
+  selectedItem,
+  payValue,
+  setPayValue,
 }) => {
   const [qtyPerBox, setQtyPerBox] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  console.log("payValue:", payValue,selectedItem)
   // ✅ ADD ROW
   const handleAddRow = () => {
     const newRow = {
@@ -113,6 +119,41 @@ const PackingTypeModal = ({
     console.log("Grand Total:", grandTotal);
   };
 
+  const handleQtyEnter = async (e) => {
+    if (e.key !== "Enter") return;
+
+    try {
+      setLoading(true);
+
+      const res = await fetchPackingSlipQuantity({
+        Pay_type: payValue,
+        Item_Catg_Type: selectedItem?.CATG_CODE || "",
+        Profcen_cd: localStorage.getItem("PROFCEN_CD"),
+        Period: new Date(localStorage.getItem("toDate")).toISOString().slice(0, 7),
+        Item_Code: selectedItem?.ITEM_CODE || "",
+      });
+
+      const data = res?.Data || [];
+
+      if (!Array.isArray(data)) return;
+
+      if (data.length === 0) return;
+
+      const newRows = data.map((item, index) => ({
+        srNo: rows.length + index + 1,
+        qty: Number(item.QTY_PER_BOX || item.qty || 0),
+        total: Number(item.TOTAL_BOX || item.total || 0),
+        itemCode: itemCode,
+      }));
+
+      setRows((prev) => [...prev, ...newRows]);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Dialog
       open={open}
@@ -174,7 +215,6 @@ const PackingTypeModal = ({
                       onChange={(e) => setBoxes(e.target.value)}
                     />
                   </Grid>
-
                   <Grid item xs={4}>
                     <TextField
                       size="small"
@@ -182,6 +222,7 @@ const PackingTypeModal = ({
                       label="Qty / Box"
                       value={qtyPerBox}
                       onChange={(e) => setQtyPerBox(e.target.value)}
+                      onKeyDown={handleQtyEnter}
                     />
                   </Grid>
                 </>

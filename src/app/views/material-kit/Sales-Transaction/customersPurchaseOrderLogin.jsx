@@ -28,11 +28,14 @@ import TaxTermModal from "./TaxTermModal";
 import OtherDetailsManufacturingModal from "./OtherDetailsManufacturingModal";
 import { DataGrid } from "@mui/x-data-grid";
 import {
+  getCustomerPurchaseOrder,
   getTaxTermByHSNCode,
   saveCustomerPurchaseOrder,
 } from "app/utils/salesTransactionServices";
+import { useLocation } from "react-router-dom";
 
 const CustomersPurchaseOrderLogin = () => {
+  const location = useLocation();
   const [leadObj, setLeadObj] = useState({
     List_Custpo_det_ex: [],
     List_Schedule_ex: [], // Fixed casing to match Modal
@@ -75,6 +78,106 @@ const CustomersPurchaseOrderLogin = () => {
   const [itemTable, setItemTable] = useState([]);
   const [otherDetails, setOtherDetails] = useState({});
   const [paymentRows, setPaymentRows] = useState([]);
+  const formatWithoutTZ = (date) => {
+    if (!date) return "";
+    return date.split("T")[0];
+  };
+  useEffect(() => {
+    const fetchEditData = async () => {
+      try {
+        if (!location.state) return;
+
+        const row = location.state;
+        console.log("ro..............................", row);
+        const profcen_cd = localStorage.getItem("PROFCEN_CD");
+
+        const res = await getCustomerPurchaseOrder({
+          CUST_CODE: row.CUST_CODE,
+          PO_ID: row.PO_ID,
+          PO_ID_DT: formatWithoutTZ(row.PO_ID_DT),
+          PO_NO: row.PO_NO,
+          PO_DT: formatWithoutTZ(row.PO_DT),
+          oa_type: row.oa_type,
+          PROFCEN_CD: profcen_cd,
+        });
+
+        console.log("✅ FULL EDIT DATA:", res);
+
+        const data = res?.Data;
+
+        if (!data) return;
+
+        // ✅ HEADER BIND
+        setForm((prev) => ({
+          ...prev,
+          orderType: data?.Custpo_hed_ex?.oa_type || "",
+          customer: data?.Custpo_hed_ex?.CUST_CODE || "",
+          salesman: data?.Custpo_hed_ex?.EMP_NO || "",
+          currency: data?.Custpo_hed_ex?.CURR_CODE || "",
+          loginDate: data?.Custpo_hed_ex?.PO_ID_DT?.slice(0, 10) || "",
+          orderNo: data?.Custpo_hed_ex?.PO_NO || "",
+          orderDate: data?.Custpo_hed_ex?.PO_DT?.slice(0, 10) || "",
+          validDate: data?.Custpo_hed_ex?.PO_VALID?.slice(0, 10) || "",
+          amendNo: data?.Custpo_hed_ex?.PO_AMD_NO || "",
+          amendDate: data?.Custpo_hed_ex?.PO_AMD_DT?.slice(0, 10) || "",
+          remark: data?.Custpo_hed_ex?.REMARK || "",
+          dispatchLocation: data?.Custpo_hed_ex?.Deli_Terms || "",
+        }));
+
+        // ✅ ITEM TABLE
+        const items = data.List_Custpo_det_ex || [];
+
+        const mappedItems = items.map((item, index) => ({
+          id: index + 1,
+          ITEM_CODE: item.ITEM_CODE,
+          ITEM_NAME: item.ITEM_NAME,
+          QUANTITY: item.QUANTITY,
+          RATE: item.RATE,
+          TARIFF_CD: item.TARIFF_CD,
+          UOM: item.UOM,
+          DISC_PER: item.DISC_PER,
+          REMARK1: item.Remark,
+          UL_LOCATION: item.UL_LOCATION,
+          deg_issue_no: item.deg_issue_no,
+          shipping_Cost: item.shipping_Cost,
+        }));
+
+        setItemTable(mappedItems);
+
+        // ✅ SCHEDULE
+        setAllSchedules(data.List_Schedule_ex || []);
+
+        // ✅ PAYMENT TERMS
+        setPaymentRows(data.List_Custpo_pay_ex || []);
+
+        // ✅ TAX TERMS
+        const tax = data.List_Custpo_tax_ex || [];
+
+        const mappedTax = tax.map((t, index) => ({
+          id: index + 1,
+          code: t.taX_CODE,
+          amount: t.taX_AMT,
+        }));
+
+        setTaxRows(mappedTax);
+
+        // ✅ OTHER DETAILS
+        setOtherDetails({
+          transport: data.transport,
+          insurance: data.insurance,
+          packingType: data.packing_flag,
+          packingAmt: data.packing_amt,
+          packingPer: data.packing_per,
+          advanceAmt: data.adv_amt,
+          transporterName: data.trans_name,
+        });
+      } catch (err) {
+        console.error("❌ EDIT FETCH ERROR:", err);
+      }
+    };
+
+    fetchEditData();
+  }, [location.state]);
 
   useEffect(() => {
     loadOrderTypes();
@@ -109,9 +212,6 @@ const CustomersPurchaseOrderLogin = () => {
     setCurrencies(data);
   };
 
-  // const handleChange = (e) => {
-  //   setForm({ ...form, [e.target.name]: e.target.value });
-  // };
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -569,30 +669,14 @@ const CustomersPurchaseOrderLogin = () => {
                 fullWidth
                 label="Login Date"
                 name="loginDate"
-                value={form.loginDate}
+                value={
+                  form.loginDate || new Date().toISOString().split("T")[0]
+                }
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
 
-            {/* <Grid item xs={12} md={3}>
-              <TextField
-                size="small"
-                select
-                fullWidth
-                label="Customer"
-                name="customer"
-                value={form.customer}
-                onChange={handleChange}
-              >
-                <MenuItem value="">Select</MenuItem>
-                {customers.map((cust, index) => (
-                  <MenuItem key={index} value={cust.Cust_code}>
-                    {cust.Cust_code}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid> */}
             <Grid item xs={12} md={3}>
               <Autocomplete
                 size="small"
@@ -774,25 +858,6 @@ const CustomersPurchaseOrderLogin = () => {
           </Grid>
           <Box mt={4}>
             <Grid container spacing={2}>
-              {/* <Grid item xs={12} md={4}>
-                <TextField
-                  size="small"
-                  select
-                  fullWidth
-                  label="Item Code"
-                  name="itemCode"
-                  value={form.itemCode || ""}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="">Select</MenuItem>
-
-                  {itemCodes.map((item, index) => (
-                    <MenuItem key={index} value={item.ITEM_CODE}>
-                      {item.ITEM_CODE} - {item.item_name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid> */}
               <Grid item xs={12} md={4}>
                 <Autocomplete
                   size="small"

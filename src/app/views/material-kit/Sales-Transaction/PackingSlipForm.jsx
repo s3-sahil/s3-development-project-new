@@ -10,16 +10,13 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TextField
+  TextField,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Icon from "@mui/material/Icon";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
-import {
-  addPackingSlip,
-  fetchCustomerAPI
-} from "app/utils/authServices";
+import { addPackingSlip, fetchCustomerAPI } from "app/utils/authServices";
 import {
   fetchItemCodesByCustomer,
   fetchPackingAndSubType,
@@ -68,6 +65,8 @@ const PackingSlipForm = () => {
   const [packingType, setPackingType] = useState("Box");
   const [boxes, setBoxes] = useState("");
   const [looseQty, setLooseQty] = useState("");
+  const [selectedItemData, setSelectedItemData] = useState(null);
+  const [payValue, setPayValue] = useState("");
   const [rows, setRows] = useState([
     { srNo: 1, qtyLoose: "", totLoose: "", itemCode: "" },
   ]);
@@ -75,7 +74,7 @@ const PackingSlipForm = () => {
   useEffect(() => {
     loadPackingData();
   }, []);
-  
+
   useEffect(() => {
     if (!state.packingType) {
       setFilteredSubTypes([]);
@@ -208,6 +207,7 @@ const PackingSlipForm = () => {
         ITEM_CODE: x.ITEM_CODE || x.ItemCode || "",
         DESC: x.DESC || x.Description || "",
         UOM: x.UOM || "",
+        CATG_CODE: x.CATG_CODE
       }));
 
       setItemCodes(normalized);
@@ -220,11 +220,25 @@ const PackingSlipForm = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setState({
-      ...state,
-      [name]: type === "checkbox" ? checked : value,
-    });
+    const { name, value } = e.target;
+
+    if (name === "packingType") {
+      setState((prev) => ({
+        ...prev,
+        packingType: value,
+      }));
+
+      const selected = packingList.find((item) => item.INV_TYPE === value);
+
+      setPayValue(selected?.PAY_TYPE);
+      console.log("Pay Value:", payValue)
+      return;
+    }
+
+    setState((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleAddItem = () => {
@@ -687,6 +701,7 @@ const PackingSlipForm = () => {
                   ...prev,
                   itemCode: newValue ? newValue.ITEM_CODE : "",
                 }));
+                setSelectedItemData(newValue || null);
                 if (newValue) {
                   setOpenModal(true);
                 }
@@ -879,6 +894,8 @@ const PackingSlipForm = () => {
         setLooseQty={setLooseQty}
         itemCode={state.itemCode}
         setFinalQuantity={handleSetQuantity}
+        selectedItem={selectedItemData}
+        payValue={payValue}
       />
     </Container>
   );
