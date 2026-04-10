@@ -28,7 +28,8 @@ export default function CustomerDetailTable() {
     const res = await CUSTOMER_DETAILPaginationAPI(
       "cust_mst",
       page + 1, 
-      pageSize
+      pageSize,
+      "Cust_code"
     );
 
     if (res?.Data) {

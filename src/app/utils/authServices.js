@@ -668,10 +668,10 @@ export const ProjectActivityPaginationAPI = async (
 // };
 
 export const CUSTOMER_DETAILPaginationAPI = async (
-    tableName = "Cust_mst",
-    orderBy = "cust_code",
+    tableName = "",
     pageNumber = 1,
-    pageSize = 10
+    pageSize = 10,    
+    orderBy = ""
 ) => {
     try {
         const { data } = await axiosInstance.get(
@@ -679,9 +679,9 @@ export const CUSTOMER_DETAILPaginationAPI = async (
             {
                 params: {
                     TableNameForPagination: tableName,
-                    orderBy,
                     pageNumber,
                     pageSize,
+                    orderBy
                 },
             }
         );
@@ -710,7 +710,7 @@ export const saveCustomerDetail = async (customerData) => {
 
         return response.data;
     } catch (error) {
-        console.error("API Error:", error.response);
+        console.error("API Error:", error.Message);
 
         throw new Error(
             error.response?.data?.message ||
