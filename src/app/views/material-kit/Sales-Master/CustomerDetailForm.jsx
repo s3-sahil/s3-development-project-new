@@ -84,18 +84,18 @@ const CustomerDetailForm = () => {
   const [payPeriod, setPayPeriod] = useState("");
   const [addedPays, setAddedPays] = useState([]);
 
-//const [payDesc, setPayDesc] = useState("");   // Description text
-const [payCode, setPayCode] = useState("");   // PC_CODE
+  //const [payDesc, setPayDesc] = useState("");   // Description text
+  const [payCode, setPayCode] = useState("");   // PC_CODE
   //Edit
   const [actionMode, setActionMode] = useState("new"); // new | edit
 
   const [formData, setFormData] = useState({
     code: "",
-    trng_flg:"",
+    trng_flg: "",
     type: "",
     category: "",
     zone: "",
-    merchantExporter: false,
+    CtForm: false,
     inuse_flag: false,
     insurance: "",
     nda: false,
@@ -106,12 +106,11 @@ const [payCode, setPayCode] = useState("");   // PC_CODE
     city: "",
     pin: "",
     country: "",
-    comp_nonComp:"",
+    comp_nonComp: "",
     district: "",
     panNo: "",
     customerType: "",
     state: "",
-    fstate:"",
     gstNo: "",
     fax: "",
     phone: "",
@@ -128,63 +127,81 @@ const [payCode, setPayCode] = useState("");   // PC_CODE
     bankAdd: "",
     bankAdd1: "",
     bankAccNo: "",
-    doc_thru:"",
+    //doc_thru:"",
+    odoc_thru: "",
+    sman_code: "",
+    ctForm: "",
     website: "",
-    one:"",
+    fname: "",
+    fbankAdd: "",
+    fbankAdd1: "",
+    fcity: "",
+    fpin: "",
+    ffax: "",
+    fphone: "",
+    femail: "",
+    fmobile: "",
+    fcontactPerson: "",
+    fdesignation: "",
+    fwebsite: "",
+    fweeklyOff: "",
+    fpanNo: "",
+    fgstNo: "",
+    fstate: "",
     discountApplicable: false,
   });
-const handleAddPay = () => {
-  if (!payPercent || !payCode || !payDesc || !payMode || !payPeriod || !payperioda) {
-    alert("Please fill all fields");
-    return;
-  }
+  const handleAddPay = () => {
+    if (!payPercent || !payCode || !payDesc || !payMode || !payPeriod || !payperioda) {
+      alert("Please fill all fields");
+      return;
+    }
 
-  const exists = addedPays.some(
-    (p) =>
-      p.percent === payPercent &&
-      p.code === payCode &&
-      p.desc === payDesc &&
-      p.mode === payMode &&
-      p.perioda === payperioda &&
-      p.period === payPeriod
-  );
+    const exists = addedPays.some(
+      (p) =>
+        p.percent === payPercent &&
+        p.code === payCode &&
+        p.desc === payDesc &&
+        p.mode === payMode &&
+        p.perioda === payperioda &&
+        p.period === payPeriod
+    );
 
-  if (exists) {
-    alert("Payment already added");
-    return;
-  }
+    if (exists) {
+      alert("Payment already added");
+      return;
+    }
 
-  setAddedPays((prev) => [
-    ...prev,
-    {
-      id: Date.now(),
-      percent: payPercent,
-      code: payCode,
-      desc: payDesc,
-      mode: payMode,
-      period: payPeriod,
-      perioda: payperioda,
-    },
-  ]);
+    setAddedPays((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        percent: payPercent,
+        code: payCode,
+        desc: payDesc,
+        mode: payMode,
+        period: payPeriod,
+        perioda: payperioda,
+      },
+    ]);
 
-  // ✅ Reset ALL fields (you missed payCode)
-  setPayPercent("");
-  setPayDesc("");
-  setPayCode("");   // ⭐ IMPORTANT
-  setPayMode("");
-  setPayPeriod("");
-   setPayperioda("");
-};
+    // ✅ Reset ALL fields (you missed payCode)
+    setPayPercent("");
+    setPayDesc("");
+    setPayCode("");   // ⭐ IMPORTANT
+    setPayMode("");
+    setPayPeriod("");
+    setPayperioda("");
+  };
 
   // Category dropdown
   const fetchCategoryDropdown = async () => {
     try {
       const res = await fetchCategoryCustomerDetails();
-      
-      const filteredData =
-      res?.Data?.filter((item) => item.flag === "C") || [];
 
-    setCategoryDropdownValue(filteredData);
+      const filteredData =
+        res?.filter((item) => item.flag === "C") || [];
+
+      setCategoryDropdownValue(filteredData);
       //setCategoryDropdownValue(res || []);
     } catch (error) {
       console.error("Category fetch error:", error);
@@ -240,8 +257,8 @@ const handleAddPay = () => {
     }
   };
 
-//Fetch_PAYCOND
-const fetchpaycondDropdown = async () => {
+  //Fetch_PAYCOND
+  const fetchpaycondDropdown = async () => {
     try {
       const res = await Fetch_PAYCOND();
 
@@ -270,11 +287,12 @@ const fetchpaycondDropdown = async () => {
           bankAdd: cust.Cust_add1 ?? "",
           bankAdd1: cust.Cust_add2 ?? "",
           city: cust.Cust_city ?? "",
-          trng_flg:cust.trng_flg ?? "",
+          inuse_flag: cust.Inuse_flag === "Y",
+          trng_flg: cust.trng_flg ?? "",
           pin: cust.Cust_Pin ?? "",
           state: cust.Cust_state ?? "",
           country: cust.Cust_country ?? "",
-          comp_nonComp:cust.comp_nonComp ?? "",
+          comp_nonComp: cust.comp_nonComp ?? "",
           fax: cust.Fax ?? "",
           phone: cust.Phone ?? "",
           email: cust.Email ?? "",
@@ -304,23 +322,42 @@ const fetchpaycondDropdown = async () => {
           bankAccNo: cust.Bank_acc_no ?? "",
           website: cust.web_site ?? "",
           weeklyOff: cust.Woff ?? "",
-          odoc_thru:cust.Doc_thru ?? "",
+          odoc_thru: cust.Doc_thru ?? "",
           groupCustomer: cust.group_cust ?? "",
           refCustomer: cust.Ref_cust_Code ?? "",
           gstNo: cust.gst_no ?? "",
           distanceKm: cust.distance_km ?? "",
           district: cust.District_name ?? "",
           industryType: cust.Industry_name ?? "",
+          sman_code: cust.sman_code ?? "",
+          CtForm: cust.CtForm === "Y",
           startDate: cust.start_dt
-  ? new Date(cust.start_dt).toISOString().split("T")[0]
-  : "",
+            ? new Date(cust.start_dt).toISOString().split("T")[0]
+            : "",
           expiryDate: cust.expiry_dt
-  ? new Date(cust.expiry_dt).toISOString().split("T")[0]
-  : "",
-          nda: cust.nda === "Y",
+            ? new Date(cust.expiry_dt).toISOString().split("T")[0]
+            : "",
+          nda: cust.NDA === "Y",
           discountApplicable: cust.disc_appl === "Y",
+          insurance: cust.insurance ?? "",
+
+          //factory
+          fname: factory.name ?? "",
+          fbankAdd: factory.add1 ?? "",
+          fbankAdd1: factory.add2 ?? "",
+          fcity: factory.city ?? "",
+          fpin: factory.pincode ?? "",
+          ffax: factory.fax ?? "",
+          fphone: factory.phone ?? "",
+          femail: factory.email ?? "",
+          fmobile: factory.mobile ?? "",
+          fcontactPerson: factory.contact_person ?? "",
+          fdesignation: factory.designation ?? "",
+          fwebsite: factory.web_site ?? "",
+          fweeklyOff: factory.WOFF ?? "",
+          fpanNo: factory.PanNo ?? "",
+          fgstNo: factory.gst_no ?? "",
           fstate: factory.state ?? "",
-          insurance: cust.insurance ?? ""
         });
 
         // ✅ Taxes
@@ -472,6 +509,7 @@ const fetchpaycondDropdown = async () => {
 
   const handleClearAll = () => setAddedTaxes([]);
 
+  
   const handleSave = async () => {
 
     try {
@@ -479,18 +517,19 @@ const fetchpaycondDropdown = async () => {
         cust_mst_ex: {
           cust_code: formData.code,
           cust_name: formData.name,
+          inuse_flag: formData.inuse_flag ? "Y" : "N",
           cust_add1: formData.bankAdd,
           cust_add2: formData.bankAdd1,
           cust_city: formData.city,
           cust_Pin: formData.pin,
           cust_state: formData.state,
           cust_country: formData.country,
-          comp_nonComp:formData.comp_nonComp,
+          comp_nonComp: formData.comp_nonComp,
           fax: formData.fax,
           phone: formData.phone,
           email: formData.email,
           ecc_code: formData.eccCode,
-          category:formData.category,
+          category: formData.category,
           exci_range: formData.range,
           division: formData.division,
           commsrate: formData.commissionerate,
@@ -528,8 +567,11 @@ const fetchpaycondDropdown = async () => {
           start_dt: formData.startDate,
           expiry_dt: formData.expiryDate,
           nda: formData.nda ? "Y" : "N",
+          sman_code: formData.sman_code,
           disc_appl: formData.discountApplicable ? "Y" : "N",
-          insurance: formData.insurance
+          ctForm: formData.CtForm ? "Y" : "N",
+          insurance: formData.insurance,
+          ...contactData,
         },
 
         list_cust_tax_ex: addedTaxes.map((t) => ({
@@ -549,22 +591,22 @@ const fetchpaycondDropdown = async () => {
 
         cust_factory_det_ex: {
           cust_code: formData.code,
-          name: formData.name,
-          add1: formData.bankAdd,
-          add2: formData.bankAdd1,
-          city: formData.city,
+          name: formData.fname,
+          add1: formData.fbankAdd,
+          add2: formData.fbankAdd1,
+          city: formData.fcity,
           state: formData.fstate,
-          fax: formData.fax,
-          phone: formData.phone,
-          email: formData.email,
-          mobile: formData.mobile,
-          contact_person: formData.contactPerson,
-          designation: formData.designation,
-          pincode: formData.pin,
-          web_site: formData.website,
-          woff: formData.weeklyOff,
-          gst_no: formData.gstNo,
-          panNo: formData.panNo
+          fax: formData.ffax,
+          phone: formData.fphone,
+          email: formData.femail,
+          mobile: formData.fmobile,
+          contact_person: formData.fcontactPerson,
+          designation: formData.fdesignation,
+          pincode: formData.fpin,
+          web_site: formData.fwebsite,
+          woff: formData.fweeklyOff,
+          gst_no: formData.fgstNo,
+          panNo: formData.fpanNo
         }
       };
 
@@ -599,6 +641,16 @@ const fetchpaycondDropdown = async () => {
     { name: "", designation: "", mobile: "", email: "" },
   ]);
 
+  const contactData = {};
+
+  contactPersons.forEach((person, index) => {
+    const i = index + 1;
+
+    contactData[`contact_person${i}`] = person.name || "";
+    contactData[`person_desig${i}`] = person.designation || "";
+    contactData[`mobile${i}`] = person.mobile || "";
+    contactData[`email${i}`] = person.email || "";
+  });
   // handlers
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -606,12 +658,15 @@ const fetchpaycondDropdown = async () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-    if (name === "name" && value.length === 1) {
-      handleFetchMaxCode(value); // pass value directly
+
+    if (actionMode === "new") {
+      if (name === "name" && value.length === 1) {
+        handleFetchMaxCode(value); // pass value directly
+      }
     }
   };
 
-//checkGSTExists
+  //checkGSTExists
 
   let panTimeout;
   let GSTTimeout;
@@ -626,23 +681,23 @@ const fetchpaycondDropdown = async () => {
 
     if (value.length > 10) return;
 
-    let customerType = "";
+    let comp_nonComp = "";
     if (value.length >= 4) {
       const fourthChar = value.charAt(3);
-      customerType =
+      comp_nonComp =
         fourthChar === "C" || fourthChar === "F"
           ? "COMPANY"
-          : "NON COMPANY";
+          : "NON-COMPANY";
     }
 
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-      customerType,
+      comp_nonComp,
     }));
 
     // Validate only when length reaches 10
-    if (value.length === 10) {
+    if (value.length === 11) {
       try {
         const res = await checkPanExists(value);
         console.log("PAN API:", res);
@@ -656,7 +711,7 @@ const fetchpaycondDropdown = async () => {
           setFormData((prev) => ({
             ...prev,
             panNo: "",
-            customerType: "",
+            comp_nonComp: "",
           }));
         } else {
           setPanError("PAN already exists");
@@ -674,14 +729,14 @@ const fetchpaycondDropdown = async () => {
   };
 
   //GST
-   const handleChangeGST = async (e) => {
+  const handleChangeGST = async (e) => {
     let { name, value } = e.target;
 
     value = value.toUpperCase();
 
     if (value.length > 15) return;
 
-      setFormData((prev) => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -701,8 +756,8 @@ const fetchpaycondDropdown = async () => {
           alert("Please check GST Card No");
           setFormData((prev) => ({
             ...prev,
-            panNo: "",
-            customerType: "",
+            //panNo: "",
+            comp_nonComp: "",
           }));
         } else {
           setGSTError("GST");
@@ -712,7 +767,7 @@ const fetchpaycondDropdown = async () => {
         console.error(error);
         setGSTError("Error checking GST");
       }
-    } else if (value.length > 0 && value.length < 15) {
+    } else if (value.length > 0 && value.length <= 15) {
       setGSTError("GST must be exactly 15 characters");
     } else {
       setGSTError("");
@@ -819,8 +874,8 @@ const fetchpaycondDropdown = async () => {
               <Grid item xs={12} md={3}>
                 <RadioGroup
                   row
-                  name="Cust_Type"
-                  value={formData.Cust_Type}
+                  name="customerType"
+                  value={formData.customerType}
                   onChange={handleChange}
                   sx={{ gap: 2 }}
                 >
@@ -894,8 +949,8 @@ const fetchpaycondDropdown = async () => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      name="merchantExporter"
-                      checked={formData.merchantExporter}
+                      name="CtForm"
+                      checked={formData.CtForm}
                       onChange={handleChange}
                     />
                   }
@@ -1055,7 +1110,7 @@ const fetchpaycondDropdown = async () => {
                   value={formData.district}
                   onChange={handleChange}
                 /> */}
-                 <TextField
+                <TextField
                   select
                   size="small"
                   name="district"
@@ -1070,7 +1125,7 @@ const fetchpaycondDropdown = async () => {
 
                   {districtDropdownValue.map((item) => (
                     <MenuItem key={item.District_cd} value={item.District_cd}>
-                      { item.District_cd } | { item.District_name }
+                      {item.District_cd} | {item.District_name}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -1088,25 +1143,9 @@ const fetchpaycondDropdown = async () => {
                   inputProps={{ maxLength: 10 }} // 👈 restrict typing
                 />
               </Grid>
-              {/* <Grid item xs={12} md={4}>
-                <TextField
-                  size="small"
-                  name="customerType"
-                  label="Type"
-                  fullWidth
-                  value={formData.customerType}
-                  onChange={handleChange}
-                />
-              </Grid> */}
+
               <Grid item xs={12} md={4}>
-                {/* <TextField
-                  size="small"
-                  name="state"
-                  label="State"
-                  fullWidth
-                  value={formData.state}
-                  onChange={handleChange}
-                /> */}
+
                 <TextField
                   select
                   size="small"
@@ -1447,7 +1486,7 @@ const fetchpaycondDropdown = async () => {
                               </TableCell>
                               <TableCell align="center">
                                 <strong>Tax Type</strong>
-                              </TableCell>                              
+                              </TableCell>
                               <TableCell align="center">
                                 <strong>Amount</strong>
                               </TableCell>
@@ -1561,7 +1600,7 @@ const fetchpaycondDropdown = async () => {
                         </FormControl>
                       </Grid>
 
-                     <Grid item md={3}>
+                      <Grid item md={3}>
                         <TextField
                           Number
                           label="Period"
@@ -1870,10 +1909,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={4}>
                         <TextField
                           label="Marketing By"
-                          name="marketingBy"
+                          name="sman_code"
                           size="small"
                           fullWidth
-                          value={formData.marketingBy || ""}
+                          value={formData.sman_code || ""}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2003,10 +2042,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="one"
+                          name="fname"
                           label="Name"
                           fullWidth
-                          value={formData.one}
+                          value={formData.fname}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2014,10 +2053,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="bankAdd"
+                          name="fbankAdd"
                           label="Address"
                           fullWidth
-                          value={formData.bankAdd}
+                          value={formData.fbankAdd}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2025,10 +2064,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="bankAdd1"
+                          name="fbankAdd1"
                           label="Address 1"
                           fullWidth
-                          value={formData.bankAdd1}
+                          value={formData.fbankAdd1}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2036,10 +2075,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="city"
+                          name="fcity"
                           label="City"
                           fullWidth
-                          value={formData.city}
+                          value={formData.fcity}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2047,10 +2086,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="pin"
+                          name="fpin"
                           label="Pin Code"
                           fullWidth
-                          value={formData.pin}
+                          value={formData.fpin}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2088,10 +2127,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="fax"
+                          name="ffax"
                           label="Fax"
                           fullWidth
-                          value={formData.fax}
+                          value={formData.ffax}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2099,10 +2138,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="phone"
+                          name="fphone"
                           label="Phone"
                           fullWidth
-                          value={formData.phone}
+                          value={formData.fphone}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2110,10 +2149,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="email"
+                          name="femail"
                           label="Email"
                           fullWidth
-                          value={formData.email}
+                          value={formData.femail}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2121,10 +2160,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="mobile"
+                          name="fmobile"
                           label="Mobile"
                           fullWidth
-                          value={formData.mobile}
+                          value={formData.fmobile}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2132,10 +2171,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="contactPerson"
+                          name="fcontactPerson"
                           label="Contact Person"
                           fullWidth
-                          value={formData.contactPerson}
+                          value={formData.fcontactPerson}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2143,10 +2182,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="designation"
+                          name="fdesignation"
                           label="Designation"
                           fullWidth
-                          value={formData.designation}
+                          value={formData.fdesignation}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2154,10 +2193,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="website"
+                          name="fwebsite"
                           label="Web Site"
                           fullWidth
-                          value={formData.website}
+                          value={formData.fwebsite}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2166,9 +2205,9 @@ const fetchpaycondDropdown = async () => {
                         <FormControl fullWidth size="small">
                           <InputLabel>Weekly Off</InputLabel>
                           <Select
-                            name="weeklyOff"
+                            name="fweeklyOff"
                             label="Weekly Off"
-                            value={formData.weeklyOff || ""}
+                            value={formData.fweeklyOff || ""}
                             onChange={handleChange}
                           >
                             <MenuItem value="">
@@ -2188,10 +2227,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="panNo"
+                          name="fpanNo"
                           label="PAN No"
                           fullWidth
-                          value={formData.panNo}
+                          value={formData.fpanNo}
                           onChange={handleChange}
                         />
                       </Grid>
@@ -2199,10 +2238,10 @@ const fetchpaycondDropdown = async () => {
                       <Grid item xs={12} md={6}>
                         <TextField
                           size="small"
-                          name="gstNo"
+                          name="fgstNo"
                           label="GST No"
                           fullWidth
-                          value={formData.gstNo}
+                          value={formData.fgstNo}
                           onChange={handleChange}
                         />
                       </Grid>

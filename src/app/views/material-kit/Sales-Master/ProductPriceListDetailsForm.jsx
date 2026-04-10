@@ -5,10 +5,13 @@ import {
   Button,
   Icon,
   Grid,
+  MenuItem,
+  Select,
+  Autocomplete,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
-import { ProductPriceListSAVE } from "app/utils/authServices"
+import { useEffect, useState } from "react";
+import { ProductPriceListSAVE, fetchItemcodeAPI } from "app/utils/authServices"
 import { useNavigate } from "react-router-dom"
 
 
@@ -26,6 +29,16 @@ const ProductPriceListDetailsForm = () => {
   //const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [itemCodes, setItemCodes] = useState([]);
+
+  const loadItemCodes = async () => {
+          const data = await fetchItemcodeAPI();
+          setItemCodes(data);
+      };
+
+      useEffect(() => {
+        loadItemCodes();
+          }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -95,14 +108,76 @@ const ProductPriceListDetailsForm = () => {
       <Box p={3} borderRadius={2}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={3}>
-            <TextField
+            {/* <TextField
               label="Product Code"
               name="ITEM_CODE"
               value={formData.ITEM_CODE}
               onChange={handleChange}
               size="small"
               fullWidth
-            />
+            /> */}
+                      {/* <TextField
+                                    size="small"
+                                    select
+                                    fullWidth
+                                    label="Item Code"
+                                    name="ITEM_CODE"
+                                    value={formData.ITEM_CODE || ""}
+                                    onChange={handleChange}
+                                >
+                                    <MenuItem value="">Select</MenuItem>
+
+                                    {itemCodes.map((item, index) => (
+                                        <MenuItem
+                                            key={index}
+                                            value={item.ITEM_CODE}
+                                        >
+                                            {item.ITEM_CODE} | {item.DESC} | {item.UOM}
+                                        </MenuItem>
+                                    ))}
+                                </TextField> */}
+
+                               <Autocomplete
+  options={itemCodes}
+  getOptionLabel={(option) => option.DESC || ""}
+  value={
+    itemCodes.find(
+      (item) => item.ITEM_CODE === formData.ITEM_CODE
+    ) || null
+  }
+  onChange={(e, newValue) => {
+    setFormData((prev) => ({
+      ...prev,
+      ITEM_CODE: newValue ? newValue.ITEM_CODE : "",
+    }));
+  }}
+  sx={{ width: "100%" }}
+  slotProps={{
+    paper: {
+      sx: { width: 500 } // 👈 wider dropdown
+    }
+  }}
+  renderOption={(props, option) => (
+    <li {...props}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "120px 1fr 80px",
+          gap: "10px",
+          width: "100%",
+        }}
+      >
+        <span>{option.ITEM_CODE}</span>
+        <span>{option.DESC}</span>
+        <span>{option.UOM}</span>
+      </div>
+    </li>
+  )}
+  renderInput={(params) => (
+    <TextField {...params} label="Select Item" size="small" />
+  )}
+/>
+                                            
           </Grid>
 
           <Grid item xs={12} md={9}>
