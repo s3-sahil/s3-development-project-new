@@ -182,7 +182,6 @@ const EnquiryForm = () => {
         sr_no: index + 1,
         drg_rev_dt: new Date().toISOString(),
         profcen_cd: profcen_cd,
-        physibility: "Y",
         mcAllowSurface: "string",
         forg_method: "string",
         gross_wt: 0,
