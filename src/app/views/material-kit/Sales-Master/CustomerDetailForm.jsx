@@ -45,12 +45,11 @@ import {
   checkGSTExists,
   Fetch_District,
   Fetch_Country,
-  Fetch_PAYCOND
+  Fetch_PAYCOND,
 } from "app/utils/authServices";
 import { Stack } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Span } from "app/components/Typography";
-
 
 const SAMPLE_TAXES = [
   { code: "T01", desc: "Standard Tax", percent: 5 },
@@ -63,9 +62,10 @@ const CustomerDetailForm = () => {
   const baseAmount = 1000;
   const location = useLocation(); // for edit data
 
-
   const [categoryDropdownValue, setCategoryDropdownValue] = useState([]);
-  const [industrytypeDropdownValue, setindustrytypeDropdownValue] = useState([]);
+  const [industrytypeDropdownValue, setindustrytypeDropdownValue] = useState(
+    [],
+  );
   const [stateDropdownValue, setstateDropdownValue] = useState([]);
   const [districtDropdownValue, setdistrictDropdownValue] = useState([]);
   const [countryDropdownValue, setcountryDropdownValue] = useState([]);
@@ -85,7 +85,7 @@ const CustomerDetailForm = () => {
   const [addedPays, setAddedPays] = useState([]);
 
   //const [payDesc, setPayDesc] = useState("");   // Description text
-  const [payCode, setPayCode] = useState("");   // PC_CODE
+  const [payCode, setPayCode] = useState(""); // PC_CODE
   //Edit
   const [actionMode, setActionMode] = useState("new"); // new | edit
 
@@ -151,7 +151,14 @@ const CustomerDetailForm = () => {
     discountApplicable: false,
   });
   const handleAddPay = () => {
-    if (!payPercent || !payCode || !payDesc || !payMode || !payPeriod || !payperioda) {
+    if (
+      !payPercent ||
+      !payCode ||
+      !payDesc ||
+      !payMode ||
+      !payPeriod ||
+      !payperioda
+    ) {
       alert("Please fill all fields");
       return;
     }
@@ -163,7 +170,7 @@ const CustomerDetailForm = () => {
         p.desc === payDesc &&
         p.mode === payMode &&
         p.perioda === payperioda &&
-        p.period === payPeriod
+        p.period === payPeriod,
     );
 
     if (exists) {
@@ -187,7 +194,7 @@ const CustomerDetailForm = () => {
     // ✅ Reset ALL fields (you missed payCode)
     setPayPercent("");
     setPayDesc("");
-    setPayCode("");   // ⭐ IMPORTANT
+    setPayCode(""); // ⭐ IMPORTANT
     setPayMode("");
     setPayPeriod("");
     setPayperioda("");
@@ -198,8 +205,7 @@ const CustomerDetailForm = () => {
     try {
       const res = await fetchCategoryCustomerDetails();
 
-      const filteredData =
-        res?.filter((item) => item.flag === "C") || [];
+      const filteredData = res?.filter((item) => item.flag === "C") || [];
 
       setCategoryDropdownValue(filteredData);
       //setCategoryDropdownValue(res || []);
@@ -365,8 +371,8 @@ const CustomerDetailForm = () => {
           (data.list_cust_tax_ex || []).map((t) => ({
             code: t.TAX_CODE ?? "",
             amount: t.TAX_AMT ?? "",
-            cust: t.CUST_CODE ?? ""
-          }))
+            cust: t.CUST_CODE ?? "",
+          })),
         );
 
         // ✅ Payment Terms
@@ -376,8 +382,8 @@ const CustomerDetailForm = () => {
             period: p.DMFLAG ?? "",
             perioda: p.PERIOD ?? "",
             mode: p.MODE ?? "",
-            code: p.PC_CODE ?? ""
-          }))
+            code: p.PC_CODE ?? "",
+          })),
         );
       }
     } catch (error) {
@@ -393,7 +399,6 @@ const CustomerDetailForm = () => {
   const [addedTaxes, setAddedTaxes] = useState([]);
   const [taxLoaded, setTaxLoaded] = useState(false);
 
-
   // useEffect(() => {
   //   if (open && !taxLoaded) {
   //     setAvailableTaxes(initialData.availableTaxes || SAMPLE_TAXES);
@@ -401,6 +406,24 @@ const CustomerDetailForm = () => {
   //     setTaxLoaded(true);
   //   }
   // }, [open, taxLoaded]);
+  // 👉 define here (top of component)
+  const selectedDivisionData =
+    JSON.parse(localStorage.getItem("selectedDivisionData")) || {};
+
+  // 👉 useEffect
+  useEffect(() => {
+    if (selectedDivisionData?.State) {
+      setFormData((prev) => ({
+        ...prev,
+        state: selectedDivisionData.State,
+      }));
+    }
+  }, []);
+
+  // 👉 now safe to use
+  const isStateMatch = formData.state === selectedDivisionData?.State;
+
+  console.log("State Match:", isStateMatch);
 
   useEffect(() => {
     if (taxType) {
@@ -423,10 +446,7 @@ const CustomerDetailForm = () => {
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
-
-    if (!open) {
-      setOpen(true);
-    }
+    setOpen(true);
   };
 
   const loadTaxData = async () => {
@@ -453,8 +473,8 @@ const CustomerDetailForm = () => {
         percent: Number(x.PERCENT || x.Percent || x.Rate || 0),
       }));
 
-      setAvailableTaxes(normalized);   // ✅ use same state as dropdown
-      setSelectedTaxCode("");          // reset dropdown
+      setAvailableTaxes(normalized); // ✅ use same state as dropdown
+      setSelectedTaxCode(""); // reset dropdown
     } catch (error) {
       console.error("Failed loading tax list:", error);
       setAvailableTaxes([]);
@@ -491,7 +511,7 @@ const CustomerDetailForm = () => {
         code: tax.code,
         desc: tax.desc,
         percent: tax.percent,
-        amount: amount
+        amount: amount,
       },
     ]);
 
@@ -509,9 +529,7 @@ const CustomerDetailForm = () => {
 
   const handleClearAll = () => setAddedTaxes([]);
 
-  
   const handleSave = async () => {
-
     try {
       const payload = {
         cust_mst_ex: {
@@ -577,12 +595,12 @@ const CustomerDetailForm = () => {
         list_cust_tax_ex: addedTaxes.map((t) => ({
           cusT_CODE: formData.code,
           taX_CODE: t.code,
-          taX_AMT: Number(t.amount || 0)
+          taX_AMT: Number(t.amount || 0),
         })),
 
         list_cust_pay_ex: addedPays.map((p, index) => ({
           cusT_CODE: formData.code,
-          pC_CODE: p.code,//Number(p.code || 0),//index + 1,
+          pC_CODE: p.code, //Number(p.code || 0),//index + 1,
           percent: p.percent, //Number(p.percent || 0),
           period: p.perioda,
           mode: p.mode,
@@ -606,8 +624,8 @@ const CustomerDetailForm = () => {
           web_site: formData.fwebsite,
           woff: formData.fweeklyOff,
           gst_no: formData.fgstNo,
-          panNo: formData.fpanNo
-        }
+          panNo: formData.fpanNo,
+        },
       };
 
       console.log("Payload:", payload);
@@ -619,7 +637,12 @@ const CustomerDetailForm = () => {
           ? await UpdatedCustomerDetail(payload)
           : await saveCustomerDetail(payload);
 
-      alert(result.message || (actionMode === "edit" ? "Customer Updated Successfully*" : "Customer Saved Successfully*"));
+      alert(
+        result.message ||
+          (actionMode === "edit"
+            ? "Customer Updated Successfully*"
+            : "Customer Saved Successfully*"),
+      );
 
       handleClose();
     } catch (error) {
@@ -682,12 +705,16 @@ const CustomerDetailForm = () => {
     if (value.length > 10) return;
 
     let comp_nonComp = "";
+
+    // 👉 Check 4th character
     if (value.length >= 4) {
-      const fourthChar = value.charAt(3);
-      comp_nonComp =
-        fourthChar === "C" || fourthChar === "F"
-          ? "COMPANY"
-          : "NON-COMPANY";
+      const fourthChar = value[3];
+
+      if (fourthChar === "C" || fourthChar === "F") {
+        comp_nonComp = "COMPANY";
+      } else {
+        comp_nonComp = "NON-COMPANY";
+      }
     }
 
     setFormData((prev) => ({
@@ -696,23 +723,23 @@ const CustomerDetailForm = () => {
       comp_nonComp,
     }));
 
-    // Validate only when length reaches 10
-    if (value.length === 11) {
+    // ✅ Correct condition (10 characters)
+    if (value.length === 10) {
       try {
         const res = await checkPanExists(value);
         console.log("PAN API:", res);
 
         if (
-          res?.Message ===
-          "Approved, PAN CARD Number NOT EXISTS in database."
+          res?.Message === "Approved, PAN CARD Number NOT EXISTS in database."
         ) {
           setPanError("PAN not exists");
           alert("Please check Pan Card No");
-          setFormData((prev) => ({
-            ...prev,
-            panNo: "",
-            comp_nonComp: "",
-          }));
+
+          // setFormData((prev) => ({
+          //   ...prev,
+          //   panNo: "",
+          //   comp_nonComp: "",
+          // }));
         } else {
           setPanError("PAN already exists");
           alert("PanNo exist in database");
@@ -741,17 +768,13 @@ const CustomerDetailForm = () => {
       [name]: value,
     }));
 
-
     // Validate only when length reaches 10
     if (value.length === 15) {
       try {
         const res = await checkGSTExists(value);
         console.log("GST API:", res);
 
-        if (
-          res?.Message ===
-          "Approved, GST Number NOT EXISTS in database."
-        ) {
+        if (res?.Message === "Approved, GST Number NOT EXISTS in database.") {
           setGSTError("GST not exists");
           alert("Please check GST Card No");
           setFormData((prev) => ({
@@ -773,8 +796,6 @@ const CustomerDetailForm = () => {
       setGSTError("");
     }
   };
-
-
 
   const handleContactChange = (index, field, value) => {
     setContactPersons((prev) => {
@@ -828,7 +849,6 @@ const CustomerDetailForm = () => {
       fetchEditData(location.state.Cust_code);
     }
   }, []);
-
 
   return (
     <Container maxWidth="xl">
@@ -924,7 +944,9 @@ const CustomerDetailForm = () => {
                   value={formData.zone}
                   onChange={handleChange}
                 >
-                  <MenuItem value=""><em>Select ZONE</em></MenuItem>
+                  <MenuItem value="">
+                    <em>Select ZONE</em>
+                  </MenuItem>
                   <MenuItem value="NORTH">NORTH</MenuItem>
                   <MenuItem value="EAST">EAST</MenuItem>
                   <MenuItem value="WEST">WEST</MenuItem>
@@ -967,7 +989,9 @@ const CustomerDetailForm = () => {
                   value={formData.insurance}
                   onChange={handleChange}
                 >
-                  <MenuItem value=""><em>Select Insurance</em></MenuItem>
+                  <MenuItem value="">
+                    <em>Select Insurance</em>
+                  </MenuItem>
                   <MenuItem value="O">Our</MenuItem>
                   <MenuItem value="Y">Your</MenuItem>
                   <MenuItem value="N">Not Applicable</MenuItem>
@@ -1042,9 +1066,11 @@ const CustomerDetailForm = () => {
                   label="Type"
                   fullWidth
                   value={formData.comp_nonComp}
-                  onChange={handleChange}
+                  disabled // 👈 prevent manual change
                 >
-                  <MenuItem value=""><em>Select Type</em></MenuItem>
+                  <MenuItem value="">
+                    <em>Select Type</em>
+                  </MenuItem>
                   <MenuItem value="COMPANY">COMPANY</MenuItem>
                   <MenuItem value="NON-COMPANY">NON-COMPANY</MenuItem>
                 </TextField>
@@ -1145,7 +1171,6 @@ const CustomerDetailForm = () => {
               </Grid>
 
               <Grid item xs={12} md={4}>
-
                 <TextField
                   select
                   size="small"
@@ -1307,7 +1332,10 @@ const CustomerDetailForm = () => {
                   </MenuItem>
 
                   {industrytypeDropdownValue.map((item) => (
-                    <MenuItem key={item.Industry_name} value={item.Industry_name}>
+                    <MenuItem
+                      key={item.Industry_name}
+                      value={item.Industry_name}
+                    >
                       {item.Industry_name}
                     </MenuItem>
                   ))}
@@ -1383,10 +1411,34 @@ const CustomerDetailForm = () => {
 
             <Box>
               <Tabs value={tabIndex} onChange={handleTabChange}>
-                <Tab label="Tax Term" />
-                <Tab label="Payment Terms" />
-                <Tab label="Other Details" />
-                <Tab label="Office Details" />
+                <Tab
+                  label="Tax Term"
+                  onClick={() => {
+                    setTabIndex(0);
+                    setOpen(true);
+                  }}
+                />
+                <Tab
+                  label="Payment Terms"
+                  onClick={() => {
+                    setTabIndex(1);
+                    setOpen(true);
+                  }}
+                />
+                <Tab
+                  label="Other Details"
+                  onClick={() => {
+                    setTabIndex(2);
+                    setOpen(true);
+                  }}
+                />
+                <Tab
+                  label="Office Details"
+                  onClick={() => {
+                    setTabIndex(3);
+                    setOpen(true);
+                  }}
+                />
               </Tabs>
 
               {/* Modal */}
@@ -1430,9 +1482,26 @@ const CustomerDetailForm = () => {
                             value={taxType}
                             onChange={(e) => setTaxType(e.target.value)}
                           >
-                            <FormControlLabel value="SGST" control={<Radio />} label="SGST" />
-                            <FormControlLabel value="CGST" control={<Radio />} label="CGST" />
-                            <FormControlLabel value="IGST" control={<Radio />} label="IGST" />
+                            {!isStateMatch ? (
+                              <>
+                                <FormControlLabel
+                                  value="SGST"
+                                  control={<Radio />}
+                                  label="SGST"
+                                />
+                                <FormControlLabel
+                                  value="CGST"
+                                  control={<Radio />}
+                                  label="CGST"
+                                />
+                              </>
+                            ) : (
+                              <FormControlLabel
+                                value="IGST"
+                                control={<Radio />}
+                                label="IGST"
+                              />
+                            )}
                           </RadioGroup>
                         </FormControl>
                       </Grid>
@@ -1509,7 +1578,9 @@ const CustomerDetailForm = () => {
                                 <TableRow key={t.id}>
                                   <TableCell align="center">{t.code}</TableCell>
                                   <TableCell align="center">{t.type}</TableCell>
-                                  <TableCell align="right">{t.amount}</TableCell>
+                                  <TableCell align="right">
+                                    {t.amount}
+                                  </TableCell>
                                   <TableCell align="center">
                                     <IconButton
                                       size="small"
@@ -1556,7 +1627,7 @@ const CustomerDetailForm = () => {
                           value={payCode}
                           onChange={(e) => {
                             const selected = paycondDropdownValue.find(
-                              (item) => item.PC_CODE === e.target.value
+                              (item) => item.PC_CODE === e.target.value,
                             );
 
                             setPayCode(selected?.PC_CODE || "");
@@ -1573,12 +1644,13 @@ const CustomerDetailForm = () => {
                             </MenuItem>
                           ))}
                         </TextField>
-
                       </Grid>
 
                       <Grid item xs={12} md={3}>
                         <FormControl fullWidth size="small">
-                          <InputLabel id="pay-mode-label">Payment Mode</InputLabel>
+                          <InputLabel id="pay-mode-label">
+                            Payment Mode
+                          </InputLabel>
 
                           <Select
                             id="pay-mode"
@@ -1596,7 +1668,6 @@ const CustomerDetailForm = () => {
                             <MenuItem value="A">After</MenuItem>
                             <MenuItem value="B">Before</MenuItem>
                           </Select>
-
                         </FormControl>
                       </Grid>
 
@@ -1650,7 +1721,6 @@ const CustomerDetailForm = () => {
                               <TableCell>Period</TableCell>
                               <TableCell>Dm Flag</TableCell>
                               <TableCell align="center">Action</TableCell>
-
                             </TableRow>
                           </TableHead>
 
@@ -1750,8 +1820,12 @@ const CustomerDetailForm = () => {
                             <MenuItem value="">
                               <em>None</em>
                             </MenuItem>
-                            <MenuItem value="Wholesale Dealer">Wholesale Dealer</MenuItem>
-                            <MenuItem value="Industrial Consumer">Industrial Consumer</MenuItem>
+                            <MenuItem value="Wholesale Dealer">
+                              Wholesale Dealer
+                            </MenuItem>
+                            <MenuItem value="Industrial Consumer">
+                              Industrial Consumer
+                            </MenuItem>
                             <MenuItem value="Government">Government</MenuItem>
                           </Select>
                         </FormControl>
@@ -1823,7 +1897,6 @@ const CustomerDetailForm = () => {
                           </Select>
                         </FormControl>
                       </Grid>
-
 
                       <Grid item xs={12} md={4}>
                         <TextField
@@ -2011,9 +2084,7 @@ const CustomerDetailForm = () => {
                                 <TableCell align="center">
                                   <Tooltip title="Delete">
                                     <IconButton
-                                      onClick={() =>
-                                        removeContactRow(idx)
-                                      }
+                                      onClick={() => removeContactRow(idx)}
                                     >
                                       <Icon color="error">delete</Icon>
                                     </IconButton>
