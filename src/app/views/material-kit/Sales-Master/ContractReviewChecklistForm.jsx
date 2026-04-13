@@ -3,6 +3,7 @@ import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
 import { useEffect, useState } from "react";
 import {
+  ContactReviewCheckListEdit,
   ContractReviewChecklistDetailsAdd,
 } from "app/utils/authServices";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -71,8 +72,8 @@ const ContractReviewChecklistForm = () => {
             if (res?.data) {
               const data = res.data;
               setFormData({
-              checklistCode: data.item_code,
-              checklistDescription: data.sales_rate
+              checklistCode: data.check_list_code,
+              checklistDescription: data.description
               });
             }
           } catch (error) {
