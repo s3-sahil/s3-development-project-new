@@ -1253,7 +1253,7 @@ const materialRoutes = [
     element: <ContractReviewChecklistForm />,
   },
   {
-    path: "/material/sales-contract-review-checklist-form/edit/:slipNo",
+    path: "/material/sales-contract-review-checklist-form/edit/:check_list_code",
     element: <ContractReviewChecklistForm />,
   },
   {
