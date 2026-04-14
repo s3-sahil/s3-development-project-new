@@ -1080,6 +1080,13 @@ const MaintenanceReasonForm = Loadable(
   lazy(() => import("./Maintenance-Master/MaintenanceReasonForm")),
 );
 
+const PurchaseOrderTable = Loadable(
+  lazy(() => import("./Material-Transaction/PurchaseOrderTable")),
+);
+const PurchaseOrderForm = Loadable(
+  lazy(() => import("./Material-Transaction/PurchaseOrderForm")),
+);
+
 const materialRoutes = [
   { path: "/material/table", element: <AppTable /> },
   { path: "/material/form", element: <AppForm /> },
@@ -3298,6 +3305,18 @@ const materialRoutes = [
   {
     path: "/material/finance-TDS-parameter-form/add",
     element: <TDSParameterForm />,
+  },
+   {
+    path: "/material/Purchase-Order-Table",
+    element: <PurchaseOrderTable />,
+  },
+  {
+    path: "/material/Purchase-Order-form/edit/:slipNo",
+    element: <PurchaseOrderForm />,
+  },
+  {
+    path: "/material/Purchase-Order-form/add",
+    element: <PurchaseOrderForm />,
   },
 ];
 
