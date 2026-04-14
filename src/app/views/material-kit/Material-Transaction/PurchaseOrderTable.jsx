@@ -71,7 +71,7 @@ export default function PurchaseOrderTable() {
         return;
       }
 
-      navigate(`/material/purchase-order-form/edit/${row.id}`, {
+      navigate(`/material/Purchase-Order-form/edit/${row.id}`, {
         state: { purchaseOrder: response?.data },
       });
     } catch (e) {
@@ -162,7 +162,7 @@ export default function PurchaseOrderTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/purchase-order-form/add")}
+            onClick={() => navigate("/material/Purchase-Order-form/add")}
           >
             New
           </Button>

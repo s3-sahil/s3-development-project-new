@@ -6,15 +6,36 @@ import {
   Box,
   Checkbox,
   FormControlLabel,
+  Icon,
 } from "@mui/material";
+import PaymentTermsPurchaseOrderModal from "./PaymentTermsPurchaseOrderModal";
+import TaxTermPurchaseOrderModal from "./TaxTermPurchaseOrderModal";
 
 export default function PurchaseOrderForm() {
+  const [openPayment, setOpenPayment] = useState(false);
+  const [openTaxModal, setOpenTaxModal] = useState(false);
+  const [taxRows, setTaxRows] = useState([]); // store saved tax data
+
+  const handleOpenTax = () => setOpenTaxModal(true);
+  const handleCloseTax = () => setOpenTaxModal(false);
+
+  const handleSaveTax = (rows) => {
+    setTaxRows(rows); // store in parent
+    setOpenTaxModal(false);
+  };
+
+  const handleOpenPayment = () => setOpenPayment(true);
+  const handleClosePayment = () => setOpenPayment(false);
   return (
     <Container maxWidth="lg">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" mb={2}>
-        <h2 style={{ color: "#6C2BD9" }}>Purchase Order</h2>
-        <Button variant="contained" style={{ background: "#6C2BD9" }}>
+        <h2 style={{ color: "#6C2BD9" }}></h2>
+        <Button
+          variant="contained"
+          startIcon={<Icon>save</Icon>}
+          // onClick={handleSave}
+        >
           Save
         </Button>
       </Box>
@@ -22,7 +43,6 @@ export default function PurchaseOrderForm() {
       {/* MAIN CARD */}
       <Box p={3} boxShadow={2} borderRadius={2} bgcolor="#fff">
         <Grid container spacing={2}>
-          
           {/* ROW 1 */}
           <Grid item xs={4}>
             <TextField label="Order No." fullWidth size="small" />
@@ -90,10 +110,10 @@ export default function PurchaseOrderForm() {
 
           {/* ACTION BUTTONS */}
           <Grid item xs={12} display="flex" gap={2}>
-            <Button variant="contained" style={{ background: "#6C2BD9" }}>
+            <Button variant="contained" onClick={handleOpenTax}>
               Tax Term
             </Button>
-            <Button variant="contained" style={{ background: "#6C2BD9" }}>
+            <Button variant="contained" onClick={handleOpenPayment}>
               Payment Terms
             </Button>
             <Button variant="contained" style={{ background: "#6C2BD9" }}>
@@ -144,7 +164,12 @@ export default function PurchaseOrderForm() {
           </Grid>
 
           <Grid item xs={3}>
-            <TextField type="date" label="Delivery Date" fullWidth size="small" />
+            <TextField
+              type="date"
+              label="Delivery Date"
+              fullWidth
+              size="small"
+            />
           </Grid>
 
           {/* FOOTER BUTTONS */}
@@ -161,6 +186,17 @@ export default function PurchaseOrderForm() {
           </Grid>
         </Grid>
       </Box>
+
+      <PaymentTermsPurchaseOrderModal
+        open={openPayment}
+        onClose={handleClosePayment}
+      />
+      <TaxTermPurchaseOrderModal
+        open={openTaxModal}
+        onClose={handleCloseTax}
+        onSave={handleSaveTax}
+        defaultRows={taxRows}
+      />
     </Container>
   );
 }
