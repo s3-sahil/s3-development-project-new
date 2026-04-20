@@ -8,9 +8,11 @@ import {
   MenuItem,
   Checkbox,
   FormControlLabel,
+  Autocomplete,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
+import { addHSN, fetchUOMAPI } from "app/utils/materialMaterialServices";
+import { useEffect, useState } from "react";
 
 export default function HSNForm() {
   const [formData, setFormData] = useState({
@@ -20,9 +22,23 @@ export default function HSNForm() {
     notificationNo: "",
     notificationDate: "",
     uom: "",
+    sgst: "",
+    cgst: "",
+    igst: "",
+    exemption: "",
     ourHSN: false,
     supplierHSN: false,
   });
+  const [uomOptions, setUomOptions] = useState([]);
+
+  useEffect(() => {
+    const loadUOM = async () => {
+      const data = await fetchUOMAPI();
+      setUomOptions(data);
+    };
+
+    loadUOM();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,25 +50,78 @@ export default function HSNForm() {
     setFormData((prev) => ({ ...prev, [name]: checked }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("HSN/SAC Saved (UI Only)");
+  const handleSave = async () => {
+    try {
+      const payload = {
+        tarifF_CODE: formData.hsnCode,
+        tarifF_DESC: formData.name,
+        notification: formData.notificationNo,
+        noT_DATE: formData.notificationDate
+          ? new Date(formData.notificationDate).toISOString()
+          : null,
+
+        flag: formData.flag,
+        hsN_uom: formData.uom,
+
+        sgst_code: formData.sgst,
+        cgst_code: formData.cgst,
+        igst_code: formData.igst,
+        exemption_NOTIFICATION: formData.exemption,
+
+        abatment: 0,
+        exc_code: "",
+        cess_code: "",
+        hcess_code: "",
+        vat_code: "",
+        cst_code: "",
+        add_exc: "",
+        add_cess: "",
+        add_hcess: "",
+        catG_Cd: "",
+        subcatG_Cd: "",
+        cst_Code1: "",
+        tType: "",
+        tgroupcode: "",
+        bcd_Code: "",
+        bcdcess_Code: "",
+      };
+
+      console.log("Payload:", payload);
+
+      const res = await addHSN(payload);
+
+      alert(res.message || "Saved Successfully ✅");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Save failed ❌");
+    }
   };
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Finance" }, { name: "HSN/SAC Master" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Finance" }, { name: "HSN/SAC Master" }]}
+        />
       </Box>
 
+      {/* Card */}
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
+        {/* Save Button */}
         <Box display="flex" justifyContent="flex-end" mb={2}>
-          <Button variant="contained" startIcon={<Icon>save</Icon>} onClick={handleSave}>
+          <Button
+            variant="contained"
+            startIcon={<Icon>save</Icon>}
+            onClick={handleSave}
+          >
             Save
           </Button>
         </Box>
 
+        {/* FORM */}
         <Grid container spacing={3}>
+          {/* Row 1 */}
           <Grid item xs={6}>
             <TextField
               select
@@ -63,10 +132,11 @@ export default function HSNForm() {
               size="small"
               fullWidth
             >
-              <MenuItem value="Service">Service</MenuItem>
-              <MenuItem value="Manufacturing">Manufacturing</MenuItem>
+              <MenuItem value="S">Service</MenuItem>
+              <MenuItem value="H">Manufacturing</MenuItem>
             </TextField>
           </Grid>
+
           <Grid item xs={6}>
             <TextField
               label="HSN/SAC Code"
@@ -77,6 +147,8 @@ export default function HSNForm() {
               fullWidth
             />
           </Grid>
+
+          {/* Row 2 */}
           <Grid item xs={6}>
             <TextField
               label="Name"
@@ -87,9 +159,38 @@ export default function HSNForm() {
               fullWidth
             />
           </Grid>
+
+          <Grid item xs={6}>
+            <Autocomplete
+              options={uomOptions}
+              getOptionLabel={(option) => option?.UOM || ""}
+              // 🔍 search filter
+              filterOptions={(options, state) =>
+                options.filter((opt) =>
+                  opt?.UOM?.toLowerCase().includes(
+                    state.inputValue.toLowerCase(),
+                  ),
+                )
+              }
+              value={
+                uomOptions.find((item) => item.UOM === formData.uom) || null
+              }
+              onChange={(event, newValue) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  uom: newValue?.UOM || "",
+                }));
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="UOM" size="small" fullWidth />
+              )}
+            />
+          </Grid>
+
+          {/* Row 3 */}
           <Grid item xs={6}>
             <TextField
-              label="Notification No."
+              label="Notification No"
               name="notificationNo"
               value={formData.notificationNo}
               onChange={handleChange}
@@ -97,27 +198,67 @@ export default function HSNForm() {
               fullWidth
             />
           </Grid>
+
           <Grid item xs={6}>
             <TextField
+              type="date"
               label="Notification Date"
               name="notificationDate"
               value={formData.notificationDate}
               onChange={handleChange}
               size="small"
               fullWidth
-              placeholder="dd/mm/yyyy"
+              InputLabelProps={{ shrink: true }}
             />
           </Grid>
-          <Grid item xs={6}>
+
+          {/* Row 4 */}
+          <Grid item xs={4}>
             <TextField
-              label="UOM"
-              name="uom"
-              value={formData.uom}
+              label="SGST Code"
+              name="sgst"
+              value={formData.sgst}
               onChange={handleChange}
               size="small"
               fullWidth
             />
           </Grid>
+
+          <Grid item xs={4}>
+            <TextField
+              label="CGST Code"
+              name="cgst"
+              value={formData.cgst}
+              onChange={handleChange}
+              size="small"
+              fullWidth
+            />
+          </Grid>
+
+          <Grid item xs={4}>
+            <TextField
+              label="IGST Code"
+              name="igst"
+              value={formData.igst}
+              onChange={handleChange}
+              size="small"
+              fullWidth
+            />
+          </Grid>
+
+          {/* Row 5 */}
+          <Grid item xs={12}>
+            <TextField
+              label="Exemption Notification"
+              name="exemption"
+              value={formData.exemption}
+              onChange={handleChange}
+              size="small"
+              fullWidth
+            />
+          </Grid>
+
+          {/* Row 6 */}
           <Grid item xs={6}>
             <FormControlLabel
               control={
@@ -130,6 +271,7 @@ export default function HSNForm() {
               label="Our HSN"
             />
           </Grid>
+
           <Grid item xs={6}>
             <FormControlLabel
               control={

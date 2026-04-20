@@ -5,9 +5,12 @@ import {
   Button,
   Icon,
   Grid,
+  Autocomplete,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
+import { fetchItemcodeAPI } from "app/utils/authServices";
+import { addShareOfBusiness } from "app/utils/materialMaterialServices";
+import { useEffect, useState } from "react";
 
 export default function ShareOfBusinessForm() {
   const [formData, setFormData] = useState({
@@ -16,25 +19,48 @@ export default function ShareOfBusinessForm() {
     supplier: "",
     share: "",
   });
+  const [itemOptions, setItemOptions] = useState([]);
 
+  useEffect(() => {
+    const loadItems = async () => {
+      const data = await fetchItemcodeAPI();
+      setItemOptions(data);
+    };
+
+    loadItems();
+  }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Share Of Business Saved (UI Only)");
+  const handleSave = async () => {
+    try {
+      const payload = [
+        {
+          item_code: formData.itemCode,
+          vend_code: formData.supplier, 
+          share_per: Number(formData.share) || 0,
+        },
+      ];
+
+      console.log("Payload:", payload);
+
+      const res = await addShareOfBusiness(payload);
+
+      console.log("Success:", res);
+      alert(res.message || "Saved Successfully ✅");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Save failed ❌");
+    }
   };
 
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: "Material" },
-            { name: "Share Of Business" },
-          ]}
+          routeSegments={[{ name: "Material" }, { name: "Share Of Business" }]}
         />
       </Box>
 
@@ -51,19 +77,73 @@ export default function ShareOfBusinessForm() {
 
         <Grid container spacing={3}>
           <Grid item xs={6}>
-            <TextField label="Item Code" name="itemCode" value={formData.itemCode} onChange={handleChange} size="small" fullWidth />
+            <Autocomplete
+              options={itemOptions}
+              getOptionLabel={(option) => `${option.ITEM_CODE}`}
+              // 👇 ADD HERE
+              filterOptions={(options, state) =>
+                options.filter((opt) =>
+                  opt.ITEM_CODE.toLowerCase().includes(
+                    state.inputValue.toLowerCase(),
+                  ),
+                )
+              }
+              value={
+                itemOptions.find(
+                  (item) => item.ITEM_CODE === formData.itemCode,
+                ) || null
+              }
+              onChange={(event, newValue) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  itemCode: newValue?.ITEM_CODE || "",
+                  itemName: newValue?.DESC || "",
+                }));
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Item Code"
+                  size="small"
+                  fullWidth
+                />
+              )}
+            />
           </Grid>
 
           <Grid item xs={6}>
-            <TextField label="Item Name" name="itemName" value={formData.itemName} onChange={handleChange} size="small" fullWidth />
+            <TextField
+              label="Item Name"
+              name="itemName"
+              value={formData.itemName}
+              size="small"
+              fullWidth
+              InputProps={{
+                readOnly: true,
+              }}
+            />
           </Grid>
 
           <Grid item xs={6}>
-            <TextField label="Supplier" name="supplier" value={formData.supplier} onChange={handleChange} size="small" fullWidth />
+            <TextField
+              label="Supplier"
+              name="supplier"
+              value={formData.supplier}
+              onChange={handleChange}
+              size="small"
+              fullWidth
+            />
           </Grid>
 
           <Grid item xs={6}>
-            <TextField label="Share (%)" name="share" value={formData.share} onChange={handleChange} size="small" fullWidth />
+            <TextField
+              label="Share (%)"
+              name="share"
+              value={formData.share}
+              onChange={handleChange}
+              size="small"
+              fullWidth
+            />
           </Grid>
         </Grid>
       </Box>

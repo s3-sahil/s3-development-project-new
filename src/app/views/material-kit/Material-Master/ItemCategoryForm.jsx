@@ -8,10 +8,15 @@ import {
   Checkbox,
   FormControlLabel,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
-import { useState } from "react";
+import {
+  addItemCategoryDetails,
+  fetchCategoryTypeAPI,
+} from "app/utils/materialMaterialServices";
+import { useEffect, useState } from "react";
 
 const ItemCategoryForm = () => {
   const [formData, setFormData] = useState({
@@ -24,21 +29,101 @@ const ItemCategoryForm = () => {
     importMaterial: false,
   });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+  const [loading, setLoading] = useState(false);
+  const [loadingDropdown, setLoadingDropdown] = useState(false);
+  const [materialGroupOptions, setMaterialGroupOptions] = useState([]);
+
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
+  // ✅ Load dropdown data safely
+  const loadInitialData = async () => {
+    try {
+      setLoadingDropdown(true);
+      const res = await fetchCategoryTypeAPI();
+      setMaterialGroupOptions(res || []);
+    } catch (error) {
+      console.error("Dropdown API Error:", error);
+      setMaterialGroupOptions([]);
+    } finally {
+      setLoadingDropdown(false);
+    }
   };
 
-  const handleSave = () => {
-    console.log("Item Category Save:", formData);
-    alert("Item Category Saved (UI Only)");
+  // ✅ Handle input change
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : String(value),
+    }));
+  };
+  // ✅ Save API call
+  const handleSave = async () => {
+    // 🔴 Validation
+    if (!formData.materialGroup) {
+      alert("Material Group is required");
+      return;
+    }
+
+    if (!formData.categoryCode || !formData.categoryName) {
+      alert("Category Code and Name are required");
+      return;
+    }
+
+    // ✅ Payload mapping
+    const payload = {
+      CATG_CODE: formData.categoryCode.substring(0, 2), // max 2 chars
+
+      desc: formData.categoryName,
+
+      indicator: formData.materialGroup.substring(0, 2), // max 2 chars
+
+      raw_ind: formData.materialGroup === "RM" ? "Y" : "N", // single char ONLY
+
+      other_ind: (formData.otherIndicator || "").substring(0, 2),
+
+      iN_use: formData.inUse,
+
+      loc: formData.locationCompulsory ? "Y" : "N",
+
+      imp_Material: formData.importMaterial ? "Y" : "N",
+
+      auto_Subcatg_no: "",
+
+      lW_Value: "",
+    };
+
+    try {
+      setLoading(true);
+
+      const res = await addItemCategoryDetails(payload);
+
+      alert(res.message || "Saved successfully");
+
+      // ✅ Reset form
+      setFormData({
+        materialGroup: "",
+        categoryCode: "",
+        categoryName: "",
+        otherIndicator: "",
+        inUse: false,
+        locationCompulsory: false,
+        importMaterial: false,
+      });
+    } catch (error) {
+      console.error("Save Error:", error);
+      alert(error.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
@@ -53,10 +138,17 @@ const ItemCategoryForm = () => {
         <Box display="flex" justifyContent="flex-end" mb={2}>
           <Button
             variant="contained"
-            startIcon={<Icon>save</Icon>}
+            startIcon={
+              loading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                <Icon>save</Icon>
+              )
+            }
             onClick={handleSave}
+            disabled={loading}
           >
-            <Span>Save</Span>
+            <Span>{loading ? "Saving..." : "Save"}</Span>
           </Button>
         </Box>
 
@@ -64,17 +156,23 @@ const ItemCategoryForm = () => {
           {/* Material Group */}
           <Grid item xs={4}>
             <TextField
-              select
               label="Material Group"
               name="materialGroup"
-              value={formData.materialGroup}
+              value={formData.materialGroup ?? ""}
               onChange={handleChange}
               size="small"
               fullWidth
+              select
             >
-              <MenuItem value="">Select</MenuItem>
-              <MenuItem value="RM">Raw Material</MenuItem>
-              <MenuItem value="FP">Finished Product</MenuItem>
+              <MenuItem value="">
+                <em>Select Material Group</em>
+              </MenuItem>
+
+              {(materialGroupOptions || []).map((item, index) => (
+                <MenuItem key={index} value={String(item.CATG_CODE)}>
+                  {item.categorytype}
+                </MenuItem>
+              ))}
             </TextField>
           </Grid>
 
@@ -87,6 +185,7 @@ const ItemCategoryForm = () => {
               onChange={handleChange}
               size="small"
               fullWidth
+              required
             />
           </Grid>
 
@@ -113,6 +212,7 @@ const ItemCategoryForm = () => {
               onChange={handleChange}
               size="small"
               fullWidth
+              required
             />
           </Grid>
 
@@ -133,7 +233,9 @@ const ItemCategoryForm = () => {
               <MenuItem value="FP">FP</MenuItem>
             </TextField>
           </Grid>
+
           <Grid item xs={4}></Grid>
+
           {/* Location Compulsory */}
           <Grid item xs={4}>
             <FormControlLabel

@@ -8,9 +8,12 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Autocomplete,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
+import { fetchItemcodeAPI } from "app/utils/authServices";
+import { addItemRateDetails } from "app/utils/materialMaterialServices";
+import { useEffect, useState } from "react";
 
 export default function ItemRateForm() {
   const [formData, setFormData] = useState({
@@ -20,25 +23,48 @@ export default function ItemRateForm() {
     rate: "",
     scrapRate: "",
   });
+  const [itemOptions, setItemOptions] = useState([]);
+
+  useEffect(() => {
+    const loadItems = async () => {
+      const data = await fetchItemcodeAPI();
+      setItemOptions(data);
+    };
+
+    loadItems();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Item Rate Saved (UI Only)");
+  const handleSave = async () => {
+    try {
+      const payload = {
+        item_code: formData.itemCode,
+        rate: Number(formData.rate) || 0,
+        scrap_rate: Number(formData.scrapRate) || 0,
+
+        // 👇 IMPORTANT mapping
+        profcen_Cd: localStorage.getItem("PROFCEN_CD"),
+      };
+
+      const res = await addItemRateDetails(payload);
+
+      console.log("Success:", res);
+      alert("Item Rate Saved Successfully ✅");
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Save failed ❌");
+    }
   };
 
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: "Material" },
-            { name: "Item Rate Details" },
-          ]}
+          routeSegments={[{ name: "Material" }, { name: "Item Rate Details" }]}
         />
       </Box>
 
@@ -75,13 +101,39 @@ export default function ItemRateForm() {
           </Grid>
 
           <Grid item xs={6}>
-            <TextField
-              label="Item Code"
-              name="itemCode"
-              value={formData.itemCode}
-              onChange={handleChange}
-              size="small"
-              fullWidth
+            <Autocomplete
+              options={itemOptions}
+              getOptionLabel={(option) =>
+                `${option.ITEM_CODE}`
+              }
+              // 👇 ADD HERE
+              filterOptions={(options, state) =>
+                options.filter((opt) =>
+                  opt.ITEM_CODE.toLowerCase().includes(
+                    state.inputValue.toLowerCase(),
+                  ),
+                )
+              }
+              value={
+                itemOptions.find(
+                  (item) => item.ITEM_CODE === formData.itemCode,
+                ) || null
+              }
+              onChange={(event, newValue) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  itemCode: newValue?.ITEM_CODE || "",
+                  itemName: newValue?.DESC || "",
+                }));
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Item Code"
+                  size="small"
+                  fullWidth
+                />
+              )}
             />
           </Grid>
 
@@ -90,9 +142,11 @@ export default function ItemRateForm() {
               label="Item Name"
               name="itemName"
               value={formData.itemName}
-              onChange={handleChange}
               size="small"
               fullWidth
+              InputProps={{
+                readOnly: true,
+              }}
             />
           </Grid>
 
