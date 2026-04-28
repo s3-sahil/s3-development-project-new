@@ -44,7 +44,7 @@ export default function ExchangeCurrencyTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/finance/exchange-currency-form/edit/${params.row.id}`, {
+              navigate(`/material/material-exchange-currency-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -73,7 +73,7 @@ export default function ExchangeCurrencyTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/finance/exchange-currency-form/add")
+              navigate("/material/material-exchange-currency-form/add")
             }
           >
             New

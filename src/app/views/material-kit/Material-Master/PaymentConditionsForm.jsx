@@ -10,6 +10,7 @@ import {
   Radio,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { addPaymentCondition } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 
 export default function PaymentConditionsForm() {
@@ -27,9 +28,36 @@ export default function PaymentConditionsForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Payment Conditions Saved (UI Only)");
+  const handleSave = async () => {
+    try {
+      const payload = {
+        pcdesc: formData.description,
+        pC_CODE: Number(formData.paymentCode) || 0,
+
+        advance_condt: formData.advanceApplicable === "Yes" ? "Y" : "N",
+
+        inspection_condition: formData.inspectionDate === "Yes" ? "Y" : "N",
+      };
+
+      const res = await addPaymentCondition(payload);
+
+      console.log("API Response:", res);
+
+      alert(res.message || "Saved successfully ✅");
+
+      // reset form
+      setFormData({
+        paymentCode: "",
+        description: "",
+        advanceApplicable: "No",
+        inspectionDate: "No",
+        lcApplicable: "No",
+        invoiceDate: "No",
+      });
+    } catch (error) {
+      console.error("Save Error:", error);
+      alert(error.message || "Save failed ❌");
+    }
   };
 
   return (
@@ -84,7 +112,11 @@ export default function PaymentConditionsForm() {
               value={formData.advanceApplicable}
               onChange={handleChange}
             >
-              <FormControlLabel value="Yes" control={<Radio />} label="Advance Applicable - Yes" />
+              <FormControlLabel
+                value="Yes"
+                control={<Radio />}
+                label="Advance Applicable - Yes"
+              />
               <FormControlLabel value="No" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
@@ -96,7 +128,11 @@ export default function PaymentConditionsForm() {
               value={formData.inspectionDate}
               onChange={handleChange}
             >
-              <FormControlLabel value="Yes" control={<Radio />} label="Inspection Date - Yes" />
+              <FormControlLabel
+                value="Yes"
+                control={<Radio />}
+                label="Inspection Date - Yes"
+              />
               <FormControlLabel value="No" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
@@ -108,7 +144,11 @@ export default function PaymentConditionsForm() {
               value={formData.lcApplicable}
               onChange={handleChange}
             >
-              <FormControlLabel value="Yes" control={<Radio />} label="LC Applicable - Yes" />
+              <FormControlLabel
+                value="Yes"
+                control={<Radio />}
+                label="LC Applicable - Yes"
+              />
               <FormControlLabel value="No" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>
@@ -120,7 +160,11 @@ export default function PaymentConditionsForm() {
               value={formData.invoiceDate}
               onChange={handleChange}
             >
-              <FormControlLabel value="Yes" control={<Radio />} label="Invoice Date - Yes" />
+              <FormControlLabel
+                value="Yes"
+                control={<Radio />}
+                label="Invoice Date - Yes"
+              />
               <FormControlLabel value="No" control={<Radio />} label="No" />
             </RadioGroup>
           </Grid>

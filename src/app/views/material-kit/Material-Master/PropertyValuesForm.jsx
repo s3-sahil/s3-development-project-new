@@ -8,6 +8,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { addPropertyValues } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 
 export default function PropertyValuesForm() {
@@ -22,19 +23,40 @@ export default function PropertyValuesForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Property Values Saved (UI Only)");
+  const handleSave = async () => {
+    try {
+      const payload = [
+        {
+          property_name: formData.productProperty,
+          code: formData.code,
+          property_desc: formData.description,
+          property_no: 0, // or dynamic if needed
+        },
+      ];
+
+      const res = await addPropertyValues(payload);
+
+      console.log("API Response:", res);
+
+      alert(res.message || "Saved successfully ✅");
+
+      // ✅ Reset form
+      setFormData({
+        productProperty: "",
+        code: "",
+        description: "",
+      });
+    } catch (error) {
+      console.error("Save Error:", error);
+      alert(error.message || "Save failed ❌");
+    }
   };
 
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: "Material" },
-            { name: "Property Values" },
-          ]}
+          routeSegments={[{ name: "Material" }, { name: "Property Values" }]}
         />
       </Box>
 

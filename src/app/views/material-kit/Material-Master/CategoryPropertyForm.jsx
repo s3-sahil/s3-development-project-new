@@ -5,9 +5,11 @@ import {
   Button,
   Icon,
   Grid,
+  Autocomplete,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
+import { addCategoryPropertyValues, fetchCategoryTypeAPI } from "app/utils/materialMaterialServices";
+import { useEffect, useState } from "react";
 
 export default function CategoryPropertyForm() {
   const [formData, setFormData] = useState({
@@ -15,15 +17,70 @@ export default function CategoryPropertyForm() {
     propertyCode: "",
     description: "",
   });
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [loadingDropdown, setLoadingDropdown] = useState(false);
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const loadCategories = async () => {
+    try {
+      setLoadingDropdown(true);
+      const res = await fetchCategoryTypeAPI();
+      setCategoryOptions(res || []);
+    } catch (error) {
+      console.error("Category API Error:", error);
+      setCategoryOptions([]);
+    } finally {
+      setLoadingDropdown(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Category Property Saved (UI Only)");
+  const handleSave = async () => {
+    // 🔴 Validation
+    if (!formData.category) {
+      alert("Category is required");
+      return;
+    }
+
+    if (!formData.propertyCode) {
+      alert("Property Code is required");
+      return;
+    }
+
+    try {
+      // ✅ Payload (array format)
+      const payload = [
+        {
+          catg_Code: formData.category.substring(0, 2), // max 2 chars
+          property_no: Number(formData.propertyCode), // must be number
+        },
+      ];
+
+      const res = await addCategoryPropertyValues(payload);
+
+      console.log("API Response:", res);
+
+      if (res?.success) {
+        alert(res.message || "Saved successfully");
+
+        // ✅ Reset form
+        setFormData({
+          categoryOptions: "",
+          propertyCode: "",
+          description: "",
+        });
+      }
+    } catch (error) {
+      console.error("Save Error:", error);
+      alert(error.message || "Something went wrong");
+    }
   };
 
   return (
@@ -50,13 +107,21 @@ export default function CategoryPropertyForm() {
 
         <Grid container spacing={3}>
           <Grid item xs={6}>
-            <TextField
-              label="Category"
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
+            <Autocomplete
+              options={categoryOptions}
               size="small"
-              fullWidth
+              getOptionLabel={(option) =>
+                `${option.categorytype} (${option.indicator})`
+              }
+              onChange={(e, value) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  category: value?.indicator || "",
+                }));
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Category" fullWidth />
+              )}
             />
           </Grid>
 

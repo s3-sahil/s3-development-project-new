@@ -75,7 +75,7 @@ const NavBadge = styled("div")(({ theme }) => ({
 
 /* ===================== COMPONENT ===================== */
 
-export default function MatxVerticalNav({ items }) {
+export default function MatxVerticalNav({ items, onItemClick }) {
   const { settings } = useSettings();
   const { mode } = settings.layout1Settings.leftSidebar;
 
@@ -99,7 +99,7 @@ export default function MatxVerticalNav({ items }) {
 
       if (item.children) {
         return (
-          <MatxVerticalNavExpansionPanel mode={mode} item={item} key={index}>
+          <MatxVerticalNavExpansionPanel mode={mode} item={item} key={index} onItemClick={onItemClick}>
             {renderLevels(item.children)}
           </MatxVerticalNavExpansionPanel>
         );
@@ -113,6 +113,7 @@ export default function MatxVerticalNav({ items }) {
               target="_blank"
               rel="noopener noreferrer"
               className={mode === "compact" ? "compactNavItem" : ""}
+              onClick={() => onItemClick && onItemClick(item)}
             >
               {item.icon && <NavIcon>{item.icon}</NavIcon>}
               <NavText mode={mode}>{item.name}</NavText>
@@ -126,6 +127,7 @@ export default function MatxVerticalNav({ items }) {
         <NavItem key={index}>
           <NavLink
             to={item.path}
+            onClick={() => onItemClick && onItemClick(item)} // ✅ ADD THIS
             className={({ isActive }) => (isActive ? "navItemActive" : "")}
           >
             {/* Fixed left spacing for alignment */}

@@ -35,6 +35,19 @@ export default function ItemDetailsForm() {
     stockUnit: "",
     unitWeight: "",
     storingLocation: "",
+    otherInd: "",
+    thickness: "",
+    width: "",
+    length: "",
+    height: "",
+    ib: "",
+    colourCode: "",
+    diaRcs: "",
+    sideArmHeight: "",
+    sideArmWidth: "",
+    middleArmWidth: "",
+    middleArmHeight: "",
+    noOfRuns: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -141,19 +154,19 @@ export default function ItemDetailsForm() {
         rolqty: 0,
         leadtime: 0,
         cenvaT_PERCENT: 0,
-        length: 0,
-        width: 0,
-        height: 0,
+        length: Number(formData.length) || 0,
+        width: Number(formData.width) || 0,
+        height: Number(formData.height) || 0,
         plys: 0,
         lifeInDays: 0,
-        thickness: 0,
+        thickness: Number(formData.thickness) || 0,
         lbt_per: 0,
-        sidE_ARM_WIDTH: 0,
-        sidE_ARM_HEIGHT: 0,
-        middlE_ARM_WIDTH: 0,
-        middlE_ARM_HEIGHT: 0,
-        ib: 0,
-        nO_OF_RUNS: 0,
+        sidE_ARM_HEIGHT: Number(formData.sideArmHeight) || 0,
+        sidE_ARM_WIDTH: Number(formData.sideArmWidth) || 0,
+        middlE_ARM_WIDTH: Number(formData.middleArmWidth) || 0,
+        middlE_ARM_HEIGHT: Number(formData.middleArmHeight) || 0,
+        nO_OF_RUNS: Number(formData.noOfRuns) || 0,
+        ib: Number(formData.ib) || 0,
 
         excise: "N",
         modvat: "N",
@@ -212,7 +225,7 @@ export default function ItemDetailsForm() {
         </Box>
 
         <Grid container spacing={3}>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField
               label="Material Group"
               name="materialGroup"
@@ -234,12 +247,24 @@ export default function ItemDetailsForm() {
             </TextField>
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField
               label="Category"
               name="category"
               value={formData.category}
-              onChange={handleChange}
+              onChange={(e) => {
+                const value = e.target.value;
+
+                const selected = categoryOptions.find(
+                  (item) => item.CATG_CODE === value,
+                );
+
+                setFormData((prev) => ({
+                  ...prev,
+                  category: value,
+                  otherInd: selected?.other_ind || "", // 👈 store this
+                }));
+              }}
               size="small"
               fullWidth
               select
@@ -256,7 +281,7 @@ export default function ItemDetailsForm() {
             </TextField>
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField
               label="Sub-Category"
               name="subCategory"
@@ -278,7 +303,7 @@ export default function ItemDetailsForm() {
             </TextField>
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField
               label="Item Name"
               name="itemName"
@@ -288,8 +313,7 @@ export default function ItemDetailsForm() {
               fullWidth
             />
           </Grid>
-
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField
               label="Unit"
               name="unit"
@@ -311,7 +335,7 @@ export default function ItemDetailsForm() {
             </TextField>
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <TextField
               label="Make/Drg.No"
               name="makeDrgNo"
@@ -321,8 +345,147 @@ export default function ItemDetailsForm() {
               fullWidth
             />
           </Grid>
+          {(String(formData.otherInd).trim() === "3" ||
+            String(formData.otherInd).trim().toUpperCase() === "F") && (
+            <>
+              <Grid item xs={2}>
+                <TextField
+                  label="Thickness"
+                  name="thickness"
+                  value={formData.thickness}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
 
-          <Grid item xs={6}>
+              <Grid item xs={2}>
+                <TextField
+                  label="Width"
+                  name="width"
+                  value={formData.width}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={2}>
+                <TextField
+                  label="Length"
+                  name="length"
+                  value={formData.length}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={2}>
+                <TextField
+                  label="Height"
+                  name="height"
+                  value={formData.height}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={2}>
+                <TextField
+                  label="IB"
+                  name="ib"
+                  value={formData.ib}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={2}></Grid>
+            </>
+          )}
+
+          {(String(formData.otherInd).trim() === "X" ||
+            String(formData.otherInd).trim().toUpperCase() === "U" ||
+            String(formData.otherInd).trim().toUpperCase() === "H" ||
+            String(formData.otherInd).trim().toUpperCase() === "R") && (
+            <>
+              <Grid item xs={4}>
+                <TextField
+                  label="Thickness"
+                  name="thickness"
+                  value={formData.thickness}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={4}>
+                <TextField
+                  label="Width"
+                  name="width"
+                  value={formData.width}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={4}>
+                <TextField
+                  label="Length"
+                  name="length"
+                  value={formData.length}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+            </>
+          )}
+
+          {String(formData.otherInd).trim().toUpperCase() === "T" && (
+            <>
+              <Grid item xs={4}>
+                <TextField
+                  label="Colour Code"
+                  name="colourCode"
+                  value={formData.colourCode || ""}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={4}>
+                <TextField
+                  label="Dia/Rcs"
+                  name="diaRcs"
+                  type="number"
+                  value={formData.diaRcs}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                  inputProps={{ min: 0 }}
+                />
+              </Grid>
+
+              <Grid item xs={4}>
+                <TextField
+                  label="Length"
+                  name="length"
+                  value={formData.length || ""}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+            </>
+          )}
+
+          <Grid item xs={2}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -335,18 +498,7 @@ export default function ItemDetailsForm() {
             />
           </Grid>
 
-          <Grid item xs={6}>
-            <TextField
-              label="HSN Code"
-              name="hsnCode"
-              value={formData.hsnCode}
-              onChange={handleChange}
-              size="small"
-              fullWidth
-            />
-          </Grid>
-
-          <Grid item xs={6}>
+          <Grid item xs={2}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -358,8 +510,17 @@ export default function ItemDetailsForm() {
               label="Use Flag"
             />
           </Grid>
-
-          <Grid item xs={6}>
+          <Grid item xs={4}>
+            <TextField
+              label="HSN Code"
+              name="hsnCode"
+              value={formData.hsnCode}
+              onChange={handleChange}
+              size="small"
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={4}>
             <TextField
               label="Item Code"
               name="itemCode"
@@ -413,6 +574,66 @@ export default function ItemDetailsForm() {
               fullWidth
             />
           </Grid>
+          <Grid item xs={6}></Grid>
+          {String(formData.otherInd).trim().toUpperCase() === "R" && (
+            <>
+              <Grid item xs={3}>
+                <TextField
+                  label="Side Arm Height"
+                  name="sideArmHeight"
+                  value={formData.sideArmHeight || ""}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={3}>
+                <TextField
+                  label="Side Arm Width"
+                  name="sideArmWidth"
+                  value={formData.sideArmWidth || ""}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={3}>
+                <TextField
+                  label="Middle Arm Width"
+                  name="middleArmWidth"
+                  value={formData.middleArmWidth || ""}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={3}>
+                <TextField
+                  label="Middle Arm Height"
+                  name="middleArmHeight"
+                  value={formData.middleArmHeight || ""}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+
+              <Grid item xs={3}>
+                <TextField
+                  label="No Of Runs"
+                  name="noOfRuns"
+                  type="number"
+                  value={formData.noOfRuns || ""}
+                  onChange={handleChange}
+                  size="small"
+                  fullWidth
+                />
+              </Grid>
+            </>
+          )}
         </Grid>
       </Box>
     </Container>

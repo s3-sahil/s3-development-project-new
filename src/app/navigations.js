@@ -8,6 +8,9 @@ const navigations = [
       {
         name: "Master",
         icon: "person",
+        meta: {
+          hidePeriod: true,
+        },
         children: [
           {
             name: "Activity Reports Rights",
@@ -94,6 +97,9 @@ const navigations = [
       {
         name: "Master",
         icon: "person",
+        meta: {
+          hidePeriod: true,
+        },
         children: [
           {
             name: "TMS Parameter",
@@ -150,6 +156,9 @@ const navigations = [
       {
         name: "Transaction",
         icon: "directions_transit",
+        meta: {
+          hidePeriod: false,
+        },
         children: [
           {
             name: "Manual Punching",
@@ -885,11 +894,17 @@ const navigations = [
       {
         name: "Master",
         icon: "person",
+        meta: {
+          hidePeriod: true,
+        },
         children: [
           {
             name: "Consignee Details",
             path: "/material/sales-consignee-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Notify Party Details",
@@ -961,6 +976,9 @@ const navigations = [
         name: "Transaction",
         path: "/sysadmin/roles",
         icon: "directions_transit",
+        meta: {
+          hidePeriod: false,
+        },
         children: [
           {
             name: "Customer's Purchase Order Login",
@@ -1310,7 +1328,7 @@ const navigations = [
             name: "Register",
             path: "/material/TMS-shift-schedule-table",
             icon: "arrow_forward",
-             children: [
+            children: [
               {
                 name: "DBK Register",
                 path: "/finance/service-voucher-linking",
@@ -1321,7 +1339,7 @@ const navigations = [
                 path: "/finance/service-voucher-linking",
                 icon: "arrow_forward",
               },
-               {
+              {
                 name: "Advance Authorization Register",
                 path: "/finance/service-voucher-linking",
                 icon: "arrow_forward",

@@ -6,9 +6,13 @@ import {
   Icon,
   Grid,
   MenuItem,
+  Autocomplete,
+  CircularProgress,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
+import { fetchItemcodeAPI } from "app/utils/authServices";
+import { addPhysicalInventory } from "app/utils/materialMaterialServices";
+import { useEffect, useState } from "react";
 
 export default function PhysicalInventoryForm() {
   const [formData, setFormData] = useState({
@@ -24,25 +28,100 @@ export default function PhysicalInventoryForm() {
     operation: "",
     stockUOM: "",
   });
+  const [itemOptions, setItemOptions] = useState([]);
+  const [loadingItems, setLoadingItems] = useState(false);
 
+  useEffect(() => {
+    loadItems();
+  }, []);
+
+  const loadItems = async () => {
+    try {
+      setLoadingItems(true);
+      const res = await fetchItemcodeAPI();
+      setItemOptions(res || []);
+    } catch (error) {
+      console.error("Item API Error:", error);
+      setItemOptions([]);
+    } finally {
+      setLoadingItems(false);
+    }
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Physical Inventory Saved (UI Only)");
+  const handleSave = async () => {
+    if (!formData.itemCode || !formData.month) {
+      alert("Item Code and Month required");
+      return;
+    }
+
+    try {
+      const payload = {
+        iteM_CODE: formData.itemCode,
+
+        iteM_IDNT: formData.inventory || "",
+
+        period: formData.financialYear || "",
+
+        profcen_cd: formData.department || "",
+
+        location: formData.inventory || "",
+
+        month: formData.month, // format: MMYYYY
+
+        uom: formData.stockUOM || "",
+
+        c_WT_AVG_RATE: 0,
+
+        oP_BALANCE: 0,
+
+        act_BALANCE: 0, // 🔴 you can add input later
+
+        sys_BALANCE: 0,
+
+        layout_no: "",
+
+        heat_code: "",
+
+        qty_in_Nos: 0,
+
+        adj_no: "",
+      };
+
+      console.log("Payload:", payload);
+
+      const res = await addPhysicalInventory(payload);
+
+      alert(res.Message || "Saved successfully");
+
+      // ✅ reset form
+      setFormData({
+        financialYear: "",
+        month: "",
+        stockType: "",
+        department: "",
+        inventory: "",
+        supplier: "",
+        customer: "",
+        itemCode: "",
+        itemName: "",
+        operation: "",
+        stockUOM: "",
+      });
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
   };
 
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: "Material" },
-            { name: "Physical Inventory" },
-          ]}
+          routeSegments={[{ name: "Material" }, { name: "Physical Inventory" }]}
         />
       </Box>
 
@@ -133,13 +212,40 @@ export default function PhysicalInventoryForm() {
             />
           </Grid>
           <Grid item xs={6}>
-            <TextField
-              label="Item Code"
-              name="itemCode"
-              value={formData.itemCode}
-              onChange={handleChange}
+            <Autocomplete
+              options={itemOptions}
               size="small"
-              fullWidth
+              loading={loadingItems}
+              getOptionLabel={(option) =>
+                `${option.ITEM_CODE} - ${option.DESC}`
+              }
+              isOptionEqualToValue={(option, value) =>
+                option.ITEM_CODE === value.ITEM_CODE
+              }
+              onChange={(e, value) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  itemCode: value?.ITEM_CODE || "",
+                  itemName: value?.DESC || "",
+                  stockUOM: value?.stock_uom || "", // optional
+                }));
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Item Code"
+                  fullWidth
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {loadingItems && <CircularProgress size={20} />}
+                        {params.InputProps.endAdornment}
+                      </>
+                    ),
+                  }}
+                />
+              )}
             />
           </Grid>
           <Grid item xs={6}>
@@ -162,8 +268,8 @@ export default function PhysicalInventoryForm() {
               size="small"
               fullWidth
             >
-              <MenuItem value="Add">Add</MenuItem>
-              <MenuItem value="Remove">Remove</MenuItem>
+              <MenuItem value="Packing">Packing</MenuItem>
+              <MenuItem value="Assembly">Assembly</MenuItem>
             </TextField>
           </Grid>
           <Grid item xs={6}>

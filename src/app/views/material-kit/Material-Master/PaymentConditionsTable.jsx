@@ -50,7 +50,7 @@ export default function PaymentConditionsTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/finance/payment-conditions-form/edit/${params.row.id}`, {
+              navigate(`/material/material-payment-conditions-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -79,7 +79,7 @@ export default function PaymentConditionsTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/finance/payment-conditions-form/add")
+              navigate("/material/material-payment-conditions-form/add")
             }
           >
             New

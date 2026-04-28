@@ -1,12 +1,6 @@
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Icon,
-  Grid,
-} from "@mui/material";
+import { Box, Container, TextField, Button, Icon, Grid } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { addGradeMaster } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 
 export default function GradeMasterForm() {
@@ -21,9 +15,46 @@ export default function GradeMasterForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Grade Master Saved (UI Only)");
+  const handleSave = async () => {
+    // 🔴 Validation
+    if (!formData.gradeCode) {
+      alert("Grade Code is required");
+      return;
+    }
+
+    if (!formData.gradeDescription) {
+      alert("Grade Description is required");
+      return;
+    }
+
+    try {
+      // ✅ API expects ARRAY
+      const payload = [
+        {
+          mat_code: formData.gradeCode.substring(0, 2), // max 2 chars if needed
+          grade_name: formData.gradeDescription,
+          density: Number(formData.density) || 0,
+        },
+      ];
+
+      const res = await addGradeMaster(payload);
+
+      console.log("API Response:", res);
+
+      if (res?.success) {
+        alert(res.message || "Saved successfully");
+
+        // ✅ Reset form
+        setFormData({
+          gradeCode: "",
+          gradeDescription: "",
+          density: "",
+        });
+      }
+    } catch (error) {
+      console.error("Save Error:", error);
+      alert(error.message || "Something went wrong");
+    }
   };
 
   return (
@@ -75,6 +106,7 @@ export default function GradeMasterForm() {
             <TextField
               label="Density"
               name="density"
+              type="number"
               value={formData.density}
               onChange={handleChange}
               size="small"

@@ -8,6 +8,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { addGSTDetails } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 
 export default function GSTDetailForm() {
@@ -27,20 +28,89 @@ export default function GSTDetailForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("GST Detail Saved (UI Only)");
+  const handleSave = async () => {
+    // 🔴 Validation
+    if (!formData.taxCode) {
+      alert("Tax Code is required");
+      return;
+    }
+
+    if (!formData.taxPercent) {
+      alert("Tax % is required");
+      return;
+    }
+
+    try {
+      // ✅ Format WEF → MMYYYY (or whatever backend expects)
+      const wef =
+        formData.wefMonth && formData.wefYear
+          ? `${formData.wefMonth.padStart(2, "0")}${formData.wefYear}`
+          : "";
+
+      const payload = {
+        taX_CODE: formData.taxCode,
+
+        desc: formData.taxName || "",
+
+        percent: Number(formData.taxPercent) || 0,
+
+        acC_CODE: formData.glCode || "",
+
+        indicator: formData.taxType?.charAt(0) || "", // C/S/I/T
+
+        wef: wef,
+
+        calC_ON: "BASIC", // default (change if needed)
+
+        state: "", // optional or map if you add state dropdown
+
+        inusE_FLAG: "Y", // default
+
+        cenvaT_APPL: "N", // default
+
+        forM_ID: "GST", // default
+
+        flag: "N", // default
+      };
+
+      const res = await addGSTDetails(payload);
+
+      console.log("API Response:", res);
+
+      alert(res.message || "Saved successfully");
+
+      // ✅ Reset form
+      setFormData({
+        taxType: "",
+        taxCode: "",
+        taxName: "",
+        taxPercent: "",
+        wefMonth: "",
+        wefYear: "",
+        glCode: "",
+        description: "",
+      });
+    } catch (error) {
+      console.error("Save Error:", error);
+      alert(error.message || "Something went wrong");
+    }
   };
 
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Finance" }, { name: "GST Detail" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Finance" }, { name: "GST Detail" }]}
+        />
       </Box>
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         <Box display="flex" justifyContent="flex-end" mb={2}>
-          <Button variant="contained" startIcon={<Icon>save</Icon>} onClick={handleSave}>
+          <Button
+            variant="contained"
+            startIcon={<Icon>save</Icon>}
+            onClick={handleSave}
+          >
             Save
           </Button>
         </Box>

@@ -1,12 +1,6 @@
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Icon,
-  Grid,
-} from "@mui/material";
+import { Box, Container, TextField, Button, Icon, Grid } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { addExchangeCurrency } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 
 export default function ExchangeCurrencyForm() {
@@ -22,9 +16,50 @@ export default function ExchangeCurrencyForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Exchange Currency Saved (UI Only)");
+  const handleSave = async () => {
+    // 🔴 Validation
+    if (!formData.wef) {
+      alert("W.E.F date is required");
+      return;
+    }
+
+    if (!formData.currency) {
+      alert("Currency is required");
+      return;
+    }
+
+    try {
+      const payload = {
+        currency: formData.currency.toUpperCase(),
+
+        conv_rate: Number(formData.importRate) || 0, // you can change logic if needed
+
+        conv_date: new Date(formData.wef).toISOString(), // important format
+
+        period: "", // if you have period field, map here
+
+        export_rate: Number(formData.exportRate) || 0,
+        import_rate: Number(formData.importRate) || 0,
+
+        user_name: "admin", // replace with logged-in user
+      };
+
+      const res = await addExchangeCurrency(payload);
+
+      console.log("API Response:", res);
+
+      alert(res.message || "Saved successfully");
+
+      // ✅ Reset form
+      setFormData({
+        wef: "",
+        currency: "",
+        importRate: "",
+        exportRate: "",
+      });
+    } catch (error) {
+      alert(error.message || "Something went wrong");
+    }
   };
 
   return (
