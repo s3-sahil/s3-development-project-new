@@ -747,7 +747,7 @@ const navigations = [
           },
           {
             name: "Inspection Parameter",
-            path: "/material/material-GRN-wise-opening-stock-table",
+            path: "/material/Inspection-Parameter-Table",
             icon: "arrow_forward",
           },
           {

@@ -102,7 +102,7 @@ export default function HSNForm() {
       {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[{ name: "Finance" }, { name: "HSN/SAC Master" }]}
+          routeSegments={[{ name: "Material" }, { name: "HSN/SAC Master" }]}
         />
       </Box>
 

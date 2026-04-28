@@ -6,9 +6,15 @@ import {
   Icon,
   Grid,
   MenuItem,
+  Autocomplete,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
+import { fetchItemcodeAPI } from "app/utils/authServices";
+import {
+  fetchCategoryTypeAPI,
+  fetchSubCategoryAPI,
+} from "app/utils/materialMaterialServices";
+import { useEffect, useState } from "react";
 
 export default function ItemHSNForm() {
   const [formData, setFormData] = useState({
@@ -19,6 +25,29 @@ export default function ItemHSNForm() {
     hsnCode: "",
     customTariffCode: "",
   });
+  const [itemOptions, setItemOptions] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [subCategoryOptions, setSubCategoryOptions] = useState([]);
+
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+  const loadInitialData = async () => {
+    const matGroup = await fetchCategoryTypeAPI();
+    setCategoryOptions(matGroup);
+
+    const subCat = await fetchSubCategoryAPI();
+    setSubCategoryOptions(subCat);
+  };
+
+  useEffect(() => {
+    const loadItems = async () => {
+      const data = await fetchItemcodeAPI();
+      setItemOptions(data);
+    };
+
+    loadItems();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,10 +63,7 @@ export default function ItemHSNForm() {
     <Container maxWidth="xl">
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: "Material" },
-            { name: "Item HSN Details" },
-          ]}
+          routeSegments={[{ name: "Material" }, { name: "Item HSN Details" }]}
         />
       </Box>
 
@@ -54,13 +80,29 @@ export default function ItemHSNForm() {
 
         <Grid container spacing={3}>
           <Grid item xs={6}>
-            <TextField
-              label="Item Code"
-              name="itemCode"
-              value={formData.itemCode}
-              onChange={handleChange}
+            <Autocomplete
+              options={itemOptions}
               size="small"
-              fullWidth
+              getOptionLabel={(option) => option.ITEM_CODE || ""}
+              value={
+                itemOptions.find(
+                  (opt) => opt.ITEM_CODE === formData.itemCode,
+                ) || null
+              }
+              onChange={(e, value) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  itemCode: value?.ITEM_CODE || "",
+                }));
+              }}
+              renderOption={(props, option) => (
+                <li {...props} key={option.ITEM_CODE}>
+                  {option.ITEM_CODE}
+                </li>
+              )}
+              renderInput={(params) => (
+                <TextField {...params} label="Item Code" fullWidth />
+              )}
             />
           </Grid>
 
@@ -74,8 +116,15 @@ export default function ItemHSNForm() {
               size="small"
               fullWidth
             >
-              <MenuItem value="Mechanical">Mechanical</MenuItem>
-              <MenuItem value="Electrical">Electrical</MenuItem>
+              <MenuItem value="">
+                <em>Select Category</em>
+              </MenuItem>
+
+              {categoryOptions.map((item) => (
+                <MenuItem key={item.indicator} value={item.indicator}>
+                  {item.categorytype}
+                </MenuItem>
+              ))}
             </TextField>
           </Grid>
 
@@ -89,8 +138,15 @@ export default function ItemHSNForm() {
               size="small"
               fullWidth
             >
-              <MenuItem value="Raw">Raw</MenuItem>
-              <MenuItem value="Finished">Finished</MenuItem>
+              <MenuItem value="">
+                <em>Select SubCategory</em>
+              </MenuItem>
+
+              {subCategoryOptions.map((item) => (
+                <MenuItem key={item.CATG_CODE} value={item.CATG_CODE}>
+                  {item.SUBCATG_CODE}
+                </MenuItem>
+              ))}
             </TextField>
           </Grid>
 

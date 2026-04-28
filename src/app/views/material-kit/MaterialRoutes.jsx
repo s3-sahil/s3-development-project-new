@@ -123,6 +123,8 @@ import TDSParameterForm from "./Finance-Master/TDSParameterForm";
 import CustomersPurchaseOrderLoginTable from "./Sales-Transaction/customersPurchaseOrderLoginTable";
 import UOMTable from "./Material-Master/UOMTable";
 import UOMForm from "./Material-Master/UOMForm";
+import InspectionParameterTable from "./Material-Master/InspectionParameterTable";
+import InspectionParameterForm from "./Material-Master/InspectionParameterForm";
 // import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
 // import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
 // import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
@@ -1114,9 +1116,18 @@ const materialRoutes = [
     path: "/material/activity-reports-rights-table",
     element: <ActivityReportsRightsTable />,
   },
-  { path: "/material/customers-purchase-order-login-table", element: <CustomersPurchaseOrderLoginTable /> },
-  { path: "/material/customers-purchase-order-login-form/add", element: <CustomersPurchaseOrderLogin /> },
-  { path: "/material/customers-purchase-order-login-form/edit/:slipNo", element: <CustomersPurchaseOrderLogin /> },
+  {
+    path: "/material/customers-purchase-order-login-table",
+    element: <CustomersPurchaseOrderLoginTable />,
+  },
+  {
+    path: "/material/customers-purchase-order-login-form/add",
+    element: <CustomersPurchaseOrderLogin />,
+  },
+  {
+    path: "/material/customers-purchase-order-login-form/edit/:slipNo",
+    element: <CustomersPurchaseOrderLogin />,
+  },
   { path: "/material/packing-slip-table", element: <PackingSlipTable /> },
   { path: "/material/packing-slip/add", element: <PackingSlipForm /> },
   { path: "/material/packing-slip/edit/:slipNo", element: <PackingSlipForm /> },
@@ -3296,7 +3307,7 @@ const materialRoutes = [
     path: "/material/finance-sub-group-details-form/add",
     element: <SubGroupDetailsForm />,
   },
-   {
+  {
     path: "/material/finance-TDS-parameter-table",
     element: <TDSParameterTable />,
   },
@@ -3308,7 +3319,7 @@ const materialRoutes = [
     path: "/material/finance-TDS-parameter-form/add",
     element: <TDSParameterForm />,
   },
-   {
+  {
     path: "/material/Purchase-Order-Table",
     element: <PurchaseOrderTable />,
   },
@@ -3320,7 +3331,7 @@ const materialRoutes = [
     path: "/material/Purchase-Order-form/add",
     element: <PurchaseOrderForm />,
   },
-    {
+  {
     path: "/material/Unit-Of-Management-Table",
     element: <UOMTable />,
   },
@@ -3331,6 +3342,18 @@ const materialRoutes = [
   {
     path: "/material/Unit-Of-Management-form/add",
     element: <UOMForm />,
+  },
+  {
+    path: "/material/Inspection-Parameter-Table",
+    element: <InspectionParameterTable />,
+  },
+  {
+    path: "/material/Inspection-Parameter-form/edit/:slipNo",
+    element: <InspectionParameterForm />,
+  },
+  {
+    path: "/material/Inspection-Parameter-form/add",
+    element: <InspectionParameterForm />,
   },
 ];
 

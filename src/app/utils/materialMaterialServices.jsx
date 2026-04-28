@@ -541,3 +541,29 @@ export const fetchMaxSupplierCode = async (name) => {
     return "";
   }
 };
+
+export const addUOM = async (payload) => {
+  try {
+    const { data } = await axiosInstance.post(
+      "/API/MATERIAL/UNIT_OF_MEASUREMENT/ADD-UNIT_OF_MEASUREMENT",
+      payload
+    );
+    return data;
+  } catch (error) {
+    console.error("UOM API Error:", error);
+    throw error.response?.data || error;
+  }
+};
+
+export const addInspectionParameter = async (payload) => {
+  try {
+    const { data } = await axiosInstance.post(
+      "/ADD-INSPECTION_PARAMETERS",
+      payload
+    );
+    return data;
+  } catch (error) {
+    console.error("Inspection Parameter API Error:", error);
+    throw error.response?.data || error;
+  }
+};

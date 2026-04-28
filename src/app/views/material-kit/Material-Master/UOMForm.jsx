@@ -9,10 +9,12 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { addUOM } from "app/utils/materialMaterialServices";
 import { useState } from "react";
-// import { addUOM } from "app/utils/yourService"; // <-- connect your API
+import { useNavigate } from "react-router-dom";
 
 export default function UOMForm() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     uom: "",
     desc: "",
@@ -31,20 +33,31 @@ export default function UOMForm() {
   };
 
   const handleSave = async () => {
+    if (!formData.uom.trim()) {
+      return alert("UOM is required");
+    }
+
+    if (formData.uom.length > 3) {
+      return alert("UOM must be maximum 3 characters");
+    }
+
+    if (!formData.desc.trim()) {
+      return alert("UOM Description is required");
+    }
+
     try {
       setLoading(true);
 
       const payload = {
         uom: formData.uom,
         uom_desc: formData.desc,
-        decimal_applicable: formData.decimal ? "Y" : "N",
-        conversion_applicable: formData.conversion ? "Y" : "N",
+        deci_flag: formData.decimal ? "Y" : "N",
       };
 
-      // const res = await addUOM(payload);
-      // alert(res.message);
+      const res = await addUOM(payload);
 
-      console.log("Payload:", payload);
+      alert(res.message);
+      navigate("/material/Unit-Of-Management-Table");
 
       // reset form
       setFormData({
@@ -54,7 +67,7 @@ export default function UOMForm() {
         conversion: false,
       });
     } catch (err) {
-      alert(err.message);
+      alert(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -65,10 +78,7 @@ export default function UOMForm() {
       {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: "Inventory" },
-            { name: "UOM Master" },
-          ]}
+          routeSegments={[{ name: "Inventory" }, { name: "UOM Master" }]}
         />
       </Box>
 
