@@ -597,7 +597,7 @@ const navigations = [
         children: [
           {
             name: "Unit Of Measurement",
-            path: "/material/payroll-employee-information-table",
+            path: "/material/Unit-Of-Management-Table",
             icon: "arrow_forward",
           },
           {

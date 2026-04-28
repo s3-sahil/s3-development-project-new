@@ -1,67 +1,88 @@
-// UOMTable.jsx
 import {
-  Box,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Typography,
+  Container,
+  Icon,
+  IconButton,
+  Tooltip,
   Button,
 } from "@mui/material";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import { DataGrid } from "@mui/x-data-grid";
+import { Breadcrumb } from "app/components";
+import { useNavigate } from "react-router-dom";
 
-export default function UOMTable({ rows }) {
+export default function UOMTable() {
+  const navigate = useNavigate();
+
+  const rows = [
+    { id: 1, uom: "KG", desc: "Kilogram", decimal: true },
+    { id: 2, uom: "NOS", desc: "Numbers", decimal: false },
+    { id: 3, uom: "LTR", desc: "Litre", decimal: true },
+  ];
+
+  const columns = [
+    { field: "uom", headerName: "UOM", width: 120 },
+    { field: "desc", headerName: "UOM Description", width: 220 },
+    {
+      field: "decimal",
+      headerName: "Decimal Applicable",
+      width: 180,
+      renderCell: (params) => (params.value ? "Y" : "N"),
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 120,
+      renderCell: (params) => (
+        <Tooltip title="Edit">
+          <IconButton
+            onClick={() =>
+              navigate(`/material/Unit-Of-Management-form/edit/${params.row.id}`, {
+                state: params.row,
+              })
+            }
+          >
+            <Icon color="primary">edit</Icon>
+          </IconButton>
+        </Tooltip>
+      ),
+    },
+  ];
+
   return (
-    <Box
-      sx={{
-        border: "1px solid #777",
-        background: "#fff",
-        maxHeight: 250,
-        overflow: "auto",
-      }}
-    >
-      <Typography sx={{ p: 1, fontWeight: "bold" }}>
-        UOM List
-      </Typography>
+    <Container maxWidth="xl">
+      {/* Breadcrumb */}
+      <Box className="breadcrumb">
+        <Breadcrumb
+          routeSegments={[
+            { name: "Material" },
+            { name: "Unit Of Management" },
+          ]}
+        />
+      </Box>
 
-      <Table size="small">
-        <TableHead>
-          <TableRow sx={{ background: "#e0e0e0" }}>
-            <TableCell>UOM</TableCell>
-            <TableCell>UOM Desc</TableCell>
-            <TableCell>Decimal Applicable</TableCell>
-          </TableRow>
-        </TableHead>
-
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.uom}</TableCell>
-              <TableCell>{row.desc}</TableCell>
-              <TableCell>{row.decimal ? "Y" : "N"}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      {/* FOOTER BUTTONS */}
-      <Box display="flex" justifyContent="space-between" p={2}>
-        <Box>
-          <Button variant="outlined" sx={{ mr: 1 }}>
-            NEW
-          </Button>
-          <Button variant="outlined" sx={{ mr: 1 }}>
-            EDIT
-          </Button>
-          <Button variant="outlined">
-            DEL
+      <Stack spacing={3}>
+        {/* Top Actions */}
+        <Box display="flex" justifyContent="flex-end">
+          <Button
+            variant="contained"
+            startIcon={<Icon>add</Icon>}
+            onClick={() => navigate("/material/Unit-Of-Management-form/add")}
+          >
+            New
           </Button>
         </Box>
 
-        <Button variant="contained" color="error">
-          QUIT
-        </Button>
-      </Box>
-    </Box>
+        {/* DataGrid */}
+        <Box sx={{ height: 420 }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5, 10, 20]}
+          />
+        </Box>
+      </Stack>
+    </Container>
   );
 }

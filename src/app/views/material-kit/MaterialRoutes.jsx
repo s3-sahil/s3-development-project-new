@@ -121,6 +121,8 @@ import SubGroupDetailsForm from "./Finance-Master/SubGroupDetailsForm";
 import TDSParameterTable from "./Finance-Master/TDSParameterTable";
 import TDSParameterForm from "./Finance-Master/TDSParameterForm";
 import CustomersPurchaseOrderLoginTable from "./Sales-Transaction/customersPurchaseOrderLoginTable";
+import UOMTable from "./Material-Master/UOMTable";
+import UOMForm from "./Material-Master/UOMForm";
 // import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
 // import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
 // import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
@@ -3317,6 +3319,18 @@ const materialRoutes = [
   {
     path: "/material/Purchase-Order-form/add",
     element: <PurchaseOrderForm />,
+  },
+    {
+    path: "/material/Unit-Of-Management-Table",
+    element: <UOMTable />,
+  },
+  {
+    path: "/material/Unit-Of-Management-form/edit/:slipNo",
+    element: <UOMForm />,
+  },
+  {
+    path: "/material/Unit-Of-Management-form/add",
+    element: <UOMForm />,
   },
 ];
 
