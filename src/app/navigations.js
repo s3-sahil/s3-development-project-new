@@ -737,7 +737,7 @@ const navigations = [
           },
           {
             name: "Itemwise Material Grade Detail",
-            path: "/material/material-GRN-wise-opening-stock-table",
+            path: "/material/Item-Material-Grade-Table",
             icon: "arrow_forward",
           },
           {

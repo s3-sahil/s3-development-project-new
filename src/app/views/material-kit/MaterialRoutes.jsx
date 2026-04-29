@@ -125,6 +125,8 @@ import UOMTable from "./Material-Master/UOMTable";
 import UOMForm from "./Material-Master/UOMForm";
 import InspectionParameterTable from "./Material-Master/InspectionParameterTable";
 import InspectionParameterForm from "./Material-Master/InspectionParameterForm";
+import ItemMaterialGradeTable from "./Material-Master/ItemMaterialGradeTable";
+import ItemMaterialGradeForm from "./Material-Master/ItemMaterialGradeForm";
 // import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
 // import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
 // import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
@@ -3354,6 +3356,18 @@ const materialRoutes = [
   {
     path: "/material/Inspection-Parameter-form/add",
     element: <InspectionParameterForm />,
+  },
+  {
+    path: "/material/Item-Material-Grade-Table",
+    element: <ItemMaterialGradeTable />,
+  },
+  {
+    path: "/material/Item-Material-Grade-form/edit/:slipNo",
+    element: <ItemMaterialGradeForm />,
+  },
+  {
+    path: "/material/Item-Material-Grade-form/add",
+    element: <ItemMaterialGradeForm />,
   },
 ];
 

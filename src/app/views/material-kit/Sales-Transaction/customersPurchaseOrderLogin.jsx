@@ -359,31 +359,6 @@ const CustomersPurchaseOrderLogin = () => {
     const { orderType, customer, orderNo, orderDate, currency, salesman } =
       form;
 
-    if (!orderType) {
-      alert("Order Type is required");
-      return;
-    }
-    if (!customer) {
-      alert("Customer Code is required");
-      return;
-    }
-    if (!orderNo) {
-      alert("P.O. No is required");
-      return;
-    }
-    if (!orderDate) {
-      alert("P.O. Date is required");
-      return;
-    }
-    if (!currency) {
-      alert("Currency is required");
-      return;
-    }
-    if (!salesman) {
-      alert("Marketing By (Salesman) is required");
-      return;
-    }
-
     if (itemTable.length === 0) {
       alert("Please add at least one item to the list.");
       return;

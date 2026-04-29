@@ -567,3 +567,49 @@ export const addInspectionParameter = async (payload) => {
     throw error.response?.data || error;
   }
 };
+
+export const addItemMaterialGrade = async (payload) => {
+  try {
+    const res = await axiosInstance.post(
+      "/ADD-ITEMWISE_MATERIAL_GRADE_DETAIL",
+      payload, // 👈 must be ARRAY
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return res.data;
+  } catch (error) {
+    console.error("API Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+        "Failed to save material grade detail"
+    );
+  }
+};
+
+export const addSacGroupMaster = async (payload) => {
+  try {
+    const res = await axiosInstance.post(
+      "/API/MATERIAL/SAC_GROUP_MASTER/ADD-SAC_GROUP_MASTER",
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return res.data;
+  } catch (error) {
+    console.error("API Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+        "Failed to save SAC Group Master"
+    );
+  }
+};

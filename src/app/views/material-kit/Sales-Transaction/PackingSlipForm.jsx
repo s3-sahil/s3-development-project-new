@@ -20,6 +20,7 @@ import { addPackingSlip, fetchCustomerAPI } from "app/utils/authServices";
 import {
   fetchItemCodesByCustomer,
   fetchPackingAndSubType,
+  fetchStockByItemCode,
 } from "app/utils/salesTransactionServices";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -67,6 +68,8 @@ const PackingSlipForm = () => {
   const [looseQty, setLooseQty] = useState("");
   const [selectedItemData, setSelectedItemData] = useState(null);
   const [payValue, setPayValue] = useState("");
+  const [stockList, setStockList] = useState([]);
+  const [loadingStock, setLoadingStock] = useState(false);
   const [rows, setRows] = useState([
     { srNo: 1, qtyLoose: "", totLoose: "", itemCode: "" },
   ]);
@@ -207,7 +210,11 @@ const PackingSlipForm = () => {
         ITEM_CODE: x.ITEM_CODE || x.ItemCode || "",
         DESC: x.DESC || x.Description || "",
         UOM: x.UOM || "",
-        CATG_CODE: x.CATG_CODE
+        CATG_CODE: x.CATG_CODE,
+        PO_NO: x.PO_NO,
+        PO_DT: x.PO_DT,
+        PO_ID: x.PO_ID,
+        PO_ID_DT: x.PO_ID_DT
       }));
 
       setItemCodes(normalized);
@@ -231,7 +238,7 @@ const PackingSlipForm = () => {
       const selected = packingList.find((item) => item.INV_TYPE === value);
 
       setPayValue(selected?.PAY_TYPE);
-      console.log("Pay Value:", payValue)
+      console.log("Pay Value:", payValue);
       return;
     }
 
@@ -578,13 +585,55 @@ const PackingSlipForm = () => {
               )}
             />
 
-            <TextField
-              label="Order No"
-              name="orderNo"
-              value={state.orderNo}
-              onChange={handleChange}
-              fullWidth
+            <Autocomplete
               size="small"
+              fullWidth
+              options={itemCodes || []}
+              loading={loadingItems}
+              getOptionLabel={(option) =>
+                `${option.PO_ID || option.ITEM_CODE} - ${option.DESC || ""}`
+              }
+              isOptionEqualToValue={(option, value) =>
+                (option.ORDER_NO || option.ITEM_CODE) ===
+                (value.ORDER_NO || value.ITEM_CODE)
+              }
+              value={
+                itemCodes.find(
+                  (i) => (i.ORDER_NO || i.ITEM_CODE) === state.orderNo,
+                ) || null
+              }
+              onChange={async (event, newValue) => {
+                setState((prev) => ({
+                  ...prev,
+                  orderNo: newValue
+                    ? newValue.ORDER_NO || newValue.ITEM_CODE
+                    : "",
+                  poNo: newValue ? newValue.PO_NO : "",
+                  poDate: newValue ? newValue.PO_DT : "",
+                }));
+                if (newValue.ITEM_CODE) {
+                  setLoadingStock(true);
+                  try {
+                    const stockData = await fetchStockByItemCode(
+                      newValue.ITEM_CODE,
+                    );
+                    setStockList(stockData);
+                  } catch (err) {
+                    console.error(err);
+                    setStockList([]);
+                  }
+                  setLoadingStock(false);
+                } else {
+                  setStockList([]);
+                }
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Order No"
+                  disabled={!state.customer} // same logic
+                />
+              )}
             />
 
             <TextField
@@ -594,17 +643,35 @@ const PackingSlipForm = () => {
               onChange={handleChange}
               fullWidth
               size="small"
+              disabled
+              sx={{
+                "& .MuiInputBase-input": {
+                  color: "black",
+                  WebkitTextFillColor: "black", // ✅ important for disabled/readOnly
+                },
+              }}
             />
 
             <TextField
               type="date"
               label="P.O Date"
               name="poDate"
-              value={state.poDate}
+              value={
+                state.poDate
+                  ? new Date(state.poDate).toISOString().split("T")[0]
+                  : ""
+              }
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
               fullWidth
               size="small"
+              disabled
+              sx={{
+                "& .MuiInputBase-input": {
+                  color: "black",
+                  WebkitTextFillColor: "black", // ✅ important for disabled/readOnly
+                },
+              }}
             />
 
             <TextField
@@ -682,7 +749,7 @@ const PackingSlipForm = () => {
             gap={3}
             alignItems="center"
           >
-            <Autocomplete
+            {/* <Autocomplete
               size="small"
               fullWidth
               options={itemCodes || []}
@@ -712,6 +779,37 @@ const PackingSlipForm = () => {
                   label="Item Code"
                   disabled={!state.customer} // ✅ disable until customer selected
                 />
+              )}
+            /> */}
+            <Autocomplete
+              size="small"
+              fullWidth
+              options={stockList || []}
+              loading={loadingStock}
+              getOptionLabel={(option) =>
+                option?.DESC ? `${option.DESC} (${option.ITEM_CODE || ""})` : ""
+              }
+              isOptionEqualToValue={(option, value) =>
+                option.DESC === value.DESC
+              }
+              onChange={(event, newValue) => {
+                setState((prev) => ({
+                  ...prev,
+                  stockDesc: newValue ? newValue.DESC : "",
+                }));
+              }}
+              renderOption={(props, option) => (
+                <li {...props}>
+                  <div>
+                    <strong>{option.DESC}</strong>
+                    <div style={{ fontSize: "12px", color: "#555" }}>
+                      Code: {option.DESC } {option.category_type}
+                    </div>
+                  </div>
+                </li>
+              )}
+              renderInput={(params) => (
+                <TextField {...params} label="Item Name" />
               )}
             />
             {/* <Autocomplete
@@ -749,7 +847,7 @@ const PackingSlipForm = () => {
               )}
             /> */}
 
-            <TextField
+            {/* <TextField
               label="Operation"
               name="operation"
               value={state.operation}
@@ -810,7 +908,7 @@ const PackingSlipForm = () => {
               onChange={handleChange}
               fullWidth
               size="small"
-            />
+            /> */}
           </Box>
 
           {/* Items Table */}

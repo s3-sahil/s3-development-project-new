@@ -1,12 +1,6 @@
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Icon,
-  Grid,
-} from "@mui/material";
+import { Box, Container, TextField, Button, Icon, Grid } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { addItemMaterialGrade } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 
 export default function ItemMaterialGradeForm() {
@@ -20,14 +14,67 @@ export default function ItemMaterialGradeForm() {
     density: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Itemwise Material Grade Saved (UI Only)");
+  const resetForm = () => {
+    setFormData({
+      itemCategory: "",
+      categoryName: "",
+      itemSubCategory: "",
+      subCategoryName: "",
+      gradeCode: "",
+      gradeDescription: "",
+      density: "",
+    });
+  };
+
+  const handleSave = async () => {
+    try {
+      if (
+        !formData.itemCategory ||
+        !formData.itemSubCategory ||
+        !formData.gradeCode ||
+        !formData.gradeDescription
+      ) {
+        alert("Please fill required fields");
+        return;
+      }
+
+      setLoading(true);
+
+      const payload = [
+        {
+          catg_Code: formData.itemCategory,
+          subcatg_code: formData.itemSubCategory,
+          grade_type: formData.gradeCode,
+          grade_name: formData.gradeDescription,
+          density: Number(formData.density) || 0,
+          mat_code: formData.gradeCode,
+        },
+      ];
+
+      console.log("Payload =>", payload);
+
+      const response = await addItemMaterialGrade(payload);
+
+      alert(response?.message || "Saved Successfully ✅");
+
+      resetForm();
+    } catch (error) {
+      console.error(error);
+      alert(error?.message || "Save failed ❌");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,19 +88,29 @@ export default function ItemMaterialGradeForm() {
         />
       </Box>
 
-      <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
-        <Box display="flex" justifyContent="flex-end" mb={2}>
+      <Box
+        sx={{
+          background: "#fff",
+          p: 3,
+          borderRadius: 2,
+          boxShadow: 2,
+        }}
+      >
+        {/* Save Button */}
+        <Box display="flex" justifyContent="flex-end" mb={3}>
           <Button
             variant="contained"
             startIcon={<Icon>save</Icon>}
             onClick={handleSave}
+            disabled={loading}
           >
-            Save
+            {loading ? "Saving..." : "Save"}
           </Button>
         </Box>
 
+        {/* Form */}
         <Grid container spacing={3}>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <TextField
               label="Item Category"
               name="itemCategory"
@@ -61,10 +118,11 @@ export default function ItemMaterialGradeForm() {
               onChange={handleChange}
               size="small"
               fullWidth
+              required
             />
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <TextField
               label="Category Name"
               name="categoryName"
@@ -75,7 +133,7 @@ export default function ItemMaterialGradeForm() {
             />
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <TextField
               label="Item Sub Category"
               name="itemSubCategory"
@@ -83,10 +141,11 @@ export default function ItemMaterialGradeForm() {
               onChange={handleChange}
               size="small"
               fullWidth
+              required
             />
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <TextField
               label="Sub Category Name"
               name="subCategoryName"
@@ -97,7 +156,7 @@ export default function ItemMaterialGradeForm() {
             />
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <TextField
               label="Grade Code"
               name="gradeCode"
@@ -105,10 +164,11 @@ export default function ItemMaterialGradeForm() {
               onChange={handleChange}
               size="small"
               fullWidth
+              required
             />
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <TextField
               label="Grade Description"
               name="gradeDescription"
@@ -116,10 +176,11 @@ export default function ItemMaterialGradeForm() {
               onChange={handleChange}
               size="small"
               fullWidth
+              required
             />
           </Grid>
 
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <TextField
               label="Density"
               name="density"
@@ -127,6 +188,7 @@ export default function ItemMaterialGradeForm() {
               onChange={handleChange}
               size="small"
               fullWidth
+              type="number"
             />
           </Grid>
         </Grid>

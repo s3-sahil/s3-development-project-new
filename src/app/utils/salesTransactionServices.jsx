@@ -9,17 +9,18 @@ export const saveCustomerPurchaseOrder = async (purchaseOrderData) => {
         headers: {
           "Content-Type": "application/json-patch+json", // ✅ IMPORTANT
         },
-      }
+      },
     );
 
     return response.data;
-
   } catch (error) {
     console.error("❌ API FULL ERROR:", error.response?.data || error);
 
-    throw error.response?.data || {
-      Message: "Failed to save Customer Purchase Order",
-    };
+    throw (
+      error.response?.data || {
+        Message: "Failed to save Customer Purchase Order",
+      }
+    );
   }
 };
 
@@ -32,7 +33,7 @@ export const CustomerPurchaseOrderLoginPaginationAPI = async (
   fstartDate,
   fendDate,
   columnNameForSearch,
-  searchString
+  searchString,
 ) => {
   try {
     const { data } = await axiosInstance.get(
@@ -49,7 +50,7 @@ export const CustomerPurchaseOrderLoginPaginationAPI = async (
           ...(columnNameForSearch && { columnNameForSearch }),
           ...(searchString && { searchString }),
         },
-      }
+      },
     );
 
     return data;
@@ -60,40 +61,43 @@ export const CustomerPurchaseOrderLoginPaginationAPI = async (
 };
 
 export const ExportDocumentParameterPaginationAPI = async (
-    tableName = "invoice_hed",
-    pageNumber = 1,
-    pageSize = 10
+  tableName = "invoice_hed",
+  pageNumber = 1,
+  pageSize = 10,
 ) => {
-    try {
-        const { data } = await axiosInstance.get(
-            "/api/PaginationByTable/GetPaginationByTable",
-            {
-                params: {
-                    TableNameForPagination: tableName,
-                    pageNumber,
-                    pageSize,
-                },
-            }
-        );
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: tableName,
+          pageNumber,
+          pageSize,
+        },
+      },
+    );
 
-        if (data?.StatusCode === 200 || data?.Data) {
-            return data;
-        }
-
-        return { Data: [], TotalCount: 0 };
-    } catch (error) {
-        console.error(
-            "Export Document fetch error:",
-            error.response || error.message
-        );
-
-        return { Data: [], TotalCount: 0 };
+    if (data?.StatusCode === 200 || data?.Data) {
+      return data;
     }
+
+    return { Data: [], TotalCount: 0 };
+  } catch (error) {
+    console.error(
+      "Export Document fetch error:",
+      error.response || error.message,
+    );
+
+    return { Data: [], TotalCount: 0 };
+  }
 };
 
 export const addCustomerRCIAEntry = async (payload) => {
   try {
-    const response = await axiosInstance.post(`/ADD-CUSTOMER-RCIA-ENTRY`, payload);
+    const response = await axiosInstance.post(
+      `/ADD-CUSTOMER-RCIA-ENTRY`,
+      payload,
+    );
     return response.data;
   } catch (error) {
     console.error("Error adding Customer RCIA Entry:", error);
@@ -101,37 +105,36 @@ export const addCustomerRCIAEntry = async (payload) => {
   }
 };
 
-
 export const ProformaInvoicePaginationAPI = async (
-    tableName = "cust_rcia",
-    pageNumber = 1,
-    pageSize = 10
+  tableName = "cust_rcia",
+  pageNumber = 1,
+  pageSize = 10,
 ) => {
-    try {
-        const { data } = await axiosInstance.get(
-            "/api/PaginationByTable/GetPaginationByTable",
-            {
-                params: {
-                    TableNameForPagination: tableName,
-                    pageNumber,
-                    pageSize,
-                },
-            }
-        );
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: tableName,
+          pageNumber,
+          pageSize,
+        },
+      },
+    );
 
-        if (data?.StatusCode === 200 || data?.Data) {
-            return data;
-        }
-
-        return { Data: [], TotalCount: 0 };
-    } catch (error) {
-        console.error(
-            "Customer RCIAP fetch error:",
-            error.response || error.message
-        );
-
-        return { Data: [], TotalCount: 0 };
+    if (data?.StatusCode === 200 || data?.Data) {
+      return data;
     }
+
+    return { Data: [], TotalCount: 0 };
+  } catch (error) {
+    console.error(
+      "Customer RCIAP fetch error:",
+      error.response || error.message,
+    );
+
+    return { Data: [], TotalCount: 0 };
+  }
 };
 
 export const addProformaInvoice = async (payload) => {
@@ -155,44 +158,47 @@ export const updateProformaInvoice = async (payload) => {
 };
 
 export const CustomerRCIAPaginationAPI = async (
-    tableName = "cust_rcia",
-    pageNumber = 1,
-    pageSize = 10,
-    searchColumn = "",
-    searchString = ""
+  tableName = "cust_rcia",
+  pageNumber = 1,
+  pageSize = 10,
+  searchColumn = "",
+  searchString = "",
 ) => {
-    try {
-        const { data } = await axiosInstance.get(
-            "/api/PaginationByTable/GetPaginationByTable",
-            {
-                params: {
-                    TableNameForPagination: tableName,
-                    pageNumber,
-                    pageSize,
-                    searchColumn,
-                    searchString,
-                },
-            }
-        );
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: tableName,
+          pageNumber,
+          pageSize,
+          searchColumn,
+          searchString,
+        },
+      },
+    );
 
-        if (data?.StatusCode === 200 || data?.Data) {
-            return data;
-        }
-
-        return { Data: [], TotalCount: 0 };
-    } catch (error) {
-        console.error(
-            "Customer RCIAP fetch error:",
-            error.response || error.message
-        );
-
-        return { Data: [], TotalCount: 0 };
+    if (data?.StatusCode === 200 || data?.Data) {
+      return data;
     }
+
+    return { Data: [], TotalCount: 0 };
+  } catch (error) {
+    console.error(
+      "Customer RCIAP fetch error:",
+      error.response || error.message,
+    );
+
+    return { Data: [], TotalCount: 0 };
+  }
 };
 
 export const addCustomerSchedule = async (payload) => {
   try {
-    const response = await axiosInstance.post(`/ADD-CUSTOMER-SCHEDULE`, payload);
+    const response = await axiosInstance.post(
+      `/ADD-CUSTOMER-SCHEDULE`,
+      payload,
+    );
     return response.data;
   } catch (error) {
     console.error("Error adding Customer Schedule", error);
@@ -202,7 +208,10 @@ export const addCustomerSchedule = async (payload) => {
 
 export const updateCustomerSchedule = async (payload) => {
   try {
-    const response = await axiosInstance.post(`/UPDATE-CUSTOMER-SCHEDULE`, payload);
+    const response = await axiosInstance.post(
+      `/UPDATE-CUSTOMER-SCHEDULE`,
+      payload,
+    );
     return response.data;
   } catch (error) {
     console.error("Error updating Customer Schedule", error);
@@ -211,35 +220,35 @@ export const updateCustomerSchedule = async (payload) => {
 };
 
 export const CustomerSchedulePaginationAPI = async (
-    tableName = "cust_rcia",
-    pageNumber = 1,
-    pageSize = 10
+  tableName = "cust_rcia",
+  pageNumber = 1,
+  pageSize = 10,
 ) => {
-    try {
-        const { data } = await axiosInstance.get(
-            "/api/PaginationByTable/GetPaginationByTable",
-            {
-                params: {
-                    TableNameForPagination: tableName,
-                    pageNumber,
-                    pageSize,
-                },
-            }
-        );
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: tableName,
+          pageNumber,
+          pageSize,
+        },
+      },
+    );
 
-        if (data?.StatusCode === 200 || data?.Data) {
-            return data;
-        }
-
-        return { Data: [], TotalCount: 0 };
-    } catch (error) {
-        console.error(
-            "Customer RCIAP fetch error:",
-            error.response || error.message
-        );
-
-        return { Data: [], TotalCount: 0 };
+    if (data?.StatusCode === 200 || data?.Data) {
+      return data;
     }
+
+    return { Data: [], TotalCount: 0 };
+  } catch (error) {
+    console.error(
+      "Customer RCIAP fetch error:",
+      error.response || error.message,
+    );
+
+    return { Data: [], TotalCount: 0 };
+  }
 };
 
 export const addEnquiryLoginEntry = async (payload) => {
@@ -263,85 +272,79 @@ export const updateEnquiryLoginEntry = async (payload) => {
 };
 
 export const EnquiryLoginEntryPaginationAPI = async (
-    tableName = "cust_rcia",
-    pageNumber = 1,
-    pageSize = 10
+  tableName = "cust_rcia",
+  pageNumber = 1,
+  pageSize = 10,
 ) => {
-    try {
-        const { data } = await axiosInstance.get(
-            "/api/PaginationByTable/GetPaginationByTable",
-            {
-                params: {
-                    TableNameForPagination: tableName,
-                    pageNumber,
-                    pageSize,
-                },
-            }
-        );
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: tableName,
+          pageNumber,
+          pageSize,
+        },
+      },
+    );
 
-        if (data?.StatusCode === 200 || data?.Data) {
-            return data;
-        }
-
-        return { Data: [], TotalCount: 0 };
-    } catch (error) {
-        console.error(
-            "Enquiry Login Entry fetch error:",
-            error.response || error.message
-        );
-
-        return { Data: [], TotalCount: 0 };
+    if (data?.StatusCode === 200 || data?.Data) {
+      return data;
     }
+
+    return { Data: [], TotalCount: 0 };
+  } catch (error) {
+    console.error(
+      "Enquiry Login Entry fetch error:",
+      error.response || error.message,
+    );
+
+    return { Data: [], TotalCount: 0 };
+  }
 };
 
 export const addEnquiry = async (enquiryData) => {
   try {
-    const response = await axiosInstance.post(
-      "/ADD-ENQUIRY",
-      enquiryData,
-      {
-        headers: {
-          "Content-Type": "application/json-patch+json",
-        },
-      }
-    );
+    const response = await axiosInstance.post("/ADD-ENQUIRY", enquiryData, {
+      headers: {
+        "Content-Type": "application/json-patch+json",
+      },
+    });
 
     return response.data;
   } catch (error) {
     console.error("API Error:", error.response || error.message);
 
-    throw new Error(
-      error.response?.data?.message || "Failed to add enquiry."
-    );
+    throw new Error(error.response?.data?.message || "Failed to add enquiry.");
   }
 };
 
 export const EnquiryPaginationAPI = async (
-    tableName = "enquiry_hed",
-    pageNumber = 1,
-    pageSize = 10
+  tableName = "enquiry_hed",
+  pageNumber = 1,
+  pageSize = 10,
 ) => {
-    try {
-        const { data } = await axiosInstance.get(
-            "/api/PaginationByTable/GetPaginationByTable",
-            {
-                params: {
-                    TableNameForPagination: tableName,
-                    pageNumber,
-                    pageSize,
-                },
-            }
-        );
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: tableName,
+          pageNumber,
+          pageSize,
+        },
+      },
+    );
 
-        if (data?.StatusCode === 200 || data?.Data) {
-            return data;
-        }
-
-        return null;
-    } catch (error) {
-        console.error("Enquiry pagination fetch error:", error);
-        return null;
+    if (data?.StatusCode === 200 || data?.Data) {
+      return data;
     }
+
+    return null;
+  } catch (error) {
+    console.error("Enquiry pagination fetch error:", error);
+    return null;
+  }
 };
 
 export const getEnquiryById = async (Enq_no, Enq_dt, profcen_cd) => {
@@ -370,14 +373,14 @@ export const addBusinessPlan = async (businessPlanData) => {
         headers: {
           "Content-Type": "application/json-patch+json",
         },
-      }
+      },
     );
 
     return response.data;
   } catch (error) {
     console.error("API Error:", error.response || error.message);
     throw new Error(
-      error.response?.data?.message || "Failed to add business plan."
+      error.response?.data?.message || "Failed to add business plan.",
     );
   }
 };
@@ -391,19 +394,19 @@ export const updateBusinessPlan = async (businessPlanData) => {
         headers: {
           "Content-Type": "application/json-patch+json",
         },
-      }
+      },
     );
 
     return response.data;
   } catch (error) {
     console.error("API Error:", error.response || error.message);
     throw new Error(
-      error.response?.data?.message || "Failed to update business plan."
+      error.response?.data?.message || "Failed to update business plan.",
     );
   }
 };
 
-export const getBusinessPlan = async (Cust_Code,Profcen_Cd,Period) => {
+export const getBusinessPlan = async (Cust_Code, Profcen_Cd, Period) => {
   try {
     const response = await axiosInstance.get("/GET-BUSINESS_PLAN", {
       params: {
@@ -417,44 +420,43 @@ export const getBusinessPlan = async (Cust_Code,Profcen_Cd,Period) => {
   } catch (error) {
     console.error("API Error:", error.response || error.message);
     throw new Error(
-      error.response?.data?.message || "Failed to fetch business plan."
+      error.response?.data?.message || "Failed to fetch business plan.",
     );
   }
 };
 
 export const BusinessPlanPaginationAPI = async (
-    tableName = "BUSINESS_PLAN",
-    pageNumber = 1,
-    pageSize = 10
+  tableName = "BUSINESS_PLAN",
+  pageNumber = 1,
+  pageSize = 10,
 ) => {
-    try {
-        const { data } = await axiosInstance.get(
-            "/api/PaginationByTable/GetPaginationByTable",
-            {
-                params: {
-                    TableNameForPagination: tableName,
-                    pageNumber,
-                    pageSize,
-                },
-            }
-        );
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: tableName,
+          pageNumber,
+          pageSize,
+        },
+      },
+    );
 
-        if (data?.StatusCode === 200 || data?.Data) {
-            return data;
-        }
-
-        return null;
-    } catch (error) {
-        console.error("Busniess Plan pagination fetch error:", error);
-        return null;
+    if (data?.StatusCode === 200 || data?.Data) {
+      return data;
     }
-};
 
+    return null;
+  } catch (error) {
+    console.error("Busniess Plan pagination fetch error:", error);
+    return null;
+  }
+};
 
 export const getTaxTermByHSNCode = async (hsn) => {
   try {
     const { data } = await axiosInstance.get(
-      `/api/Master/Fetch-Tariff_Tax_By_HSN_CODE?HSN_CODE=${hsn}`
+      `/api/Master/Fetch-Tariff_Tax_By_HSN_CODE?HSN_CODE=${hsn}`,
     );
 
     // ✅ your API returns: { list: [...] }
@@ -468,16 +470,19 @@ export const getTaxTermByHSNCode = async (hsn) => {
 export const fetchPackingAndSubType = async (loginName) => {
   try {
     const response = await axiosInstance.get(
-      `/api/Master/Fetch-PACKING_TYPE_AND_SUB_TYPE?LOGIN_NAME=${loginName}`
+      `/api/Master/Fetch-PACKING_TYPE_AND_SUB_TYPE?LOGIN_NAME=${loginName}`,
     );
 
     return response.data;
   } catch (error) {
-    console.error("Fetch Packing/SubType Error:", error.response || error.message);
+    console.error(
+      "Fetch Packing/SubType Error:",
+      error.response || error.message,
+    );
 
     throw new Error(
       error.response?.data?.message ||
-      "Failed to fetch Packing Type and Sub Type."
+        "Failed to fetch Packing Type and Sub Type.",
     );
   }
 };
@@ -485,7 +490,7 @@ export const fetchPackingAndSubType = async (loginName) => {
 export const fetchItemCodesByCustomer = async (custCode) => {
   try {
     const response = await axiosInstance.get(
-      `/Fetch-PACKING_SLIP_ITEM_CODE_LIST?Cust_code=${custCode}`
+      `/Fetch-PACKING_SLIP_ITEM_CODE_LIST?Cust_code=${custCode}`,
     );
 
     return response.data;
@@ -493,8 +498,23 @@ export const fetchItemCodesByCustomer = async (custCode) => {
     console.error("Fetch Item Codes Error:", error.response || error.message);
 
     throw new Error(
-      error.response?.data?.message ||
-        "Failed to fetch item codes."
+      error.response?.data?.message || "Failed to fetch item codes.",
+    );
+  }
+};
+
+export const fetchStockByItemCode = async (itemCode) => {
+  try {
+    const response = await axiosInstance.get(
+      `/Fetch-PACKING_SLIP_STOCK_list?ITEM_CODE=${itemCode}`,
+    );
+
+    return response.data?.Data || [];
+  } catch (error) {
+    console.error("Fetch Stock Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch stock data.",
     );
   }
 };
@@ -517,20 +537,18 @@ export const fetchPackingSlipQuantity = async ({
           Period,
           Item_Code,
         },
-      }
+      },
     );
 
     return response.data;
-
   } catch (error) {
     console.error(
       "Fetch Packing Slip Quantity Error:",
-      error.response || error.message
+      error.response || error.message,
     );
 
     throw new Error(
-      error.response?.data?.message ||
-      "Failed to fetch Packing Slip Quantity."
+      error.response?.data?.message || "Failed to fetch Packing Slip Quantity.",
     );
   }
 };
@@ -545,31 +563,28 @@ export const getCustomerPurchaseOrder = async ({
   PROFCEN_CD,
 }) => {
   try {
-    const response = await axiosInstance.get(
-      `/GET-CUSTOMER_PURCHASE_ORDER`,
-      {
-        params: {
-          CUST_CODE,
-          PO_ID,
-          PO_ID_DT,
-          PO_NO,
-          PO_DT,
-          oa_type,
-          PROFCEN_CD,
-        },
-      }
-    );
+    const response = await axiosInstance.get(`/GET-CUSTOMER_PURCHASE_ORDER`, {
+      params: {
+        CUST_CODE,
+        PO_ID,
+        PO_ID_DT,
+        PO_NO,
+        PO_DT,
+        oa_type,
+        PROFCEN_CD,
+      },
+    });
 
     return response.data;
   } catch (error) {
     console.error(
       "GET CUSTOMER PURCHASE ORDER ERROR:",
-      error.response || error.message
+      error.response || error.message,
     );
 
     throw new Error(
       error.response?.data?.Message ||
-      "Failed to fetch Customer Purchase Order."
+        "Failed to fetch Customer Purchase Order.",
     );
   }
 };
