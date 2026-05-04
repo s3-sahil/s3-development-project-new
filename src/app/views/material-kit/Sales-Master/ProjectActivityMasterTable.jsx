@@ -42,11 +42,11 @@ export default function ProjectActivityMasterTable() {
   }, [page, pageSize]);
 
   const handleAdd = () => {
-    navigate("/material/salesman/add");
+    navigate("/material/sales-project-activity-master-form/add");
   }
 
   const handleEdit = (row) => {
-    navigate(`/material/salesman/edit/${row.Activity_code}`, {
+    navigate(`/material/sales-project-activity-master-form/edit/${row.Activity_code}`, {
       state: row,
     });
   };

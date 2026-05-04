@@ -80,7 +80,7 @@ const ProjectExecutionPlanTable = () => {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/sales-project-execution-plan-form/edit/${params.row.cust_code}`, {
+                navigate(`/material/sales-project-execution-plan-form/edit/${params.row.po_id}/${params.row.item_Code}/${params.row.Proj_code}/${params.row.profcen_cd}`, {
                   state: params.row,
                 })
               }

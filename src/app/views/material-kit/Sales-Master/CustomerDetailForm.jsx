@@ -529,6 +529,7 @@ const CustomerDetailForm = () => {
 
   const handleClearAll = () => setAddedTaxes([]);
 
+  /////////////// SAVE DATA
   const handleSave = async () => {
     try {
       const payload = {
@@ -689,113 +690,167 @@ const CustomerDetailForm = () => {
     }
   };
 
-  //checkGSTExists
+  //checkPANExists
+  //PAN
 
-  let panTimeout;
-  let GSTTimeout;
-
+  let panTimeout;  
   const [panError, setPanError] = useState("");
+
+  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+
+const handleChangePan = async (e) => {
+  let { name, value } = e.target;
+
+  value = value.toUpperCase();
+
+  if (value.length > 10) return;
+
+  let comp_nonComp = "";
+
+  if (value.length >= 4) {
+    const fourthChar = value[3];
+    comp_nonComp = (fourthChar === "C" || fourthChar === "F")
+      ? "COMPANY"
+      : "NON-COMPANY";
+  }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+    comp_nonComp,
+  }));
+
+  if (value.length === 10) {
+
+    // ✅ 🔥 ADD VALIDATION HERE
+    if (!panRegex.test(value)) {
+      setPanError("Invalid PAN format eg.(ABCDE1234F)");
+      return; // ❗ stop API call
+    }
+
+    try {
+      const res = await checkPanExists(value);
+      console.log("PAN API:", res);
+
+      if (
+        res?.Message === "Approved, PAN CARD Number NOT EXISTS in database."
+      ) {
+        setPanError("");
+      } else {
+        setPanError("");
+        alert("PanNo exist in database");
+      }
+    } catch (error) {
+      console.error(error);
+      setPanError("Error checking PAN");
+    }
+
+  } else if (value.length > 0 && value.length < 10) {
+    setPanError("PAN must be exactly 10 characters");
+  } else {
+    setPanError("");
+  }
+};
+
+
+  // const handleChangePan = async (e) => {
+  //   let { name, value } = e.target;
+    
+  //   value = value.toUpperCase();
+    
+  //   if (value.length > 10) return;
+    
+  //   let comp_nonComp = "";
+    
+  //   // 👉 Check 4th character
+  //   if (value.length >= 4) {
+  //     const fourthChar = value[3];
+      
+  //     if (fourthChar === "C" || fourthChar === "F") {
+  //       comp_nonComp = "COMPANY";
+  //     } else {
+  //       comp_nonComp = "NON-COMPANY";
+  //     }
+  //   }
+    
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //     comp_nonComp,
+  //   }));
+    
+  //   // if (value.length > 0 && value.length < 10) {
+  //     //   setPanError("PAN must be exactly 10 characters");
+  //     // } 
+      
+  //     // ✅ Correct condition (10 characters)
+  //     if (value.length === 10) {
+  //       try {
+  //         const res = await checkPanExists(value);
+  //       console.log("PAN API:", res);
+        
+  //       if (
+  //         res?.Message === "Approved, PAN CARD Number NOT EXISTS in database."
+  //       ) {
+  //         setPanError("");
+  //       } else {
+  //         setPanError("");
+  //         alert("PanNo exist in database");
+          
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //       setPanError("Error checking PAN");
+  //     }
+  //   } else if (value.length > 0 && value.length < 10) {
+  //     setPanError("PAN must be exactly 10 characters");
+  //   } else {
+  //     setPanError("");
+  //   }
+  // };
+  
+  //checkGSTExists
+  //GST
+  
+  let GSTTimeout;
   const [GSTError, setGSTError] = useState("");
 
-  const handleChangePan = async (e) => {
-    let { name, value } = e.target;
+ const handleChangeGST = async (e) => {
+  let { name, value } = e.target;
 
-    value = value.toUpperCase();
+  value = value.toUpperCase();
 
-    if (value.length > 10) return;
+  if (value.length > 15) return;
 
-    let comp_nonComp = "";
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
 
-    // 👉 Check 4th character
-    if (value.length >= 4) {
-      const fourthChar = value[3];
+  if (value.length === 15) {
+    try {
+      const res = await checkGSTExists(value);
+      console.log("GST API:", res);
 
-      if (fourthChar === "C" || fourthChar === "F") {
-        comp_nonComp = "COMPANY";
+      if (res?.Message === "Approved, GST Number NOT EXISTS in database.") {
+        setGSTError("");
       } else {
-        comp_nonComp = "NON-COMPANY";
+        setGSTError("");
+        alert("GST exists in database");
       }
+    } catch (error) {
+      console.error(error);
+      setGSTError("Error checking GST");
     }
+  } else if (value.length > 0 && value.length < 15) {
+    setGSTError("GST must be exactly 15 characters");
+  } else {
+    setGSTError("");
+  }
+};
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-      comp_nonComp,
-    }));
 
-    // ✅ Correct condition (10 characters)
-    if (value.length === 10) {
-      try {
-        const res = await checkPanExists(value);
-        console.log("PAN API:", res);
 
-        if (
-          res?.Message === "Approved, PAN CARD Number NOT EXISTS in database."
-        ) {
-          setPanError("PAN not exists");
-          alert("Please check Pan Card No");
-
-          // setFormData((prev) => ({
-          //   ...prev,
-          //   panNo: "",
-          //   comp_nonComp: "",
-          // }));
-        } else {
-          setPanError("PAN already exists");
-          alert("PanNo exist in database");
-        }
-      } catch (error) {
-        console.error(error);
-        setPanError("Error checking PAN");
-      }
-    } else if (value.length > 0 && value.length < 10) {
-      setPanError("PAN must be exactly 10 characters");
-    } else {
-      setPanError("");
-    }
-  };
-
-  //GST
-  const handleChangeGST = async (e) => {
-    let { name, value } = e.target;
-
-    value = value.toUpperCase();
-
-    if (value.length > 15) return;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
-    // Validate only when length reaches 10
-    if (value.length === 15) {
-      try {
-        const res = await checkGSTExists(value);
-        console.log("GST API:", res);
-
-        if (res?.Message === "Approved, GST Number NOT EXISTS in database.") {
-          setGSTError("GST not exists");
-          alert("Please check GST Card No");
-          setFormData((prev) => ({
-            ...prev,
-            //panNo: "",
-            comp_nonComp: "",
-          }));
-        } else {
-          setGSTError("GST");
-          alert("GST exist in database");
-        }
-      } catch (error) {
-        console.error(error);
-        setGSTError("Error checking GST");
-      }
-    } else if (value.length > 0 && value.length <= 15) {
-      setGSTError("GST must be exactly 15 characters");
-    } else {
-      setGSTError("");
-    }
-  };
 
   const handleContactChange = (index, field, value) => {
     setContactPersons((prev) => {
@@ -888,7 +943,10 @@ const CustomerDetailForm = () => {
                   fullWidth
                   value={formData.code}
                   onChange={handleChange}
-                  disabled={actionMode === "edit"}
+                  //disabled//={actionMode === "edit"}
+                  InputProps={{
+                  readOnly:true           
+                }}
                 />
               </Grid>
               <Grid item xs={12} md={3}>
@@ -1163,12 +1221,21 @@ const CustomerDetailForm = () => {
                   size="small"
                   name="panNo"
                   label="PAN No"
-                  fullWidth
+                  fullWidth                  
                   value={formData.panNo}
                   onChange={handleChangePan}
-                  inputProps={{ maxLength: 10 }} // 👈 restrict typing
-                />
+                  //inputProps={{ maxLength: 10, minLength: 10 }}              
+                  onBlur={(e) => {
+                    if (panError) {
+                      e.target.focus(); // 👈 force focus back
+                    }
+                  }}
+                  error={panError}
+                  helperText={panError}
+
+              />
               </Grid>
+              
 
               <Grid item xs={12} md={4}>
                 <TextField
@@ -1201,6 +1268,13 @@ const CustomerDetailForm = () => {
                   fullWidth
                   value={formData.gstNo}
                   onChange={handleChangeGST}
+                  onBlur={(e) => {
+                    if (GSTError) {
+                      e.target.focus(); // 👈 force focus back
+                    }
+                  }}
+                  error={GSTError}
+                  helperText={GSTError}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -1482,7 +1556,7 @@ const CustomerDetailForm = () => {
                             value={taxType}
                             onChange={(e) => setTaxType(e.target.value)}
                           >
-                            {!isStateMatch ? (
+                            {isStateMatch ? (
                               <>
                                 <FormControlLabel
                                   value="SGST"

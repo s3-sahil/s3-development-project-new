@@ -1,12 +1,13 @@
 import { Box, Container, TextField, Button, Icon, Grid, Paper } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
-import { useState } from "react";
-import {  ProjectActivityAdd} from "app/utils/authServices";
+import { useEffect, useState } from "react";
+import {  ProjectActivityAdd, ProjectActivityEdit} from "app/utils/authServices";
 import { useLocation, useNavigate } from "react-router-dom";
 
 
 const ProjectActivityMasterForm = () => {
+  const location = useLocation(); // for edit data
 
   const [actionMode, setActionMode] = useState("new"); // new | edit
   const [loading, setLoading] = useState(false);
@@ -20,6 +21,35 @@ const ProjectActivityMasterForm = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
+    // 🔹 If Edit mode, fetch full record
+    const fetchEditData = async (Activity_code) => {
+      try {
+        const res = await ProjectActivityEdit(Activity_code);
+  
+        if (res?.data) {
+          const data = res.data;
+          setFormData({
+            activityCode: data.activity_code ?? "",
+            activityDescription: data.description ?? ""
+          });
+        }
+      } catch (error) {
+        console.error("Edit fetch error:", error);
+      }
+    };
+  
+
+
+  // 🔹 On load
+    useEffect(() => {
+  
+      // If coming from Edit
+      if (location.state?.Activity_code) {
+        setActionMode("edit");
+        fetchEditData(location.state.Activity_code);
+      }
+    }, []);
 
    // 🔹 Save (Add / Update)
     const handleSave = async () => {
@@ -77,7 +107,7 @@ const ProjectActivityMasterForm = () => {
             onClick={handleSave}
             disabled={loading}
           >
-            Save
+              <Span>{actionMode === "edit" ? "Update" : "Save"}</Span>
           </Button>
         </Box>
         <Grid container spacing={3}>

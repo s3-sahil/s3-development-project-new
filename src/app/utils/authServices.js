@@ -40,10 +40,10 @@ export const addSalesman = async (salesmanData) => {
     }
 };
 
-export const fetchEmployeesDropdown = async (profcen_cd) => {
+export const fetchEmployeesDropdown = async (profcen_cd, saleEmp = false) => {
     try {
         const { data } = await axiosInstance.get(
-            `/api/Master/Fetch-Employees-dropdown?Profcen_cd=${profcen_cd}`
+            `/api/Master/Fetch-Employees-dropdown?Profcen_cd=${profcen_cd}&salesmanEmpDrp=${saleEmp}`
         );
         return data.Data || []; // ✅ return just the array
     } catch (error) {
@@ -413,34 +413,34 @@ export const salesmanDetailsEdit = async (empNo) => {
     }
 };
 
-export const Employeelistapichange = async (profcen_cd) => {
-    try {
-        const response = await axiosInstance.get(
-            "/api/Master/Fetch-Employees-dropdown",
-            {
-                params: { Profcen_cd: profcen_cd },
-            }
-        );
+// export const Employeelistapichange = async (profcen_cd) => {
+//     try {
+//         const response = await axiosInstance.get(
+//             "/api/Master/Fetch-Employees-dropdown",
+//             {
+//                 params: { Profcen_cd: profcen_cd },
+//             }
+//         );
 
-        const data = response.data;
+//         const data = response.data;
 
-        console.log("API Response Data:", data);
+//         console.log("API Response Data:", data);
 
-        // Lowercase top-level keys
-        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
-            acc[key.toLowerCase()] = data[key];
-            return acc;
-        }, {});
+//         // Lowercase top-level keys
+//         const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+//             acc[key.toLowerCase()] = data[key];
+//             return acc;
+//         }, {});
 
-        return lowerCaseResponse; // { data: [...] }
-    } catch (error) {
-        console.error(
-            "Error fetching dropdown data:",
-            error.response || error.message
-        );
-        return { data: [] };
-    }
-};
+//         return lowerCaseResponse; // { data: [...] }
+//     } catch (error) {
+//         console.error(
+//             "Error fetching dropdown data:",
+//             error.response || error.message
+//         );
+//         return { data: [] };
+//     }
+// };
 
 export const customerDetailPaginationAPI = async (
     tableName = "cust_mst",
@@ -744,6 +744,43 @@ export const ProjectActivityAdd = async (payload) => {
     }
 };
 
+
+export const ProjectActivityEdit = async (Activity_code) => {
+    try {
+        const response = await axiosInstance.get(
+            "/GETRETRIVE-PROJECT_ACTIVITY",
+            {
+                params: { Activity_code: Activity_code },
+            }
+        );
+
+        const data = response.data;
+        console.log("API Response Data:", data);
+
+        // Lowercase top-level keys
+        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+            acc[key.toLowerCase()] = data[key];
+            return acc;
+        }, {});
+
+        // Lowercase nested Data keys
+        const normalizedData = Object.keys(
+            lowerCaseResponse.data || {}
+        ).reduce((acc, key) => {
+            acc[key.toLowerCase()] = lowerCaseResponse.data[key];
+            return acc;
+        }, {});
+
+        return { data: normalizedData };
+    } catch (error) {
+        console.error(
+            "Project Activity Edit API Error:",
+            error.response || error.message
+        );
+        return { data: {} };
+    }
+};
+
 export const ContractReviewChecklistPaginationAPI = async (
     tableName = "contract_review_checklist",
     pageNumber = 1,
@@ -1003,6 +1040,19 @@ export const Fetch_Country = async () => {
     }
 };
 
+export const Fetch_Project_activity = async () => {
+
+    try {
+        const { data } = await axiosInstance.get(
+            `api/Master/Fetch-Project_activity`
+        );
+        return data.Data || []; // ✅ return just the array
+    } catch (error) {
+        console.error("Error fetching dropdown data:", error);
+        return [];
+    }
+};
+
 export const Fetch_PAYCOND = async () => {
 
     try {
@@ -1164,6 +1214,66 @@ export const ProjectExecutionPlan_SAVE = async (payload) => {
     }
 };
 
+export const ProjectExecutionPlan_Update = async (payload) => {
+    try {
+        console.log("Calling Execution Update API with:", payload);
+
+        const response = await axiosInstance.post(
+            "UPDATE-PROJECT_EXECUTION_PLAN", // relative to baseURL
+            payload
+        );
+
+
+        console.log("Project Execution Plan Update API Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Project Execution Plan Update API Error:", error.response || error.message);
+
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+
+        throw new Error("Failed to Update Project Execution Plan. Please try again.");
+    }
+};
+
+// GET Product Price List
+export const ProjectExecutionPlanRetrieve = async (po_id, item_Code, Proj_code, profcen_cd) => {
+    try {
+        const response = await axiosInstance.get(
+            "GET-PROJECT_EXECUTION_PLAN",
+            {
+                params: { po_id, item_Code, Proj_code, profcen_cd}
+            }
+        );
+
+        const data = response.data;
+        console.log("API Response Data:", data);
+
+        // Lowercase top-level keys
+        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+            acc[key.toLowerCase()] = data[key];
+            return acc;
+        }, {});
+
+        // Lowercase nested Data keys
+        const normalizedData = Object.keys(
+            lowerCaseResponse.data || {}
+        ).reduce((acc, key) => {
+            acc[key.toLowerCase()] = lowerCaseResponse.data[key];
+            return acc;
+        }, {});
+
+        return { data: normalizedData };
+    } catch (error) {
+        console.error(
+            "PROJECT_EXECUTION_PLAN Edit API Error:",
+            error.response || error.message
+        );
+        return { data: {} };
+    }
+};
+
 export const ProjectExecutionPlan_Delete = async (r) => {
     try {
         const response = await axiosInstance.delete(
@@ -1186,6 +1296,18 @@ export const ProjectExecutionPlan_Delete = async (r) => {
             error.response?.data?.message ||
             "Failed to delete Salesman Detail."
         );
+    }
+};
+
+export const fetch_POIDItemCodeDropdown = async (Cust_code) => {
+    try {
+        const { data } = await axiosInstance.get(
+            `/Fetch-PROJECT_EXECUTION_PLAN_ITEM_CODE_LIST?Cust_code=${Cust_code}`
+        );
+        return data.Data || []; // ✅ return just the array
+    } catch (error) {
+        console.error("Error fetching dropdown data:", error);
+        return [];
     }
 };
 
@@ -1213,7 +1335,7 @@ export const ITEM_CATEGORY_PaginationAPI = async (
         return { Data: [], TotalCount: 0 };
     } catch (error) {
         console.error(
-            "Project Execution Plan pagination fetch error:",
+            "ITEM_CATEGORY pagination fetch error:",
             error.response || error.message
         );
 
@@ -1231,16 +1353,16 @@ export const ITEM_CATEGORY_SAVE = async (payload) => {
         );
 
 
-        console.log("Project Execution Plan Add API Response:", response.data);
+        console.log("ITEM_CATEGORY_DETAILS Add API Response:", response.data);
         return response.data;
     } catch (error) {
-        console.error("Project Execution Plan Add API Error:", error.response || error.message);
+        console.error("ITEM_CATEGORY_DETAILS Add API Error:", error.response || error.message);
 
         if (error.response?.data?.message) {
             throw new Error(error.response.data.message);
         }
 
-        throw new Error("Failed to add Project Execution Plan. Please try again.");
+        throw new Error("Failed to add ITEM_CATEGORY_DETAILS. Please try again.");
     }
 };
 

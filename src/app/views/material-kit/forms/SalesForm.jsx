@@ -31,7 +31,7 @@ const SalesmanForm = () => {
 
   /* 🔹 Load employee dropdown */
   useEffect(() => {
-    fetchEmployeesDropdown(2).then(setEmployees);
+    //fetchEmployeesDropdown(2).then(setEmployees);
   }, []);
 
   /* 🔹 Prefill data in EDIT mode */

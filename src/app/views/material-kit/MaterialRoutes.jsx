@@ -1100,7 +1100,7 @@ const materialRoutes = [
   { path: "/material/snackbar", element: <AppSnackbar /> },
  { path: "/Sales/material/salesman", element: <SalesmanTable /> },
   { path: "/Sales/Master/SalesmanForm/add", element: <SalesmanForm /> },
-  { path: "/Sales/Master/SalesmanForm/edit/:employeeCode", element: <SalesmanForm /> },
+  { path: "/Sales/Master/SalesmanForm/edit/:Emp_no", element: <SalesmanForm /> },
  
   { path: "/material/customers", element: <CustomerDetailTable /> },
   { path: "/material/customer/add", element: <CustomerDetailForm /> },
@@ -1216,7 +1216,7 @@ const materialRoutes = [
     element: <ProjectExecutionPlanForm />,
   },
   {
-    path: "/material/sales-project-execution-plan-form/edit/:slipNo",
+    path: "/material/sales-project-execution-plan-form/edit/:po_id/:item_Code/:Proj_code/:profcen_cd",
     element: <ProjectExecutionPlanForm />,
   },
 
@@ -1241,7 +1241,7 @@ const materialRoutes = [
     element: <ProjectActivityMasterForm />,
   },
   {
-    path: "/material/sales-project-activity-master-form/edit/:slipNo",
+    path: "/material/sales-project-activity-master-form/edit/:Activity_code",
     element: <ProjectActivityMasterForm />,
   },
   {
