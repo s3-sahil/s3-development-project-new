@@ -613,3 +613,48 @@ export const addSacGroupMaster = async (payload) => {
     );
   }
 };
+
+export const UOMPaginationAPI = async (
+  pageNumber = 1,
+  pageSize = 10
+) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "uom", // ✅ fixed table name
+          pageNumber,
+          pageSize,
+        },
+      }
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("UOM pagination fetch error:", error);
+    return null;
+  }
+};
+
+export const deleteUOMAPI = async (uom) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/API/MATERIAL/UNIT_OF_MEASUREMENT/DELETE-UNIT_OF_MEASUREMENT",
+      {
+        params: {
+          UOM: uom,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete UOM error:", error);
+    return null;
+  }
+};  

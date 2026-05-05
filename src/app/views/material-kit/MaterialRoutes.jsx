@@ -3346,6 +3346,10 @@ const materialRoutes = [
     element: <UOMForm />,
   },
   {
+    path: "/material/Unit-Of-Management-form/delete/:slipNo",
+    element: <UOMForm />,
+  },
+  {
     path: "/material/Inspection-Parameter-Table",
     element: <InspectionParameterTable />,
   },

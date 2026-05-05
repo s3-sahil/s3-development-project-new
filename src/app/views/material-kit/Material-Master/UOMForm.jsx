@@ -9,12 +9,14 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { addUOM } from "app/utils/materialMaterialServices";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { addUOM, deleteUOMAPI } from "app/utils/materialMaterialServices";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function UOMForm() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const mode = location.state?.mode || "add";
   const [formData, setFormData] = useState({
     uom: "",
     desc: "",
@@ -23,6 +25,17 @@ export default function UOMForm() {
   });
 
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (location.state) {
+      setFormData({
+        uom: location.state.uom || "",
+        desc: location.state.desc || "",
+        decimal: location.state.decimal || false,
+        conversion: false,
+      });
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -73,6 +86,26 @@ export default function UOMForm() {
     }
   };
 
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${formData.uom}?`,
+    );
+
+    if (!confirmDelete) return;
+    try {
+      setLoading(true);
+
+      const res = await deleteUOMAPI(formData.uom);
+
+      alert(res?.message || "Deleted successfully");
+
+      navigate("/material/Unit-Of-Management-Table");
+    } catch (err) {
+      alert("Delete failed");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <Container maxWidth="xl">
       {/* Breadcrumb */}
@@ -86,14 +119,26 @@ export default function UOMForm() {
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         {/* TOP SAVE BUTTON */}
         <Box display="flex" justifyContent="flex-end" mb={2}>
-          <Button
-            variant="contained"
-            startIcon={<Icon>save</Icon>}
-            onClick={handleSave}
-            disabled={loading}
-          >
-            {loading ? "Saving..." : "Save"}
-          </Button>
+          {mode === "delete" ? (
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<Icon>delete</Icon>}
+              onClick={handleDelete}
+              disabled={loading}
+            >
+              {loading ? "Deleting..." : "Delete"}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              startIcon={<Icon>save</Icon>}
+              onClick={handleSave}
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save"}
+            </Button>
+          )}
         </Box>
 
         {/* FORM FIELDS */}
@@ -106,6 +151,7 @@ export default function UOMForm() {
               onChange={handleChange}
               size="small"
               fullWidth
+              disabled={mode === "delete"}
             />
           </Grid>
 
@@ -117,6 +163,7 @@ export default function UOMForm() {
               onChange={handleChange}
               size="small"
               fullWidth
+              disabled={mode === "delete"}
             />
           </Grid>
 

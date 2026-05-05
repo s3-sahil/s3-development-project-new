@@ -54,11 +54,11 @@ export default function ItemCategoryTable() {
       sortable: false,
       renderCell: (params) => (
         <>
-          <Tooltip title="Edit">
+          {/* <Tooltip title="Edit">
             <IconButton onClick={() => handleEdit(params.row)}>
               <Icon color="primary">edit</Icon>
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
 
           <Tooltip title="Delete">
             <IconButton onClick={() => handleDelete(params.row.id)}>
