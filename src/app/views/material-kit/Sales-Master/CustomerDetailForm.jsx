@@ -150,14 +150,15 @@ const CustomerDetailForm = () => {
     fstate: "",
     discountApplicable: false,
   });
+
   const handleAddPay = () => {
     if (
       !payPercent ||
       !payCode ||
       !payDesc ||
-      !payMode ||
-      !payPeriod ||
-      !payperioda
+      !payMode
+      // !payPeriod ||
+      // !payperioda
     ) {
       alert("Please fill all fields");
       return;
@@ -384,6 +385,47 @@ const CustomerDetailForm = () => {
             mode: p.MODE ?? "",
             code: p.PC_CODE ?? "",
           })),
+        );
+
+        // ✅ Contact Persons bind
+        const contacts = [];
+
+        // main contact
+        if (
+          cust.contact_person ||
+          cust.person_desig ||
+          cust.Mobile ||
+          cust.Email
+        ) {
+          contacts.push({
+            name: cust.contact_person || "",
+            designation: cust.person_desig || "",
+            mobile: cust.Mobile || "",
+            email: cust.Email || "",
+          });
+        }
+
+        // extra contacts
+        for (let i = 1; i <= 4; i++) {
+          if (
+            cust[`contact_person${i}`] ||
+            cust[`person_desig${i}`] ||
+            cust[`mobile${i}`] ||
+            cust[`Email${i}`]
+          ) {
+            contacts.push({
+              name: cust[`contact_person${i}`] || "",
+              designation: cust[`person_desig${i}`] || "",
+              mobile: cust[`mobile${i}`] || "",
+              email: cust[`Email${i}`] || "",
+            });
+          }
+        }
+
+        setContactPersons(
+          contacts.length
+            ? contacts
+            : [{ name: "", designation: "", mobile: "", email: "" }],
         );
       }
     } catch (error) {
@@ -693,102 +735,98 @@ const CustomerDetailForm = () => {
   //checkPANExists
   //PAN
 
-  let panTimeout;  
+  let panTimeout;
   const [panError, setPanError] = useState("");
 
   const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
-const handleChangePan = async (e) => {
-  let { name, value } = e.target;
+  const handleChangePan = async (e) => {
+    let { name, value } = e.target;
 
-  value = value.toUpperCase();
+    value = value.toUpperCase();
 
-  if (value.length > 10) return;
+    if (value.length > 10) return;
 
-  let comp_nonComp = "";
+    let comp_nonComp = "";
 
-  if (value.length >= 4) {
-    const fourthChar = value[3];
-    comp_nonComp = (fourthChar === "C" || fourthChar === "F")
-      ? "COMPANY"
-      : "NON-COMPANY";
-  }
-
-  setFormData((prev) => ({
-    ...prev,
-    [name]: value,
-    comp_nonComp,
-  }));
-
-  if (value.length === 10) {
-
-    // ✅ 🔥 ADD VALIDATION HERE
-    if (!panRegex.test(value)) {
-      setPanError("Invalid PAN format eg.(ABCDE1234F)");
-      return; // ❗ stop API call
+    if (value.length >= 4) {
+      const fourthChar = value[3];
+      comp_nonComp =
+        fourthChar === "C" || fourthChar === "F" ? "COMPANY" : "NON-COMPANY";
     }
 
-    try {
-      const res = await checkPanExists(value);
-      console.log("PAN API:", res);
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      comp_nonComp,
+    }));
 
-      if (
-        res?.Message === "Approved, PAN CARD Number NOT EXISTS in database."
-      ) {
-        setPanError("");
-      } else {
-        setPanError("");
-        alert("PanNo exist in database");
+    if (value.length === 10) {
+      // ✅ 🔥 ADD VALIDATION HERE
+      if (!panRegex.test(value)) {
+        setPanError("Invalid PAN format eg.(ABCDE1234F)");
+        return; // ❗ stop API call
       }
-    } catch (error) {
-      console.error(error);
-      setPanError("Error checking PAN");
+
+      try {
+        const res = await checkPanExists(value);
+        console.log("PAN API:", res);
+
+        if (
+          res?.Message === "Approved, PAN CARD Number NOT EXISTS in database."
+        ) {
+          setPanError("");
+        } else {
+          setPanError("");
+          alert("PanNo exist in database");
+        }
+      } catch (error) {
+        console.error(error);
+        setPanError("Error checking PAN");
+      }
+    } else if (value.length > 0 && value.length < 10) {
+      setPanError("PAN must be exactly 10 characters");
+    } else {
+      setPanError("");
     }
-
-  } else if (value.length > 0 && value.length < 10) {
-    setPanError("PAN must be exactly 10 characters");
-  } else {
-    setPanError("");
-  }
-};
-
+  };
 
   // const handleChangePan = async (e) => {
   //   let { name, value } = e.target;
-    
+
   //   value = value.toUpperCase();
-    
+
   //   if (value.length > 10) return;
-    
+
   //   let comp_nonComp = "";
-    
+
   //   // 👉 Check 4th character
   //   if (value.length >= 4) {
   //     const fourthChar = value[3];
-      
+
   //     if (fourthChar === "C" || fourthChar === "F") {
   //       comp_nonComp = "COMPANY";
   //     } else {
   //       comp_nonComp = "NON-COMPANY";
   //     }
   //   }
-    
+
   //   setFormData((prev) => ({
   //     ...prev,
   //     [name]: value,
   //     comp_nonComp,
   //   }));
-    
+
   //   // if (value.length > 0 && value.length < 10) {
   //     //   setPanError("PAN must be exactly 10 characters");
-  //     // } 
-      
+  //     // }
+
   //     // ✅ Correct condition (10 characters)
   //     if (value.length === 10) {
   //       try {
   //         const res = await checkPanExists(value);
   //       console.log("PAN API:", res);
-        
+
   //       if (
   //         res?.Message === "Approved, PAN CARD Number NOT EXISTS in database."
   //       ) {
@@ -796,7 +834,7 @@ const handleChangePan = async (e) => {
   //       } else {
   //         setPanError("");
   //         alert("PanNo exist in database");
-          
+
   //       }
   //     } catch (error) {
   //       console.error(error);
@@ -808,50 +846,89 @@ const handleChangePan = async (e) => {
   //     setPanError("");
   //   }
   // };
-  
+
   //checkGSTExists
   //GST
-  
+
   let GSTTimeout;
+
   const [GSTError, setGSTError] = useState("");
 
- const handleChangeGST = async (e) => {
-  let { name, value } = e.target;
+  const handleChangeGST = async (e) => {
+    let { name, value } = e.target;
 
-  value = value.toUpperCase();
+    value = value.toUpperCase();
 
-  if (value.length > 15) return;
+    // max 15 chars
+    if (value.length > 15) return;
 
-  setFormData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
-  if (value.length === 15) {
+    if (!value) {
+      setGSTError("");
+      return;
+    }
+
+    // GST format check
+    // Example: 27ABCDE1234F1Z5
+    const gstRegex =
+      /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+    if (value.length < 15) {
+      setGSTError("GST must be exactly 15 characters");
+      return;
+    }
+
+    if (!gstRegex.test(value)) {
+      setGSTError("Invalid GST format");
+      return;
+    }
+
+    // 1) PAN match check (3rd char to 12th char = PAN)
+    const gstPan = value.substring(2, 12); // ABCDE1234F
+    const enteredPan = (formData.panNo || "").toUpperCase();
+
+    if (enteredPan && gstPan !== enteredPan) {
+      setGSTError("GST PAN does not match PAN Number");
+      return;
+    }
+
+    // 2) State code match
+    // map your dropdown state -> GST state code
+    const selectedState = formData.state;
+
+    const stateObj = stateDropdownValue.find(
+      (item) => item.State === selectedState,
+    );
+
+    const selectedStateCode = stateObj?.state_code?.toString().padStart(2, "0");
+    const gstStateCode = value.substring(0, 2);
+
+    if (selectedStateCode && gstStateCode !== selectedStateCode) {
+      setGSTError(
+        `GST state code (${gstStateCode}) does not match selected state (${selectedStateCode})`,
+      );
+      return;
+    }
+
+    // 3) duplicate API check
     try {
       const res = await checkGSTExists(value);
-      console.log("GST API:", res);
 
       if (res?.Message === "Approved, GST Number NOT EXISTS in database.") {
         setGSTError("");
       } else {
-        setGSTError("");
+        setGSTError("GST already exists in database");
         alert("GST exists in database");
       }
     } catch (error) {
       console.error(error);
       setGSTError("Error checking GST");
     }
-  } else if (value.length > 0 && value.length < 15) {
-    setGSTError("GST must be exactly 15 characters");
-  } else {
-    setGSTError("");
-  }
-};
-
-
-
-
+  };
   const handleContactChange = (index, field, value) => {
     setContactPersons((prev) => {
       const copy = [...prev];
@@ -905,6 +982,61 @@ const handleChangePan = async (e) => {
     }
   }, []);
 
+  const handleDialogSave = () => {
+    // Only validate Payment Terms tab
+    if (tabIndex === 1) {
+      const totalPercent = addedPays.reduce(
+        (sum, item) => sum + Number(item.percent || 0),
+        0,
+      );
+
+      if (totalPercent !== 100) {
+        alert(
+          `Payment percentage total must be exactly 100.\nCurrent Total = ${totalPercent}%`,
+        );
+        return;
+      }
+    }
+
+    handleClose();
+  };
+
+  const validateGST = (gst, panNo, selectedState) => {
+    const gstValue = gst.toUpperCase().trim();
+    const panValue = panNo.toUpperCase().trim();
+
+    // GST format:
+    // 2 digits + 10 PAN + 1 entity + Z + 1 checksum
+    const gstRegex =
+      /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
+
+    if (!gstRegex.test(gstValue)) {
+      return "Invalid GST format";
+    }
+
+    // first 2 digits = state code
+    const gstStateCode = gstValue.substring(0, 2);
+
+    const stateObj = stateDropdownValue.find(
+      (item) => item.State === selectedState,
+    );
+
+    const selectedStateCode = stateObj?.state_code;
+
+    if (selectedStateCode && gstStateCode !== selectedStateCode) {
+      return `GST State Code (${gstStateCode}) does not match selected State (${selectedStateCode})`;
+    }
+
+    // PAN match
+    const gstPan = gstValue.substring(2, 12);
+
+    if (panValue && gstPan !== panValue) {
+      return "GST PAN number does not match PAN No";
+    }
+
+    return "";
+  };
+
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
@@ -932,7 +1064,7 @@ const handleChangePan = async (e) => {
         </Box>
 
         <Grid container spacing={2}>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} autoComplete="off">
             <Grid container spacing={1}>
               {/* Row 1 */}
               <Grid item xs={12} md={2}>
@@ -945,8 +1077,8 @@ const handleChangePan = async (e) => {
                   onChange={handleChange}
                   //disabled//={actionMode === "edit"}
                   InputProps={{
-                  readOnly:true           
-                }}
+                    readOnly: true,
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={3}>
@@ -1221,10 +1353,10 @@ const handleChangePan = async (e) => {
                   size="small"
                   name="panNo"
                   label="PAN No"
-                  fullWidth                  
+                  fullWidth
                   value={formData.panNo}
                   onChange={handleChangePan}
-                  //inputProps={{ maxLength: 10, minLength: 10 }}              
+                  //inputProps={{ maxLength: 10, minLength: 10 }}
                   onBlur={(e) => {
                     if (panError) {
                       e.target.focus(); // 👈 force focus back
@@ -1232,10 +1364,8 @@ const handleChangePan = async (e) => {
                   }}
                   error={panError}
                   helperText={panError}
-
-              />
+                />
               </Grid>
-              
 
               <Grid item xs={12} md={4}>
                 <TextField
@@ -1745,7 +1875,7 @@ const handleChangePan = async (e) => {
                         </FormControl>
                       </Grid>
 
-                      <Grid item md={3}>
+                      {/* <Grid item md={3}>
                         <TextField
                           Number
                           label="Period"
@@ -1768,8 +1898,36 @@ const handleChangePan = async (e) => {
                           <MenuItem value="D">Days</MenuItem>
                           <MenuItem value="M">Months</MenuItem>
                         </TextField>
-                      </Grid>
+                      </Grid> */}
 
+                      {payMode !== "I" && (
+                        <>
+                          <Grid item xs={12} md={3}>
+                            <TextField
+                              type="number"
+                              label="Period"
+                              size="small"
+                              fullWidth
+                              value={payperioda}
+                              onChange={(e) => setPayperioda(e.target.value)}
+                            />
+                          </Grid>
+
+                          <Grid item xs={12} md={3}>
+                            <TextField
+                              select
+                              label="DM Flag"
+                              size="small"
+                              fullWidth
+                              value={payPeriod}
+                              onChange={(e) => setPayPeriod(e.target.value)}
+                            >
+                              <MenuItem value="D">Days</MenuItem>
+                              <MenuItem value="M">Months</MenuItem>
+                            </TextField>
+                          </Grid>
+                        </>
+                      )}
                       <Grid item xs={12}>
                         <Button
                           variant="contained"
@@ -2399,7 +2557,7 @@ const handleChangePan = async (e) => {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleClose}
+                    onClick={handleDialogSave}
                   >
                     Save
                   </Button>
