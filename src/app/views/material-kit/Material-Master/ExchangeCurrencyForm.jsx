@@ -1,5 +1,6 @@
 import { Box, Container, TextField, Button, Icon, Grid } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { fetchCurrencyAPI } from "app/utils/authServices";
 import { addExchangeCurrency } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -12,12 +13,26 @@ export default function ExchangeCurrencyForm() {
     exportRate: "",
   });
   const [loading, setLoading] = useState(false);
-
+  const [currencyOptions, setCurrencyOptions] = useState([]);
   const location = useLocation();
   const mode = location.state?.mode || "add";
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  useEffect(() => {
+    loadCurrencies();
+  }, []);
+
+  const loadCurrencies = async () => {
+    try {
+      const res = await fetchCurrencyAPI();
+      setCurrencyOptions(res || []);
+    } catch (error) {
+      console.error("Currency API Error:", error);
+      setCurrencyOptions([]);
+    }
   };
 
   const handleSave = async () => {
@@ -136,14 +151,27 @@ export default function ExchangeCurrencyForm() {
           </Grid>
 
           <Grid item xs={6}>
-            <TextField
-              label="Currency"
-              name="currency"
-              value={formData.currency}
-              onChange={handleChange}
-              size="small"
-              fullWidth
-            />
+            <Grid item xs={6}>
+              <TextField
+                select
+                label="Currency"
+                name="currency"
+                value={formData.currency}
+                onChange={handleChange}
+                size="small"
+                fullWidth
+              >
+                <MenuItem value="">
+                  <em>Select Currency</em>
+                </MenuItem>
+
+                {currencyOptions.map((item) => (
+                  <MenuItem key={item.currency_code} value={item.currency_code}>
+                    {item.currency_code} | {item.currency_name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
           </Grid>
 
           <Grid item xs={6}>

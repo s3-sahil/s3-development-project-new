@@ -658,3 +658,22 @@ export const deleteUOMAPI = async (uom) => {
     return null;
   }
 };  
+
+export const deleteItemCategoryAPI = async (catgCode, indicator) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/API/MATERIAL/ITEM_CATEGORY_DETAILS/DELETE-ITEM_CATEGORY_D",
+      {
+        params: {
+          CATG_CODE: catgCode,
+          indicator: indicator,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Item Category error:", error);
+    return null;
+  }
+};
