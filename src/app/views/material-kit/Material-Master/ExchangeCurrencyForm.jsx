@@ -174,7 +174,7 @@ export default function ExchangeCurrencyForm() {
 
               {currencyOptions.map((item) => (
                 <MenuItem key={item.currency} value={item.currency}>
-                  {item.currency} | {item.currency_name}
+                  {item.currency} | {item.CURR_FRACTION}
                 </MenuItem>
               ))}
             </TextField>
