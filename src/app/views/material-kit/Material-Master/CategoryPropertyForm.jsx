@@ -8,8 +8,12 @@ import {
   Autocomplete,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { addCategoryPropertyValues, fetchCategoryTypeAPI } from "app/utils/materialMaterialServices";
+import {
+  addCategoryPropertyValues,
+  fetchCategoryTypeAPI,
+} from "app/utils/materialMaterialServices";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function CategoryPropertyForm() {
   const [formData, setFormData] = useState({
@@ -19,10 +23,25 @@ export default function CategoryPropertyForm() {
   });
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [loadingDropdown, setLoadingDropdown] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const location = useLocation();
+  const mode = location.state?.mode || "add";
 
   useEffect(() => {
     loadCategories();
   }, []);
+
+  useEffect(() => {
+    if (location.state) {
+      setFormData({
+        uom: location.state.uom || "",
+        desc: location.state.desc || "",
+        decimal: location.state.decimal || false,
+        conversion: false,
+      });
+    }
+  }, [location.state]);
 
   const loadCategories = async () => {
     try {
@@ -83,6 +102,27 @@ export default function CategoryPropertyForm() {
     }
   };
 
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${formData.propertyCode}?`,
+    );
+
+    if (!confirmDelete) return;
+    try {
+      setLoading(true);
+
+      const res = await deleteUOMAPI(formData.propertyCode);
+
+      alert(res?.message || "Deleted successfully");
+
+      navigate("/material/material-category-property-table");
+    } catch (err) {
+      alert("Delete failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
@@ -96,13 +136,28 @@ export default function CategoryPropertyForm() {
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         <Box display="flex" justifyContent="flex-end" mb={2}>
-          <Button
-            variant="contained"
-            startIcon={<Icon>save</Icon>}
-            onClick={handleSave}
-          >
-            Save
-          </Button>
+          <Box display="flex" justifyContent="flex-end" mb={2}>
+            {mode === "delete" ? (
+              <Button
+                variant="contained"
+                color="error"
+                startIcon={<Icon>delete</Icon>}
+                onClick={handleDelete}
+                disabled={loading}
+              >
+                {loading ? "Deleting..." : "Delete"}
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                startIcon={<Icon>save</Icon>}
+                onClick={handleSave}
+                disabled={loading}
+              >
+                {loading ? "Saving..." : "Save"}
+              </Button>
+            )}
+          </Box>
         </Box>
 
         <Grid container spacing={3}>

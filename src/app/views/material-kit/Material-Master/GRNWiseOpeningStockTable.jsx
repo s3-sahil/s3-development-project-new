@@ -1,10 +1,4 @@
-import {
-  Container,
-  Icon,
-  IconButton,
-  Tooltip,
-  Button,
-} from "@mui/material";
+import { Container, Icon, IconButton, Tooltip, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
@@ -64,7 +58,14 @@ export default function GRNWiseOpeningStockTable() {
           </Tooltip>
 
           <Tooltip title="Delete">
-            <IconButton onClick={() => handleDelete(params.row.id)}>
+            <IconButton
+              onClick={() =>
+                navigate(
+                  `/material/material-GRN-wise-opening-stock-form/delete/${params.row.id}`,
+                  { state: { ...params.row, mode: "delete" } },
+                )
+              }
+            >
               <Icon color="error">delete</Icon>
             </IconButton>
           </Tooltip>

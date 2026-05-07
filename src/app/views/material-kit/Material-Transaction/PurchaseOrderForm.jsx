@@ -17,6 +17,105 @@ export default function PurchaseOrderForm() {
   const [openTaxModal, setOpenTaxModal] = useState(false);
   const [taxRows, setTaxRows] = useState([]); // store saved tax data
 
+  const initialPayload = {
+    po_head_ex: {
+      pO_DATE: "",
+      pO_NO: "",
+      povaliD_DATE: "",
+      venD_CODE: "",
+      quoT_NO: "",
+      quoT_DATE: "",
+      proJ_CODE: "",
+      basiC_AMT: 0,
+      disC_PERCENT: 0,
+      pacK_FWD_AMT: 0,
+      pacK_FWD_PERCENT: 0,
+      transporT_AMT: 0,
+      octroI_FLAG: "N",
+      currency: "INR",
+      pO_CATG: "",
+      prinT_FLAG: "N",
+      advancE_AMT: 0,
+      modvaT_FLAG: "N",
+      openpO_FLAG: "N",
+      toT_DISCAMT: 0,
+      amenD_NO: "",
+      transporT_FLAG: "N",
+      toT_STAX: 0,
+      toT_EXCISE: 0,
+      toT_OTAX: 0,
+      profceN_CD: "1",
+      depT_CODE: "",
+      bal_amt: 0,
+      remark: "",
+      advancE_AMT_PAID: 0,
+      trans_unit: "",
+      delv_days: 0,
+      delv_period: "",
+      po_type: "",
+      delivery_location: "",
+      transportername: "",
+      user_name: "",
+      amend_date: "",
+      pack_fwd_flag: "N",
+      schedule_flag: "N",
+      approved_by: "",
+      approval_date: "",
+      approval_flag: "N",
+      inS_flag: "N",
+      inS_per: 0,
+      inS_amt: 0,
+      buyer: "",
+      trans_remark: "",
+      other_PayCond: "",
+      int_remark: "",
+      conv_rate: 1,
+      mode_of_Dispatch: "",
+      other_Charges: 0,
+      delv_term: "",
+      delivery_date: "",
+      delivery_remark: "",
+      load_amt: 0,
+      load_unit: "",
+      netVal: 0,
+      service_Amt: 0,
+      pack_unit: "",
+      schemeName: "",
+      user_date: "",
+      postart_letter: "N",
+      holdLevel: "",
+      app_date1: "",
+      app_by1: "",
+      app_date2: "",
+      app_by2: "",
+      org_disc_Percent: 0,
+      obasic_amt: 0,
+      sgstAmt: 0,
+      cgstAmt: 0,
+      igstAmt: 0,
+      grn_Trans_Amt: 0,
+      project_val: 0,
+      po_subcatg: "",
+      grn_load_amt: 0,
+    },
+
+    list_Po_det_ex: [],
+
+    list_Po_tax_ex: [],
+
+    list_Po_paycond_ex: [],
+
+    list_Po_indent_ex: [],
+
+    list_po_operation_Det_ex: [],
+
+    period: "",
+    mM_DOC_DOCUMNET: "",
+    mM_DOC_TYPE: "",
+    profceN_CD: "1",
+  };
+
+  const [payload, setPayload] = useState(initialPayload);
   const handleOpenTax = () => setOpenTaxModal(true);
   const handleCloseTax = () => setOpenTaxModal(false);
 
@@ -27,6 +126,76 @@ export default function PurchaseOrderForm() {
 
   const handleOpenPayment = () => setOpenPayment(true);
   const handleClosePayment = () => setOpenPayment(false);
+
+  const handleChange = (field) => (e) => {
+    setPayload((prev) => ({
+      ...prev,
+      po_head_ex: {
+        ...prev.po_head_ex,
+        [field]: e.target.value,
+      },
+    }));
+  };
+
+  const addItem = () => {
+    const itemTemplate = {
+      pO_DATE: payload.po_head_ex.pO_DATE,
+      iteM_CODE: "",
+      rate: "",
+      qty: 0,
+      disC_PERCENT: 0,
+      accepT_QTY: 0,
+      reJ_QTY: 0,
+      schedulE_FLAG: "N",
+      modvaT_FLAG: "N",
+      pO_NO: payload.po_head_ex.pO_NO,
+      uom: "",
+      cP_FLAG: "N",
+      indenT_FLAG: "N",
+      remark: "",
+      op_code: "",
+      packing_details: "",
+      profceN_CD: payload.profceN_CD,
+      weF_DATE: "",
+      amend_reason: "",
+      amend_nos: "",
+      send_date: "",
+      head_amend_nos: "",
+      temp_receipt: "",
+      org_amt: "0",
+      org_rate: "0",
+      org_Qty: "0",
+      org_disc: "0",
+      delivery_dt: "",
+      exc_rate: 0,
+      amort_rate: 0,
+      scheme_name: "",
+      licence_no: "",
+      file_no: "",
+      licence_date: "",
+      bond_date: "",
+      sr_no: payload.list_Po_det_ex.length + 1,
+      scheme_qty: 0,
+      amend_Res: "",
+      child_code: "",
+      tariff_Cd: "",
+      wono: "",
+      sgsTdetAmt: 0,
+      cgsTdetAmt: 0,
+      igsTdetAmt: 0,
+      sgsT_Cd: "",
+      cgsT_Cd: "",
+      igsT_Cd: "",
+      tcs_cd: "",
+      tcsAmt: 0,
+    };
+
+    setPayload((prev) => ({
+      ...prev,
+      list_Po_det_ex: [...prev.list_Po_det_ex, itemTemplate],
+    }));
+  };
+
   return (
     <Container maxWidth="lg">
       {/* HEADER */}
@@ -46,53 +215,222 @@ export default function PurchaseOrderForm() {
         <Grid container spacing={2}>
           {/* ROW 1 */}
           <Grid item xs={4}>
-            <TextField label="Order No." fullWidth size="small" />
+            <TextField
+              label="Order No."
+              fullWidth
+              size="small"
+              value={payload.po_head_ex.pO_NO}
+              onChange={(e) =>
+                setPayload((prev) => ({
+                  ...prev,
+                  po_head_ex: { ...prev.po_head_ex, pO_NO: e.target.value },
+                }))
+              }
+            />
           </Grid>
           <Grid item xs={4}>
-            <TextField type="date" fullWidth size="small" />
+            <TextField
+              type="date"
+              fullWidth
+              size="small"
+              InputLabelProps={{ shrink: true }}
+              value={payload.po_head_ex.pO_DATE?.slice(0, 10) || ""}
+              onChange={(e) =>
+                setPayload((prev) => ({
+                  ...prev,
+                  po_head_ex: {
+                    ...prev.po_head_ex,
+                    pO_DATE: new Date(e.target.value).toISOString(),
+                  },
+                }))
+              }
+            />
           </Grid>
           <Grid item xs={4}>
-            <TextField type="date" label="Valid Date" fullWidth size="small" />
+            <TextField
+              type="date"
+              label="Valid Date"
+              fullWidth
+              size="small"
+              InputLabelProps={{ shrink: true }}
+              value={payload.po_head_ex.povaliD_DATE?.slice(0, 10) || ""}
+              onChange={(e) =>
+                setPayload((prev) => ({
+                  ...prev,
+                  po_head_ex: {
+                    ...prev.po_head_ex,
+                    povaliD_DATE: new Date(e.target.value).toISOString(),
+                  },
+                }))
+              }
+            />
           </Grid>
 
           {/* ROW 2 */}
           <Grid item xs={4}>
-            <TextField label="Project Code" fullWidth size="small" />
+            <TextField
+              label="Project Code"
+              fullWidth
+              size="small"
+              value={payload.po_head_ex.proJ_CODE}
+              onChange={(e) =>
+                setPayload((prev) => ({
+                  ...prev,
+                  po_head_ex: { ...prev.po_head_ex, proJ_CODE: e.target.value },
+                }))
+              }
+            />
           </Grid>
           <Grid item xs={4}>
-            <TextField label="Buyer" fullWidth size="small" />
+            <TextField
+              label="Buyer"
+              fullWidth
+              size="small"
+              value={payload.po_head_ex.buyer}
+              onChange={(e) =>
+                setPayload((prev) => ({
+                  ...prev,
+                  po_head_ex: { ...prev.po_head_ex, buyer: e.target.value },
+                }))
+              }
+            />
           </Grid>
           <Grid item xs={4}>
-            <TextField label="Department" fullWidth size="small" />
+            <TextField
+              label="Department"
+              fullWidth
+              size="small"
+              value={payload.po_head_ex.depT_CODE}
+              onChange={(e) =>
+                setPayload((prev) => ({
+                  ...prev,
+                  po_head_ex: { ...prev.po_head_ex, depT_CODE: e.target.value },
+                }))
+              }
+            />
           </Grid>
 
           {/* ROW 3 */}
           <Grid item xs={4}>
-            <TextField label="PO Type" fullWidth size="small" />
+            <TextField
+              label="PO Type"
+              fullWidth
+              size="small"
+              value={payload.po_head_ex.po_type}
+              onChange={(e) =>
+                setPayload((prev) => ({
+                  ...prev,
+                  po_head_ex: { ...prev.po_head_ex, po_type: e.target.value },
+                }))
+              }
+            />
           </Grid>
           <Grid item xs={4}>
-            <TextField label="PO Category" fullWidth size="small" />
+            <TextField
+              label="PO Category"
+              fullWidth
+              size="small"
+              value={payload.po_head_ex.pO_CATG}
+              onChange={(e) =>
+                setPayload((prev) => ({
+                  ...prev,
+                  po_head_ex: { ...prev.po_head_ex, pO_CATG: e.target.value },
+                }))
+              }
+            />
           </Grid>
 
           {/* ROW 4 */}
           <Grid item xs={4}>
-            <TextField label="Supplier" fullWidth size="small" />
+            <TextField
+              label="Supplier"
+              fullWidth
+              size="small"
+              value={payload.po_head_ex.venD_CODE}
+              onChange={(e) =>
+                setPayload((prev) => ({
+                  ...prev,
+                  po_head_ex: { ...prev.po_head_ex, venD_CODE: e.target.value },
+                }))
+              }
+            />
           </Grid>
 
           {/* CHECKBOXES */}
           <Grid item xs={12}>
             <FormControlLabel control={<Checkbox />} label="All Supplier" />
-            <FormControlLabel control={<Checkbox />} label="Open Order" />
-            <FormControlLabel control={<Checkbox />} label="Schedule Order" />
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={payload.po_head_ex.openpO_FLAG === "Y"}
+                  onChange={(e) =>
+                    setPayload((prev) => ({
+                      ...prev,
+                      po_head_ex: {
+                        ...prev.po_head_ex,
+                        openpO_FLAG: e.target.checked ? "Y" : "N",
+                      },
+                    }))
+                  }
+                />
+              }
+              label="Open Order"
+            />
+
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={payload.po_head_ex.schedule_flag === "Y"}
+                  onChange={(e) =>
+                    setPayload((prev) => ({
+                      ...prev,
+                      po_head_ex: {
+                        ...prev.po_head_ex,
+                        schedule_flag: e.target.checked ? "Y" : "N",
+                      },
+                    }))
+                  }
+                />
+              }
+              label="Schedule Order"
+            />
+
             <FormControlLabel control={<Checkbox />} label="Internal Remark" />
           </Grid>
 
           {/* QUOTATION */}
           <Grid item xs={4}>
-            <TextField label="Quotation No" fullWidth size="small" />
+            <TextField
+              label="Quotation No"
+              fullWidth
+              size="small"
+              value={payload.po_head_ex.quoT_NO}
+              onChange={(e) =>
+                setPayload((prev) => ({
+                  ...prev,
+                  po_head_ex: { ...prev.po_head_ex, quoT_NO: e.target.value },
+                }))
+              }
+            />
           </Grid>
           <Grid item xs={4}>
-            <TextField type="date" fullWidth size="small" />
+            <TextField
+              type="date"
+              fullWidth
+              size="small"
+              InputLabelProps={{ shrink: true }}
+              value={payload.po_head_ex.quoT_DATE?.slice(0, 10) || ""}
+              onChange={(e) =>
+                setPayload((prev) => ({
+                  ...prev,
+                  po_head_ex: {
+                    ...prev.po_head_ex,
+                    quoT_DATE: new Date(e.target.value).toISOString(),
+                  },
+                }))
+              }
+            />
           </Grid>
           <Grid item xs={4}>
             <Button
@@ -106,7 +444,21 @@ export default function PurchaseOrderForm() {
 
           {/* DELIVERY */}
           <Grid item xs={6}>
-            <TextField label="Delivery Location" fullWidth size="small" />
+            <TextField
+              label="Delivery Location"
+              fullWidth
+              size="small"
+              value={payload.po_head_ex.delivery_location}
+              onChange={(e) =>
+                setPayload((prev) => ({
+                  ...prev,
+                  po_head_ex: {
+                    ...prev.po_head_ex,
+                    delivery_location: e.target.value,
+                  },
+                }))
+              }
+            />
           </Grid>
 
           {/* ACTION BUTTONS */}
