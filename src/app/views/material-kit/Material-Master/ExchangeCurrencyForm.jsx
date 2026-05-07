@@ -9,9 +9,12 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { fetchCurrencyAPI } from "app/utils/authServices";
-import { addExchangeCurrency } from "app/utils/materialMaterialServices";
+import {
+  addExchangeCurrency,
+  deleteExchangeCurrencyAPI,
+} from "app/utils/materialMaterialServices";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function ExchangeCurrencyForm() {
   const [formData, setFormData] = useState({
@@ -23,6 +26,8 @@ export default function ExchangeCurrencyForm() {
   const [loading, setLoading] = useState(false);
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const location = useLocation();
+  const navigate = useNavigate();
+
   const mode = location.state?.mode || "add";
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -90,25 +95,41 @@ export default function ExchangeCurrencyForm() {
   };
 
   const handleDelete = async () => {
+    if (!formData.currency) {
+      alert("Please select Currency");
+      return;
+    }
+
+    if (!formData.wef) {
+      alert("Please select W.E.F Date");
+      return;
+    }
+
     const confirmDelete = window.confirm(
-      `Are you sure you want to delete ${formData.propertyCode}?`,
+      `Are you sure you want to delete ${formData.currency}?`,
     );
 
     if (!confirmDelete) return;
+
     try {
       setLoading(true);
 
-      const res = await deleteUOMAPI(formData.propertyCode);
+      const res = await deleteExchangeCurrencyAPI(
+        formData.currency,
+        new Date(formData.wef).toISOString(),
+      );
 
       alert(res?.message || "Deleted successfully");
 
-      navigate("/material/material-category-property-table");
+      navigate("/material/exchange-currency-master-table");
     } catch (err) {
+      console.error(err);
       alert("Delete failed");
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">

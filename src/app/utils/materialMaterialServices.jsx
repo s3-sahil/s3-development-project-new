@@ -677,3 +677,22 @@ export const deleteItemCategoryAPI = async (catgCode, indicator) => {
     return null;
   }
 };
+
+export const deleteExchangeCurrencyAPI = async (currency, conv_date) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/DELETE-EXCHANGE_CURRENCY_MASTER",
+      {
+        params: {
+          currency,
+          conv_date,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Exchange Currency error:", error);
+    return null;
+  }
+};
