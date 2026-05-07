@@ -1,4 +1,12 @@
-import { Box, Container, TextField, Button, Icon, Grid, MenuItem } from "@mui/material";
+import {
+  Box,
+  Container,
+  TextField,
+  Button,
+  Icon,
+  Grid,
+  MenuItem,
+} from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { fetchCurrencyAPI } from "app/utils/authServices";
 import { addExchangeCurrency } from "app/utils/materialMaterialServices";
@@ -151,27 +159,25 @@ export default function ExchangeCurrencyForm() {
           </Grid>
 
           <Grid item xs={6}>
-            <Grid item xs={6}>
-              <TextField
-                select
-                label="Currency"
-                name="currency"
-                value={formData.currency}
-                onChange={handleChange}
-                size="small"
-                fullWidth
-              >
-                <MenuItem value="">
-                  <em>Select Currency</em>
-                </MenuItem>
+            <TextField
+              select
+              label="Currency"
+              name="currency"
+              value={formData.currency}
+              onChange={handleChange}
+              size="small"
+              fullWidth
+            >
+              <MenuItem value="">
+                <em>Select Currency</em>
+              </MenuItem>
 
-                {currencyOptions.map((item) => (
-                  <MenuItem key={item.currency_code} value={item.currency_code}>
-                    {item.currency_code} | {item.currency_name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
+              {currencyOptions.map((item) => (
+                <MenuItem key={item.currency} value={item.currency}>
+                  {item.currency} | {item.currency_name}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
 
           <Grid item xs={6}>
