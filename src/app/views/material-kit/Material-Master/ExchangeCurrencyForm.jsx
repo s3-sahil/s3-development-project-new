@@ -2,7 +2,7 @@ import { Box, Container, TextField, Button, Icon, Grid } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { fetchCurrencyAPI } from "app/utils/authServices";
 import { addExchangeCurrency } from "app/utils/materialMaterialServices";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 export default function ExchangeCurrencyForm() {
