@@ -10,24 +10,62 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Bank_master_PaginationAPI } from "app/utils/authServices";
 
 export default function BankDetailsTable() {
-  const navigate = useNavigate();
-
-  const [rows, setRows] = useState([
-    { id: 1, bankCode: "B001", bankName: "State Bank of India", branch: "Pune" },
-    { id: 2, bankCode: "B002", bankName: "HDFC Bank", branch: "Mumbai" },
-  ]);
-
-  const handleDelete = (id) => {
-    setRows(rows.filter((row) => row.id !== id));
-  };
+      const navigate = useNavigate();
+        const [rows, setRows] = useState([]);
+        const [page, setPage] = useState(0); 
+        const [pageSize, setPageSize] = useState(10);
+        const [rowCount, setRowCount] = useState(0);
+        const [loading, setLoading] = useState(false);
+      
+        const loadBank_master = async () => {
+          setLoading(true);
+          const res = await Bank_master_PaginationAPI(
+            "Bank_master",
+            page + 1, 
+            pageSize
+          );
+      
+          if (res?.Data) {
+            setRows(
+              res.Data.map((item, index) => ({
+                id: item.id || index + 1, 
+                ...item,
+              }))
+            );
+            setRowCount(res.TotalCount || 0);
+          }
+      
+          setLoading(false);
+        };
+      
+        useEffect(() => {
+          loadBank_master();
+        }, [page, pageSize]);
+        
+        const handleDelete = async (id) => {
+          if (window.confirm("Are you sure you want to delete this Bank_master?")) {
+            try {
+              await deleteBank_master(id);
+              loadBank_master();
+              alert("Bank_master deleted successfully.");
+            } catch (error) {
+              console.error("Delete Error:", error);
+              alert("Failed to delete Bank_master.");
+            }
+          }
+        };
 
   const columns = [
-    { field: "bankCode", headerName: "Bank Code", flex: 1 },
-    { field: "bankName", headerName: "Bank Name", flex: 2 },
-    { field: "branch", headerName: "Branch", flex: 1 },
+    { field: "Bank_code", headerName: "Bank Code", flex: 1 },
+    { field: "Bank_name", headerName: "Bank Name", flex: 2 },
+    { field: "Phone", headerName: "Phone", flex: 2 },
+    { field: "Bank_add1", headerName: "Address", flex: 1 },
+    { field: "Acc_code", headerName: "Acc Code", flex: 1 },
+    { field: "Cheque_flag", headerName: "Cheque", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
@@ -72,12 +110,19 @@ export default function BankDetailsTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 500 }}>
+        <Box sx={{ height: 620 }}>
           <DataGrid
             rows={rows}
             columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10]}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server" 
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
+            }}
           />
         </Box>
       </Stack>

@@ -130,7 +130,7 @@ export default function ConsigneeTable() {
             <Button variant="contained">Search</Button>
           </Box>
         </Box>
-        <Box sx={{ height: 500, width: "100%" }}>
+        <Box sx={{ height: 620, width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}

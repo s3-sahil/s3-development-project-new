@@ -87,8 +87,7 @@ const ConsigneeForm = () => {
   // 🔹 Save (Add / Update)
   const handleSave = async () => {
     if (
-      !formData.cust_code ||
-      !formData.con_code
+      !formData.cust_code
     ) {
       alert("Please fill all required fields");
       return;
@@ -144,7 +143,7 @@ const ConsigneeForm = () => {
                         cCentral_no: data.ccentral_no,
                         contact_person: data.contact_person,
                         phone: data.phone,
-                        fax: data.nfax,
+                        Nfax: data.nfax,
                         gst_no: data.gst_no,
                         distance_km: data.distance_km,
                         cEmail: data.cemail,
@@ -289,6 +288,9 @@ const ConsigneeForm = () => {
             onChange={handleChange}
             size="small"
             fullWidth
+                InputProps={{
+                  readOnly:true           
+                }}
           />
         </Grid>
 
@@ -300,6 +302,9 @@ const ConsigneeForm = () => {
             onChange={handleChange}
             size="small"
             fullWidth
+              InputProps={{
+                  readOnly:true           
+                }}
           />
         </Grid>
 
@@ -463,7 +468,7 @@ const ConsigneeForm = () => {
           <TextField
             label="Fax"
             name="Nfax"
-            value={formData.fax}
+            value={formData.Nfax}
             onChange={handleChange}
             size="small"
             fullWidth

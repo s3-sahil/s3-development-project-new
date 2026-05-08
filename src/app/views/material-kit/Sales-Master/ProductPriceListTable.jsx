@@ -127,7 +127,7 @@ const handleDelete = (id) => {
       </Box>
       <Box
         sx={{
-          height: 450,
+          height: 620,
           width: "100%",
           background: "#fff",
           borderRadius: 2,

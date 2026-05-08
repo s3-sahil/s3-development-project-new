@@ -10,25 +10,63 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { SubGroup_master_PaginationAPI } from "app/utils/authServices";
 
 export default function SubGroupDetailsTable() {
-  const navigate = useNavigate();
-
-  const [rows, setRows] = useState([
-    { id: 1, subGroupCode: "SG001", groupCode: "GRP001", desc: "Machinery Sub Group", plant: true, oldPlant: false, newPlant: true },
-    { id: 2, subGroupCode: "SG002", groupCode: "GRP002", desc: "Furniture Sub Group", plant: false, oldPlant: true, newPlant: false },
-  ]);
-
-  const handleDelete = (id) => setRows(rows.filter((row) => row.id !== id));
+    const navigate = useNavigate();
+      const [rows, setRows] = useState([]);
+      const [page, setPage] = useState(0); 
+      const [pageSize, setPageSize] = useState(10);
+      const [rowCount, setRowCount] = useState(0);
+      const [loading, setLoading] = useState(false);
+    
+      const loadSubGroup_master = async () => {
+        setLoading(true);
+        const res = await SubGroup_master_PaginationAPI(
+          "SubGroup_master",
+          page + 1, 
+          pageSize
+        );
+    
+        if (res?.Data) {
+          setRows(
+            res.Data.map((item, index) => ({
+              id: item.id || index + 1, 
+              ...item,
+            }))
+          );
+          setRowCount(res.TotalCount || 0);
+        }
+    
+        setLoading(false);
+      };
+    
+      useEffect(() => {
+        loadSubGroup_master();
+      }, [page, pageSize]);
+      
+      const handleDelete = async (id) => {debugger
+        if (window.confirm("Are you sure you want to delete this SubGroup_master?")) {
+          try {
+            await deleteSubGroup_master(id);
+            loadSubGroup_master();
+            alert("SubGroup_master deleted successfully.");
+          } catch (error) {
+            console.error("Delete Error:", error);
+            alert("Failed to delete SubGroup_master.");
+          }
+        }
+      };
 
   const columns = [
-    { field: "subGroupCode", headerName: "Sub Group Code", flex: 1 },
-    { field: "groupCode", headerName: "Group Code", flex: 1 },
-    { field: "desc", headerName: "Sub Group Desc", flex: 2 },
-    { field: "plant", headerName: "Plant And Machinery", flex: 1, renderCell: (params) => (params.value ? "Yes" : "No") },
-    { field: "oldPlant", headerName: "Old Plant & Machinery", flex: 1, renderCell: (params) => (params.value ? "Yes" : "No") },
-    { field: "newPlant", headerName: "New Plant & Machinery", flex: 1, renderCell: (params) => (params.value ? "Yes" : "No") },
+    { field: "SubGroup_code", headerName: "Sub Group Code", flex: 1 },
+    { field: "Group_code", headerName: "Group Code", flex: 1 },
+    { field: "SubGroup_desc", headerName: "Sub Group Desc", flex: 2 },
+    { field: "PlanAndMachinary", headerName: "Plant And Machinery", flex: 1, renderCell: (params) => (params.value ? "Yes" : "No") },
+    { field: "PlanAndMachinary_new", headerName: "Old Plant & Machinery", flex: 1, renderCell: (params) => (params.value ? "Yes" : "No") },
+    { field: "PlanAndMachinary_Old", headerName: "New Plant & Machinery", flex: 1, renderCell: (params) => (params.value ? "Yes" : "No") },
+    { field: "SubSubGroupFlag", headerName: "Sub Group Flag", flex: 1, renderCell: (params) => (params.value ? "Yes" : "No") },
     {
       field: "actions",
       headerName: "Actions",
@@ -73,8 +111,20 @@ export default function SubGroupDetailsTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 500 }}>
-          <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5, 10]} />
+        <Box sx={{ height: 620 }}>
+          <DataGrid 
+          rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server" 
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
+            }}
+          />
         </Box>
       </Stack>
     </Container>

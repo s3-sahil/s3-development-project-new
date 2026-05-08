@@ -61,6 +61,7 @@ const CustomerDetailForm = () => {
   const initialData = {};
   const baseAmount = 1000;
   const location = useLocation(); // for edit data
+  const navigate = useNavigate();
 
   const [categoryDropdownValue, setCategoryDropdownValue] = useState([]);
   const [industrytypeDropdownValue, setindustrytypeDropdownValue] = useState(
@@ -534,7 +535,7 @@ const CustomerDetailForm = () => {
     try {
       const payload = {
         cust_mst_ex: {
-          cust_code: formData.code,
+          cust_code: "001",
           cust_name: formData.name,
           inuse_flag: formData.inuse_flag ? "Y" : "N",
           cust_add1: formData.bankAdd,
@@ -646,6 +647,7 @@ const CustomerDetailForm = () => {
       );
 
       handleClose();
+      navigate("/material/customers");
     } catch (error) {
       console.error("Save Error:", error);
       alert(error.message);
@@ -684,9 +686,9 @@ const CustomerDetailForm = () => {
     }));
 
     if (actionMode === "new") {
-      if (name === "name" && value.length === 1) {
-        handleFetchMaxCode(value); // pass value directly
-      }
+      // if (name === "name" && value.length === 1) {
+      //   handleFetchMaxCode(value); // pass value directly
+      // }
     }
   };
 
@@ -698,12 +700,18 @@ const CustomerDetailForm = () => {
 
   const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
+  // //factory pan
+  // const isPanInvalid =
+  // formData.fpanNo && !panRegex.test(formData.fpanNo);
+
 const handleChangePan = async (e) => {
   let { name, value } = e.target;
 
   value = value.toUpperCase();
 
   if (value.length > 10) return;
+  // allow only A-Z and 0-9 (no space, no special chars)
+  if (!/^[A-Z0-9]*$/.test(value)) return;
 
   let comp_nonComp = "";
 
@@ -721,12 +729,14 @@ const handleChangePan = async (e) => {
   }));
 
   if (value.length === 10) {
-
+    
+    
     // ✅ 🔥 ADD VALIDATION HERE
     if (!panRegex.test(value)) {
       setPanError("Invalid PAN format eg.(ABCDE1234F)");
       return; // ❗ stop API call
     }
+
 
     try {
       const res = await checkPanExists(value);
@@ -905,6 +915,11 @@ const handleChangePan = async (e) => {
     }
   }, []);
 
+  const isDateInvalid =
+  formData.startDate &&
+  formData.expiryDate &&
+  new Date(formData.startDate) >= new Date(formData.expiryDate);
+
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
@@ -1070,28 +1085,31 @@ const handleChangePan = async (e) => {
                 />
               </Grid>
               <Grid item xs={12} md={2}>
-                <TextField
-                  size="small"
-                  name="startDate"
-                  label="Start Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                  value={formData.startDate}
-                  onChange={handleChange}
-                />
+               <TextField
+  size="small"
+  name="startDate"
+  label="Start Date"
+  type="date"
+  InputLabelProps={{ shrink: true }}
+  fullWidth
+  value={formData.startDate}
+  onChange={handleChange}
+  error={isDateInvalid}
+/>
               </Grid>
               <Grid item xs={12} md={2}>
                 <TextField
-                  size="small"
-                  name="expiryDate"
-                  label="Expiry Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                  value={formData.expiryDate}
-                  onChange={handleChange}
-                />
+  size="small"
+  name="expiryDate"
+  label="Expiry Date"
+  type="date"
+  InputLabelProps={{ shrink: true, min: formData.startDate }}
+  fullWidth
+  value={formData.expiryDate}
+  onChange={handleChange}
+  error={isDateInvalid}
+  helperText={isDateInvalid ? "Expiry date must be after start date" : ""}
+/>
               </Grid>
 
               {/* Row 4 */}
@@ -1103,7 +1121,7 @@ const handleChangePan = async (e) => {
                   fullWidth
                   value={formData.name}
                   onChange={handleChange}
-                  onFocus={handleFetchMaxCode}
+                  //onFocus={handleFetchMaxCode}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -1125,6 +1143,9 @@ const handleChangePan = async (e) => {
                   fullWidth
                   value={formData.comp_nonComp}
                   disabled // 👈 prevent manual change
+                  InputProps={{
+                  readOnly:true           
+                }}
                 >
                   <MenuItem value="">
                     <em>Select Type</em>
@@ -1146,7 +1167,7 @@ const handleChangePan = async (e) => {
               </Grid>
 
               {/* Row 5 */}
-              <Grid item xs={12} md={2}>
+              {/* <Grid item xs={12} md={2}>
                 <TextField
                   size="small"
                   name="pin"
@@ -1155,7 +1176,37 @@ const handleChangePan = async (e) => {
                   value={formData.pin}
                   onChange={handleChange}
                 />
-              </Grid>
+              </Grid> */}
+              <Grid item xs={12} md={2}>
+  <TextField
+    size="small"
+    name="pin"
+    label="Pin"
+    fullWidth
+    value={formData.pin}
+    onChange={(e) => {
+      const value = e.target.value;
+      // Allow only digits
+      if (/^\d*$/.test(value)) {
+        handleChange(e);
+      }
+    }}
+    error={formData.pin.length !== 6 && formData.pin.length > 0}
+    helperText={
+      formData.pin && formData.pin.length !== 6
+        ? "PIN must be 6 digits"
+        : ""
+    }
+    inputProps={{
+      maxLength: 6,
+      inputMode: "numeric",   // mobile numeric keyboard
+      pattern: "[0-9]*"
+    }}
+  />
+</Grid>
+
+
+
               <Grid item xs={12} md={2}>
                 {/* <TextField
                   size="small"
@@ -1287,37 +1338,96 @@ const handleChangePan = async (e) => {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  size="small"
-                  name="phone"
-                  label="Phone"
-                  fullWidth
-                  value={formData.phone}
-                  onChange={handleChange}
-                />
-              </Grid>
+            <Grid item xs={12} md={4}>
+  <TextField
+    size="small"
+    name="phone"
+    label="Phone"
+    fullWidth
+    value={formData.phone}
+    onChange={(e) => {
+      const value = e.target.value;
+
+      // Allow only digits and max 10
+      if (/^\d*$/.test(value) && value.length <= 10) {
+        handleChange(e);
+      }
+    }}
+    slotProps={{
+    htmlInput: {
+      maxLength: 10,
+      inputMode: "numeric",
+      pattern: "[0-9]*"
+    }
+  }}
+    error={formData.phone.length > 0 && formData.phone.length !== 10}
+helperText={
+  formData.phone.length > 0 && formData.phone.length !== 10
+    ? "Phone must be 10 digits"
+    : ""
+}
+  />
+</Grid>
 
               {/* Row 8 */}
+<Grid item xs={12} md={4}>
+  <TextField
+    size="small"
+    name="mobile"
+    label="Mobile"
+    fullWidth
+    value={formData.mobile}
+    onChange={(e) => {
+      const value = e.target.value;
+
+      // Only digits + max 10
+      if (/^\d*$/.test(value) && value.length <= 10) {
+        handleChange(e);
+      }
+    }}
+    inputProps={{
+      maxLength: 10,
+      inputMode: "numeric",
+      pattern: "[0-9]*"
+    }}
+    error={formData.mobile.length > 0 && formData.mobile.length !== 10}
+    helperText={
+      formData.mobile.length > 0 && formData.mobile.length !== 10
+        ? "Mobile must be 10 digits"
+        : ""
+    }
+  />
+</Grid>
               <Grid item xs={12} md={4}>
                 <TextField
-                  size="small"
-                  name="mobile"
-                  label="Mobile"
-                  fullWidth
-                  value={formData.mobile}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  size="small"
-                  name="interest"
-                  label="Interest %"
-                  fullWidth
-                  value={formData.interest}
-                  onChange={handleChange}
-                />
+  size="small"
+  name="interest"
+  label="Interest %"
+  fullWidth
+  value={formData.interest}
+  onChange={(e) => {
+    const value = e.target.value;
+
+    // Allow only numbers + optional decimal
+    if (/^\d*\.?\d*$/.test(value)) {
+      setFormData((prev) => ({
+        ...prev,
+        interest: value
+      }));
+    }
+  }}
+  slotProps={{
+    htmlInput: {
+      inputMode: "decimal", // mobile numeric keyboard with decimal
+    }
+  }}
+  // onKeyDown={(e) => {
+  //   // Block unwanted characters
+  //   if (["e", "E", "+", "-"].includes(e.key)) {
+  //     e.preventDefault();
+  //   }
+  // }}
+/>
               </Grid>
               <Grid item xs={12} md={4}>
                 <TextField
@@ -1338,28 +1448,68 @@ const handleChangePan = async (e) => {
                   label="Cash Disc %"
                   fullWidth
                   value={formData.cashDisc}
-                  onChange={handleChange}
-                />
+onChange={(e) => {
+    const value = e.target.value;
+
+    // Allow only numbers + optional decimal
+    if (/^\d*\.?\d*$/.test(value)) {
+      setFormData((prev) => ({
+        ...prev,
+        cashDisc: value
+      }));
+    }
+  }}
+  slotProps={{
+    htmlInput: {
+      inputMode: "decimal", // mobile numeric keyboard with decimal
+    }
+  }}                />
               </Grid>
+             <Grid item xs={12} md={4}>
+  <TextField
+    size="small"
+    name="email"
+    label="Email"
+    fullWidth
+    value={formData.email}
+    onChange={handleChange}
+    error={
+      formData.email.length > 0 &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+    }
+    helperText={
+      formData.email.length > 0 &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+        ? "Enter a valid email (example: abc@gmail.com)"
+        : ""
+    }
+  />
+</Grid>
               <Grid item xs={12} md={4}>
-                <TextField
-                  size="small"
-                  name="email"
-                  label="Email"
-                  fullWidth
-                  value={formData.email}
-                  onChange={handleChange}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <TextField
-                  size="small"
-                  name="supplierCode"
-                  label="Our Supplier Code"
-                  fullWidth
-                  value={formData.supplierCode}
-                  onChange={handleChange}
-                />
+               <TextField
+  size="small"
+  name="supplierCode"
+  label="Our Supplier Code"
+  fullWidth
+  value={formData.supplierCode}
+  onChange={(e) => {
+    const value = e.target.value;
+
+    // allow only digits
+    if (/^\d*$/.test(value)) {
+      setFormData((prev) => ({
+        ...prev,
+        supplierCode: value
+      }));
+    }
+  }}
+  slotProps={{
+    htmlInput: {
+      inputMode: "numeric", // mobile keyboard
+      maxLength: 10 // optional limit
+    }
+  }}
+/>
               </Grid>
 
               {/* Row 10 */}
@@ -1370,7 +1520,26 @@ const handleChangePan = async (e) => {
                   label="Contact Person"
                   fullWidth
                   value={formData.contactPerson}
-                  onChange={handleChange}
+                  //onChange={handleChange}
+                  onChange={(e) => {
+      const value = e.target.value;
+
+      // Only digits + max 10
+      if (/^\d*$/.test(value) && value.length <= 10) {
+        handleChange(e);
+      }
+    }}
+    inputProps={{
+      maxLength: 10,
+      inputMode: "numeric",
+      pattern: "[0-9]*"
+    }}
+    error={formData.contactPerson.length > 0 && formData.contactPerson.length !== 10}
+    helperText={
+      formData.contactPerson.length > 0 && formData.contactPerson.length !== 10
+        ? "contact Person must be 10 digits"
+        : ""
+    }
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -1456,7 +1625,24 @@ const handleChangePan = async (e) => {
                   label="Bank Acc. No"
                   fullWidth
                   value={formData.bankAccNo}
-                  onChange={handleChange}
+                  //onChange={handleChange}
+                  onChange={(e) => {
+    const value = e.target.value;
+
+    // allow only digits
+    if (/^\d*$/.test(value)) {
+      setFormData((prev) => ({
+        ...prev,
+        bankAccNo: value
+      }));
+    }
+  }}
+  slotProps={{
+    htmlInput: {
+      inputMode: "numeric", // mobile keyboard
+      maxLength: 20 // optional limit
+    }
+  }}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -2049,7 +2235,25 @@ const handleChangePan = async (e) => {
                           size="small"
                           fullWidth
                           value={formData.distanceKm || ""}
-                          onChange={handleChange}
+                          //onChange={handleChange}
+
+                          onChange={(e) => {
+    const value = e.target.value;
+
+    // allow only digits
+    if (/^\d*$/.test(value)) {
+      setFormData((prev) => ({
+        ...prev,
+        distanceKm: value
+      }));
+    }
+  }}
+  slotProps={{
+    htmlInput: {
+      inputMode: "numeric", // mobile keyboard
+      maxLength: 10 // optional limit
+    }
+  }}
                         />
                       </Grid>
 
@@ -2235,8 +2439,26 @@ const handleChangePan = async (e) => {
                           label="Pin Code"
                           fullWidth
                           value={formData.fpin}
-                          onChange={handleChange}
-                        />
+                          //onChange={handleChange}
+                          onChange={(e) => {
+      const value = e.target.value;
+      // Allow only digits
+      if (/^\d*$/.test(value)) {
+        handleChange(e);
+      }
+    }}
+    error={formData.fpin.length !== 6 && formData.fpin.length > 0}
+    helperText={
+      formData.fpin && formData.fpin.length !== 6
+        ? "Factory PIN must be 6 digits"
+        : ""
+    }
+    inputProps={{
+      maxLength: 6,
+      inputMode: "numeric",   // mobile numeric keyboard
+      pattern: "[0-9]*"
+    }}
+/>
                       </Grid>
 
                       <Grid item xs={12} md={6}>
@@ -2287,7 +2509,28 @@ const handleChangePan = async (e) => {
                           label="Phone"
                           fullWidth
                           value={formData.fphone}
-                          onChange={handleChange}
+                          //onChange={handleChange}
+                           onChange={(e) => {
+      const value = e.target.value;
+
+      // Allow only digits and max 10
+      if (/^\d*$/.test(value) && value.length <= 10) {
+        handleChange(e);
+      }
+    }}
+    slotProps={{
+    htmlInput: {
+      maxLength: 10,
+      inputMode: "numeric",
+      pattern: "[0-9]*"
+    }
+  }}
+    error={formData.fphone.length > 0 && formData.fphone.length !== 10}
+helperText={
+  formData.fphone.length > 0 && formData.fphone.length !== 10
+    ? "Factory Phone must be 10 digits"
+    : ""
+}
                         />
                       </Grid>
 
@@ -2298,7 +2541,18 @@ const handleChangePan = async (e) => {
                           label="Email"
                           fullWidth
                           value={formData.femail}
+                          //onChange={handleChange}
                           onChange={handleChange}
+    error={
+      formData.femail.length > 0 &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+    }
+    helperText={
+      formData.femail.length > 0 &&
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.femail)
+        ? "Enter a valid Factory email (example: abc@gmail.com)"
+        : ""
+    }
                         />
                       </Grid>
 
@@ -2309,7 +2563,28 @@ const handleChangePan = async (e) => {
                           label="Mobile"
                           fullWidth
                           value={formData.fmobile}
-                          onChange={handleChange}
+                          //onChange={handleChange}
+                          onChange={(e) => {
+      const value = e.target.value;
+
+      // Allow only digits and max 10
+      if (/^\d*$/.test(value) && value.length <= 10) {
+        handleChange(e);
+      }
+    }}
+    slotProps={{
+    htmlInput: {
+      maxLength: 10,
+      inputMode: "numeric",
+      pattern: "[0-9]*"
+    }
+  }}
+    error={formData.fmobile.length > 0 && formData.fmobile.length !== 10}
+helperText={
+  formData.fmobile.length > 0 && formData.fmobile.length !== 10
+    ? "Factory Mobile must be 10 digits"
+    : ""
+}
                         />
                       </Grid>
 
@@ -2320,7 +2595,28 @@ const handleChangePan = async (e) => {
                           label="Contact Person"
                           fullWidth
                           value={formData.fcontactPerson}
-                          onChange={handleChange}
+                          //onChange={handleChange}
+                          onChange={(e) => {
+      const value = e.target.value;
+
+      // Allow only digits and max 10
+      if (/^\d*$/.test(value) && value.length <= 10) {
+        handleChange(e);
+      }
+    }}
+    slotProps={{
+    htmlInput: {
+      maxLength: 10,
+      inputMode: "numeric",
+      pattern: "[0-9]*"
+    }
+  }}
+    error={formData.fcontactPerson.length > 0 && formData.fcontactPerson.length !== 10}
+helperText={
+  formData.fcontactPerson.length > 0 && formData.fcontactPerson.length !== 10
+    ? "factory contact Person must be 10 digits"
+    : ""
+}
                         />
                       </Grid>
 
@@ -2370,25 +2666,78 @@ const handleChangePan = async (e) => {
                       </Grid>
 
                       <Grid item xs={12} md={6}>
-                        <TextField
-                          size="small"
-                          name="fpanNo"
-                          label="PAN No"
-                          fullWidth
-                          value={formData.fpanNo}
-                          onChange={handleChange}
-                        />
+                     
+
+<TextField
+  size="small"
+  name="fpanNo"
+  label="PAN No"
+  fullWidth
+  value={formData.fpanNo}
+  onChange={(e) => {
+    let value = e.target.value.toUpperCase();
+
+    // allow only A-Z and 0-9 (no space, no special chars)
+    if (!/^[A-Z0-9]*$/.test(value)) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      fpanNo: value
+    }));
+  }}
+  onKeyDown={(e) => {
+    // explicitly block space key
+    if (e.key === " ") {
+      e.preventDefault();
+    }
+  }}
+  error={formData.fpanNo && !panRegex.test(formData.fpanNo)}
+  helperText={
+    formData.fpanNo && !panRegex.test(formData.fpanNo)
+      ? "Invalid PAN format (ABCDE1234F)"
+      : ""
+  }
+  slotProps={{
+    htmlInput: {
+      maxLength: 10
+    }
+  }}
+/>
                       </Grid>
 
                       <Grid item xs={12} md={6}>
                         <TextField
-                          size="small"
-                          name="fgstNo"
-                          label="GST No"
-                          fullWidth
-                          value={formData.fgstNo}
-                          onChange={handleChange}
-                        />
+  size="small"
+  name="fgstNo"
+  label="GST No"
+  fullWidth
+  value={formData.fgstNo}
+  onChange={(e) => {
+    let value = e.target.value.toUpperCase();
+
+    // allow only A-Z and 0-9
+    if (!/^[A-Z0-9]*$/.test(value)) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      fgstNo: value
+    }));
+  }}
+  onKeyDown={(e) => {
+    if (e.key === " ") e.preventDefault();
+  }}
+  error={formData.fgstNo && formData.fgstNo.length !== 15}
+  helperText={
+    formData.fgstNo && formData.fgstNo.length !== 15
+      ? "GST must be exactly 15 characters"
+      : ""
+  }
+  slotProps={{
+    htmlInput: {
+      maxLength: 15
+    }
+  }}
+/>
                       </Grid>
                     </Grid>
                   )}

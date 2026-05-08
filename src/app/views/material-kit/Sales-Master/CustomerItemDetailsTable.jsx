@@ -130,7 +130,7 @@ const CustomerItemDetailsTable = () => {
       {/* DataGrid */}
       <Box
         sx={{
-          height: 520,
+          height: 620,
           width: "100%",
           background: "#fff",
           borderRadius: 2,

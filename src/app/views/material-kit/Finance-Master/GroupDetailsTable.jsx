@@ -10,25 +10,75 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { GroupDTLPaginationAPI } from "app/utils/authServices";
 
 export default function GroupDetailsTable() {
   const navigate = useNavigate();
+    const [rows, setRows] = useState([]);
+    const [page, setPage] = useState(0); 
+    const [pageSize, setPageSize] = useState(10);
+    const [rowCount, setRowCount] = useState(0);
+    const [loading, setLoading] = useState(false);
+  
+    const loadGroupDTL = async () => {
+      setLoading(true);
+      const res = await GroupDTLPaginationAPI(
+        "GROUP_MASTER",
+        page + 1, 
+        pageSize
+      );
+  
+      if (res?.Data) {
+        setRows(
+          res.Data.map((item, index) => ({
+            id: item.id || index + 1, 
+            ...item,
+          }))
+        );
+        setRowCount(res.TotalCount || 0);
+      }
+  
+      setLoading(false);
+    };
+  
+    useEffect(() => {
+      loadGroupDTL();
+    }, [page, pageSize]);
+    
+    const handleDelete = async (id) => {debugger
+      if (window.confirm("Are you sure you want to delete this GroupDTL?")) {
+        try {
+          await deleteGroupDTL(id);
+          loadGroupDTL();
+          alert("GroupDTL deleted successfully.");
+        } catch (error) {
+          console.error("Delete Error:", error);
+          alert("Failed to delete GroupDTL.");
+        }
+      }
+    };
+    
+    // const handleAdd = () => {
+    //   navigate("/Sales/Master/GroupDTLForm/add");
+    // };
+  
+    // const handleEdit = (row) => {
+    //   navigate(`/Sales/Master/GroupDTLForm/edit/${row.Emp_no}`, {
+    //     state: row,
+    //   });
+    // };
+  
 
-  const [rows, setRows] = useState([
-    { id: 1, groupCode: "GRP001", belongsTo: "Finance", subGroupApplicable: true, desc: "Accounts Group", category: "Assets", schedule: "Schedule I" },
-    { id: 2, groupCode: "GRP002", belongsTo: "Operations", subGroupApplicable: false, desc: "Production Group", category: "Expenses", schedule: "Schedule II" },
-  ]);
-
-  const handleDelete = (id) => setRows(rows.filter((row) => row.id !== id));
+  //const handleDelete = (id) => setRows(rows.filter((row) => row.id !== id));
 
   const columns = [
-    { field: "groupCode", headerName: "Group Code", flex: 1 },
-    { field: "belongsTo", headerName: "Group Belongs To", flex: 2 },
-    { field: "subGroupApplicable", headerName: "Sub Group Applicable", flex: 1, renderCell: (params) => (params.value ? "Yes" : "No") },
-    { field: "desc", headerName: "Group Desc", flex: 2 },
-    { field: "category", headerName: "Group Category", flex: 1 },
-    { field: "schedule", headerName: "Schedule", flex: 1 },
+    { field: "Group_code", headerName: "Group Code", flex: 1 },
+    { field: "Group_desc", headerName: "Group Desc", flex: 2 },
+    { field: "BS_Status", headerName: "Group BS Status", flex: 2 },
+    { field: "gr_indicator_cd", headerName: "Indicator", flex: 1, renderCell: (params) => (params.value ? "Yes" : "No") },
+    { field: "SubGroupFlag", headerName: "Sub Group", flex: 1 },
+    { field: "sch_no", headerName: "Schedule", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
@@ -73,8 +123,20 @@ export default function GroupDetailsTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 500 }}>
-          <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5, 10]} />
+        <Box sx={{ height: 620 }}>
+          <DataGrid 
+          rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server" 
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
+            }}
+          />
         </Box>
       </Stack>
     </Container>

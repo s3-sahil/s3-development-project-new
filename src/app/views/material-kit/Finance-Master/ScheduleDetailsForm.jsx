@@ -9,6 +9,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { ScheduleDetailsSave } from "app/utils/authServices";
 import { useState } from "react";
 
 export default function ScheduleDetailsForm() {
@@ -20,6 +21,14 @@ export default function ScheduleDetailsForm() {
   });
 
   const [records, setRecords] = useState([]);
+  const [loading, setLoading] = useState(false);
+  
+
+   const [snackbar, setSnackbar] = useState({
+      open: false,
+      message: "",
+      severity: "success"
+    });
 
   const handleChange = (field) => (event) =>
     setFormData({ ...formData, [field]: event.target.value });
@@ -36,6 +45,74 @@ export default function ScheduleDetailsForm() {
     }
   };
 
+  
+    // 🔹 Save (Add / Update)
+    const handleSave = async () => {
+      // if (
+      //   !formData.schedule ||
+      //   !formData.scheduleName
+      // ) {
+      //   alert("Please fill all required fields");
+      //   return;
+      // }
+  debugger;
+      const payload =
+        records.map((rec) => ({
+          sch_no: rec.schedule,
+          sch_desc: rec.scheduleName,
+          sch_for: rec.glCategory,
+        }));
+
+    //   const payload ={
+    //     asd : [
+    //   records.map((rec) => 
+    //     sch_no: rec.sch_no,
+    //     ]
+    // }
+      // {        
+      //   sch_no: records.,
+      //   sch_desc: formData.email,
+      //   sch_for: formData.email,
+      // };
+  
+      try {
+        setLoading(true);
+  
+        const res = await ScheduleDetailsSave(payload); // same API for add/update
+   
+          if (res?.success) {
+            setSnackbar({
+              open: true,
+              message: actionMode === "edit" 
+                  ? "Schedule Updated successfully!" 
+                  : "Schedule saved successfully!",
+              severity: "success"
+            });
+  
+            setTimeout(() => {
+              navigate("/finance-schedule-details-table");
+            }, 1500); // 1.5 sec delay
+          }else {
+          setSnackbar({
+            open: true,
+            message: "Failed to save Schedule",
+            severity: "error"
+          });
+        }
+  
+      } catch (error) {
+        console.error("Save Error:", error);
+        setSnackbar({
+          open: true,
+          message: "Failed to save Schedule",
+          severity: "error"
+        });
+  }
+       finally {
+        setLoading(false);
+      }
+    };
+
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
@@ -46,7 +123,7 @@ export default function ScheduleDetailsForm() {
         {/* Header */}
         <Box display="flex" justifyContent="space-between" mb={2} alignItems="center">
           <Typography variant="h5" fontWeight="bold">Schedule Details</Typography>
-          <Button variant="contained" startIcon={<Icon>save</Icon>}>Save</Button>
+          <Button variant="contained" onClick={handleSave} startIcon={<Icon>save</Icon>}>Save</Button>
         </Box>
 
         {/* Form */}
@@ -55,10 +132,10 @@ export default function ScheduleDetailsForm() {
           <Grid item xs={4}><TextField label="Schedule Name" size="small" fullWidth value={formData.scheduleName} onChange={handleChange("scheduleName")} /></Grid>
           <Grid item xs={4}>
             <TextField select label="GL Category" size="small" fullWidth value={formData.glCategory} onChange={handleChange("glCategory")}>
-              <MenuItem value="Assets">Assets</MenuItem>
-              <MenuItem value="Liabilities">Liabilities</MenuItem>
-              <MenuItem value="Expenses">Expenses</MenuItem>
-              <MenuItem value="Income">Income</MenuItem>
+              <MenuItem value="A">Assets</MenuItem>
+              <MenuItem value="L">Liabilities</MenuItem>
+              <MenuItem value="E">Expenditure</MenuItem>
+              <MenuItem value="I">Income</MenuItem>
             </TextField>
           </Grid>
         </Grid>

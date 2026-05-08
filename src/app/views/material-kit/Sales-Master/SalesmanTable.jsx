@@ -118,7 +118,7 @@ export default function SalesmanTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 420, width: "100%" }}>
+        <Box sx={{ height: 620, width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}

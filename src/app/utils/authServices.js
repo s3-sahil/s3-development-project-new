@@ -377,6 +377,296 @@ export const SalesmanPaginationAPI = async (
     }
 };
 
+
+export const FI_ScheduleDTLPaginationAPI = async (
+    tableName = "sch",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("sch Finance Master Schedule pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const GroupDTLPaginationAPI = async (
+    tableName = "Group_master",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Group_master Finance Master Group Details pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const SubGroup_master_PaginationAPI = async (
+    tableName = "SubGroup_master",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("SubGroup_master Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const account_master_PaginationAPI = async (
+    tableName = "account_master",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("account_master Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const Bank_master_PaginationAPI = async (
+    tableName = "Bank_master",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Bank_master Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const TDS_PARA_PaginationAPI = async (
+    tableName = "TDS_PARA",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("TDS_PARA Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const DEPRECIATION_PARA_PaginationAPI = async (
+    tableName = "DEPRECIATION_PARA",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("DEPRECIATION_PARA Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const advance_master_PaginationAPI = async (
+    tableName = "advance_master",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("advance_master Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const CROS_MST_PaginationAPI = async (
+    tableName = "CROS_MST",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("CROS_MST Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+
+
+
+export const deleteSchedule = async (empCode) => {
+    try {
+        const response = await axiosInstance.delete(
+            `/?Emp_no=${empCode}`
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("Delete Error:", error.response || error.message);
+
+        throw new Error(
+            error.response?.data?.message ||
+            "Failed to delete Schedule Detail."
+        );
+    }
+};
+
+export const deleteGroupDTL = async (empCode) => {
+    try {
+        const response = await axiosInstance.delete(
+            `/?Emp_no=${empCode}`
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("Delete Error:", error.response || error.message);
+
+        throw new Error(
+            error.response?.data?.message ||
+            "Failed to delete Group Detail."
+        );
+    }
+};
+
 export const salesmanDetailsEdit = async (empNo) => {
     try {
         const response = await axiosInstance.get(
@@ -816,7 +1106,7 @@ export const ContractReviewChecklistPaginationAPI = async (
 export const deleteSalesman = async (empCode) => {
     try {
         const response = await axiosInstance.delete(
-            `/DELETE-SALESMAN_DETAILS/${empCode}`
+            `/DELETE-SALESMAN_DETAILS?Emp_no=${empCode}`
         );
 
         return response.data;
@@ -1629,5 +1919,16 @@ export const CustomerItemDetailsPaginationAPI = async ({
     } catch (error) {
         console.error("Customer Item pagination error:", error);
         return null;
+    }
+};
+
+
+export const ScheduleDetailsSave = async (saveData) => {
+    try {
+        const response = await axiosInstance.post("API/FINANCE/SCHEDULE_DETAILS/ADD-SCHEDULE_DETAILS", saveData);
+        return response.data;
+    } catch (error) {
+        console.error("API Error:", error.response || error.message);
+        throw new Error(error.response?.data?.message || "Failed to add Schedule.");
     }
 };

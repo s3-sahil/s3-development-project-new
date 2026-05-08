@@ -10,17 +10,54 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { CROS_MST_PaginationAPI } from "app/utils/authServices";
 
 export default function CreditorsBillwiseEntryTable() {
-  const navigate = useNavigate();
-
-  const [rows, setRows] = useState([
-    { id: 1, subCode: "SUP001", voucherNo: "PV001", voucherDate: "2026-03-01", voucherType: "Purchase Voucher", invoiceNo: "INV001", invoiceDate: "2026-03-01", billAmt: "15000", balanceAmt: "5000", dueDate: "2026-03-15" },
-    { id: 2, subCode: "SUP002", voucherNo: "PV002", voucherDate: "2026-03-02", voucherType: "Purchase Voucher", invoiceNo: "INV002", invoiceDate: "2026-03-02", billAmt: "20000", balanceAmt: "20000", dueDate: "2026-03-20" },
-  ]);
-
-  const handleDelete = (id) => setRows(rows.filter((row) => row.id !== id));
+const navigate = useNavigate();
+        const [rows, setRows] = useState([]);
+        const [page, setPage] = useState(0); 
+        const [pageSize, setPageSize] = useState(10);
+        const [rowCount, setRowCount] = useState(0);
+        const [loading, setLoading] = useState(false);
+      
+        const loadCROS_MST = async () => {
+          setLoading(true);
+          const res = await CROS_MST_PaginationAPI(
+            "CROS_MST",
+            page + 1, 
+            pageSize
+          );
+      
+          if (res?.Data) {
+            setRows(
+              res.Data.map((item, index) => ({
+                id: item.id || index + 1, 
+                ...item,
+              }))
+            );
+            setRowCount(res.TotalCount || 0);
+          }
+      
+          setLoading(false);
+        };
+      
+        useEffect(() => {
+          loadCROS_MST();
+        }, [page, pageSize]);
+        
+        const handleDelete = async (id) => {
+          if (window.confirm("Are you sure you want to delete this CROS_MST?")) {
+            try {
+              await deleteCROS_MST(id);
+              loadCROS_MST();
+              alert("CROS_MST deleted successfully.");
+            } catch (error) {
+              console.error("Delete Error:", error);
+              alert("Failed to delete CROS_MST.");
+            }
+          }
+        };
 
   const columns = [
     { field: "subCode", headerName: "Sub Code", flex: 1 },
@@ -76,8 +113,20 @@ export default function CreditorsBillwiseEntryTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 500 }}>
-          <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5, 10]} />
+        <Box sx={{ height: 620 }}>
+          <DataGrid 
+          rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server" 
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
+            }} 
+          />
         </Box>
       </Stack>
     </Container>

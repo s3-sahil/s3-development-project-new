@@ -10,19 +10,54 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { advance_master_PaginationAPI } from "app/utils/authServices";
 
 export default function EmployeeAdvanceTable() {
-  const navigate = useNavigate();
-
-  const [rows, setRows] = useState([
-    { id: 1, empNo: "E001", empName: "John Doe", subCode: "SUB-101" },
-    { id: 2, empNo: "E002", empName: "Jane Smith", subCode: "SUB-102" },
-  ]);
-
-  const handleDelete = (id) => {
-    setRows(rows.filter((row) => row.id !== id));
-  };
+const navigate = useNavigate();
+        const [rows, setRows] = useState([]);
+        const [page, setPage] = useState(0); 
+        const [pageSize, setPageSize] = useState(10);
+        const [rowCount, setRowCount] = useState(0);
+        const [loading, setLoading] = useState(false);
+      
+        const loadadvance_master = async () => {
+          setLoading(true);
+          const res = await advance_master_PaginationAPI(
+            "advance_master",
+            page + 1, 
+            pageSize
+          );
+      
+          if (res?.Data) {
+            setRows(
+              res.Data.map((item, index) => ({
+                id: item.id || index + 1, 
+                ...item,
+              }))
+            );
+            setRowCount(res.TotalCount || 0);
+          }
+      
+          setLoading(false);
+        };
+      
+        useEffect(() => {
+          loadadvance_master();
+        }, [page, pageSize]);
+        
+        const handleDelete = async (id) => {
+          if (window.confirm("Are you sure you want to delete this advance_master?")) {
+            try {
+              await deleteadvance_master(id);
+              loadadvance_master();
+              alert("advance_master deleted successfully.");
+            } catch (error) {
+              console.error("Delete Error:", error);
+              alert("Failed to delete advance_master.");
+            }
+          }
+        };
 
   const columns = [
     { field: "empNo", headerName: "Employee No", flex: 1 },
@@ -72,12 +107,19 @@ export default function EmployeeAdvanceTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 500 }}>
+        <Box sx={{ height: 620 }}>
           <DataGrid
             rows={rows}
             columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10]}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server" 
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
+            }}
           />
         </Box>
       </Stack>

@@ -125,7 +125,7 @@ const ContractReviewChecklistTable = () => {
         </Button>
       </Box>
 
-      <Box sx={{ height: 520, width: "100%", background: "#fff", borderRadius: 2 }}>
+      <Box sx={{ height: 620, width: "100%", background: "#fff", borderRadius: 2 }}>
         <DataGrid
           // rows={rows} columns={columns} disableRowSelectionOnClick 
           rows={rows}
