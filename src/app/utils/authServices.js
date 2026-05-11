@@ -1933,14 +1933,39 @@ export const ScheduleDetailsSave = async (saveData) => {
     }
 };
 
-export const getGroupMasterMaxCode  = async (BsStatus) => {
+export const getSchDropdown  = async (value) => {
     try {
         const { data } = await axiosInstance.get(
-            `/API/FINANCE/GROUP_DETAILS/MaxCode-GROUP_DETAILS?BS_Status=${BsStatus}`
+            `api/Master/Fetch-sch?sch_for=${value}`
+
         );
         return data || {};
     } catch (error) {
-        console.error("Error fetching max code:", error);
+        console.error("Error fetching", error);
         return {};
+    }
+};
+
+export const getgr_indicatorDropdown  = async (value) => {
+    try {
+        const { data } = await axiosInstance.get(
+            `api/Master/Fetch-gr_indicator?gr_for=${value}`
+
+        );
+        return data || {};
+    } catch (error) {
+        console.error("Error fetching", error);
+        return {};
+    }
+};
+
+
+export const GroupDetailsSave = async (saveData) => {
+    try {
+        const response = await axiosInstance.post("API/FINANCE/SCHEDULE_DETAILS/ADD-SCHEDULE_DETAILS", saveData);
+        return response.data;
+    } catch (error) {
+        console.error("API Error:", error.response || error.message);
+        throw new Error(error.response?.data?.message || "Failed to add Schedule.");
     }
 };
