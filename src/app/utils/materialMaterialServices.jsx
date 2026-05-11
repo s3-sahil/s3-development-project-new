@@ -1528,3 +1528,250 @@ export const ItemPaginationAPI = async ({
     return null;
   }
 };
+
+
+export const RMInspectionParameterPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "RM_insp_parameter",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("RM Inspection Parameter Pagination Error:", error);
+
+    return null;
+  }
+};
+
+
+export const TariffPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "Tariff",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Tariff Pagination Error:", error);
+
+    return null;
+  }
+};
+
+
+export const TaxPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "Tax",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Tax Pagination Error:", error);
+
+    return null;
+  }
+};
+
+
+export const GinValuationPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "gin_valuation",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("GIN Valuation Pagination Error:", error);
+
+    return null;
+  }
+};
+
+
+export const GradeMasterPaginationAPI = async (
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "Grade_master",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Grade Master pagination error:", error);
+
+    return null;
+  }
+};
+
+
+export const ExchangeCurrencyPaginationAPI = async (
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "currency_mst",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Exchange Currency pagination error:", error);
+
+    return null;
+  }
+};
+
+
+export const CategoryPropertyPaginationAPI = async (
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "Category_property",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Category Property pagination error:", error);
+
+    return null;
+  }
+};
