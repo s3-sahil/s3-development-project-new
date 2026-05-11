@@ -1,29 +1,25 @@
 import {
+  Autocomplete,
   Box,
-  Container,
-  TextField,
   Button,
-  Icon,
+  Card,
+  Container,
   Divider,
   Grid,
-  Card,
-  Stack,
+  Icon,
   MenuItem,
-  Autocomplete,
+  Stack,
+  TextField,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { Span } from "app/components/Typography";
 import { useEffect, useState } from "react";
 
-import InvoiceTaxDetailsModal from "./InvoiceTaxDetailsModal";
-import InvoicePaymentModal from "./InvoicePaymentModal";
-import InvoiceOtherDetailsModal from "./InvoiceOtherDetailsModal";
-import InvoiceGSTDetailsModal from "./InvoiceGSTDetailsModal";
-import { addInvoice, fetchItemcodeAPI } from "app/utils/authServices";
 import { DataGrid } from "@mui/x-data-grid";
-import InvoiceTransporterModal from "./InvoiceTransporterModal";
-import InvoiceGSTModal from "./InvoiceGSTModal";
+import { addInvoice, fetchItemcodeAPI } from "app/utils/authServices";
 import { fetchPackingAndSubType } from "app/utils/salesTransactionServices";
+import InvoiceGSTModal from "./InvoiceGSTModal";
+import InvoiceOtherDetailsModal from "./InvoiceOtherDetailsModal";
+import InvoiceTransporterModal from "./InvoiceTransporterModal";
 
 const InvoiceForm = () => {
   const [openPaymentModal, setOpenPaymentModal] = useState(false);
@@ -677,7 +673,7 @@ const InvoiceForm = () => {
 
               {/* ITEM ENTRY SECTION */}
               <Grid container spacing={2}>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                   <Autocomplete
                     size="small"
                     fullWidth
@@ -707,7 +703,7 @@ const InvoiceForm = () => {
                     )}
                   />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                   <TextField
                     label="Quantity"
                     name="quantity"
@@ -717,7 +713,7 @@ const InvoiceForm = () => {
                     size="small"
                   />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                   <TextField
                     label="UOM"
                     name="uom"
@@ -727,7 +723,7 @@ const InvoiceForm = () => {
                     size="small"
                   />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                   <TextField
                     label="Rate"
                     name="rate"
