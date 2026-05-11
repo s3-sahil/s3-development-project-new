@@ -49,6 +49,7 @@ const PackingSlipForm = () => {
     formDate: "",
     formType: "",
     currency: "",
+    poId:""
   });
 
   const [items, setItems] = useState([]);
@@ -341,7 +342,7 @@ const PackingSlipForm = () => {
         slip_No: state.slipNo || "",
         slip_dt: toISO(state.date),
         cust_Code: state.customer || "",
-        po_Id: state.poNo || "",
+        po_Id: state.poId || "",
         po_id_dt: toISO(state.poDate),
         emp_no: state.empNo || "",
         remark: state.remark || "",
@@ -350,7 +351,7 @@ const PackingSlipForm = () => {
         saleS_TYPE: state.subType || "",
         iS_REFERGIN: state.referGrn ? "Y" : "N",
         curR_CODE: state.currency || "INR",
-        form_type: state.formType || "Invoice",
+        form_type: state.formType || "Inv",
         form_no: state.formNo || "",
         form_date: toISO(state.formDate),
 
@@ -392,7 +393,7 @@ const PackingSlipForm = () => {
         profcen_cd: localStorage.getItem("PROFCEN_CD") || "",
         amend_no: item.amendNo || "",
         amend_dt: toISO(item.amendDate),
-        po_Id: state.poNo || "",
+        po_Id: state.poId || "",
         po_id_dt: toISO(state.poDate),
         uL_LOCATION: item.ulLocation || "",
         remark: state.remark || "",
@@ -440,7 +441,7 @@ const PackingSlipForm = () => {
         ul_Location: tag.ulLocation || "",
         cinv_no: tag.cinvNo || "",
         cinv_Dt: toISO(tag.cinvDate),
-        po_id: state.poNo || "",
+        po_id: state.poId || "",
         tBox_no: tag.tBoxNo || "",
       })),
 
@@ -610,6 +611,7 @@ const PackingSlipForm = () => {
                     : "",
                   poNo: newValue ? newValue.PO_NO : "",
                   poDate: newValue ? newValue.PO_DT : "",
+                  poId: newValue ? newValue.PO_ID1 : "",
                 }));
                 if (newValue.ITEM_CODE) {
                   setLoadingStock(true);

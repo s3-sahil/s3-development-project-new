@@ -588,3 +588,16 @@ export const getCustomerPurchaseOrder = async ({
     );
   }
 };
+
+export const addPreShipmentPackingSlip = async (payload) => {
+  try {
+    const res = await axiosInstance.post(
+      "/ADD-PRE-SHIPMENT-PACKINGSLIP",
+      payload
+    );
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

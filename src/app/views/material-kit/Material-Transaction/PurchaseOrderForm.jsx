@@ -11,6 +11,7 @@ import {
 import PaymentTermsPurchaseOrderModal from "./PaymentTermsPurchaseOrderModal";
 import TaxTermPurchaseOrderModal from "./TaxTermPurchaseOrderModal";
 import { useState } from "react";
+import { addCustomerPO } from "app/utils/materialTransactionServices";
 
 export default function PurchaseOrderForm() {
   const [openPayment, setOpenPayment] = useState(false);
@@ -115,6 +116,86 @@ export default function PurchaseOrderForm() {
     profceN_CD: "1",
   };
 
+  const toISO = (date) =>
+    date ? new Date(date).toISOString() : new Date().toISOString();
+
+  const buildPayload = () => {
+    return {
+      custpo_hed_ex: {
+        cusT_CODE: payload.po_head_ex.venD_CODE || "",
+        pO_ID: payload.po_head_ex.pO_NO || "",
+        pO_ID_DT: toISO(payload.po_head_ex.pO_DATE),
+        pO_NO: payload.po_head_ex.pO_NO || "",
+        pO_DT: toISO(payload.po_head_ex.pO_DATE),
+        pO_VALID: toISO(payload.po_head_ex.povaliD_DATE),
+        oa_type: payload.po_head_ex.po_type || "O",
+
+        transport: payload.po_head_ex.transporT_FLAG || "N",
+        octroi: payload.po_head_ex.octroI_FLAG || "N",
+
+        disC_PER: Number(payload.po_head_ex.disC_PERCENT) || 0,
+        remark: payload.po_head_ex.remark || "",
+        emP_NO: payload.po_head_ex.user_name || "",
+
+        profceN_CD: payload.po_head_ex.profceN_CD || "1",
+        curR_CODE: payload.po_head_ex.currency || "INR",
+        form_type: payload.po_head_ex.po_type || "",
+
+        adv_amt: Number(payload.po_head_ex.advancE_AMT) || 0,
+        packing_amt: Number(payload.po_head_ex.pacK_FWD_AMT) || 0,
+        packing_per: Number(payload.po_head_ex.pacK_FWD_PERCENT) || 0,
+
+        buyer: payload.po_head_ex.buyer || "",
+        delivery_remark: payload.po_head_ex.delivery_location || "",
+
+        trans_name: payload.po_head_ex.transportername || "",
+        oA_DELEVERY_BY: payload.po_head_ex.mode_of_Dispatch || "",
+
+        conv_rate: Number(payload.po_head_ex.conv_rate) || 1,
+        other_PayCond: payload.po_head_ex.other_PayCond || "",
+
+        useR_NAME: "ADMIN",
+      },
+
+      list_Custpo_det_ex: payload.list_Po_det_ex.map((item) => ({
+        pO_ID: payload.po_head_ex.pO_NO || "",
+        pO_ID_DT: toISO(payload.po_head_ex.pO_DATE),
+
+        iteM_CODE: item.iteM_CODE || "",
+        iteM_NAME: item.iteM_NAME || "",
+        quantity: Number(item.qty) || 0,
+        rate: Number(item.rate) || 0,
+
+        disC_PER: Number(item.disC_PERCENT) || 0,
+        uom: item.uom || "",
+
+        delivery_dt: toISO(item.delivery_dt),
+        remark: item.remark || "",
+
+        profceN_CD: payload.profceN_CD || "1",
+      })),
+
+      list_Custpo_pay_ex: [],
+
+      list_Custpo_tax_ex: taxRows.map((tax) => ({
+        pO_ID: payload.po_head_ex.pO_NO || "",
+        pO_ID_DT: toISO(payload.po_head_ex.pO_DATE),
+        oa_type: payload.po_head_ex.po_type || "O",
+        TAX_CODE: tax.taxCode || "",
+
+        taX_CODE: tax.taxCode,
+        taX_AMT: Number(tax.taxAmount) || 0,
+        profceN_CD: payload.profceN_CD || "1",
+      })),
+
+      list_Schedule_ex: [],
+
+      period: payload.period || "",
+      mM_DOC_DOCUMNET: payload.mM_DOC_DOCUMNET || "",
+      mM_DOC_TYPE: payload.mM_DOC_TYPE || "",
+      profceN_CD: payload.profceN_CD || "1",
+    };
+  };
   const [payload, setPayload] = useState(initialPayload);
   const handleOpenTax = () => setOpenTaxModal(true);
   const handleCloseTax = () => setOpenTaxModal(false);
@@ -196,6 +277,20 @@ export default function PurchaseOrderForm() {
     }));
   };
 
+  const handleSave = async () => {
+    try {
+      const finalPayload = buildPayload();
+
+      console.log("FINAL API PAYLOAD:", finalPayload);
+
+      const res = await addCustomerPO(finalPayload);
+
+      alert(res.Message || "Saved successfully");
+    } catch (err) {
+      console.error(err);
+      alert("Error saving Purchase Order");
+    }
+  };
   return (
     <Container maxWidth="lg">
       {/* HEADER */}
@@ -204,7 +299,7 @@ export default function PurchaseOrderForm() {
         <Button
           variant="contained"
           startIcon={<Icon>save</Icon>}
-          // onClick={handleSave}
+          onClick={handleSave}
         >
           Save
         </Button>

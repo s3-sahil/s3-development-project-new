@@ -187,6 +187,7 @@ const InvoiceForm = () => {
         : new Date().toISOString();
 
       const userName = "ADMIN";
+      const profcen_cd = localStorage.getItem("PROFCEN_CD");
 
       const payload = {
         invoicE_HED_ex: {
@@ -540,10 +541,12 @@ const InvoiceForm = () => {
         },
 
         paytype_sales_inv: "",
-        period: new Date(localStorage.getItem("toDate")).toISOString().slice(0, 7),
+        period: new Date(localStorage.getItem("toDate"))
+          .toISOString()
+          .slice(0, 7),
         mM_DOC_DOCUMNET: "",
         mM_DOC_TYPE: "",
-        profceN_CD: localStorage.getItem("PROFCEN_CD") ,
+        profceN_CD: localStorage.getItem("PROFCEN_CD"),
       };
 
       console.log("FINAL PAYLOAD:", payload);

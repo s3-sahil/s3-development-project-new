@@ -79,3 +79,16 @@ export const PurchaseRequisitionPaginationAPI = async (
         return null;
     }
 };
+
+export const addCustomerPO = async (payload) => {
+  try {
+    const { data } = await axiosInstance.post(
+      "/ADD-CUSTOMER_PURCHASE_ORDER",
+      payload
+    );
+    return data;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
+  }
+};

@@ -82,20 +82,20 @@ export default function CustomerScheduleTable() {
 
   const handleEdit = async (row) => {
     setLoading(true);
-    // try {
-    //   const response = await getCustomerScheduleById(row.id);
+    try {
+      const response = await getCustomerScheduleById(row.id);
 
-    //   if (response) {
-    //     navigate(
-    //       `/material/sales-customer-schedule-detail-form/edit/${row.id}`,
-    //       {
-    //         state: { scheduleData: response },
-    //       }
-    //     );
-    //   }
-    // } catch (error) {
-    //   console.error("Edit fetch error:", error);
-    // }
+      if (response) {
+        navigate(
+          `/material/sales-customer-schedule-detail-form/edit/${row.id}`,
+          {
+            state: { scheduleData: response },
+          }
+        );
+      }
+    } catch (error) {
+      console.error("Edit fetch error:", error);
+    }
     setLoading(false);
   };
 

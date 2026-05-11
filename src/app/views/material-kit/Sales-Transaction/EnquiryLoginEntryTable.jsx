@@ -95,7 +95,8 @@ export default function EnquiryLoginEntryTable() {
       state: {
         Enq_no: row.enquiryNo,
         Enq_dt: formatDate(row.enquiryDate), // ✅ FIXED
-        profcen_cd: row.profcen_cd
+        // profcen_cd: row.profcen_cd
+        profcen_cd: localStorage.getItem("PROFCEN_CD")
       },
     });
   };
