@@ -685,7 +685,7 @@ const InvoiceForm = () => {
                       ) || null
                     }
                     getOptionLabel={(option) =>
-                      `${option.ITEM_CODE} - ${option.ITEM_DESC || ""}`
+                      `${option.ITEM_CODE} - ${option.DESC || ""}`
                     }
                     onChange={(event, value) => {
                       setFormData((prev) => ({
