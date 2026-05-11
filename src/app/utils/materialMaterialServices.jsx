@@ -1155,3 +1155,41 @@ export const MaterialGradePaginationAPI = async ({
     return null;
   }
 };
+
+// ========================= materialMaterialServices.js =========================
+
+export const ItemRatePaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "item_rate_mast",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Item Rate Pagination Error:", error);
+
+    return null;
+  }
+};
