@@ -669,11 +669,7 @@ const InvoiceForm = () => {
                     fullWidth
                     options={customers || []}
                     loading={loadingCustomers}
-                    value={
-                      customers.find(
-                        (item) => item.Cust_code === formData.customerCode,
-                      ) || null
-                    }
+                    value={formData.customerCode || ""}
                     getOptionLabel={(option) =>
                       `${option.Cust_code} - ${option.Cust_name || ""}`
                     }
@@ -681,7 +677,6 @@ const InvoiceForm = () => {
                       setFormData((prev) => ({
                         ...prev,
                         customerCode: value?.Cust_code || "",
-                        customerName: value?.Cust_name || "",
                       }));
                     }}
                     renderInput={(params) => (
