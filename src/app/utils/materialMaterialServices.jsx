@@ -605,26 +605,35 @@ export const addSacGroupMaster = async (payload) => {
   }
 };
 
-export const UOMPaginationAPI = async (pageNumber = 1, pageSize = 10) => {
+
+export const UOMPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
   try {
     const { data } = await axiosInstance.get(
       "/api/PaginationByTable/GetPaginationByTable",
       {
         params: {
-          TableNameForPagination: "uom", // ✅ fixed table name
+          TableNameForPagination: "uom",
+
           pageNumber,
+
           pageSize,
+
+          searchString,
+
+          columnNameForSearch,
         },
       },
     );
 
-    if (data?.Data) {
-      return data;
-    }
-
-    return null;
+    return data;
   } catch (error) {
     console.error("UOM pagination fetch error:", error);
+
     return null;
   }
 };
@@ -786,10 +795,7 @@ export const deleteProjectDetailAPI = async (PROJ_CODE, PROFCEN_CD) => {
   }
 };
 
-
-export const deletePaymentConditionDtlAPI = async (
-  PC_CODE
-) => {
+export const deletePaymentConditionDtlAPI = async (PC_CODE) => {
   try {
     const { data } = await axiosInstance.delete(
       "/DELETE-PAYMENT_CONDITION_DTL",
@@ -797,7 +803,7 @@ export const deletePaymentConditionDtlAPI = async (
         params: {
           PC_CODE,
         },
-      }
+      },
     );
 
     return data;
@@ -807,18 +813,13 @@ export const deletePaymentConditionDtlAPI = async (
   }
 };
 
-export const deleteGradeMasterDetailAPI = async (
-  mat_code
-) => {
+export const deleteGradeMasterDetailAPI = async (mat_code) => {
   try {
-    const { data } = await axiosInstance.delete(
-      "/DELETE-GRADE_MASTER_DETAIL",
-      {
-        params: {
-          mat_code,
-        },
-      }
-    );
+    const { data } = await axiosInstance.delete("/DELETE-GRADE_MASTER_DETAIL", {
+      params: {
+        mat_code,
+      },
+    });
 
     return data;
   } catch (error) {
@@ -834,7 +835,7 @@ export const deleteGRNWiseOpeningStockAPI = async (
   yyyy_mm,
   profcen_cd,
   item_idnt,
-  HSN_Code
+  HSN_Code,
 ) => {
   try {
     const { data } = await axiosInstance.delete(
@@ -849,7 +850,7 @@ export const deleteGRNWiseOpeningStockAPI = async (
           item_idnt,
           HSN_Code,
         },
-      }
+      },
     );
 
     return data;
@@ -859,10 +860,7 @@ export const deleteGRNWiseOpeningStockAPI = async (
   }
 };
 
-
-export const deleteGroupDetailsAPI = async (
-  Group_code
-) => {
+export const deleteGroupDetailsAPI = async (Group_code) => {
   try {
     const { data } = await axiosInstance.delete(
       "/API/FINANCE/GROUP_DETAILS/DELETE-GROUP_DETAILS",
@@ -870,7 +868,7 @@ export const deleteGroupDetailsAPI = async (
         params: {
           Group_code,
         },
-      }
+      },
     );
 
     return data;
@@ -880,19 +878,13 @@ export const deleteGroupDetailsAPI = async (
   }
 };
 
-
-export const deleteGSTDetailsAPI = async (
-  TAX_CODE
-) => {
+export const deleteGSTDetailsAPI = async (TAX_CODE) => {
   try {
-    const { data } = await axiosInstance.delete(
-      "/DELETE-GST_DETAILS",
-      {
-        params: {
-          TAX_CODE,
-        },
-      }
-    );
+    const { data } = await axiosInstance.delete("/DELETE-GST_DETAILS", {
+      params: {
+        TAX_CODE,
+      },
+    });
 
     return data;
   } catch (error) {
@@ -905,9 +897,7 @@ export const deleteGSTDetailsAPI = async (
 // HSN SAC MASTER
 // ==========================================
 
-export const deleteHSNSACMasterAPI = async (
-  TARIFF_CODE
-) => {
+export const deleteHSNSACMasterAPI = async (TARIFF_CODE) => {
   try {
     const { data } = await axiosInstance.delete(
       "/API/MATERIAL/HSN_SAC_MASTER/DELETE-HSN_SAC",
@@ -915,7 +905,7 @@ export const deleteHSNSACMasterAPI = async (
         params: {
           TARIFF_CODE,
         },
-      }
+      },
     );
 
     return data;
@@ -929,9 +919,7 @@ export const deleteHSNSACMasterAPI = async (
 // INSPECTION PARAMETERS
 // ==========================================
 
-export const deleteInspectionParametersAPI = async (
-  RM_parameter
-) => {
+export const deleteInspectionParametersAPI = async (RM_parameter) => {
   try {
     const { data } = await axiosInstance.delete(
       "/DELETE-INSPECTION_PARAMETERS",
@@ -939,7 +927,7 @@ export const deleteInspectionParametersAPI = async (
         params: {
           RM_parameter,
         },
-      }
+      },
     );
 
     return data;
@@ -953,10 +941,7 @@ export const deleteInspectionParametersAPI = async (
 // ITEM CATEGORY DETAILS
 // ==========================================
 
-export const deleteItemCategoryDetailsAPI = async (
-  CATG_CODE,
-  indicator
-) => {
+export const deleteItemCategoryDetailsAPI = async (CATG_CODE, indicator) => {
   try {
     const { data } = await axiosInstance.delete(
       "/API/MATERIAL/ITEM_CATEGORY_DETAILS/DELETE-ITEM_CATEGORY_D",
@@ -965,7 +950,7 @@ export const deleteItemCategoryDetailsAPI = async (
           CATG_CODE,
           indicator,
         },
-      }
+      },
     );
 
     return data;
@@ -979,9 +964,7 @@ export const deleteItemCategoryDetailsAPI = async (
 // ITEM DETAILS
 // ==========================================
 
-export const deleteItemDetailsAPI = async (
-  ITEM_CODE
-) => {
+export const deleteItemDetailsAPI = async (ITEM_CODE) => {
   try {
     const { data } = await axiosInstance.delete(
       "/API/MATERIAL/ITEM_DETAILS/DELETE-ITEM_DETAILS",
@@ -989,7 +972,7 @@ export const deleteItemDetailsAPI = async (
         params: {
           ITEM_CODE,
         },
-      }
+      },
     );
 
     return data;
@@ -1003,9 +986,7 @@ export const deleteItemDetailsAPI = async (
 // ALTERNATE ITEM DETAILS
 // ==========================================
 
-export const deleteAlternateItemDetailsAPI = async (
-  Item_Code
-) => {
+export const deleteAlternateItemDetailsAPI = async (Item_Code) => {
   try {
     const { data } = await axiosInstance.delete(
       "/DELETE-ALTERNATE_ITEM_DETAILS",
@@ -1013,7 +994,7 @@ export const deleteAlternateItemDetailsAPI = async (
         params: {
           Item_Code,
         },
-      }
+      },
     );
 
     return data;
@@ -1027,45 +1008,39 @@ export const deleteAlternateItemDetailsAPI = async (
 // ITEMWISE MATERIAL GRADE DETAIL
 // ==========================================
 
-export const deleteItemwiseMaterialGradeDetailAPI =
-  async (catg_Code, subcatg_code) => {
-    try {
-      const { data } = await axiosInstance.delete(
-        "/DELETE-ITEMWISE_MATERIAL_GRADE_DETAIL",
-        {
-          params: {
-            catg_Code,
-            subcatg_code,
-          },
-        }
-      );
+export const deleteItemwiseMaterialGradeDetailAPI = async (
+  catg_Code,
+  subcatg_code,
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/DELETE-ITEMWISE_MATERIAL_GRADE_DETAIL",
+      {
+        params: {
+          catg_Code,
+          subcatg_code,
+        },
+      },
+    );
 
-      return data;
-    } catch (error) {
-      console.error(
-        "Delete Itemwise Material Grade Detail error:",
-        error
-      );
-      return error?.response?.data || null;
-    }
-  };
+    return data;
+  } catch (error) {
+    console.error("Delete Itemwise Material Grade Detail error:", error);
+    return error?.response?.data || null;
+  }
+};
 
 // ==========================================
 // ITEM RATE DETAILS
 // ==========================================
 
-export const deleteItemRateDetailsAPI = async (
-  item_code
-) => {
+export const deleteItemRateDetailsAPI = async (item_code) => {
   try {
-    const { data } = await axiosInstance.delete(
-      "/DELETE-ITEM_RATE_DETAILS",
-      {
-        params: {
-          item_code,
-        },
-      }
-    );
+    const { data } = await axiosInstance.delete("/DELETE-ITEM_RATE_DETAILS", {
+      params: {
+        item_code,
+      },
+    });
 
     return data;
   } catch (error) {
@@ -1078,10 +1053,7 @@ export const deleteItemRateDetailsAPI = async (
 // ITEMWISE MOQ
 // ==========================================
 
-export const deleteItemwiseMOQAPI = async (
-  ITEM_CODE,
-  profcen_cd
-) => {
+export const deleteItemwiseMOQAPI = async (ITEM_CODE, profcen_cd) => {
   try {
     const { data } = await axiosInstance.delete(
       "/API/MATERIAL/ITEMWISE_MOQ/DELETE-ITEMWISE_MOQ",
@@ -1090,7 +1062,7 @@ export const deleteItemwiseMOQAPI = async (
           ITEM_CODE,
           profcen_cd,
         },
-      }
+      },
     );
 
     return data;
@@ -1104,9 +1076,7 @@ export const deleteItemwiseMOQAPI = async (
 // MACHINE HOUR RATE DETAIL
 // ==========================================
 
-export const deleteMachineHourRateDetailAPI = async (
-  unit_code
-) => {
+export const deleteMachineHourRateDetailAPI = async (unit_code) => {
   try {
     const { data } = await axiosInstance.delete(
       "/DELETE-MACHINE_HOUR_RATE_DETAIL",
@@ -1114,15 +1084,12 @@ export const deleteMachineHourRateDetailAPI = async (
         params: {
           unit_code,
         },
-      }
+      },
     );
 
     return data;
   } catch (error) {
-    console.error(
-      "Delete Machine Hour Rate Detail error:",
-      error
-    );
+    console.error("Delete Machine Hour Rate Detail error:", error);
     return error?.response?.data || null;
   }
 };
@@ -1134,7 +1101,7 @@ export const deleteMachineHourRateDetailAPI = async (
 export const deleteMaterialDefectDetailsAPI = async (
   Defect_cd,
   category_type,
-  profcen_Cd
+  profcen_Cd,
 ) => {
   try {
     const { data } = await axiosInstance.delete(
@@ -1145,15 +1112,46 @@ export const deleteMaterialDefectDetailsAPI = async (
           category_type,
           profcen_Cd,
         },
-      }
+      },
     );
 
     return data;
   } catch (error) {
-    console.error(
-      "Delete Material Defect Details error:",
-      error
-    );
+    console.error("Delete Material Defect Details error:", error);
     return error?.response?.data || null;
+  }
+};
+
+// ========================= API =========================
+
+export const MaterialGradePaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "Material_grade",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Material Grade Pagination Error:", error);
+
+    return null;
   }
 };

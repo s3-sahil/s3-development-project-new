@@ -1,3 +1,5 @@
+// ========================== SearchFilter.jsx ==========================
+
 import { Box, Button, MenuItem, TextField } from "@mui/material";
 
 export default function SearchFilter({
@@ -9,10 +11,18 @@ export default function SearchFilter({
   onSearch,
 }) {
   return (
-    <Box display="flex" gap={2}>
+    <Box
+      display="flex"
+      gap={2}
+      alignItems="center"
+      flexWrap="wrap"
+      mb={2}
+    >
+      {/* Search Input */}
       <TextField
         size="small"
-        placeholder="Search..."
+        label="Search"
+        placeholder="Enter search text"
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
         onKeyDown={(e) => {
@@ -20,22 +30,31 @@ export default function SearchFilter({
             onSearch();
           }
         }}
+        sx={{ minWidth: 250 }}
       />
+
+      {/* Column Dropdown */}
       <TextField
         size="small"
         select
+        label="Column"
         value={searchColumn}
         onChange={(e) => setSearchColumn(e.target.value)}
-        sx={{ width: 180 }}
+        sx={{ minWidth: 200 }}
       >
         <MenuItem value="">Select Column</MenuItem>
+
         {columnOptions.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}
           </MenuItem>
         ))}
       </TextField>
-      <Button variant="contained" onClick={onSearch}>Search</Button>
+
+      {/* Search Button */}
+      <Button variant="contained" onClick={onSearch}>
+        Search
+      </Button>
     </Box>
   );
 }
