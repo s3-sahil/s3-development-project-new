@@ -7,10 +7,13 @@ import {
   TextField,
   Typography,
   MenuItem,
+  Snackbar,
+  Alert
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { ScheduleDetailsSave } from "app/utils/authServices";
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function ScheduleDetailsForm() {
   const [formData, setFormData] = useState({
@@ -22,7 +25,9 @@ export default function ScheduleDetailsForm() {
 
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
-  
+  const [actionMode, setActionMode] = useState("new"); // new | edit
+  const navigate = useNavigate();
+    const location = useLocation(); // for edit data
 
    const [snackbar, setSnackbar] = useState({
       open: false,
@@ -34,7 +39,7 @@ export default function ScheduleDetailsForm() {
     setFormData({ ...formData, [field]: event.target.value });
 
   const handleAdd = () => {
-    if (formData.schedule && formData.scheduleName) {
+    if (formData.schedule && formData.scheduleName && formData.glCategory) {
       setRecords([...records, { ...formData, id: records.length + 1 }]);
       setFormData({
         schedule: "",
@@ -42,20 +47,20 @@ export default function ScheduleDetailsForm() {
         glCategory: "",
         unit: "UNIT-1",
       });
+    }else{
+      alert("All Field is required.");
     }
   };
 
   
     // 🔹 Save (Add / Update)
     const handleSave = async () => {
-      // if (
-      //   !formData.schedule ||
-      //   !formData.scheduleName
-      // ) {
-      //   alert("Please fill all required fields");
-      //   return;
-      // }
-  debugger;
+      if (
+        !records.length
+      ) {
+        alert("Please Add atleast one Schedule.");
+        return;
+      }
       const payload =
         records.map((rec) => ({
           sch_no: rec.schedule,
@@ -63,18 +68,6 @@ export default function ScheduleDetailsForm() {
           sch_for: rec.glCategory,
         }));
 
-    //   const payload ={
-    //     asd : [
-    //   records.map((rec) => 
-    //     sch_no: rec.sch_no,
-    //     ]
-    // }
-      // {        
-      //   sch_no: records.,
-      //   sch_desc: formData.email,
-      //   sch_for: formData.email,
-      // };
-  
       try {
         setLoading(true);
   
@@ -90,12 +83,12 @@ export default function ScheduleDetailsForm() {
             });
   
             setTimeout(() => {
-              navigate("/finance-schedule-details-table");
+              navigate("/material/finance-schedule-details-table");
             }, 1500); // 1.5 sec delay
           }else {
           setSnackbar({
             open: true,
-            message: "Failed to save Schedule",
+            message: "Failed to save Schedule : " + res?.message,
             severity: "error"
           });
         }
@@ -118,6 +111,17 @@ export default function ScheduleDetailsForm() {
       <Box className="breadcrumb" mb={2}>
         <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Schedule Details" }]} />
       </Box>
+
+       <Snackbar
+              open={snackbar.open}
+              autoHideDuration={3000}
+              onClose={() => setSnackbar({ ...snackbar, open: false })}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+              <Alert severity={snackbar.severity} variant="filled">
+                {snackbar.message}
+              </Alert>
+            </Snackbar>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>
         {/* Header */}

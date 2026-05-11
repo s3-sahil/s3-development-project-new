@@ -11,6 +11,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { getGroupMasterMaxCode } from "app/utils/authServices";
 import { useState } from "react";
 
 export default function GroupDetailsForm() {
@@ -47,6 +48,37 @@ export default function GroupDetailsForm() {
     }
   };
 
+  const handleCategoryChange = async (e) => {
+  const value = e.target.value;
+
+    // update category
+    setFormData((prev) => ({
+      ...prev,
+      category: value,
+    }));
+
+    // call API after selection
+    await handleFetchMaxCode(value);
+  };
+
+  const handleFetchMaxCode = async (BsStatus) => {
+  try {
+    const res = await getGroupMasterMaxCode(BsStatus);
+
+    console.log("MaxCode API:", res);
+
+    if (res?.MaxCode) {
+      setFormData((prev) => ({
+        ...prev,
+        groupCode: res.MaxCode, // set in Group Code field
+      }));
+    }
+  } catch (error) {
+    console.error("Error fetching max code:", error);
+  }
+};
+
+
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
@@ -62,7 +94,16 @@ export default function GroupDetailsForm() {
 
         {/* Form */}
         <Grid container spacing={2}>
-          <Grid item xs={4}><TextField label="Group Code" size="small" fullWidth value={formData.groupCode} onChange={handleChange("groupCode")} /></Grid>
+          {/* <Grid item xs={4}><TextField label="Group Code" size="small" fullWidth value={formData.groupCode} onChange={handleChange("groupCode")} /></Grid> */}
+          <Grid item xs={4}>
+            <TextField
+              label="Group Code"
+              size="small"
+              fullWidth
+              value={formData.groupCode}
+              onChange={handleChange("groupCode")}
+            />
+          </Grid>
           <Grid item xs={4}>
             <TextField select label="Group Belongs To" size="small" fullWidth value={formData.belongsTo} onChange={handleChange("belongsTo")}>
               <MenuItem value="Finance">Finance</MenuItem>
@@ -77,12 +118,27 @@ export default function GroupDetailsForm() {
             />
           </Grid>
           <Grid item xs={6}><TextField label="Group Desc" size="small" fullWidth value={formData.desc} onChange={handleChange("desc")} /></Grid>
-          <Grid item xs={3}>
+          {/* <Grid item xs={3}>
             <TextField select label="Group Category" size="small" fullWidth value={formData.category} onChange={handleChange("category")}>
-              <MenuItem value="Assets">Assets</MenuItem>
-              <MenuItem value="Liabilities">Liabilities</MenuItem>
-              <MenuItem value="Expenses">Expenses</MenuItem>
-              <MenuItem value="Income">Income</MenuItem>
+              <MenuItem value="A">Assets</MenuItem>
+              <MenuItem value="L">Liabilities</MenuItem>
+              <MenuItem value="E">Expenses</MenuItem>
+              <MenuItem value="I">Income</MenuItem>
+            </TextField>
+          </Grid> */}
+          <Grid item xs={3}>
+            <TextField
+              select
+              label="Group Category"
+              size="small"
+              fullWidth
+              value={formData.category}
+              onChange={handleCategoryChange}
+            >
+              <MenuItem value="A">Assets</MenuItem>
+              <MenuItem value="L">Liabilities</MenuItem>
+              <MenuItem value="E">Expenses</MenuItem>
+              <MenuItem value="I">Income</MenuItem>
             </TextField>
           </Grid>
           <Grid item xs={3}>

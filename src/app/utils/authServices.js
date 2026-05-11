@@ -1932,3 +1932,15 @@ export const ScheduleDetailsSave = async (saveData) => {
         throw new Error(error.response?.data?.message || "Failed to add Schedule.");
     }
 };
+
+export const getGroupMasterMaxCode  = async (BsStatus) => {
+    try {
+        const { data } = await axiosInstance.get(
+            `/API/FINANCE/GROUP_DETAILS/MaxCode-GROUP_DETAILS?BS_Status=${BsStatus}`
+        );
+        return data || {};
+    } catch (error) {
+        console.error("Error fetching max code:", error);
+        return {};
+    }
+};

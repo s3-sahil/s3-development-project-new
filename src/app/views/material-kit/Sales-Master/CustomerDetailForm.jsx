@@ -802,7 +802,7 @@ const handleChangePan = async (e) => {
       // ✅ 🔥 ADD VALIDATION HERE
       if (!panRegex.test(value)) {
         setPanError("Invalid PAN format eg.(ABCDE1234F)");
-        return; // ❗ stop API call
+        return; 
       }
 
       try {
