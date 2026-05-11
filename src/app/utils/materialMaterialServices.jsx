@@ -1135,7 +1135,7 @@ export const MaterialGradePaginationAPI = async ({
       "/api/PaginationByTable/GetPaginationByTable",
       {
         params: {
-          TableNameForPagination: "Material_grade",
+          TableNameForPagination: "Item_OhterDetail",
 
           pageNumber,
 
@@ -1189,6 +1189,118 @@ export const ItemRatePaginationAPI = async ({
     return null;
   } catch (error) {
     console.error("Item Rate Pagination Error:", error);
+
+    return null;
+  }
+};
+
+// ================= API =================
+
+export const MachineHourRatePaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "Machine_Hour_rate",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Machine Hour Rate Pagination Error:", error);
+
+    return null;
+  }
+};
+
+
+export const OperationPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "Operation",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Operation Pagination Error:", error);
+
+    return null;
+  }
+};
+
+
+export const PaymentConditionsPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "Paycond",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Payment Conditions Pagination Error:", error);
 
     return null;
   }
