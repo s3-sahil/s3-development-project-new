@@ -40,7 +40,8 @@ const InvoiceForm = () => {
   const [filteredSubTypes, setFilteredSubTypes] = useState([]);
   const [itemCodes, setItemCodes] = useState([]);
   const [loadingItems, setLoadingItems] = useState(false);
-
+  const [customers, setCustomers] = useState([]);
+  const [loadingCustomers, setLoadingCustomers] = useState(false);
   const [formData, setFormData] = useState({
     invoiceType: "",
     invoiceSubType: "",
@@ -86,6 +87,7 @@ const InvoiceForm = () => {
   useEffect(() => {
     loadPackingData();
     loadItemCodes();
+    loadCustomers();
   }, []);
 
   const loadItemCodes = async () => {
@@ -99,6 +101,20 @@ const InvoiceForm = () => {
       console.error(error);
     } finally {
       setLoadingItems(false);
+    }
+  };
+
+  const loadCustomers = async () => {
+    try {
+      setLoadingCustomers(true);
+
+      const data = await fetchCustomerAPI();
+
+      setCustomers(data || []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingCustomers(false);
     }
   };
 
@@ -648,13 +664,50 @@ const InvoiceForm = () => {
                 </Grid>
 
                 <Grid item xs={3}>
-                  <TextField label="Customer Code" fullWidth size="small" />
+                  <Autocomplete
+                    size="small"
+                    fullWidth
+                    options={customers || []}
+                    loading={loadingCustomers}
+                    value={
+                      customers.find(
+                        (cust) => cust.CUST_CODE === formData.customerCode,
+                      ) || null
+                    }
+                    getOptionLabel={(option) =>
+                      `${option.CUST_CODE} - ${option.CUST_NAME || ""}`
+                    }
+                    onChange={(event, value) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        customerCode: value?.CUST_CODE || "",
+                        customerName: value?.CUST_NAME || "",
+                      }));
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Customer Code"
+                        placeholder="Search Customer"
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={6}>
+                  <TextField
+                    label="Customer Name"
+                    name="customerName"
+                    value={formData.customerName}
+                    fullWidth
+                    size="small"
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
                 </Grid>
                 <Grid item xs={3}>
                   <TextField label="Invoice No" fullWidth size="small" />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField label="Customer Name" fullWidth size="small" />
                 </Grid>
 
                 <Grid item xs={3}>
