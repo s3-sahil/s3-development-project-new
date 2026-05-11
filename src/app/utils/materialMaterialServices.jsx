@@ -1305,3 +1305,226 @@ export const PaymentConditionsPaginationAPI = async ({
     return null;
   }
 };
+
+
+export const PhysicalInventoryPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "WIP_Phys_Inventory",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Physical Inventory Pagination Error:", error);
+
+    return null;
+  }
+};
+
+
+export const PropertyValuesPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "Property_values",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Property Values Pagination Error:", error);
+
+    return null;
+  }
+};
+
+// ================= API =================
+
+export const TariffGroupPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "Tariff_group",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Tariff Group Pagination Error:", error);
+
+    return null;
+  }
+};
+
+
+export const ShareOfBusinessPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "ShareOfBusiness",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Share Of Business Pagination Error:", error);
+
+    return null;
+  }
+};
+
+
+export const VendorPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "vendor",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Vendor Pagination Error:", error);
+
+    return null;
+  }
+};
+
+
+export const ItemPaginationAPI = async ({
+  pageNumber = 1,
+  pageSize = 10,
+  searchString = "",
+  columnNameForSearch = "",
+}) => {
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: "Item",
+
+          pageNumber,
+
+          pageSize,
+
+          searchString,
+
+          columnNameForSearch,
+        },
+      },
+    );
+
+    if (data?.Data) {
+      return data;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Item Pagination Error:", error);
+
+    return null;
+  }
+};
