@@ -671,17 +671,17 @@ const InvoiceForm = () => {
                     loading={loadingCustomers}
                     value={
                       customers.find(
-                        (cust) => cust.CUST_CODE === formData.customerCode,
+                        (item) => item.Cust_code === formData.customerCode,
                       ) || null
                     }
                     getOptionLabel={(option) =>
-                      `${option.CUST_CODE} - ${option.CUST_NAME || ""}`
+                      `${option.Cust_code} - ${option.Cust_name || ""}`
                     }
                     onChange={(event, value) => {
                       setFormData((prev) => ({
                         ...prev,
-                        customerCode: value?.CUST_CODE || "",
-                        customerName: value?.CUST_NAME || "",
+                        customerCode: value?.Cust_code || "",
+                        customerName: value?.Cust_name || "",
                       }));
                     }}
                     renderInput={(params) => (
@@ -694,7 +694,7 @@ const InvoiceForm = () => {
                   />
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item xs={3}>
                   <TextField
                     label="Customer Name"
                     name="customerName"
