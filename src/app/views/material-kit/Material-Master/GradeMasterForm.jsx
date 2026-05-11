@@ -1,6 +1,6 @@
 import { Box, Container, TextField, Button, Icon, Grid } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { addGradeMaster } from "app/utils/materialMaterialServices";
+import { addGradeMaster, deleteGradeMasterDetailAPI } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -63,18 +63,24 @@ export default function GradeMasterForm() {
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
-      `Are you sure you want to delete ${formData.gradeCode}?`,
+      `Are you sure you want to delete Material Code ${formData.mat_code}?`,
     );
 
     if (!confirmDelete) return;
+
     try {
       setLoading(true);
 
-      const res = await deleteUOMAPI(formData.gradeCode);
+      const res = await deleteGradeMasterDetailAPI(formData.mat_code);
 
-      alert(res?.message || "Deleted successfully");
+      alert(
+        res?.message ||
+          res?.Errormessage ||
+          res?.error ||
+          "Deleted successfully",
+      );
 
-      navigate("/material/material-grade-master-table");
+      navigate("/material/Grade-Master-Detail-Table");
     } catch (err) {
       alert("Delete failed");
     } finally {

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { fetchItemcodeAPI } from "app/utils/authServices";
-import { addGRNOpeningStock } from "app/utils/materialMaterialServices";
+import { addGRNOpeningStock, deleteGRNWiseOpeningStockAPI } from "app/utils/materialMaterialServices";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -146,25 +146,39 @@ export default function GRNWiseOpeningStockForm() {
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
-      `Are you sure you want to delete ${formData.uom}?`,
+      `Are you sure you want to delete GRN No ${formData.GIN_NO}?`,
     );
 
     if (!confirmDelete) return;
+
     try {
       setLoading(true);
 
-      const res = await deleteUOMAPI(formData.uom);
+      const res = await deleteGRNWiseOpeningStockAPI(
+        formData.GIN_NO,
+        formData.GIN_DATE,
+        formData.ITEM_CODE,
+        formData.yyyy_mm,
+        formData.profcen_cd,
+        formData.item_idnt,
+        formData.HSN_Code,
+      );
 
-      alert(res?.message || "Deleted successfully");
+      alert(
+        res?.message ||
+          res?.Errormessage ||
+          res?.error ||
+          "Deleted successfully",
+      );
 
-      navigate("/material/Unit-Of-Management-Table");
+      navigate("/stores/GRN-Wise-Opening-Stock-Table");
     } catch (err) {
+      console.error(err);
       alert("Delete failed");
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">

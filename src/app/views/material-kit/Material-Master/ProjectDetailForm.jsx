@@ -9,10 +9,16 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { addProjectDetail } from "app/utils/materialMaterialServices";
+import {
+  addProjectDetail,
+  deleteProjectDetailAPI,
+} from "app/utils/materialMaterialServices";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function ProjectDetailForm() {
+  const location = useLocation();
+  const mode = location.state?.mode || "add";
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -67,12 +73,9 @@ export default function ProjectDetailForm() {
 
         // 🔹 COST MAPPING
         mat_Cost: Number(formData.totalBudgetedCost) || 0,
-        purchase_Mat_Cost:
-          Number(formData.totalBudgetedPurchaseCost) || 0,
-        purchase_Jobwork_Cost:
-          Number(formData.totalPurchaseCost) || 0,
-        purchase_BO_Cost:
-          Number(formData.totalPurchaseBalanceAvl) || 0,
+        purchase_Mat_Cost: Number(formData.totalBudgetedPurchaseCost) || 0,
+        purchase_Jobwork_Cost: Number(formData.totalPurchaseCost) || 0,
+        purchase_BO_Cost: Number(formData.totalPurchaseBalanceAvl) || 0,
         service_Cost: Number(formData.totalActualCost) || 0,
         financial_Cost: Number(formData.totalBalanceAvl) || 0,
 
@@ -114,10 +117,43 @@ export default function ProjectDetailForm() {
         endDate: "",
         inUse: false,
       });
-
     } catch (error) {
       console.error(error);
       alert(error.message || "Save failed ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // =========================
+  // PROJECT DETAIL HANDLE DELETE
+  // =========================
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete Project Code ${formData.PROJ_CODE}?`,
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      setLoading(true);
+
+      const res = await deleteProjectDetailAPI(
+        formData.PROJ_CODE,
+        formData.PROFCEN_CD,
+      );
+
+      alert(
+        res?.message ||
+          res?.Errormessage ||
+          res?.error ||
+          "Deleted successfully",
+      );
+
+      navigate("/material/Project-Detail-Table");
+    } catch (err) {
+      alert("Delete failed");
     } finally {
       setLoading(false);
     }
@@ -127,24 +163,33 @@ export default function ProjectDetailForm() {
     <Container maxWidth="xl">
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: "Material" },
-            { name: "Project Detail" },
-          ]}
+          routeSegments={[{ name: "Material" }, { name: "Project Detail" }]}
         />
       </Box>
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         {/* SAVE BUTTON */}
         <Box display="flex" justifyContent="flex-end" mb={2}>
-          <Button
-            variant="contained"
-            startIcon={<Icon>save</Icon>}
-            onClick={handleSave}
-            disabled={loading}
-          >
-            {loading ? "Saving..." : "Save"}
-          </Button>
+          {mode === "delete" ? (
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<Icon>delete</Icon>}
+              onClick={handleDelete}
+              disabled={loading}
+            >
+              {loading ? "Deleting..." : "Delete"}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              startIcon={<Icon>save</Icon>}
+              onClick={handleSave}
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save"}
+            </Button>
+          )}
         </Box>
 
         <Grid container spacing={3}>

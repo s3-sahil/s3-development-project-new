@@ -477,12 +477,11 @@ export const addMachineHourRate = async (payload) => {
   }
 };
 
-
 export const addMaterialDefect = async (payload) => {
   try {
     const { data } = await axiosInstance.post(
       "/API/MATERIAL/MATERIAL_DEFECT_DETAILS/ADD-MATERIAL_DEFECT_DETAILS",
-      payload
+      payload,
     );
     return data;
   } catch (error) {
@@ -495,7 +494,7 @@ export const addPaymentCondition = async (payload) => {
   try {
     const { data } = await axiosInstance.post(
       "/ADD-PAYMENT_CONDITION_DTL",
-      payload
+      payload,
     );
     return data;
   } catch (error) {
@@ -506,10 +505,7 @@ export const addPaymentCondition = async (payload) => {
 
 export const addPropertyValues = async (payload) => {
   try {
-    const { data } = await axiosInstance.post(
-      "/ADD-PROPERTY_VALUES",
-      payload
-    );
+    const { data } = await axiosInstance.post("/ADD-PROPERTY_VALUES", payload);
     return data;
   } catch (error) {
     console.error("Property Values API Error:", error);
@@ -519,10 +515,7 @@ export const addPropertyValues = async (payload) => {
 
 export const addSupplierDetails = async (payload) => {
   try {
-    const { data } = await axiosInstance.post(
-      "/ADD-SUPPLIER_DETAILS",
-      payload
-    );
+    const { data } = await axiosInstance.post("/ADD-SUPPLIER_DETAILS", payload);
     return data;
   } catch (error) {
     console.error("Supplier API Error:", error);
@@ -533,7 +526,7 @@ export const addSupplierDetails = async (payload) => {
 export const fetchMaxSupplierCode = async (name) => {
   try {
     const { data } = await axiosInstance.get(
-      `/SUPPLIER_DETAILS-MaxCode_By_FLatter?FLatter=${name}`
+      `/SUPPLIER_DETAILS-MaxCode_By_FLatter?FLatter=${name}`,
     );
     return data?.MaxCode || "";
   } catch (error) {
@@ -546,7 +539,7 @@ export const addUOM = async (payload) => {
   try {
     const { data } = await axiosInstance.post(
       "/API/MATERIAL/UNIT_OF_MEASUREMENT/ADD-UNIT_OF_MEASUREMENT",
-      payload
+      payload,
     );
     return data;
   } catch (error) {
@@ -559,7 +552,7 @@ export const addInspectionParameter = async (payload) => {
   try {
     const { data } = await axiosInstance.post(
       "/ADD-INSPECTION_PARAMETERS",
-      payload
+      payload,
     );
     return data;
   } catch (error) {
@@ -577,7 +570,7 @@ export const addItemMaterialGrade = async (payload) => {
         headers: {
           "Content-Type": "application/json-patch+json",
         },
-      }
+      },
     );
 
     return res.data;
@@ -585,8 +578,7 @@ export const addItemMaterialGrade = async (payload) => {
     console.error("API Error:", error.response || error.message);
 
     throw new Error(
-      error.response?.data?.message ||
-        "Failed to save material grade detail"
+      error.response?.data?.message || "Failed to save material grade detail",
     );
   }
 };
@@ -600,7 +592,7 @@ export const addSacGroupMaster = async (payload) => {
         headers: {
           "Content-Type": "application/json-patch+json",
         },
-      }
+      },
     );
 
     return res.data;
@@ -608,16 +600,12 @@ export const addSacGroupMaster = async (payload) => {
     console.error("API Error:", error.response || error.message);
 
     throw new Error(
-      error.response?.data?.message ||
-        "Failed to save SAC Group Master"
+      error.response?.data?.message || "Failed to save SAC Group Master",
     );
   }
 };
 
-export const UOMPaginationAPI = async (
-  pageNumber = 1,
-  pageSize = 10
-) => {
+export const UOMPaginationAPI = async (pageNumber = 1, pageSize = 10) => {
   try {
     const { data } = await axiosInstance.get(
       "/api/PaginationByTable/GetPaginationByTable",
@@ -627,7 +615,7 @@ export const UOMPaginationAPI = async (
           pageNumber,
           pageSize,
         },
-      }
+      },
     );
 
     if (data?.Data) {
@@ -649,7 +637,7 @@ export const deleteUOMAPI = async (uom) => {
         params: {
           UOM: uom,
         },
-      }
+      },
     );
 
     return data;
@@ -657,7 +645,7 @@ export const deleteUOMAPI = async (uom) => {
     console.error("Delete UOM error:", error);
     return null;
   }
-};  
+};
 
 export const deleteItemCategoryAPI = async (catgCode, indicator) => {
   try {
@@ -668,7 +656,7 @@ export const deleteItemCategoryAPI = async (catgCode, indicator) => {
           CATG_CODE: catgCode,
           indicator: indicator,
         },
-      }
+      },
     );
 
     return data;
@@ -687,12 +675,485 @@ export const deleteExchangeCurrencyAPI = async (currency, conv_date) => {
           currency,
           conv_date,
         },
-      }
+      },
     );
 
     return data;
   } catch (error) {
     console.error("Delete Exchange Currency error:", error);
     return null;
+  }
+};
+
+export const deleteSupplierDetailsAPI = async (vend_code) => {
+  try {
+    const { data } = await axiosInstance.delete("/DELETE-SUPPLIER_DETAILS", {
+      params: {
+        vend_code,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    console.error("Delete Supplier Details error:", error);
+    return null;
+  }
+};
+
+export const deleteShareOfBusinessAPI = async (Item_code, Vend_code) => {
+  try {
+    const { data } = await axiosInstance.delete("/DELETE-SHARE_OF_BUSINESS", {
+      params: {
+        Item_code,
+        Vend_code,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    console.error("Delete Share Of Business error:", error);
+    return null;
+  }
+};
+
+export const deleteSACGroupMasterAPI = async (Tgroup_Code) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/API/MATERIAL/SAC_GROUP_MASTER/DELETE-SAC_GROUP_MASTER",
+      {
+        params: {
+          Tgroup_Code,
+        },
+      },
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete SAC Group Master error:", error);
+    return null;
+  }
+};
+
+export const deletePropertyValuesAPI = async (Property_name) => {
+  try {
+    const { data } = await axiosInstance.delete("/DELETE-PROPERTY_VALUES", {
+      params: {
+        Property_name,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    console.error("Delete Property Values error:", error);
+    return null;
+  }
+};
+
+export const deleteProductMovementFlowAPI = async (DEPT_CODE) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/DELETE-PRODUCT_MOVEMENT_FLOW",
+      {
+        params: {
+          DEPT_CODE,
+        },
+      },
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Product Movement Flow error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+export const deleteProjectDetailAPI = async (PROJ_CODE, PROFCEN_CD) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/API/MATERIAL/PROJECT_DETAIL/DELETE-PROJECT_DETAIL",
+      {
+        params: {
+          PROJ_CODE,
+          PROFCEN_CD,
+        },
+      },
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Project Detail error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+
+export const deletePaymentConditionDtlAPI = async (
+  PC_CODE
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/DELETE-PAYMENT_CONDITION_DTL",
+      {
+        params: {
+          PC_CODE,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Payment Condition Detail error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+export const deleteGradeMasterDetailAPI = async (
+  mat_code
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/DELETE-GRADE_MASTER_DETAIL",
+      {
+        params: {
+          mat_code,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Grade Master Detail error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+export const deleteGRNWiseOpeningStockAPI = async (
+  GIN_NO,
+  GIN_DATE,
+  ITEM_CODE,
+  yyyy_mm,
+  profcen_cd,
+  item_idnt,
+  HSN_Code
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/DELETE-GRN_WISE_OPENING_STOCK",
+      {
+        params: {
+          GIN_NO,
+          GIN_DATE,
+          ITEM_CODE,
+          yyyy_mm,
+          profcen_cd,
+          item_idnt,
+          HSN_Code,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete GRN Wise Opening Stock error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+
+export const deleteGroupDetailsAPI = async (
+  Group_code
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/API/FINANCE/GROUP_DETAILS/DELETE-GROUP_DETAILS",
+      {
+        params: {
+          Group_code,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Group Details error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+
+export const deleteGSTDetailsAPI = async (
+  TAX_CODE
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/DELETE-GST_DETAILS",
+      {
+        params: {
+          TAX_CODE,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete GST Details error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+// ==========================================
+// HSN SAC MASTER
+// ==========================================
+
+export const deleteHSNSACMasterAPI = async (
+  TARIFF_CODE
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/API/MATERIAL/HSN_SAC_MASTER/DELETE-HSN_SAC",
+      {
+        params: {
+          TARIFF_CODE,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete HSN SAC Master error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+// ==========================================
+// INSPECTION PARAMETERS
+// ==========================================
+
+export const deleteInspectionParametersAPI = async (
+  RM_parameter
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/DELETE-INSPECTION_PARAMETERS",
+      {
+        params: {
+          RM_parameter,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Inspection Parameters error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+// ==========================================
+// ITEM CATEGORY DETAILS
+// ==========================================
+
+export const deleteItemCategoryDetailsAPI = async (
+  CATG_CODE,
+  indicator
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/API/MATERIAL/ITEM_CATEGORY_DETAILS/DELETE-ITEM_CATEGORY_D",
+      {
+        params: {
+          CATG_CODE,
+          indicator,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Item Category Details error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+// ==========================================
+// ITEM DETAILS
+// ==========================================
+
+export const deleteItemDetailsAPI = async (
+  ITEM_CODE
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/API/MATERIAL/ITEM_DETAILS/DELETE-ITEM_DETAILS",
+      {
+        params: {
+          ITEM_CODE,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Item Details error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+// ==========================================
+// ALTERNATE ITEM DETAILS
+// ==========================================
+
+export const deleteAlternateItemDetailsAPI = async (
+  Item_Code
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/DELETE-ALTERNATE_ITEM_DETAILS",
+      {
+        params: {
+          Item_Code,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Alternate Item Details error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+// ==========================================
+// ITEMWISE MATERIAL GRADE DETAIL
+// ==========================================
+
+export const deleteItemwiseMaterialGradeDetailAPI =
+  async (catg_Code, subcatg_code) => {
+    try {
+      const { data } = await axiosInstance.delete(
+        "/DELETE-ITEMWISE_MATERIAL_GRADE_DETAIL",
+        {
+          params: {
+            catg_Code,
+            subcatg_code,
+          },
+        }
+      );
+
+      return data;
+    } catch (error) {
+      console.error(
+        "Delete Itemwise Material Grade Detail error:",
+        error
+      );
+      return error?.response?.data || null;
+    }
+  };
+
+// ==========================================
+// ITEM RATE DETAILS
+// ==========================================
+
+export const deleteItemRateDetailsAPI = async (
+  item_code
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/DELETE-ITEM_RATE_DETAILS",
+      {
+        params: {
+          item_code,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Item Rate Details error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+// ==========================================
+// ITEMWISE MOQ
+// ==========================================
+
+export const deleteItemwiseMOQAPI = async (
+  ITEM_CODE,
+  profcen_cd
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/API/MATERIAL/ITEMWISE_MOQ/DELETE-ITEMWISE_MOQ",
+      {
+        params: {
+          ITEM_CODE,
+          profcen_cd,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error("Delete Itemwise MOQ error:", error);
+    return error?.response?.data || null;
+  }
+};
+
+// ==========================================
+// MACHINE HOUR RATE DETAIL
+// ==========================================
+
+export const deleteMachineHourRateDetailAPI = async (
+  unit_code
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/DELETE-MACHINE_HOUR_RATE_DETAIL",
+      {
+        params: {
+          unit_code,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error(
+      "Delete Machine Hour Rate Detail error:",
+      error
+    );
+    return error?.response?.data || null;
+  }
+};
+
+// ==========================================
+// MATERIAL DEFECT DETAILS
+// ==========================================
+
+export const deleteMaterialDefectDetailsAPI = async (
+  Defect_cd,
+  category_type,
+  profcen_Cd
+) => {
+  try {
+    const { data } = await axiosInstance.delete(
+      "/API/MATERIAL/MATERIAL_DEFECT_DETAILS/DELETE-MATERIAL_DEFECT_DETAILS",
+      {
+        params: {
+          Defect_cd,
+          category_type,
+          profcen_Cd,
+        },
+      }
+    );
+
+    return data;
+  } catch (error) {
+    console.error(
+      "Delete Material Defect Details error:",
+      error
+    );
+    return error?.response?.data || null;
   }
 };

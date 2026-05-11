@@ -1,10 +1,4 @@
-import {
-  Container,
-  Icon,
-  IconButton,
-  Tooltip,
-  Button,
-} from "@mui/material";
+import { Container, Icon, IconButton, Tooltip, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
@@ -16,8 +10,24 @@ export default function GroupDetailsTable() {
   const navigate = useNavigate();
 
   const [rows, setRows] = useState([
-    { id: 1, groupCode: "GRP001", belongsTo: "Finance", subGroupApplicable: true, desc: "Accounts Group", category: "Assets", schedule: "Schedule I" },
-    { id: 2, groupCode: "GRP002", belongsTo: "Operations", subGroupApplicable: false, desc: "Production Group", category: "Expenses", schedule: "Schedule II" },
+    {
+      id: 1,
+      groupCode: "GRP001",
+      belongsTo: "Finance",
+      subGroupApplicable: true,
+      desc: "Accounts Group",
+      category: "Assets",
+      schedule: "Schedule I",
+    },
+    {
+      id: 2,
+      groupCode: "GRP002",
+      belongsTo: "Operations",
+      subGroupApplicable: false,
+      desc: "Production Group",
+      category: "Expenses",
+      schedule: "Schedule II",
+    },
   ]);
 
   const handleDelete = (id) => setRows(rows.filter((row) => row.id !== id));
@@ -25,7 +35,12 @@ export default function GroupDetailsTable() {
   const columns = [
     { field: "groupCode", headerName: "Group Code", flex: 1 },
     { field: "belongsTo", headerName: "Group Belongs To", flex: 2 },
-    { field: "subGroupApplicable", headerName: "Sub Group Applicable", flex: 1, renderCell: (params) => (params.value ? "Yes" : "No") },
+    {
+      field: "subGroupApplicable",
+      headerName: "Sub Group Applicable",
+      flex: 1,
+      renderCell: (params) => (params.value ? "Yes" : "No"),
+    },
     { field: "desc", headerName: "Group Desc", flex: 2 },
     { field: "category", headerName: "Group Category", flex: 1 },
     { field: "schedule", headerName: "Schedule", flex: 1 },
@@ -38,16 +53,26 @@ export default function GroupDetailsTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/finance-group-details-form/edit/${params.row.id}`, {
-                  state: params.row,
-                })
+                navigate(
+                  `/material/finance-group-details-form/edit/${params.row.id}`,
+                  {
+                    state: params.row,
+                  },
+                )
               }
             >
               <Icon color="primary">edit</Icon>
             </IconButton>
           </Tooltip>
           <Tooltip title="Delete">
-            <IconButton onClick={() => handleDelete(params.row.id)}>
+            <IconButton
+              onClick={() =>
+                navigate(
+                  `/material/finance-group-details-form/delete/${params.row.id}`,
+                  { state: { ...params.row, mode: "delete" } },
+                )
+              }
+            >
               <Icon color="error">delete</Icon>
             </IconButton>
           </Tooltip>
@@ -59,7 +84,9 @@ export default function GroupDetailsTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Group Details" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Finace" }, { name: "Group Details" }]}
+        />
       </Box>
 
       <Stack spacing={3}>
@@ -74,7 +101,12 @@ export default function GroupDetailsTable() {
         </Box>
 
         <Box sx={{ height: 500 }}>
-          <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5, 10]} />
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5, 10]}
+          />
         </Box>
       </Stack>
     </Container>

@@ -1,10 +1,4 @@
-import {
-  Container,
-  Icon,
-  IconButton,
-  Tooltip,
-  Button,
-} from "@mui/material";
+import { Container, Icon, IconButton, Tooltip, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
@@ -38,7 +32,11 @@ export default function PaymentConditionsTable() {
   const columns = [
     { field: "paymentCode", headerName: "Payment Code", width: 150 },
     { field: "description", headerName: "Description", width: 250 },
-    { field: "advanceApplicable", headerName: "Advance Applicable", width: 180 },
+    {
+      field: "advanceApplicable",
+      headerName: "Advance Applicable",
+      width: 180,
+    },
     { field: "inspectionDate", headerName: "Inspection Date", width: 180 },
     { field: "lcApplicable", headerName: "LC Applicable", width: 150 },
     { field: "invoiceDate", headerName: "Invoice Date", width: 150 },
@@ -47,17 +45,34 @@ export default function PaymentConditionsTable() {
       headerName: "Actions",
       width: 120,
       renderCell: (params) => (
-        <Tooltip title="Edit">
-          <IconButton
-            onClick={() =>
-              navigate(`/material/material-payment-conditions-form/edit/${params.row.id}`, {
-                state: params.row,
-              })
-            }
-          >
-            <Icon color="primary">edit</Icon>
-          </IconButton>
-        </Tooltip>
+        <>
+          <Tooltip title="Edit">
+            <IconButton
+              onClick={() =>
+                navigate(
+                  `/material/material-payment-conditions-form/edit/${params.row.id}`,
+                  {
+                    state: params.row,
+                  },
+                )
+              }
+            >
+              <Icon color="primary">edit</Icon>
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton
+              onClick={() =>
+                navigate(
+                  `/material/material-payment-conditions-form/delete/${params.row.id}`,
+                  { state: { ...params.row, mode: "delete" } },
+                )
+              }
+            >
+              <Icon color="error">delete</Icon>
+            </IconButton>
+          </Tooltip>
+        </>
       ),
     },
   ];

@@ -9,7 +9,11 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { useState } from "react";
-import { addSacGroupMaster } from "app/utils/materialMaterialServices";
+import {
+  addSacGroupMaster,
+  deleteSACGroupMasterAPI,
+} from "app/utils/materialMaterialServices";
+import { useLocation } from "react-router-dom";
 
 export default function SACGroupForm() {
   const [formData, setFormData] = useState({
@@ -19,6 +23,8 @@ export default function SACGroupForm() {
     flag: "",
   });
 
+  const location = useLocation();
+  const mode = location.state?.mode || "add";
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -70,14 +76,33 @@ export default function SACGroupForm() {
     }
   };
 
+  // Handle Delete
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete SAC Group Code ${formData.Tgroup_Code}?`,
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      setLoading(true);
+
+      const res = await deleteSACGroupMasterAPI(formData.Tgroup_Code);
+
+      alert(res?.Errormessage || "Deleted successfully");
+
+      navigate("/material/SAC-Group-Master-Table");
+    } catch (err) {
+      alert("Delete failed");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: "Finance" },
-            { name: "SAC Group Master" },
-          ]}
+          routeSegments={[{ name: "Finance" }, { name: "SAC Group Master" }]}
         />
       </Box>
 
@@ -90,14 +115,26 @@ export default function SACGroupForm() {
         }}
       >
         <Box display="flex" justifyContent="flex-end" mb={2}>
-          <Button
-            variant="contained"
-            startIcon={<Icon>save</Icon>}
-            onClick={handleSave}
-            disabled={loading}
-          >
-            {loading ? "Saving..." : "Save"}
-          </Button>
+          {mode === "delete" ? (
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<Icon>delete</Icon>}
+              onClick={handleDelete}
+              disabled={loading}
+            >
+              {loading ? "Deleting..." : "Delete"}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              startIcon={<Icon>save</Icon>}
+              onClick={handleSave}
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save"}
+            </Button>
+          )}
         </Box>
 
         <Grid container spacing={3}>

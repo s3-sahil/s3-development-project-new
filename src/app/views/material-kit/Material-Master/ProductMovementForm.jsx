@@ -8,13 +8,18 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { deleteProductMovementFlowAPI } from "app/utils/materialMaterialServices";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function ProductMovementForm() {
   const [formData, setFormData] = useState({
     fromDepartment: "",
     toDepartment: "",
   });
+  const location = useLocation();
+  const mode = location.state?.mode || "add";
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,6 +29,28 @@ export default function ProductMovementForm() {
   const handleSave = () => {
     console.log("Saved:", formData);
     alert("Product Movement Saved (UI Only)");
+  };
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete Department Code ${formData.DEPT_CODE}?`,
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      setLoading(true);
+
+      const res = await deleteProductMovementFlowAPI(formData.DEPT_CODE);
+
+      alert(res?.message || res?.error || "Deleted successfully");
+
+      navigate("/material/Product-Movement-Flow-Table");
+    } catch (err) {
+      alert("Delete failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -39,13 +66,26 @@ export default function ProductMovementForm() {
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         <Box display="flex" justifyContent="flex-end" mb={2}>
-          <Button
-            variant="contained"
-            startIcon={<Icon>save</Icon>}
-            onClick={handleSave}
-          >
-            Save
-          </Button>
+          {mode === "delete" ? (
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<Icon>delete</Icon>}
+              onClick={handleDelete}
+              disabled={loading}
+            >
+              {loading ? "Deleting..." : "Delete"}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              startIcon={<Icon>save</Icon>}
+              onClick={handleSave}
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save"}
+            </Button>
+          )}
         </Box>
 
         <Grid container spacing={3}>

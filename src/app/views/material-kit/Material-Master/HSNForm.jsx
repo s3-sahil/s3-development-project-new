@@ -11,7 +11,7 @@ import {
   Autocomplete,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { addHSN, fetchUOMAPI } from "app/utils/materialMaterialServices";
+import { addHSN, deleteHSNSACMasterAPI, fetchUOMAPI } from "app/utils/materialMaterialServices";
 import { useEffect, useState } from "react";
 
 export default function HSNForm() {
@@ -113,16 +113,22 @@ export default function HSNForm() {
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
-      `Are you sure you want to delete ${formData.hsnCode}?`,
+      `Are you sure you want to delete Tariff Code ${formData.TARIFF_CODE}?`,
     );
 
     if (!confirmDelete) return;
+
     try {
       setLoading(true);
 
-      const res = await deleteUOMAPI(formData.hsnCode);
+      const res = await deleteHSNSACMasterAPI(formData.TARIFF_CODE);
 
-      alert(res?.message || "Deleted successfully");
+      alert(
+        res?.message ||
+          res?.Errormessage ||
+          res?.error ||
+          "Deleted successfully",
+      );
 
       navigate("/material/material-HSN-table");
     } catch (err) {
@@ -131,7 +137,6 @@ export default function HSNForm() {
       setLoading(false);
     }
   };
-
   return (
     <Container maxWidth="xl">
       {/* Breadcrumb */}

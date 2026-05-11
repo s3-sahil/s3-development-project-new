@@ -1,10 +1,4 @@
-import {
-  Container,
-  Icon,
-  IconButton,
-  Tooltip,
-  Button,
-} from "@mui/material";
+import { Container, Icon, IconButton, Tooltip, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
@@ -34,17 +28,34 @@ export default function ShareOfBusinessTable() {
       headerName: "Actions",
       width: 120,
       renderCell: (params) => (
-        <Tooltip title="Edit">
-          <IconButton
-            onClick={() =>
-              navigate(`/material/material-share-of-business-form/edit/${params.row.id}`, {
-                state: params.row,
-              })
-            }
-          >
-            <Icon color="primary">edit</Icon>
-          </IconButton>
-        </Tooltip>
+        <>
+          <Tooltip title="Edit">
+            <IconButton
+              onClick={() =>
+                navigate(
+                  `/material/material-share-of-business-form/edit/${params.row.id}`,
+                  {
+                    state: params.row,
+                  },
+                )
+              }
+            >
+              <Icon color="primary">edit</Icon>
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton
+              onClick={() =>
+                navigate(
+                  `/material/material-share-of-business-form/delete/${params.row.id}`,
+                  { state: { ...params.row, mode: "delete" } },
+                )
+              }
+            >
+              <Icon color="error">delete</Icon>
+            </IconButton>
+          </Tooltip>
+        </>
       ),
     },
   ];
@@ -53,10 +64,7 @@ export default function ShareOfBusinessTable() {
     <Container maxWidth="xl">
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: "Material" },
-            { name: "Share Of Business" },
-          ]}
+          routeSegments={[{ name: "Material" }, { name: "Share Of Business" }]}
         />
       </Box>
 

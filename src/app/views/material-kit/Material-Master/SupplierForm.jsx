@@ -12,12 +12,17 @@ import {
   Divider,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { addSupplierDetails, fetchMaxSupplierCode } from "app/utils/materialMaterialServices";
+import {
+  addSupplierDetails,
+  deleteSupplierDetailsAPI,
+  fetchMaxSupplierCode,
+} from "app/utils/materialMaterialServices";
 import { useEffect, useState } from "react";
 import OtherDetailsModal from "./OtherDetailsModal";
 import PaymentTermsModal from "./PaymentTermsModal";
 import MaterialCategoryModal from "./MaterialCategoryModal";
 import ManufacturingLocationModal from "./ManufacturingLocationModal";
+import { useLocation } from "react-router-dom";
 
 export default function SupplierForm() {
   const [formData, setFormData] = useState({
@@ -88,6 +93,10 @@ export default function SupplierForm() {
   ]);
 
   const [selectedCategories, setSelectedCategories] = useState([]);
+
+  const location = useLocation();
+  const mode = location.state?.mode || "add";
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const delayDebounce = setTimeout(async () => {
@@ -240,6 +249,28 @@ export default function SupplierForm() {
     setSelectedCategories(data);
     setOpenCategoryModal(false);
   };
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete supplier with code ${formData.vend_code}?`,
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      setLoading(true);
+
+      const res = await deleteSupplierDetailsAPI(formData.vend_code);
+
+      alert(res?.message || "Deleted successfully");
+
+      navigate("/purchase/Supplier-Details-Table");
+    } catch (err) {
+      alert("Delete failed");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <Container maxWidth="xl">
       {/* Breadcrumb */}
@@ -254,13 +285,26 @@ export default function SupplierForm() {
         <Box display="flex" justifyContent="space-between" mb={2}>
           <Typography variant="h5" fontWeight={600}></Typography>
 
-          <Button
-            variant="contained"
-            startIcon={<Icon>save</Icon>}
-            onClick={handleSave}
-          >
-            Save
-          </Button>
+          {mode === "delete" ? (
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<Icon>delete</Icon>}
+              onClick={handleDelete}
+              disabled={loading}
+            >
+              {loading ? "Deleting..." : "Delete"}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              startIcon={<Icon>save</Icon>}
+              onClick={handleSave}
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save"}
+            </Button>
+          )}
         </Box>
 
         <Divider sx={{ mb: 3 }} />

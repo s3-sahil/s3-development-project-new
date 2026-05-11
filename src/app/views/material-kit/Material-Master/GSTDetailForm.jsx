@@ -8,7 +8,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { addGSTDetails } from "app/utils/materialMaterialServices";
+import { addGSTDetails, deleteGSTDetailsAPI } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -113,18 +113,24 @@ export default function GSTDetailForm() {
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
-      `Are you sure you want to delete ${formData.taxCode}?`,
+      `Are you sure you want to delete GST Tax Code ${formData.TAX_CODE}?`,
     );
 
     if (!confirmDelete) return;
+
     try {
       setLoading(true);
 
-      const res = await deleteUOMAPI(formData.taxCode);
+      const res = await deleteGSTDetailsAPI(formData.TAX_CODE);
 
-      alert(res?.message || "Deleted successfully");
+      alert(
+        res?.message ||
+          res?.Errormessage ||
+          res?.error ||
+          "Deleted successfully",
+      );
 
-      navigate("/material/Unit-Of-Management-Table");
+      navigate("/finance/GST-Details-Table");
     } catch (err) {
       alert("Delete failed");
     } finally {
