@@ -9,6 +9,7 @@ import {
   Card,
   Stack,
   MenuItem,
+  Autocomplete,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
@@ -18,7 +19,7 @@ import InvoiceTaxDetailsModal from "./InvoiceTaxDetailsModal";
 import InvoicePaymentModal from "./InvoicePaymentModal";
 import InvoiceOtherDetailsModal from "./InvoiceOtherDetailsModal";
 import InvoiceGSTDetailsModal from "./InvoiceGSTDetailsModal";
-import { addInvoice } from "app/utils/authServices";
+import { addInvoice, fetchItemcodeAPI } from "app/utils/authServices";
 import { DataGrid } from "@mui/x-data-grid";
 import InvoiceTransporterModal from "./InvoiceTransporterModal";
 import InvoiceGSTModal from "./InvoiceGSTModal";
@@ -41,6 +42,8 @@ const InvoiceForm = () => {
   const [packingList, setPackingList] = useState([]);
   const [invoiceTypeList, setInvoiceTypeList] = useState([]);
   const [filteredSubTypes, setFilteredSubTypes] = useState([]);
+  const [itemCodes, setItemCodes] = useState([]);
+  const [loadingItems, setLoadingItems] = useState(false);
 
   const [formData, setFormData] = useState({
     invoiceType: "",
@@ -86,7 +89,22 @@ const InvoiceForm = () => {
 
   useEffect(() => {
     loadPackingData();
+    loadItemCodes();
   }, []);
+
+  const loadItemCodes = async () => {
+    try {
+      setLoadingItems(true);
+
+      const data = await fetchItemcodeAPI();
+
+      setItemCodes(data || []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingItems(false);
+    }
+  };
 
   useEffect(() => {
     if (!formData.invoiceType) {
@@ -660,16 +678,64 @@ const InvoiceForm = () => {
               {/* ITEM ENTRY SECTION */}
               <Grid container spacing={2}>
                 <Grid item xs={2}>
-                  <TextField label="Item Code" fullWidth size="small" />
+                  <Autocomplete
+                    size="small"
+                    fullWidth
+                    options={itemCodes || []}
+                    loading={loadingItems}
+                    value={
+                      itemCodes.find(
+                        (item) => item.ITEM_CODE === formData.itemCode,
+                      ) || null
+                    }
+                    getOptionLabel={(option) =>
+                      `${option.ITEM_CODE} - ${option.ITEM_DESC || ""}`
+                    }
+                    onChange={(event, value) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        itemCode: value?.ITEM_CODE || "",
+                        uom: value?.UOM || "",
+                      }));
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Item Code"
+                        placeholder="Search Item"
+                      />
+                    )}
+                  />
                 </Grid>
                 <Grid item xs={2}>
-                  <TextField label="Quantity" fullWidth size="small" />
+                  <TextField
+                    label="Quantity"
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    fullWidth
+                    size="small"
+                  />
                 </Grid>
                 <Grid item xs={2}>
-                  <TextField label="UOM" fullWidth size="small" />
+                  <TextField
+                    label="UOM"
+                    name="uom"
+                    value={formData.uom}
+                    onChange={handleChange}
+                    fullWidth
+                    size="small"
+                  />
                 </Grid>
                 <Grid item xs={2}>
-                  <TextField label="Rate" fullWidth size="small" />
+                  <TextField
+                    label="Rate"
+                    name="rate"
+                    value={formData.rate}
+                    onChange={handleChange}
+                    fullWidth
+                    size="small"
+                  />
                 </Grid>
                 <Grid item xs={2}>
                   <TextField label="Discount %" fullWidth size="small" />
