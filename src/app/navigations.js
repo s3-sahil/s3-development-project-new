@@ -868,7 +868,7 @@ const navigations = [
           },
           {
             name: "Additional Work Order Requisition",
-            path: "/material/additional-work-order-requisition-table",
+            path: "/material/material-additional-work-order-requisition-table",
             icon: "arrow_forward",
           },
           {
@@ -910,21 +910,33 @@ const navigations = [
             name: "Notify Party Details",
             path: "/material/customers",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Contract Review",
             path: "/material/sales-Contract-review-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Salesman",
             path: "/material/salesman",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Customer Details",
             path: "/material/customers",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           // SALES / MATERIAL MASTER TABLES
 
@@ -932,26 +944,41 @@ const navigations = [
             name: "Customer Item Details",
             path: "/material/sales-customer-item-details-form-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Contract Review Checklist",
             path: "/material/sales-contract-review-checklist-form-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Project Execution Plan",
             path: "/material/sales-project-execution-plan-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Project Activity Master",
             path: "/material/sales-project-activity-master-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Customer Wise Product Price List",
             path: "/material/sales-customer-wise-product-price-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
@@ -1072,101 +1099,161 @@ const navigations = [
             name: "Schedule Details",
             path: "/material/finance-schedule-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Group Details",
             path: "/material/finance-group-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Sub Group Details",
             path: "/material/finance-sub-group-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "General Ledger",
             path: "/material/finance-general-ledger-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Item Details",
             path: "/material/finance-item-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Bank Details",
             path: "/material/finance-bank-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Item Code Sub-Category Detail",
             path: "/material/TMS-assign-cards-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "T.D.S. Parameter",
             path: "/material/finance-TDS-parameter-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Depreciation Parameter",
             path: "/material/finance-depreciation-parameter-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Employee Advance Details",
             path: "/material/finance-employee-advance-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Creditors Billwise Entry",
             path: "/material/finance-creditors-billwise-entry-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Bank Reconciliation Untagging",
             path: "/material/finance-bank-reconciliation-untagging-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Bank Reconciliation Master",
             path: "/material/TMS-overtime-rules-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Bank Reconciliation Close",
             path: "/material/finance-bank-reconciliation-close-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Opening Balance",
             path: "/material/finance-opening-balance-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Debtors Billwise Entry",
             path: "/material/finance-debtors-billwise-entry-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Cheque Entry",
             path: "/material/finance-cheque-opening-entry-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Daily Cash Close",
             path: "/material/finance-daily-cash-close-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Monthwise Ledger Close",
             path: "/material/finance-monthwise-ledger-close-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Financial & Finalization",
             path: "/material/finance-close-finalization-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
@@ -1388,26 +1475,41 @@ const navigations = [
             name: "Section Details",
             path: "/material/production-section-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Section Wise Process Details",
             path: "/material/production-sectionWise-process-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Break Down Type Details",
             path: "/material/production-breakdown-type-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Break Down Details",
             path: "/material/production-breakdown-detail-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Machine Process Details",
             path: "/material/production-machine-process-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           // SALES / MATERIAL MASTER TABLES
 
@@ -1415,16 +1517,25 @@ const navigations = [
             name: "Machine/Asset Group Details",
             path: "/material/production-machine-asset-group-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Machine/Asset Details",
             path: "/material/production-machine-asset-detail-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Product Costing Parameters",
             path: "/material/production-product-costing-parameter-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
@@ -1462,61 +1573,97 @@ const navigations = [
             name: "Critical Inspection Parameter",
             path: "/material/TQM-critical-inspection-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Inspection Sampling Plan",
             path: "/material/TQM-sampling-plan-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Quality Defect Type Details",
             path: "/material/TQM-quality-defect-type-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Pre-Dispatch Inspection Entry",
             path: "/material/TQM-Pre-dispatch-inspection-entry-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Pre-Dispatch Inspection Details Entry",
             path: "/material/TQM-Pre-dispatch-inspection-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "First Piece Approval",
             path: "/material/TQM-first-piece-approval-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Customer Satisfaction Servey (CSS) Form",
             path: "/material/TQM-customer-satisfaction-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Customer Complaints",
             path: "/material/TQM-customer-complaints-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "ISO/TS/QS Document Details",
             path: "/material/TQM-Iso-document-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Test Master",
             path: "/material/TQM-test-master-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Quality Defect Master",
             path: "/material/TQM-quality-defect-master-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Dock Audit Plan (DAP)",
             path: "/material/TQM-dock-audit-plan-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
