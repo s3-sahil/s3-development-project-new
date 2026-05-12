@@ -11,8 +11,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { MaterialIssuePaginationAPI } from "app/utils/materialMaterialServices";
 import SearchFilter from "../SearchFilter";
+import { MaterialIssuePaginationAPI } from "app/utils/materialTransactionServices";
 
 export default function MaterialIssueTable() {
   const navigate = useNavigate();

@@ -12,7 +12,7 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import SearchFilter from "../SearchFilter";
-import { PurchaseLineRejectionPaginationAPI } from "app/utils/materialService";
+import { PurchaseLineRejectionPaginationAPI } from "app/utils/materialTransactionServices";
 
 export default function PurchaseLineRejectionTable() {
   const navigate = useNavigate();

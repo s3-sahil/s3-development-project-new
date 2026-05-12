@@ -13,8 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 import SearchFilter from "../SearchFilter";
+import { CustomerWipAdjustmentPaginationAPI } from "app/utils/materialTransactionServices";
 
-import { CustomerWipAdjustmentPaginationAPI } from "app/utils/materialMaterialServices";
 
 export default function CustomerWipAdjustmentTable() {
   const navigate = useNavigate();

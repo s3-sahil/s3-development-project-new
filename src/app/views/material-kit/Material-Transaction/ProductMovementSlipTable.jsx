@@ -12,7 +12,7 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import SearchFilter from "../SearchFilter";
-import { ProductMovementSlipPaginationAPI } from "app/utils/materialService";
+import { ProductMovementSlipPaginationAPI } from "app/utils/materialTransactionServices";
 
 export default function ProductMovementSlipTable() {
   const navigate = useNavigate();

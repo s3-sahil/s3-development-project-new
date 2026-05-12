@@ -11,8 +11,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { MaterialReturnReceivedPaginationAPI } from "app/utils/materialMaterialServices";
 import SearchFilter from "../SearchFilter";
+import { MaterialReturnReceivedPaginationAPI } from "app/utils/materialTransactionServices";
 
 export default function MaterialReturnReceivedTable() {
   const navigate = useNavigate();

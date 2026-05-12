@@ -13,8 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 import SearchFilter from "../SearchFilter";
+import { CustomerStockAdjustmentPaginationAPI } from "app/utils/materialTransactionServices";
 
-import { CustomerStockAdjustmentPaginationAPI } from "app/utils/materialMaterialServices";
 
 export default function CustomerStockAdjustmentTable() {
   const navigate = useNavigate();

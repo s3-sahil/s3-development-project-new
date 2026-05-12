@@ -13,8 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 import SearchFilter from "../SearchFilter";
+import { WorkOrderIssuePaginationAPI } from "app/utils/materialTransactionServices";
 
-import { WorkOrderIssuePaginationAPI } from "app/utils/materialService";
 
 export default function WorkOrderIssueTable() {
   const navigate = useNavigate();

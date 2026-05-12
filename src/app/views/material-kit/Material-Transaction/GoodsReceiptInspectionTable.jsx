@@ -9,10 +9,10 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
-import { GoodsReceiptInspectionTableAPI } from "app/utils/materialTransactionServices";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchFilter from "../SearchFilter";
+import { GoodsReceiptInspectionTableAPI } from "app/utils/materialTransactionServices";
 
 export default function GoodsReceiptInspectionTable() {
   const navigate = useNavigate();
