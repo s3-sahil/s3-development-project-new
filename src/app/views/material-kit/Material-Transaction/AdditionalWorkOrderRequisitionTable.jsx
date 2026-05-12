@@ -10,63 +10,126 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+
+import SearchFilter from "../SearchFilter";
+
+import { AdditionalWorkOrderRequisitionPaginationAPI } from "app/utils/materialMaterialServices";
 
 export default function AdditionalWorkOrderRequisitionTable() {
   const navigate = useNavigate();
 
-  const rows = [
-    {
-      id: 1,
-      requisitionNo: "AWOR001",
-      date: "2026-02-19",
-      workOrderNo: "WO123",
-      department: "Production",
-      itemCode: "ST001",
-      quantity: 100,
-      uom: "Kg",
-      reason: "Extra requirement",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      requisitionNo: "AWOR002",
-      date: "2026-02-18",
-      workOrderNo: "WO124",
-      department: "Maintenance",
-      itemCode: "CP002",
-      quantity: 50,
-      uom: "Meter",
-      reason: "Replacement",
-      status: "Approved",
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [rowCount, setRowCount] = useState(0);
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const fetchData = async () => {
+    setLoading(true);
+
+    try {
+      const response = await AdditionalWorkOrderRequisitionPaginationAPI(
+        "additional_work_order_requisition",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery,
+      );
+
+      if (response && response.Data) {
+        const mappedData = response.Data.map((row, index) => ({
+          ...row,
+          id: `${row.requisitionNo || index}_${index}`,
+        }));
+
+        setRows(mappedData);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
 
   const columns = [
-    { field: "requisitionNo", headerName: "Requisition No.", width: 180 },
-    { field: "date", headerName: "Date", width: 150 },
-    { field: "workOrderNo", headerName: "Work Order No.", width: 180 },
-    { field: "department", headerName: "Department", width: 200 },
-    { field: "itemCode", headerName: "Item Code", width: 150 },
-    { field: "quantity", headerName: "Quantity", width: 120 },
-    { field: "uom", headerName: "UOM", width: 120 },
-    { field: "reason", headerName: "Reason", width: 200 },
-    { field: "status", headerName: "Status", width: 150 },
+    {
+      field: "requisitionNo",
+      headerName: "Requisition No.",
+      flex: 1,
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      flex: 1,
+    },
+    {
+      field: "workOrderNo",
+      headerName: "Work Order No.",
+      flex: 1,
+    },
+    {
+      field: "department",
+      headerName: "Department",
+      flex: 1,
+    },
+    {
+      field: "itemCode",
+      headerName: "Item Code",
+      flex: 1,
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      flex: 1,
+    },
+    {
+      field: "uom",
+      headerName: "UOM",
+      flex: 1,
+    },
+    {
+      field: "reason",
+      headerName: "Reason",
+      flex: 1,
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 1,
+    },
     {
       field: "actions",
       headerName: "Actions",
       width: 120,
+      sortable: false,
       renderCell: (params) => (
-        <Tooltip title="Edit">
-          <IconButton
-            onClick={() =>
-              navigate(`/material/material-additional-work-order-requisition-form/edit/${params.row.id}`, {
-                state: params.row,
-              })
-            }
-          >
-            <Icon color="primary">edit</Icon>
-          </IconButton>
-        </Tooltip>
+        <>
+          <Tooltip title="Edit">
+            <IconButton
+              onClick={() =>
+                navigate(
+                  `/material/material-additional-work-order-requisition-form/edit/${params.row.id}`,
+                  {
+                    state: params.row,
+                  },
+                )
+              }
+            >
+              <Icon color="primary">edit</Icon>
+            </IconButton>
+          </Tooltip>
+        </>
       ),
     },
   ];
@@ -74,22 +137,78 @@ export default function AdditionalWorkOrderRequisitionTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Material" }, { name: "Additional Work Order Requisition" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Material" },
+            { name: "Additional Work Order Requisition" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
-        <Box display="flex" justifyContent="flex-end">
+        {/* TOP BAR */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              {
+                value: "requisitionNo",
+                label: "Requisition No",
+              },
+              {
+                value: "workOrderNo",
+                label: "Work Order No",
+              },
+              {
+                value: "department",
+                label: "Department",
+              },
+              {
+                value: "itemCode",
+                label: "Item Code",
+              },
+              {
+                value: "status",
+                label: "Status",
+              },
+            ]}
+            onSearch={() => fetchData()}
+          />
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/material-additional-work-order-requisition-form/add")}
+            onClick={() =>
+              navigate(
+                "/material/material-additional-work-order-requisition-form/add",
+              )
+            }
           >
             New
           </Button>
         </Box>
 
-        <Box sx={{ height: 420 }}>
-          <DataGrid rows={rows} columns={columns} />
+        {/* TABLE */}
+        <Box sx={{ height: 550, width: "100%" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationModel={paginationModel}
+            paginationMode="server"
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[10, 20, 50]}
+            disableRowSelectionOnClick
+          />
         </Box>
       </Stack>
     </Container>

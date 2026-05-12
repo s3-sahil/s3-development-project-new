@@ -17,32 +17,40 @@ export default function PurchaseOrderTable() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
   const [rowCount, setRowCount] = useState(0);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [searchColumn, setSearchColumn] = useState("");
 
-  // ✅ Fetch Data
-  const fetchData = async (pageNo = page, size = pageSize) => {
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  // Fetch Data
+  const fetchData = async () => {
     try {
       setLoading(true);
 
       const res = await PurchaseOrderPaginationAPI(
         "PURCHASE_ORDER",
-        pageNo + 1,
-        size,
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery
       );
 
       if (res?.Data) {
         const formattedRows = res.Data.map((item, index) => ({
           id: item.id || index + 1,
           Order_No: item.Order_No,
-          Order_Date: item.Order_Date,
+          Order_Date: item.Order_Date
+            ? item.Order_Date.split("T")[0]
+            : "",
           Supplier: item.Supplier,
           Buyer: item.Buyer,
           Status: item.Status,
+          original: item,
         }));
 
         setRows(formattedRows);
@@ -56,10 +64,10 @@ export default function PurchaseOrderTable() {
   };
 
   useEffect(() => {
-    fetchData(page, pageSize);
-  }, [page, pageSize]);
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
 
-  // ✅ Edit
+  // Edit
   const handleEdit = async (row) => {
     try {
       setLoading(true);
@@ -82,29 +90,7 @@ export default function PurchaseOrderTable() {
     }
   };
 
-  // ✅ Search
-  const handleSearch = () => {
-    if (!searchQuery) {
-      fetchData();
-      return;
-    }
-
-    const filtered = rows.filter((row) => {
-      const searchStr = searchQuery.toLowerCase();
-
-      if (searchColumn) {
-        return String(row[searchColumn]).toLowerCase().includes(searchStr);
-      }
-
-      return Object.values(row).some((val) =>
-        String(val).toLowerCase().includes(searchStr),
-      );
-    });
-
-    setRows(filtered);
-  };
-
-  // ✅ Columns
+  // Columns
   const columns = [
     { field: "Order_No", headerName: "Order No", flex: 1 },
     { field: "Order_Date", headerName: "Date", flex: 1 },
@@ -140,13 +126,20 @@ export default function PurchaseOrderTable() {
       {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[{ name: "Material" }, { name: "Purchase Order" }]}
+          routeSegments={[
+            { name: "Material" },
+            { name: "Purchase Order" },
+          ]}
         />
       </Box>
 
       <Stack spacing={3}>
         {/* Search + Add */}
-        <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <SearchFilter
             searchValue={searchQuery}
             setSearchValue={setSearchQuery}
@@ -155,8 +148,9 @@ export default function PurchaseOrderTable() {
             columnOptions={[
               { value: "Order_No", label: "Order No" },
               { value: "Supplier", label: "Supplier" },
+              { value: "Buyer", label: "Buyer" },
             ]}
-            onSearch={handleSearch}
+            onSearch={() => fetchData()}
           />
 
           <Button
@@ -176,12 +170,9 @@ export default function PurchaseOrderTable() {
             loading={loading}
             paginationMode="server"
             rowCount={rowCount}
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
             pageSizeOptions={[10, 25, 50]}
-            paginationModel={{ page, pageSize }}
-            onPaginationModelChange={(model) => {
-              setPage(model.page);
-              setPageSize(model.pageSize);
-            }}
             disableRowSelectionOnClick
           />
         </Box>

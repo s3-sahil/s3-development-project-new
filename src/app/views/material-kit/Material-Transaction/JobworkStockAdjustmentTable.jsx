@@ -10,58 +10,117 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { JobworkStockAdjustmentPaginationAPI } from "app/utils/materialMaterialServices";
+import SearchFilter from "../SearchFilter";
 
 export default function JobworkStockAdjustmentTable() {
   const navigate = useNavigate();
 
-  const rows = [
-    {
-      id: 1,
-      adjustmentNo: "JSA001",
-      date: "2026-02-19",
-      customer: "ABC Enterprises",
-      department: "Production",
-      itemCode: "ST001",
-      quantity: 100,
-      uom: "Kg",
-      stock: 500,
-      status: "Pending",
-    },
-    {
-      id: 2,
-      adjustmentNo: "JSA002",
-      date: "2026-02-18",
-      customer: "XYZ Imports",
-      department: "Maintenance",
-      itemCode: "CP002",
-      quantity: 50,
-      uom: "Meter",
-      stock: 200,
-      status: "Approved",
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [rowCount, setRowCount] = useState(0);
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const fetchData = async () => {
+    setLoading(true);
+
+    try {
+      const response = await JobworkStockAdjustmentPaginationAPI(
+        "jobwork_stock_adjustment",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery,
+      );
+
+      if (response?.Data) {
+        const mappedData = response.Data.map((row, index) => ({
+          ...row,
+          id: `${row.adjustmentNo}_${index}`,
+        }));
+
+        setRows(mappedData);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching Jobwork Stock Adjustment:", error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
 
   const columns = [
-    { field: "adjustmentNo", headerName: "Adjustment No.", width: 180 },
-    { field: "date", headerName: "Date", width: 150 },
-    { field: "customer", headerName: "Customer", width: 200 },
-    { field: "department", headerName: "Department", width: 200 },
-    { field: "itemCode", headerName: "Item Code", width: 150 },
-    { field: "quantity", headerName: "Quantity", width: 120 },
-    { field: "uom", headerName: "UOM", width: 120 },
-    { field: "stock", headerName: "Stock", width: 150 },
-    { field: "status", headerName: "Status", width: 150 },
+    {
+      field: "adjustmentNo",
+      headerName: "Adjustment No.",
+      flex: 1,
+    },
+    {
+      field: "date",
+      headerName: "Date",
+      flex: 1,
+    },
+    {
+      field: "customer",
+      headerName: "Customer",
+      flex: 1,
+    },
+    {
+      field: "department",
+      headerName: "Department",
+      flex: 1,
+    },
+    {
+      field: "itemCode",
+      headerName: "Item Code",
+      flex: 1,
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      flex: 1,
+    },
+    {
+      field: "uom",
+      headerName: "UOM",
+      flex: 1,
+    },
+    {
+      field: "stock",
+      headerName: "Stock",
+      flex: 1,
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 1,
+    },
     {
       field: "actions",
       headerName: "Actions",
       width: 120,
+      sortable: false,
       renderCell: (params) => (
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/material-jobwork-stock-adjustment-form/edit/${params.row.id}`, {
-                state: params.row,
-              })
+              navigate(
+                `/material/material-jobwork-stock-adjustment-form/edit/${params.row.id}`,
+                {
+                  state: params.row,
+                },
+              )
             }
           >
             <Icon color="primary">edit</Icon>
@@ -74,22 +133,68 @@ export default function JobworkStockAdjustmentTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Material" }, { name: "Jobwork Stock Adjustment" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Material" },
+            { name: "Jobwork Stock Adjustment" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
-        <Box display="flex" justifyContent="flex-end">
+        {/* Top Bar */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              {
+                value: "adjustmentNo",
+                label: "Adjustment No.",
+              },
+              {
+                value: "customer",
+                label: "Customer",
+              },
+              {
+                value: "itemCode",
+                label: "Item Code",
+              },
+            ]}
+            onSearch={() => fetchData()}
+          />
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/material-jobwork-stock-adjustment-form/add")}
+            onClick={() =>
+              navigate("/material/material-jobwork-stock-adjustment-form/add")
+            }
           >
             New
           </Button>
         </Box>
 
-        <Box sx={{ height: 420 }}>
-          <DataGrid rows={rows} columns={columns} />
+        {/* Table */}
+        <Box sx={{ height: 550, width: "100%" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[10, 20, 50]}
+            disableRowSelectionOnClick
+          />
         </Box>
       </Stack>
     </Container>

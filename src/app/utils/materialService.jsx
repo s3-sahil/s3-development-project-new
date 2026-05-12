@@ -12,7 +12,10 @@ export const saveOutwardChallan = async (payload) => {
 
 export const updateOutwardChallan = async (payload) => {
   try {
-    const response = await axiosInstance.post(`/UPDATE-OUTWARD_CHALLAN`, payload);
+    const response = await axiosInstance.post(
+      `/UPDATE-OUTWARD_CHALLAN`,
+      payload,
+    );
     return response.data;
   } catch (error) {
     console.error("Error updating OUTWARD CHALLAN", error);
@@ -20,35 +23,38 @@ export const updateOutwardChallan = async (payload) => {
   }
 };
 
-
 export const OutwardChallanPaginationAPI = async (
-    tableName = "vchal_head",
-    pageNumber = 1,
-    pageSize = 10
+  tableName = "vchal_head",
+  pageNumber = 1,
+  pageSize = 10,
+  searchColumn = "",
+  searchString = "",
 ) => {
-    try {
-        const { data } = await axiosInstance.get(
-            "/api/PaginationByTable/GetPaginationByTable",
-            {
-                params: {
-                    TableNameForPagination: tableName,
-                    pageNumber,
-                    pageSize,
-                },
-            }
-        );
+  try {
+    const { data } = await axiosInstance.get(
+      "/api/PaginationByTable/GetPaginationByTable",
+      {
+        params: {
+          TableNameForPagination: tableName,
+          pageNumber,
+          pageSize,
+          searchColumn,
+          searchString,
+        },
+      },
+    );
 
-        if (data?.StatusCode === 200 || data?.Data) {
-            return data;
-        }
-
-        return { Data: [], TotalCount: 0 };
-    } catch (error) {
-        console.error(
-            "Customer RCIAP fetch error:",
-            error.response || error.message
-        );
-
-        return { Data: [], TotalCount: 0 };
+    if (data?.StatusCode === 200 || data?.Data) {
+      return data;
     }
+
+    return { Data: [], TotalCount: 0 };
+  } catch (error) {
+    console.error(
+      "Outward Challan fetch error:",
+      error.response || error.message,
+    );
+
+    return { Data: [], TotalCount: 0 };
+  }
 };

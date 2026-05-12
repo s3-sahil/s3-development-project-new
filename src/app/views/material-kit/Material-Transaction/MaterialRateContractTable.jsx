@@ -10,49 +10,102 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { MaterialRateContractPaginationAPI } from "app/utils/materialMaterialServices";
+import SearchFilter from "../SearchFilter";
 
 export default function MaterialRateContractTable() {
   const navigate = useNavigate();
 
-  const rows = [
-    {
-      id: 1,
-      itemCode: "ITM001",
-      uom: "Kg",
-      supplierCode: "SUP001",
-      quantity: 100,
-      rate: 500,
-      discount: 5,
-    },
-    {
-      id: 2,
-      itemCode: "ITM002",
-      uom: "Meter",
-      supplierCode: "SUP002",
-      quantity: 200,
-      rate: 300,
-      discount: 10,
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [rowCount, setRowCount] = useState(0);
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const fetchData = async () => {
+    setLoading(true);
+
+    try {
+      const response = await MaterialRateContractPaginationAPI(
+        "material_rate_contract",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery,
+      );
+
+      if (response?.Data) {
+        const mappedData = response.Data.map((row, index) => ({
+          ...row,
+          id: `${row.itemCode}_${index}`,
+        }));
+
+        setRows(mappedData);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching Material Rate Contract:", error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
 
   const columns = [
-    { field: "itemCode", headerName: "Item Code", width: 150 },
-    { field: "uom", headerName: "UOM", width: 120 },
-    { field: "supplierCode", headerName: "Supplier Code", width: 180 },
-    { field: "quantity", headerName: "Quantity", width: 120 },
-    { field: "rate", headerName: "Rate", width: 120 },
-    { field: "discount", headerName: "Discount (%)", width: 150 },
+    {
+      field: "itemCode",
+      headerName: "Item Code",
+      flex: 1,
+    },
+    {
+      field: "uom",
+      headerName: "UOM",
+      flex: 1,
+    },
+    {
+      field: "supplierCode",
+      headerName: "Supplier Code",
+      flex: 1,
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      flex: 1,
+    },
+    {
+      field: "rate",
+      headerName: "Rate",
+      flex: 1,
+    },
+    {
+      field: "discount",
+      headerName: "Discount (%)",
+      flex: 1,
+    },
     {
       field: "actions",
       headerName: "Actions",
       width: 120,
+      sortable: false,
       renderCell: (params) => (
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/material-rate-contract-form/edit/${params.row.id}`, {
-                state: params.row,
-              })
+              navigate(
+                `/material/material-rate-contract-form/edit/${params.row.id}`,
+                {
+                  state: params.row,
+                },
+              )
             }
           >
             <Icon color="primary">edit</Icon>
@@ -65,22 +118,64 @@ export default function MaterialRateContractTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Material" }, { name: "Rate Contract" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Material" },
+            { name: "Rate Contract" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
-        <Box display="flex" justifyContent="flex-end">
+        {/* Top Bar */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              {
+                value: "itemCode",
+                label: "Item Code",
+              },
+              {
+                value: "supplierCode",
+                label: "Supplier Code",
+              },
+            ]}
+            onSearch={() => fetchData()}
+          />
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/material-rate-contract-form/add")}
+            onClick={() =>
+              navigate("/material/material-rate-contract-form/add")
+            }
           >
             New
           </Button>
         </Box>
 
-        <Box sx={{ height: 420 }}>
-          <DataGrid rows={rows} columns={columns} />
+        {/* Table */}
+        <Box sx={{ height: 550, width: "100%" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[10, 20, 50]}
+            disableRowSelectionOnClick
+          />
         </Box>
       </Stack>
     </Container>

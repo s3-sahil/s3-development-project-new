@@ -11,6 +11,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import SearchFilter from "../SearchFilter";
 import { PurchaseRequisitionPaginationAPI } from "app/utils/materialTransactionServices";
 
 export default function PurchaseRequisitionTable() {
@@ -23,6 +24,9 @@ export default function PurchaseRequisitionTable() {
   const [pageSize, setPageSize] = useState(10);
   const [rowCount, setRowCount] = useState(0);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+
   // ---------------- FETCH API ----------------
   const fetchData = async () => {
     try {
@@ -31,16 +35,17 @@ export default function PurchaseRequisitionTable() {
       const res = await PurchaseRequisitionPaginationAPI(
         "Indent_head",
         page + 1,
-        pageSize
+        pageSize,
+        searchColumn,
+        searchQuery
       );
 
       const data = res?.Data || [];
 
-      // ✅ SAFE MAPPING (prevents empty row crash)
       const mappedRows = (data || [])
-        .filter((item) => item?.IND_NO) // remove invalid rows
+        .filter((item) => item?.IND_NO)
         .map((item) => ({
-          id: item.IND_NO || `${Math.random()}`, // fallback safety
+          id: item.IND_NO || `${Math.random()}`,
           requisitionNo: item.IND_NO || "",
           date: item.IND_DATE ? item.IND_DATE.split("T")[0] : "",
           department: item.DEPT_CODE || "",
@@ -54,7 +59,6 @@ export default function PurchaseRequisitionTable() {
         }));
 
       setRows(mappedRows);
-
       setRowCount(res?.TotalCount || mappedRows.length);
     } catch (error) {
       console.error("Fetch Error:", error);
@@ -66,15 +70,15 @@ export default function PurchaseRequisitionTable() {
 
   useEffect(() => {
     fetchData();
-  }, [page, pageSize]);
+  }, [page, pageSize, searchQuery, searchColumn]);
 
   // ---------------- COLUMNS ----------------
   const columns = [
-    { field: "requisitionNo", headerName: "Requisition No", width: 180 },
-    { field: "date", headerName: "Date", width: 150 },
-    { field: "department", headerName: "Department", width: 180 },
-    { field: "supplier", headerName: "Supplier", width: 180 },
-    { field: "status", headerName: "Status", width: 140 },
+    { field: "requisitionNo", headerName: "Requisition No", flex: 1 },
+    { field: "date", headerName: "Date", flex: 1 },
+    { field: "department", headerName: "Department", flex: 1 },
+    { field: "supplier", headerName: "Supplier", flex: 1 },
+    { field: "status", headerName: "Status", flex: 1 },
 
     {
       field: "actions",
@@ -116,8 +120,26 @@ export default function PurchaseRequisitionTable() {
       </Box>
 
       <Stack spacing={3}>
-        {/* NEW BUTTON */}
-        <Box display="flex" justifyContent="flex-end">
+        {/* SEARCH + BUTTON */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              { value: "IND_NO", label: "Requisition No" },
+              { value: "DEPT_CODE", label: "Department" },
+              { value: "Supplier", label: "Supplier" },
+            ]}
+            onSearch={() => fetchData()}
+          />
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
@@ -143,7 +165,8 @@ export default function PurchaseRequisitionTable() {
             pageSize={pageSize}
             onPageChange={(newPage) => setPage(newPage)}
             onPageSizeChange={(newSize) => setPageSize(newSize)}
-            getRowId={(row) => row.id}   // ✅ SAFE + REQUIRED FIX
+            getRowId={(row) => row.id}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

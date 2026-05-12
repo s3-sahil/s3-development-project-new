@@ -10,61 +10,100 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import SearchFilter from "../SearchFilter";
+import { ProductMovementSlipPaginationAPI } from "app/utils/materialService";
 
 export default function ProductMovementSlipTable() {
   const navigate = useNavigate();
 
-  const rows = [
-    {
-      id: 1,
-      slipNo: "PMS001",
-      date: "2026-02-19",
-      fromLocation: "Warehouse A",
-      toLocation: "Production Line 1",
-      itemCode: "ST001",
-      quantity: 100,
-      uom: "Kg",
-      transporter: "ABC Logistics",
-      vehicleNo: "MH12AB1234",
-      status: "Pending",
-    },
-    {
-      id: 2,
-      slipNo: "PMS002",
-      date: "2026-02-18",
-      fromLocation: "Warehouse B",
-      toLocation: "Maintenance Dept",
-      itemCode: "CP002",
-      quantity: 50,
-      uom: "Meter",
-      transporter: "XYZ Transport",
-      vehicleNo: "DL09XY5678",
-      status: "Completed",
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [rowCount, setRowCount] = useState(0);
 
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  // Fetch Data
+  const fetchData = async () => {
+    setLoading(true);
+
+    try {
+      const response = await ProductMovementSlipPaginationAPI(
+        "product_movement_slip",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery
+      );
+
+      if (response && response.Data) {
+        const mappedData = response.Data.map((row, index) => ({
+          id: `${row.Slip_No}_${index}`,
+          slipNo: row.Slip_No,
+          date: row.Slip_Date
+            ? row.Slip_Date.split("T")[0]
+            : "",
+          fromLocation: row.From_Location,
+          toLocation: row.To_Location,
+          itemCode: row.Item_Code,
+          quantity: row.Quantity,
+          uom: row.UOM,
+          transporter: row.Transporter,
+          vehicleNo: row.Vehicle_No,
+          status: row.Status || "Pending",
+          original: row,
+        }));
+
+        setRows(mappedData);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error(
+        "Error fetching product movement slip:",
+        error
+      );
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
+
+  // Columns
   const columns = [
-    { field: "slipNo", headerName: "Slip No.", width: 150 },
-    { field: "date", headerName: "Date", width: 150 },
-    { field: "fromLocation", headerName: "From Location", width: 200 },
-    { field: "toLocation", headerName: "To Location", width: 200 },
-    { field: "itemCode", headerName: "Item Code", width: 150 },
-    { field: "quantity", headerName: "Quantity", width: 120 },
-    { field: "uom", headerName: "UOM", width: 120 },
-    { field: "transporter", headerName: "Transporter", width: 200 },
-    { field: "vehicleNo", headerName: "Vehicle No.", width: 180 },
-    { field: "status", headerName: "Status", width: 150 },
+    { field: "slipNo", headerName: "Slip No.", flex: 1 },
+    { field: "date", headerName: "Date", flex: 1 },
+    { field: "fromLocation", headerName: "From Location", flex: 1 },
+    { field: "toLocation", headerName: "To Location", flex: 1 },
+    { field: "itemCode", headerName: "Item Code", flex: 1 },
+    { field: "quantity", headerName: "Quantity", flex: 1 },
+    { field: "uom", headerName: "UOM", flex: 1 },
+    { field: "transporter", headerName: "Transporter", flex: 1 },
+    { field: "vehicleNo", headerName: "Vehicle No.", flex: 1 },
+    { field: "status", headerName: "Status", flex: 1 },
+
     {
       field: "actions",
       headerName: "Actions",
       width: 120,
+      sortable: false,
       renderCell: (params) => (
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/material-product-movement-slip-form/edit/${params.row.id}`, {
-                state: params.row,
-              })
+              navigate(
+                `/material/material-product-movement-slip-form/edit/${params.row.id}`,
+                {
+                  state: params.row.original,
+                }
+              )
             }
           >
             <Icon color="primary">edit</Icon>
@@ -76,23 +115,63 @@ export default function ProductMovementSlipTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Material" }, { name: "Product Movement Slip" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Material" },
+            { name: "Product Movement Slip" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
-        <Box display="flex" justifyContent="flex-end">
+        {/* Top Bar */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              { value: "slip_No", label: "Slip No" },
+              { value: "item_Code", label: "Item Code" },
+              { value: "vehicle_No", label: "Vehicle No" },
+            ]}
+            onSearch={() => fetchData()}
+          />
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/material-product-movement-slip-form/add")}
+            onClick={() =>
+              navigate(
+                "/material/material-product-movement-slip-form/add"
+              )
+            }
           >
             New
           </Button>
         </Box>
 
-        <Box sx={{ height: 420 }}>
-          <DataGrid rows={rows} columns={columns} />
+        {/* Table */}
+        <Box sx={{ height: 550, width: "100%" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationModel={paginationModel}
+            paginationMode="server"
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[10, 20, 50]}
+            disableRowSelectionOnClick
+          />
         </Box>
       </Stack>
     </Container>
