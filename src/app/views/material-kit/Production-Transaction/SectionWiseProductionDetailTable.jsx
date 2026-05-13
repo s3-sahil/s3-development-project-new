@@ -4,67 +4,95 @@ import {
   IconButton,
   Tooltip,
   Button,
-  TextField,
-  MenuItem,
   Box,
   Stack,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import SearchFilter from "../SearchFilter";
+import { SectionWiseProductionDetailPaginationAPI } from "app/utils/ProductionTransactionServices";
 
 export default function SectionWiseProductionDetailTable() {
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState("");
-  const [searchField, setSearchField] = useState("reportNo");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    {
-      id: 1,
-      section: "PRODUCTION",
-      reportNo: "R001",
-      reportDate: "2026-03-01",
-      shiftFrom: "08:00",
-      shiftTo: "16:00",
-      shiftIncharge: "John Doe",
-      machineNo: "M001",
-      cutTime: "2h",
-      productCode: "P001",
-      operation: "Cutting",
-      productionType: "Regular",
-      fromTime: "08:00",
-      toTime: "12:00",
-      totalTime: "4h",
-      produceQty: "100",
-      rejectionQty: "5",
-      okQty: "95",
-      wipQty: "10",
-      breakdownReason: "Electrical",
-      breakdownFrom: "12:00",
-      breakdownTo: "13:00",
-      totalBreakdownTime: "1h",
-      directEmployee: "E101",
-      indirectEmployee: "E201",
-      employee: "E301",
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toString().toLowerCase().includes(searchText.toLowerCase())
-  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
 
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const [rowCount, setRowCount] = useState(0);
+
+  // ✅ Fetch Data
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await SectionWiseProductionDetailPaginationAPI(
+        "SECTIONWISE_PRODUCTION_DETAIL",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery
+      );
+
+      if (response?.Data) {
+        const mappedRows = response.Data.map((item, index) => ({
+          id: item.id || index + 1,
+          reportNo: item.reportNo || "",
+          reportDate: item.reportDate || "",
+          shiftFrom: item.shiftFrom || "",
+          shiftTo: item.shiftTo || "",
+          shiftIncharge: item.shiftIncharge || "",
+          machineNo: item.machineNo || "",
+          cutTime: item.cutTime || "",
+          productCode: item.productCode || "",
+          operation: item.operation || "",
+          productionType: item.productionType || "",
+          produceQty: item.produceQty || "",
+          rejectionQty: item.rejectionQty || "",
+          okQty: item.okQty || "",
+          wipQty: item.wipQty || "",
+          breakdownReason: item.breakdownReason || "",
+          totalBreakdownTime: item.totalBreakdownTime || "",
+          directEmployee: item.directEmployee || "",
+          indirectEmployee: item.indirectEmployee || "",
+          employee: item.employee || "",
+          original: item,
+        }));
+
+        setRows(mappedRows);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
+
+  // ✅ Edit
   const handleEdit = (row) => {
-    navigate(`/material/production-section-wise-production-detail-form/edit/${row.id}`, {
-      state: row,
-    });
+    navigate(
+      `/material/production-section-wise-production-detail-form/edit/${row.id}`,
+      {
+        state: row.original,
+      }
+    );
   };
 
-  const handleAddNew = () => {
-    navigate("/material/production-section-wise-production-detail-form/add");
-  };
-
+  // ✅ Columns
   const columns = [
     { field: "reportNo", headerName: "Report No", width: 120 },
     { field: "reportDate", headerName: "Report Date", width: 150 },
@@ -81,10 +109,23 @@ export default function SectionWiseProductionDetailTable() {
     { field: "okQty", headerName: "OK Qty", width: 120 },
     { field: "wipQty", headerName: "WIP Qty", width: 120 },
     { field: "breakdownReason", headerName: "Breakdown Reason", width: 180 },
-    { field: "totalBreakdownTime", headerName: "Breakdown Time", width: 180 },
-    { field: "directEmployee", headerName: "Direct Employee", width: 180 },
-    { field: "indirectEmployee", headerName: "Indirect Employee", width: 180 },
+    {
+      field: "totalBreakdownTime",
+      headerName: "Breakdown Time",
+      width: 180,
+    },
+    {
+      field: "directEmployee",
+      headerName: "Direct Employee",
+      width: 180,
+    },
+    {
+      field: "indirectEmployee",
+      headerName: "Indirect Employee",
+      width: 180,
+    },
     { field: "employee", headerName: "Employee", width: 150 },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -102,6 +143,7 @@ export default function SectionWiseProductionDetailTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
@@ -113,53 +155,52 @@ export default function SectionWiseProductionDetailTable() {
 
       <Stack spacing={3}>
         {/* Top Controls */}
-        <Box display="flex" justifyContent="space-between">
-          <Box display="flex" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-
-            <TextField
-              select
-              size="small"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              sx={{ width: 200 }}
-            >
-              <MenuItem value="reportNo">Report No</MenuItem>
-              <MenuItem value="reportDate">Report Date</MenuItem>
-              <MenuItem value="shiftIncharge">Shift Incharge</MenuItem>
-              <MenuItem value="machineNo">Machine No</MenuItem>
-              <MenuItem value="productCode">Product Code</MenuItem>
-              <MenuItem value="operation">Operation</MenuItem>
-            </TextField>
-
-            <Button variant="contained">Search</Button>
-          </Box>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              { value: "reportNo", label: "Report No" },
+              { value: "reportDate", label: "Report Date" },
+              { value: "shiftIncharge", label: "Shift Incharge" },
+              { value: "machineNo", label: "Machine No" },
+              { value: "productCode", label: "Product Code" },
+              { value: "operation", label: "Operation" },
+            ]}
+            onSearch={fetchData}
+          />
 
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={handleAddNew}
+            onClick={() =>
+              navigate(
+                "/material/production-section-wise-production-detail-form/add"
+              )
+            }
           >
             New
           </Button>
         </Box>
 
         {/* DataGrid */}
-        <Box sx={{ height: 500, width: "100%" }}>
+        <Box sx={{ height: 550, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
-            }}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[5, 10, 20]}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

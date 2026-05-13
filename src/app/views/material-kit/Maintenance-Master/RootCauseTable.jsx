@@ -4,43 +4,94 @@ import {
   IconButton,
   Tooltip,
   Button,
-  TextField,
-  MenuItem,
   Box,
   Stack,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import SearchFilter from "../SearchFilter";
+import { RootCausePaginationAPI } from "app/utils/MaintenanceMaterialServices";
 
 export default function RootCauseTable() {
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState("");
-  const [searchField, setSearchField] = useState("rootCauseCode");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    { id: 1, rootCauseCode: "RC01", rootCause: "Improper Lubrication" },
-    { id: 2, rootCauseCode: "RC02", rootCause: "Operator Error" },
-    { id: 3, rootCauseCode: "RC03", rootCause: "Material Defect" },
-  ];
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toString().toLowerCase().includes(searchText.toLowerCase())
-  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
 
-  const handleEdit = (row) => {
-    navigate(`/material/maintenance-root-cause-form/edit/${row.id}`, { state: row });
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const [rowCount, setRowCount] = useState(0);
+
+  // ================= FETCH DATA =================
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await RootCausePaginationAPI(
+        "ROOT_CAUSE_MASTER",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery,
+      );
+
+      if (response?.Data) {
+        const mappedRows = response.Data.map((item, index) => ({
+          id: item.id || index + 1,
+          rootCauseCode: item.rootCauseCode || "",
+          rootCause: item.rootCause || "",
+          original: item,
+        }));
+
+        setRows(mappedRows);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
+
+  // ================= EDIT =================
+  const handleEdit = (row) => {
+    navigate(`/material/maintenance-root-cause-form/edit/${row.id}`, {
+      state: row.original,
+    });
+  };
+
+  // ================= ADD =================
   const handleAddNew = () => {
     navigate("/material/maintenance-root-cause-form/add");
   };
 
+  // ================= COLUMNS =================
   const columns = [
-    { field: "rootCauseCode", headerName: "Root Cause Code", width: 200 },
-    { field: "rootCause", headerName: "Root Cause", width: 400 },
+    {
+      field: "rootCauseCode",
+      headerName: "Root Cause Code",
+      width: 220,
+    },
+
+    {
+      field: "rootCause",
+      headerName: "Root Cause",
+      width: 400,
+    },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -58,34 +109,36 @@ export default function RootCauseTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Maintenance" }, { name: "Root Cause Details" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Maintenance" },
+            { name: "Root Cause Details" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
         {/* Top Controls */}
-        <Box display="flex" justifyContent="space-between">
-          <Box display="flex" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-
-            <TextField
-              select
-              size="small"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              sx={{ width: 200 }}
-            >
-              <MenuItem value="rootCauseCode">Root Cause Code</MenuItem>
-              <MenuItem value="rootCause">Root Cause</MenuItem>
-            </TextField>
-
-            <Button variant="contained">Search</Button>
-          </Box>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              {
+                value: "rootCauseCode",
+                label: "Root Cause Code",
+              },
+              {
+                value: "rootCause",
+                label: "Root Cause",
+              },
+            ]}
+            onSearch={fetchData}
+          />
 
           <Button
             variant="contained"
@@ -97,14 +150,17 @@ export default function RootCauseTable() {
         </Box>
 
         {/* DataGrid */}
-        <Box sx={{ height: 450, width: "100%" }}>
+        <Box sx={{ height: 500, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: { paginationModel: { pageSize: 5, page: 0 } },
-            }}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[5, 10, 20]}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

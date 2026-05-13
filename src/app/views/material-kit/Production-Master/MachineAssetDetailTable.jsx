@@ -1,72 +1,123 @@
+// ================= TABLE =================
+
 import {
   Container,
   Icon,
   IconButton,
   Tooltip,
   Button,
-  TextField,
-  MenuItem,
   Box,
   Stack,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import SearchFilter from "../SearchFilter";
+import { MachineAssetDetailPaginationAPI } from "app/utils/ProductionMaterialServices";
+
 
 export default function MachineAssetDetailTable() {
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState("");
-  const [searchField, setSearchField] = useState("machineNo");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    {
-      id: 1,
-      machineNo: "M001",
-      machineName: "Lathe Machine",
-      modelNo: "LM-100",
-      make: "ABC Corp",
-      capacity: "5 Tons",
-      inUse: true,
-    },
-    {
-      id: 2,
-      machineNo: "M002",
-      machineName: "CNC Machine",
-      modelNo: "CNC-200",
-      make: "XYZ Ltd",
-      capacity: "10 Tons",
-      inUse: false,
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toString().toLowerCase().includes(searchText.toLowerCase())
-  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+
+  const [rowCount, setRowCount] = useState(0);
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  // ================= FETCH DATA =================
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await MachineAssetDetailPaginationAPI(
+        "MACHINE_ASSET_MASTER",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery,
+      );
+
+      if (response?.Data) {
+        const mappedRows = response.Data.map((item, index) => ({
+          id: item.Machine_No || index + 1,
+
+          machineNo: item.Machine_No || "",
+          machineName: item.Machine_Name || "",
+          modelNo: item.Model_No || "",
+          make: item.Make || "",
+          capacity: item.Capacity || "",
+          inUse: item.In_Use === true ? "Yes" : "No",
+
+          original: item,
+        }));
+
+        setRows(mappedRows);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
+
+  // ================= EDIT =================
 
   const handleEdit = (row) => {
     navigate(`/material/production-machine-asset-detail-form/edit/${row.id}`, {
-      state: row,
+      state: row.original,
     });
   };
 
-  const handleAddNew = () => {
-    navigate("/material/production-machine-asset-detail-form/add");
-  };
+  // ================= COLUMNS =================
 
   const columns = [
-    { field: "machineNo", headerName: "Machine No", width: 150 },
-    { field: "machineName", headerName: "Machine Name", width: 200 },
-    { field: "modelNo", headerName: "Model No", width: 150 },
-    { field: "make", headerName: "Make", width: 180 },
-    { field: "capacity", headerName: "Capacity", width: 150 },
+    {
+      field: "machineNo",
+      headerName: "Machine No",
+      width: 150,
+    },
+    {
+      field: "machineName",
+      headerName: "Machine Name",
+      width: 220,
+    },
+    {
+      field: "modelNo",
+      headerName: "Model No",
+      width: 150,
+    },
+    {
+      field: "make",
+      headerName: "Make",
+      width: 180,
+    },
+    {
+      field: "capacity",
+      headerName: "Capacity",
+      width: 150,
+    },
     {
       field: "inUse",
       headerName: "In Use",
       width: 120,
-      renderCell: (params) => (params.value ? "Yes" : "No"),
     },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -84,6 +135,7 @@ export default function MachineAssetDetailTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
@@ -94,52 +146,62 @@ export default function MachineAssetDetailTable() {
       </Box>
 
       <Stack spacing={3}>
-        {/* Top Controls */}
-        <Box display="flex" justifyContent="space-between">
-          <Box display="flex" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-
-            <TextField
-              select
-              size="small"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              sx={{ width: 200 }}
-            >
-              <MenuItem value="machineNo">Machine No</MenuItem>
-              <MenuItem value="machineName">Machine Name</MenuItem>
-              <MenuItem value="modelNo">Model No</MenuItem>
-              <MenuItem value="make">Make</MenuItem>
-            </TextField>
-
-            <Button variant="contained">Search</Button>
-          </Box>
+        {/* Search + Add */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              {
+                value: "Machine_No",
+                label: "Machine No",
+              },
+              {
+                value: "Machine_Name",
+                label: "Machine Name",
+              },
+              {
+                value: "Model_No",
+                label: "Model No",
+              },
+              {
+                value: "Make",
+                label: "Make",
+              },
+            ]}
+            onSearch={() => fetchData()}
+          />
 
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={handleAddNew}
+            onClick={() =>
+              navigate("/material/production-machine-asset-detail-form/add")
+            }
           >
             New
           </Button>
         </Box>
 
         {/* DataGrid */}
-        <Box sx={{ height: 450, width: "100%" }}>
+        <Box sx={{ height: 550, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
-            }}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[10, 20, 50]}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

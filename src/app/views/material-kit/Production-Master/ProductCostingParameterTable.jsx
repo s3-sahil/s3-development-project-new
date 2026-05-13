@@ -4,63 +4,156 @@ import {
   IconButton,
   Tooltip,
   Button,
-  TextField,
-  MenuItem,
-  Box,
-  Stack,
 } from "@mui/material";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import SearchFilter from "../SearchFilter";
+import { ProductCostingParameterPaginationAPI } from "app/utils/ProductionMaterialServices";
 
 export default function ProductCostingParameterTable() {
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState("");
-  const [searchField, setSearchField] = useState("unloading");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    {
-      id: 1,
-      unloading: "5",
-      systems: "2",
-      followUp: "1",
-      administrative: "10",
-      financialInterest: "8",
-      sellingDistribution: "12",
-      nonCostItem: "3",
-      profit: "15",
-      rejection: "2",
-      operationEfficiency: "90",
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toString().toLowerCase().includes(searchText.toLowerCase())
-  );
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
 
-  const handleEdit = (row) => {
-    navigate(`/material/production-product-costing-parameter-form/edit/${row.id}`, {
-      state: row,
-    });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+
+  // ✅ Fetch Data
+  const fetchData = async (
+    pageNo = page,
+    size = pageSize,
+    searchCol = searchColumn,
+    searchVal = searchQuery
+  ) => {
+    try {
+      setLoading(true);
+
+      const res = await ProductCostingParameterPaginationAPI(
+        "product_costing_parameter",
+        pageNo + 1,
+        size,
+        searchCol,
+        searchVal
+      );
+
+      if (res?.Data) {
+        const formattedRows = res.Data.map((item, index) => ({
+          id: item.id || index + 1,
+
+          unloading: item.unloading || "",
+          systems: item.systems || "",
+          followUp: item.followUp || "",
+          administrative: item.administrative || "",
+          financialInterest: item.financialInterest || "",
+          sellingDistribution: item.sellingDistribution || "",
+          nonCostItem: item.nonCostItem || "",
+          profit: item.profit || "",
+          rejection: item.rejection || "",
+          operationEfficiency: item.operationEfficiency || "",
+
+          original: item,
+        }));
+
+        setRows(formattedRows);
+        setRowCount(res.TotalCount || 0);
+      }
+    } catch (err) {
+      console.error(
+        "Product Costing Parameter Fetch Error:",
+        err
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    fetchData(page, pageSize);
+  }, [page, pageSize]);
+
+  // ✅ Search
+  const handleSearch = () => {
+    fetchData(0, pageSize, searchColumn, searchQuery);
+    setPage(0);
+  };
+
+  // ✅ Edit
+  const handleEdit = (row) => {
+    navigate(
+      `/material/production-product-costing-parameter-form/edit/${row.id}`,
+      {
+        state: row.original,
+      }
+    );
+  };
+
+  // ✅ Add New
   const handleAddNew = () => {
     navigate("/material/production-product-costing-parameter-form/add");
   };
 
+  // ✅ Columns
   const columns = [
-    { field: "unloading", headerName: "Unloading %", width: 120 },
-    { field: "systems", headerName: "Systems %", width: 120 },
-    { field: "followUp", headerName: "Follow Up %", width: 120 },
-    { field: "administrative", headerName: "Administrative %", width: 150 },
-    { field: "financialInterest", headerName: "Financial Interest %", width: 180 },
-    { field: "sellingDistribution", headerName: "Selling & Distribution %", width: 200 },
-    { field: "nonCostItem", headerName: "Non-Cost Item %", width: 150 },
-    { field: "profit", headerName: "Profit %", width: 120 },
-    { field: "rejection", headerName: "Rejection %", width: 120 },
-    { field: "operationEfficiency", headerName: "Operation Efficiency %", width: 200 },
+    {
+      field: "unloading",
+      headerName: "Unloading %",
+      width: 130,
+    },
+    {
+      field: "systems",
+      headerName: "Systems %",
+      width: 130,
+    },
+    {
+      field: "followUp",
+      headerName: "Follow Up %",
+      width: 130,
+    },
+    {
+      field: "administrative",
+      headerName: "Administrative %",
+      width: 170,
+    },
+    {
+      field: "financialInterest",
+      headerName: "Financial Interest %",
+      width: 190,
+    },
+    {
+      field: "sellingDistribution",
+      headerName: "Selling & Distribution %",
+      width: 220,
+    },
+    {
+      field: "nonCostItem",
+      headerName: "Non-Cost Item %",
+      width: 170,
+    },
+    {
+      field: "profit",
+      headerName: "Profit %",
+      width: 120,
+    },
+    {
+      field: "rejection",
+      headerName: "Rejection %",
+      width: 130,
+    },
+    {
+      field: "operationEfficiency",
+      headerName: "Operation Efficiency %",
+      width: 220,
+    },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -78,6 +171,7 @@ export default function ProductCostingParameterTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
@@ -88,32 +182,30 @@ export default function ProductCostingParameterTable() {
       </Box>
 
       <Stack spacing={3}>
-        {/* Top Controls */}
-        <Box display="flex" justifyContent="space-between">
-          <Box display="flex" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-
-            <TextField
-              select
-              size="small"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              sx={{ width: 200 }}
-            >
-              <MenuItem value="unloading">Unloading %</MenuItem>
-              <MenuItem value="systems">Systems %</MenuItem>
-              <MenuItem value="followUp">Follow Up %</MenuItem>
-              <MenuItem value="administrative">Administrative %</MenuItem>
-              <MenuItem value="profit">Profit %</MenuItem>
-            </TextField>
-
-            <Button variant="contained">Search</Button>
-          </Box>
+        {/* Search + Add */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              { value: "unloading", label: "Unloading %" },
+              { value: "systems", label: "Systems %" },
+              { value: "followUp", label: "Follow Up %" },
+              {
+                value: "administrative",
+                label: "Administrative %",
+              },
+              { value: "profit", label: "Profit %" },
+            ]}
+            onSearch={handleSearch}
+          />
 
           <Button
             variant="contained"
@@ -124,17 +216,21 @@ export default function ProductCostingParameterTable() {
           </Button>
         </Box>
 
-        {/* DataGrid */}
-        <Box sx={{ height: 450, width: "100%" }}>
+        {/* Table */}
+        <Box sx={{ height: 500, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
+            loading={loading}
+            paginationMode="server"
+            rowCount={rowCount}
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
             }}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

@@ -1,64 +1,118 @@
+// ================= TABLE =================
+
 import {
   Container,
   Icon,
   IconButton,
   Tooltip,
   Button,
-  TextField,
-  MenuItem,
   Box,
   Stack,
 } from "@mui/material";
+
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import SearchFilter from "../SearchFilter";
+import { MachineAssetGroupPaginationAPI } from "app/utils/ProductionMaterialServices";
+
 
 export default function MachineAssetGroupTable() {
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState("");
-  const [searchField, setSearchField] = useState("groupCode");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    {
-      id: 1,
-      type: "Machine",
-      groupCode: "GR001",
-      groupName: "Lathe Machines",
-      machineHrRate: "500",
-      machineCount: "10",
-    },
-    {
-      id: 2,
-      type: "Non-Machine",
-      groupCode: "GR002",
-      groupName: "Tools",
-      machineHrRate: "100",
-      machineCount: "50",
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toString().toLowerCase().includes(searchText.toLowerCase())
-  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+
+  const [rowCount, setRowCount] = useState(0);
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  // ================= FETCH DATA =================
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await MachineAssetGroupPaginationAPI(
+        "MACHINE_ASSET_GROUP_MASTER",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery
+      );
+
+      if (response?.Data) {
+        const mappedRows = response.Data.map((item, index) => ({
+          id: item.Group_Code || index + 1,
+
+          type: item.Type || "",
+          groupCode: item.Group_Code || "",
+          groupName: item.Group_Name || "",
+          machineHrRate: item.Machine_Hr_Rate || "",
+          machineCount: item.Machine_Count || "",
+
+          original: item,
+        }));
+
+        setRows(mappedRows);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
+
+  // ================= EDIT =================
 
   const handleEdit = (row) => {
     navigate(`/material/production-machine-asset-group-form/edit/${row.id}`, {
-      state: row,
+      state: row.original,
     });
   };
 
-  const handleAddNew = () => {
-    navigate("/material/production-machine-asset-group-form/add");
-  };
+  // ================= COLUMNS =================
 
   const columns = [
-    { field: "type", headerName: "Type", width: 150 },
-    { field: "groupCode", headerName: "Group Code", width: 150 },
-    { field: "groupName", headerName: "Group Name", width: 200 },
-    { field: "machineHrRate", headerName: "Machine Hr. Rate", width: 180 },
-    { field: "machineCount", headerName: "Machine Count", width: 180 },
+    {
+      field: "type",
+      headerName: "Type",
+      width: 150,
+    },
+    {
+      field: "groupCode",
+      headerName: "Group Code",
+      width: 180,
+    },
+    {
+      field: "groupName",
+      headerName: "Group Name",
+      width: 220,
+    },
+    {
+      field: "machineHrRate",
+      headerName: "Machine Hr. Rate",
+      width: 180,
+    },
+    {
+      field: "machineCount",
+      headerName: "Machine Count",
+      width: 180,
+    },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -76,6 +130,7 @@ export default function MachineAssetGroupTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
@@ -86,51 +141,58 @@ export default function MachineAssetGroupTable() {
       </Box>
 
       <Stack spacing={3}>
-        {/* Top Controls */}
-        <Box display="flex" justifyContent="space-between">
-          <Box display="flex" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-
-            <TextField
-              select
-              size="small"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              sx={{ width: 200 }}
-            >
-              <MenuItem value="groupCode">Group Code</MenuItem>
-              <MenuItem value="groupName">Group Name</MenuItem>
-              <MenuItem value="type">Type</MenuItem>
-            </TextField>
-
-            <Button variant="contained">Search</Button>
-          </Box>
+        {/* Search + Add */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              {
+                value: "Group_Code",
+                label: "Group Code",
+              },
+              {
+                value: "Group_Name",
+                label: "Group Name",
+              },
+              {
+                value: "Type",
+                label: "Type",
+              },
+            ]}
+            onSearch={() => fetchData()}
+          />
 
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={handleAddNew}
+            onClick={() =>
+              navigate("/material/production-machine-asset-group-form/add")
+            }
           >
             New
           </Button>
         </Box>
 
         {/* DataGrid */}
-        <Box sx={{ height: 450, width: "100%" }}>
+        <Box sx={{ height: 550, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
-            }}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[10, 20, 50]}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

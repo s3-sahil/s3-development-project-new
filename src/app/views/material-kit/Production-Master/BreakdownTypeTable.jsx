@@ -1,74 +1,116 @@
-// BreakdownTypeTable.js
+// ================= TABLE =================
+
 import {
-    Box,
-    Button,
-    Container,
-    Icon,
-    IconButton,
-    MenuItem,
-    Stack,
-    TextField,
-    Tooltip,
+  Box,
+  Button,
+  Container,
+  Icon,
+  IconButton,
+  Stack,
+  Tooltip,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SearchFilter from "../SearchFilter";
+import { BreakdownTypePaginationAPI } from "app/utils/ProductionMaterialServices";
+
 
 export default function BreakdownTypeTable() {
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState("");
-  const [searchField, setSearchField] = useState("appointmentNo");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    {
-      id: 1,
-      appointmentNo: "AP001",
-      representing: "Vendor A",
-      visitorName: "John Doe",
-      visitingPerson: "Manager X",
-      appointmentDate: "2026-02-27",
-      appointmentTime: "10:30 AM",
-      purpose: "Machine Inspection",
-    },
-    {
-      id: 2,
-      appointmentNo: "AP002",
-      representing: "Supplier B",
-      visitorName: "Jane Smith",
-      visitingPerson: "Supervisor Y",
-      appointmentDate: "2026-02-28",
-      appointmentTime: "02:00 PM",
-      purpose: "Breakdown Review",
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // 🔹 Filtering logic
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toLowerCase().includes(searchText.toLowerCase()),
-  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
 
-  // 🔹 Navigation handlers
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const [rowCount, setRowCount] = useState(0);
+
+  // ================= FETCH DATA =================
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await BreakdownTypePaginationAPI(
+        "BREAKDOWN_TYPE_MASTER",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery
+      );
+
+      if (response?.Data) {
+        const mappedRows = response.Data.map((item, index) => ({
+          id: item.Breakdown_Code || index + 1,
+          breakdownTypeCode: item.Breakdown_Type_Code || "",
+          breakdownCode: item.Breakdown_Code || "",
+          description: item.Description || "",
+          category: item.Category || "",
+          overallEffApplicable:
+            item.Overall_Eff_Applicable === true ? "Yes" : "No",
+
+          original: item,
+        }));
+
+        setRows(mappedRows);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
+
+  // ================= EDIT =================
+
   const handleEdit = (row) => {
     navigate(`/material/production-breakdown-type-form/edit/${row.id}`, {
-      state: row,
+      state: row.original,
     });
   };
 
-  const handleAddNew = () => {
-    navigate("/material/production-breakdown-type-form/add");
-  };
+  // ================= COLUMNS =================
 
-  // 🔹 DataGrid columns
   const columns = [
-    { field: "appointmentNo", headerName: "Appointment No", width: 150 },
-    { field: "representing", headerName: "Representing", width: 200 },
-    { field: "visitorName", headerName: "Visitor Name", width: 200 },
-    { field: "visitingPerson", headerName: "Visiting Person", width: 200 },
-    { field: "appointmentDate", headerName: "Appointment Date", width: 180 },
-    { field: "appointmentTime", headerName: "Appointment Time", width: 160 },
-    { field: "purpose", headerName: "Purpose", width: 250 },
+    {
+      field: "breakdownTypeCode",
+      headerName: "Breakdown Type Code",
+      width: 220,
+    },
+    {
+      field: "breakdownCode",
+      headerName: "Breakdown Code",
+      width: 180,
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 250,
+    },
+    {
+      field: "category",
+      headerName: "Category",
+      width: 180,
+    },
+    {
+      field: "overallEffApplicable",
+      headerName: "Overall Eff. Applicable",
+      width: 220,
+    },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -97,53 +139,62 @@ export default function BreakdownTypeTable() {
       </Box>
 
       <Stack spacing={3}>
-        {/* Top Controls */}
-        <Box display="flex" justifyContent="space-between">
-          <Box display="flex" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-
-            <TextField
-              select
-              size="small"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              sx={{ width: 180 }}
-            >
-              <MenuItem value="appointmentNo">Appointment No</MenuItem>
-              <MenuItem value="representing">Representing</MenuItem>
-              <MenuItem value="visitorName">Visitor Name</MenuItem>
-              <MenuItem value="visitingPerson">Visiting Person</MenuItem>
-              <MenuItem value="purpose">Purpose</MenuItem>
-            </TextField>
-
-            <Button variant="contained">Search</Button>
-          </Box>
+        {/* Search + Add */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              {
+                value: "Breakdown_Type_Code",
+                label: "Breakdown Type Code",
+              },
+              {
+                value: "Breakdown_Code",
+                label: "Breakdown Code",
+              },
+              {
+                value: "Description",
+                label: "Description",
+              },
+              {
+                value: "Category",
+                label: "Category",
+              },
+            ]}
+            onSearch={() => fetchData()}
+          />
 
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={handleAddNew}
+            onClick={() =>
+              navigate("/material/production-breakdown-type-form/add")
+            }
           >
             New
           </Button>
         </Box>
 
         {/* DataGrid */}
-        <Box sx={{ height: 450, width: "100%" }}>
+        <Box sx={{ height: 550, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
-            }}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[10, 20, 50]}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

@@ -1,3 +1,5 @@
+// ========================== TABLE COMPONENT ==========================
+
 import {
   Container,
   Icon,
@@ -12,37 +14,117 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { MaintenanceReasonPaginationAPI } from "app/utils/MaintenanceMaterialServices";
+
 
 export default function MaintenanceReasonTable() {
   const navigate = useNavigate();
+
+  const [rows, setRows] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+
+  const [loading, setLoading] = useState(false);
+
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
+
   const [searchText, setSearchText] = useState("");
   const [searchField, setSearchField] = useState("description");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    { id: 1, code: "MR01", description: "Lubrication Issue", category: "BreakDown", toBeChecked: true },
-    { id: 2, code: "MR02", description: "Scheduled Overhaul", category: "Periodic Overhauling", toBeChecked: false },
-    { id: 3, code: "MR03", description: "Predictive Vibration Check", category: "Predictive", toBeChecked: true },
-  ];
+  // ================= FETCH API =================
+  const fetchData = async (pageNo = page, size = pageSize) => {
+    try {
+      setLoading(true);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toString().toLowerCase().includes(searchText.toLowerCase())
-  );
+      const res = await MaintenanceReasonPaginationAPI(
+        "maintenance_reason_master",
+        pageNo + 1,
+        size
+      );
 
-  const handleEdit = (row) => {
-    navigate(`/material/maintenance-reason-form/edit/${row.id}`, { state: row });
+      const data = res?.Data || [];
+
+      const mappedRows = data.map((item, index) => ({
+        id: item.id || index + 1,
+        code: item.code || "",
+        description: item.description || "",
+        category: item.category || "",
+        toBeChecked:
+          item.toBeChecked === true ||
+          item.toBeChecked === "Y",
+      }));
+
+      setRows(mappedRows);
+      setFilteredRows(mappedRows);
+
+      setRowCount(res?.TotalCount || mappedRows.length);
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      setRows([]);
+      setFilteredRows([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  useEffect(() => {
+    fetchData(page, pageSize);
+  }, [page, pageSize]);
+
+  // ================= SEARCH =================
+  const handleSearch = () => {
+    if (!searchText) {
+      setFilteredRows(rows);
+      return;
+    }
+
+    const filtered = rows.filter((row) =>
+      row[searchField]
+        ?.toString()
+        .toLowerCase()
+        .includes(searchText.toLowerCase())
+    );
+
+    setFilteredRows(filtered);
+  };
+
+  // ================= EDIT =================
+  const handleEdit = (row) => {
+    navigate(`/material/maintenance-reason-form/edit/${row.id}`, {
+      state: row,
+    });
+  };
+
+  // ================= ADD =================
   const handleAddNew = () => {
     navigate("/material/maintenance-reason-form/add");
   };
 
+  // ================= COLUMNS =================
   const columns = [
     { field: "code", headerName: "Code", width: 150 },
-    { field: "description", headerName: "Description", width: 300 },
-    { field: "category", headerName: "Category", width: 200 },
-    { field: "toBeChecked", headerName: "To Be Checked", width: 150, renderCell: (params) => (params.value ? "Yes" : "No") },
+
+    {
+      field: "description",
+      headerName: "Description",
+      width: 300,
+    },
+
+    {
+      field: "category",
+      headerName: "Category",
+      width: 220,
+    },
+
+    {
+      field: "toBeChecked",
+      headerName: "To Be Checked",
+      width: 180,
+      renderCell: (params) => (params.value ? "Yes" : "No"),
+    },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -60,8 +142,14 @@ export default function MaintenanceReasonTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Maintenance" }, { name: "Reason Master" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Maintenance" },
+            { name: "Reason Master" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
@@ -83,11 +171,22 @@ export default function MaintenanceReasonTable() {
               sx={{ width: 200 }}
             >
               <MenuItem value="code">Code</MenuItem>
-              <MenuItem value="description">Description</MenuItem>
-              <MenuItem value="category">Category</MenuItem>
+
+              <MenuItem value="description">
+                Description
+              </MenuItem>
+
+              <MenuItem value="category">
+                Category
+              </MenuItem>
             </TextField>
 
-            <Button variant="contained">Search</Button>
+            <Button
+              variant="contained"
+              onClick={handleSearch}
+            >
+              Search
+            </Button>
           </Box>
 
           <Button
@@ -100,14 +199,20 @@ export default function MaintenanceReasonTable() {
         </Box>
 
         {/* DataGrid */}
-        <Box sx={{ height: 450, width: "100%" }}>
+        <Box sx={{ height: 500, width: "100%" }}>
           <DataGrid
             rows={filteredRows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: { paginationModel: { pageSize: 5, page: 0 } },
+            loading={loading}
+            paginationMode="server"
+            rowCount={rowCount}
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
             }}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

@@ -4,45 +4,150 @@ import {
   IconButton,
   Tooltip,
   Button,
-  TextField,
-  MenuItem,
   Box,
   Stack,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import SearchFilter from "../SearchFilter";
+import { MaintenanceCategoryPaginationAPI } from "app/utils/MaintenanceMaterialServices";
 
 export default function MaintenanceCategoryTable() {
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState("");
-  const [searchField, setSearchField] = useState("categoryCode");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    { id: 1, categoryCode: "01", description: "Body Assembly", indicator: "BO", inUse: true },
-    { id: 2, categoryCode: "10", description: "Perforated Cable Tray", indicator: "FP", inUse: false },
-    { id: 3, categoryCode: "11", description: "Sheet", indicator: "RM", inUse: true },
-  ];
+  // ================= STATES =================
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toString().toLowerCase().includes(searchText.toLowerCase())
-  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] =
+    useState("categoryCode");
 
+  const [paginationModel, setPaginationModel] =
+    useState({
+      page: 0,
+      pageSize: 10,
+    });
+
+  const [rowCount, setRowCount] = useState(0);
+
+  // ================= FETCH DATA =================
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      const response =
+        await MaintenanceCategoryPaginationAPI(
+          "MAINTENANCE_CATEGORY",
+          paginationModel.page + 1,
+          paginationModel.pageSize,
+          searchColumn,
+          searchQuery
+        );
+
+      if (response?.Data) {
+        const mappedRows = response.Data.map(
+          (item, index) => ({
+            id: item.id || index + 1,
+
+            categoryCode:
+              item.categoryCode ||
+              item.CATEGORY_CODE ||
+              "",
+
+            description:
+              item.description ||
+              item.DESCRIPTION ||
+              "",
+
+            indicator:
+              item.indicator ||
+              item.INDICATOR ||
+              "",
+
+            inUse:
+              item.inUse === true ||
+              item.inUse === "Y" ||
+              item.IN_USE === "Y",
+
+            original: item,
+          })
+        );
+
+        setRows(mappedRows);
+        setRowCount(
+          response?.TotalCount ||
+            response?.totalCount ||
+            mappedRows.length
+        );
+      } else {
+        setRows([]);
+        setRowCount(0);
+      }
+    } catch (error) {
+      console.error(
+        "Maintenance Category Fetch Error:",
+        error
+      );
+      setRows([]);
+      setRowCount(0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ================= USE EFFECT =================
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
+
+  // ================= EDIT =================
   const handleEdit = (row) => {
-    navigate(`/material/maintenance-maintenance-category-form/edit/${row.id}`, { state: row });
+    navigate(
+      `/material/maintenance-maintenance-category-form/edit/${row.id}`,
+      {
+        state: row.original,
+      }
+    );
   };
 
+  // ================= ADD =================
   const handleAddNew = () => {
-    navigate("/material/maintenance-maintenance-category-form/add");
+    navigate(
+      "/material/maintenance-maintenance-category-form/add"
+    );
   };
 
+  // ================= COLUMNS =================
   const columns = [
-    { field: "categoryCode", headerName: "Category Code", width: 150 },
-    { field: "description", headerName: "Description", width: 250 },
-    { field: "indicator", headerName: "Indicator", width: 150 },
-    { field: "inUse", headerName: "In Use", width: 120, renderCell: (params) => (params.value ? "Yes" : "No") },
+    {
+      field: "categoryCode",
+      headerName: "Category Code",
+      width: 180,
+    },
+
+    {
+      field: "description",
+      headerName: "Description",
+      width: 300,
+    },
+
+    {
+      field: "indicator",
+      headerName: "Indicator",
+      width: 180,
+    },
+
+    {
+      field: "inUse",
+      headerName: "In Use",
+      width: 120,
+      renderCell: (params) =>
+        params.value ? "Yes" : "No",
+    },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -50,7 +155,11 @@ export default function MaintenanceCategoryTable() {
       sortable: false,
       renderCell: (params) => (
         <Tooltip title="Edit">
-          <IconButton onClick={() => handleEdit(params.row)}>
+          <IconButton
+            onClick={() =>
+              handleEdit(params.row)
+            }
+          >
             <Icon color="primary">edit</Icon>
           </IconButton>
         </Tooltip>
@@ -58,37 +167,51 @@ export default function MaintenanceCategoryTable() {
     },
   ];
 
+  // ================= RETURN =================
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Material" }, { name: "Item Categories" }]} />
+        <Breadcrumb
+          routeSegments={[
+            {
+              name: "Maintenance",
+            },
+            {
+              name: "Maintenance Category",
+            },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
         {/* Top Controls */}
-        <Box display="flex" justifyContent="space-between">
-          <Box display="flex" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-
-            <TextField
-              select
-              size="small"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              sx={{ width: 200 }}
-            >
-              <MenuItem value="categoryCode">Category Code</MenuItem>
-              <MenuItem value="description">Description</MenuItem>
-              <MenuItem value="indicator">Indicator</MenuItem>
-            </TextField>
-
-            <Button variant="contained">Search</Button>
-          </Box>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              {
+                value: "categoryCode",
+                label: "Category Code",
+              },
+              {
+                value: "description",
+                label: "Description",
+              },
+              {
+                value: "indicator",
+                label: "Indicator",
+              },
+            ]}
+            onSearch={fetchData}
+          />
 
           <Button
             variant="contained"
@@ -100,14 +223,19 @@ export default function MaintenanceCategoryTable() {
         </Box>
 
         {/* DataGrid */}
-        <Box sx={{ height: 450, width: "100%" }}>
+        <Box sx={{ height: 500, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: { paginationModel: { pageSize: 5, page: 0 } },
-            }}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={
+              setPaginationModel
+            }
+            pageSizeOptions={[5, 10, 20]}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>
