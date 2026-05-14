@@ -320,3 +320,29 @@ export const addSectionDetails = async (data) => {
     );
   }
 };
+
+export const addSectionWiseProcessDetails = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/API/PRODUCTION/SECTION_WISE_PROCESS_DETAILS/ADD-SECTION_WISE_PROCESS_DETAILS",
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Section Wise Process API Error:",
+      error.response || error.message
+    );
+
+    throw new Error(
+      error.response?.data?.message ||
+        "Failed to add section wise process details."
+    );
+  }
+};
