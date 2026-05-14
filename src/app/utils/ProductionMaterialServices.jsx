@@ -294,3 +294,29 @@ export const SectionWiseProcessPaginationAPI = async (
     return { Data: [], TotalCount: 0 };
   }
 };
+
+export const addSectionDetails = async (data) => {
+  try {
+    const response = await axiosInstance.post(
+      "/API/PRODUCTION/SECTION_DETAILS/ADD-SECTION_DETAILS",
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "API Error:",
+      error.response || error.message
+    );
+
+    throw new Error(
+      error.response?.data?.message ||
+        "Failed to add section details."
+    );
+  }
+};
