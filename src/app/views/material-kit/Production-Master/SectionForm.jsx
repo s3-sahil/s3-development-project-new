@@ -12,7 +12,6 @@ import { Span } from "app/components/Typography";
 import { addSectionDetails } from "app/utils/ProductionMaterialServices";
 import { useState } from "react";
 
-
 const SectionForm = () => {
   const [formData, setFormData] = useState({
     sectionCode: "",
@@ -23,12 +22,23 @@ const SectionForm = () => {
   const [loading, setLoading] = useState(false);
 
   const departments = [
-    "Production",
-    "Maintenance",
-    "Quality",
-    "Finance",
+    {
+      label: "Production",
+      value: "PROD",
+    },
+    {
+      label: "Maintenance",
+      value: "MAIN",
+    },
+    {
+      label: "Quality",
+      value: "QUAL",
+    },
+    {
+      label: "Finance",
+      value: "FIN",
+    },
   ];
-
   // ================= HANDLE CHANGE =================
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,10 +65,7 @@ const SectionForm = () => {
 
       const response = await addSectionDetails(payload);
 
-      alert(
-        response?.message ||
-          "Section Details Added Successfully"
-      );
+      alert(response?.message || "Section Details Added Successfully");
 
       // Optional Reset
       setFormData({
@@ -69,10 +76,7 @@ const SectionForm = () => {
     } catch (error) {
       console.error("Save Error:", error);
 
-      alert(
-        error.message ||
-          "Failed to save section details"
-      );
+      alert(error.message || "Failed to save section details");
     } finally {
       setLoading(false);
     }
@@ -83,10 +87,7 @@ const SectionForm = () => {
       {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: "Production" },
-            { name: "Section Details" },
-          ]}
+          routeSegments={[{ name: "Production" }, { name: "Section Details" }]}
         />
       </Box>
 
@@ -113,15 +114,10 @@ const SectionForm = () => {
               onClick={handleSave}
               disabled={loading}
             >
-              <Span>
-                {loading ? "Saving..." : "Save"}
-              </Span>
+              <Span>{loading ? "Saving..." : "Save"}</Span>
             </Button>
 
-            <Button
-              variant="outlined"
-              startIcon={<Icon>print</Icon>}
-            >
+            <Button variant="outlined" startIcon={<Icon>print</Icon>}>
               <Span>Print</Span>
             </Button>
           </Box>
@@ -162,8 +158,8 @@ const SectionForm = () => {
               fullWidth
             >
               {departments.map((dept) => (
-                <MenuItem key={dept} value={dept}>
-                  {dept}
+                <MenuItem key={dept.value} value={dept.value}>
+                  {dept.label}
                 </MenuItem>
               ))}
             </TextField>
