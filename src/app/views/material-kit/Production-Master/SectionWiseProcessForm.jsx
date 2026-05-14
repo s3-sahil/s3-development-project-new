@@ -21,17 +21,21 @@ const SectionWiseProcessForm = () => {
   const [loading, setLoading] = useState(false);
 
   const sections = [
-    "SEC001 - Assembly",
-    "SEC002 - Welding",
-    "SEC003 - Testing",
+    {
+      label: "SEC001 - Assembly",
+      value: "S1",
+    },
+    {
+      label: "SEC002 - Welding",
+      value: "S2",
+    },
+    {
+      label: "SEC003 - Testing",
+      value: "S3",
+    },
   ];
 
-  const processes = [
-    "Cutting",
-    "Welding",
-    "Inspection",
-    "Packaging",
-  ];
+  const processes = ["Cutting", "Welding", "Inspection", "Packaging"];
 
   // ================= HANDLE CHANGE =================
   const handleChange = (e) => {
@@ -43,30 +47,29 @@ const SectionWiseProcessForm = () => {
     }));
   };
 
-  // ================= SAVE =================
   const handleSave = async () => {
     try {
       setLoading(true);
 
       const payload = {
         desc: formData.process,
-        oP_CODE: formData.process,
-        shop_Code: formData.sectionCode,
-        division: "PRODUCTION",
+
+        // max 5 characters
+        oP_CODE: formData.process.substring(0, 5),
+
+        // max 2 characters
+        shop_Code: formData.sectionCode.substring(0, 2),
+
+        // max 3 characters
+        division: "PRO",
       };
 
-      const response = await addSectionWiseProcessDetails(
-        payload
-      );
+      console.log("Payload:", payload);
 
-      alert(
-        response?.message ||
-          "Section Wise Process Added Successfully"
-      );
+      const response = await addSectionWiseProcessDetails(payload);
 
-      console.log("Save Response:", response);
+      alert(response?.message || "Section Wise Process Added Successfully");
 
-      // Reset Form
       setFormData({
         sectionCode: "",
         process: "",
@@ -119,15 +122,10 @@ const SectionWiseProcessForm = () => {
               onClick={handleSave}
               disabled={loading}
             >
-              <Span>
-                {loading ? "Saving..." : "Save"}
-              </Span>
+              <Span>{loading ? "Saving..." : "Save"}</Span>
             </Button>
 
-            <Button
-              variant="outlined"
-              startIcon={<Icon>print</Icon>}
-            >
+            <Button variant="outlined" startIcon={<Icon>print</Icon>}>
               <Span>Print</Span>
             </Button>
           </Box>
@@ -146,11 +144,8 @@ const SectionWiseProcessForm = () => {
               fullWidth
             >
               {sections.map((sec) => (
-                <MenuItem
-                  key={sec}
-                  value={sec.split(" - ")[0]}
-                >
-                  {sec}
+                <MenuItem key={sec.value} value={sec.value}>
+                  {sec.label}
                 </MenuItem>
               ))}
             </TextField>
