@@ -5,7 +5,7 @@ export const BreakdownDetailPaginationAPI = async (
   pageNumber = 1,
   pageSize = 10,
   searchColumn = "",
-  searchValue = ""
+  searchValue = "",
 ) => {
   try {
     const { data } = await axiosInstance.get(
@@ -18,7 +18,7 @@ export const BreakdownDetailPaginationAPI = async (
           SearchColumn: searchColumn,
           SearchValue: searchValue,
         },
-      }
+      },
     );
 
     if (data?.StatusCode === 200 || data?.Data) {
@@ -29,20 +29,19 @@ export const BreakdownDetailPaginationAPI = async (
   } catch (error) {
     console.error(
       "Breakdown Detail pagination fetch error:",
-      error.response || error.message
+      error.response || error.message,
     );
 
     return { Data: [], TotalCount: 0 };
   }
 };
 
-
 export const BreakdownTypePaginationAPI = async (
   tableName = "BREAKDOWN_TYPE_MASTER",
   pageNumber = 1,
   pageSize = 10,
   searchColumn = "",
-  searchText = ""
+  searchText = "",
 ) => {
   try {
     const { data } = await axiosInstance.get(
@@ -55,7 +54,7 @@ export const BreakdownTypePaginationAPI = async (
           SearchColumn: searchColumn,
           SearchText: searchText,
         },
-      }
+      },
     );
 
     if (data?.StatusCode === 200 || data?.Data) {
@@ -66,20 +65,19 @@ export const BreakdownTypePaginationAPI = async (
   } catch (error) {
     console.error(
       "Breakdown Type pagination fetch error:",
-      error.response || error.message
+      error.response || error.message,
     );
 
     return { Data: [], TotalCount: 0 };
   }
 };
 
-
 export const MachineAssetDetailPaginationAPI = async (
   tableName = "MACHINE_ASSET_MASTER",
   pageNumber = 1,
   pageSize = 10,
   searchColumn = "",
-  searchText = ""
+  searchText = "",
 ) => {
   try {
     const { data } = await axiosInstance.get(
@@ -92,7 +90,7 @@ export const MachineAssetDetailPaginationAPI = async (
           SearchColumn: searchColumn,
           SearchText: searchText,
         },
-      }
+      },
     );
 
     if (data?.StatusCode === 200 || data?.Data) {
@@ -103,20 +101,19 @@ export const MachineAssetDetailPaginationAPI = async (
   } catch (error) {
     console.error(
       "Machine Asset pagination fetch error:",
-      error.response || error.message
+      error.response || error.message,
     );
 
     return { Data: [], TotalCount: 0 };
   }
 };
 
-
 export const MachineAssetGroupPaginationAPI = async (
   tableName = "MACHINE_ASSET_GROUP_MASTER",
   pageNumber = 1,
   pageSize = 10,
   searchColumn = "",
-  searchText = ""
+  searchText = "",
 ) => {
   try {
     const { data } = await axiosInstance.get(
@@ -129,7 +126,7 @@ export const MachineAssetGroupPaginationAPI = async (
           SearchColumn: searchColumn,
           SearchText: searchText,
         },
-      }
+      },
     );
 
     if (data?.StatusCode === 200 || data?.Data) {
@@ -140,20 +137,19 @@ export const MachineAssetGroupPaginationAPI = async (
   } catch (error) {
     console.error(
       "Machine Asset Group pagination fetch error:",
-      error.response || error.message
+      error.response || error.message,
     );
 
     return { Data: [], TotalCount: 0 };
   }
 };
 
-
 export const MachineProcessPaginationAPI = async (
   tableName = "machine_process_master",
   pageNumber = 1,
   pageSize = 10,
   searchColumn = "",
-  searchQuery = ""
+  searchQuery = "",
 ) => {
   try {
     const { data } = await axiosInstance.get(
@@ -166,7 +162,7 @@ export const MachineProcessPaginationAPI = async (
           searchColumn,
           searchQuery,
         },
-      }
+      },
     );
 
     if (data?.StatusCode === 200 || data?.Data) {
@@ -177,20 +173,19 @@ export const MachineProcessPaginationAPI = async (
   } catch (error) {
     console.error(
       "Machine Process pagination fetch error:",
-      error.response || error.message
+      error.response || error.message,
     );
 
     return { Data: [], TotalCount: 0 };
   }
 };
 
-
 export const ProductCostingParameterPaginationAPI = async (
   tableName = "product_costing_parameter",
   pageNumber = 1,
   pageSize = 10,
   searchColumn = "",
-  searchQuery = ""
+  searchQuery = "",
 ) => {
   try {
     const { data } = await axiosInstance.get(
@@ -203,7 +198,7 @@ export const ProductCostingParameterPaginationAPI = async (
           searchColumn,
           searchQuery,
         },
-      }
+      },
     );
 
     if (data?.StatusCode === 200 || data?.Data) {
@@ -214,20 +209,19 @@ export const ProductCostingParameterPaginationAPI = async (
   } catch (error) {
     console.error(
       "Product Costing Parameter pagination fetch error:",
-      error.response || error.message
+      error.response || error.message,
     );
 
     return { Data: [], TotalCount: 0 };
   }
 };
 
-
 export const SectionPaginationAPI = async (
   tableName = "section_master",
   pageNumber = 1,
   pageSize = 10,
   searchColumn = "",
-  searchQuery = ""
+  searchQuery = "",
 ) => {
   try {
     const { data } = await axiosInstance.get(
@@ -240,7 +234,7 @@ export const SectionPaginationAPI = async (
           searchColumn,
           searchQuery,
         },
-      }
+      },
     );
 
     if (data?.StatusCode === 200 || data?.Data) {
@@ -251,20 +245,19 @@ export const SectionPaginationAPI = async (
   } catch (error) {
     console.error(
       "Section pagination fetch error:",
-      error.response || error.message
+      error.response || error.message,
     );
 
     return { Data: [], TotalCount: 0 };
   }
 };
 
-
 export const SectionWiseProcessPaginationAPI = async (
   tableName = "SECTIONWISE_PROCESS",
   pageNumber = 1,
   pageSize = 10,
   searchColumn = "",
-  searchText = ""
+  searchText = "",
 ) => {
   try {
     const { data } = await axiosInstance.get(
@@ -277,7 +270,7 @@ export const SectionWiseProcessPaginationAPI = async (
           SearchColumn: searchColumn,
           SearchText: searchText,
         },
-      }
+      },
     );
 
     if (data?.StatusCode === 200 || data?.Data) {
@@ -288,7 +281,7 @@ export const SectionWiseProcessPaginationAPI = async (
   } catch (error) {
     console.error(
       "Section Wise Process pagination fetch error:",
-      error.response || error.message
+      error.response || error.message,
     );
 
     return { Data: [], TotalCount: 0 };
@@ -304,19 +297,15 @@ export const addSectionDetails = async (data) => {
         headers: {
           "Content-Type": "application/json-patch+json",
         },
-      }
+      },
     );
 
     return response.data;
   } catch (error) {
-    console.error(
-      "API Error:",
-      error.response || error.message
-    );
+    console.error("API Error:", error.response || error.message);
 
     throw new Error(
-      error.response?.data?.message ||
-        "Failed to add section details."
+      error.response?.data?.message || "Failed to add section details.",
     );
   }
 };
@@ -330,34 +319,56 @@ export const addSectionWiseProcessDetails = async (payload) => {
         headers: {
           "Content-Type": "application/json-patch+json",
         },
-      }
+      },
     );
 
     return response.data;
   } catch (error) {
     console.error(
       "Section Wise Process API Error:",
-      error.response || error.message
+      error.response || error.message,
     );
 
     throw new Error(
       error.response?.data?.message ||
-        "Failed to add section wise process details."
+        "Failed to add section wise process details.",
     );
   }
 };
 
-export const addBreakDownDetail = async (
-  payload
-) => {
+export const addBreakDownDetail = async (payload) => {
   try {
     const response = await axiosInstance.post(
       "/API/PRODUCTION/BREAK_DOWN_DETAIL/ADD-BREAK_DOWN_DETAIL",
       payload,
       {
         headers: {
-          "Content-Type":
-            "application/json-patch+json",
+          "Content-Type": "application/json-patch+json",
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Break Down Detail API Error:",
+      error.response || error.message,
+    );
+
+    throw new Error(
+      error.response?.data?.message || "Failed to add break down detail.",
+    );
+  }
+};
+
+export const addMachineAssetDetails = async (data) => {
+  try {
+    const response = await axiosInstance.post(
+      "/API/PRODUCTION/MACHINEASSET_DETAILS/ADD-MACHINEASSET_DETAILS",
+      data,
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json",
         },
       }
     );
@@ -365,13 +376,13 @@ export const addBreakDownDetail = async (
     return response.data;
   } catch (error) {
     console.error(
-      "Break Down Detail API Error:",
+      "Machine Asset Details API Error:",
       error.response || error.message
     );
 
     throw new Error(
       error.response?.data?.message ||
-        "Failed to add break down detail."
+        "Failed to add machine/asset details."
     );
   }
 };
