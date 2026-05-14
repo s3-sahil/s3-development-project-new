@@ -346,3 +346,32 @@ export const addSectionWiseProcessDetails = async (payload) => {
     );
   }
 };
+
+export const addBreakDownDetail = async (
+  payload
+) => {
+  try {
+    const response = await axiosInstance.post(
+      "/API/PRODUCTION/BREAK_DOWN_DETAIL/ADD-BREAK_DOWN_DETAIL",
+      payload,
+      {
+        headers: {
+          "Content-Type":
+            "application/json-patch+json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Break Down Detail API Error:",
+      error.response || error.message
+    );
+
+    throw new Error(
+      error.response?.data?.message ||
+        "Failed to add break down detail."
+    );
+  }
+};
