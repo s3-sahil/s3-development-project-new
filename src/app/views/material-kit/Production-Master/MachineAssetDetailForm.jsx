@@ -81,10 +81,7 @@ const MachineAssetDetailForm = () => {
 
       const response = await addMachineAssetDetails(payload);
 
-      alert(
-        response?.message ||
-          "Machine/Asset Details Added Successfully"
-      );
+      alert(response?.message || "Machine/Asset Details Added Successfully");
 
       console.log("Save Response:", response);
 
@@ -153,15 +150,10 @@ const MachineAssetDetailForm = () => {
               onClick={handleSave}
               disabled={loading}
             >
-              <Span>
-                {loading ? "Saving..." : "Save"}
-              </Span>
+              <Span>{loading ? "Saving..." : "Save"}</Span>
             </Button>
 
-            <Button
-              variant="outlined"
-              startIcon={<Icon>print</Icon>}
-            >
+            <Button variant="outlined" startIcon={<Icon>print</Icon>}>
               <Span>Print</Span>
             </Button>
           </Box>
@@ -216,6 +208,9 @@ const MachineAssetDetailForm = () => {
             <Grid item xs={12} md={6} key={field}>
               <TextField
                 label={field.replace(/([A-Z])/g, " $1")}
+                placeholder={field
+                  .replace(/([A-Z])/g, " $1")
+                  .replace(/^./, (str) => str.toUpperCase())}
                 name={field}
                 value={formData[field]}
                 onChange={handleChange}
