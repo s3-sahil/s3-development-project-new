@@ -188,22 +188,22 @@ const MachineAssetDetailForm = () => {
           </Grid>
 
           {[
-            "group",
-            "machineNo",
-            "machineName",
-            "machineSrNo",
-            "modelNo",
-            "make",
-            "capacity",
-            "powerReq",
-            "powerUOM",
-            "mfgYear",
-            "location",
-            "sectionCode",
-            "remark",
-            "itemCode",
-            "division",
-            "alternateMachine",
+            "Group",
+            "MachineNo",
+            "MachineName",
+            "MachineSrNo",
+            "ModelNo",
+            "Make",
+            "Capacity",
+            "PowerReq",
+            "PowerUOM",
+            "MfgYear",
+            "Location",
+            "SectionCode",
+            "Remark",
+            "ItemCode",
+            "Division",
+            "AlternateMachine",
           ].map((field) => (
             <Grid item xs={12} md={6} key={field}>
               <TextField
