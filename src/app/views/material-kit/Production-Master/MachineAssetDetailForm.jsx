@@ -210,7 +210,7 @@ const MachineAssetDetailForm = () => {
                 label={field.replace(/([A-Z])/g, " $1")}
                 placeholder={field
                   .replace(/([A-Z])/g, " $1")
-                  .replace(/^./, (str) => str.toUpperCase())}
+                  .replace(/\b\w/g, (char) => char.toUpperCase())}
                 name={field}
                 value={formData[field]}
                 onChange={handleChange}
