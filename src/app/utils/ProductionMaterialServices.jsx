@@ -386,3 +386,104 @@ export const addMachineAssetDetails = async (data) => {
     );
   }
 };
+
+export const addMachineAssetGroupDetails = async (payload) => {
+  try {
+    const response = await fetch(
+      `/API/PRODUCTION/MACHINEASSET_GROUP_DETAILS/ADD-MACHINEASSET_GROUP_DETAILS`,
+      {
+        method: "POST",
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json-patch+json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data?.message || "Failed to add Machine/Asset Group Details"
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Add Machine/Asset Group Details API Error:", error);
+    throw error;
+  }
+};
+
+export const addMachineProcessDetails = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/API/PRODUCTION/MACHINE_PROCESS_DETAILS/ADD-MACHINE_PROCESS_DETAILS",
+      payload,
+      {
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Add Machine Process Details API Error:", error);
+
+    throw (
+      error?.response?.data ||
+      new Error("Failed to add Machine Process Details")
+    );
+  }
+};
+
+export const addProductCostingParameters = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/API/PRODUCTION/PRODUCT_COSTING_PARAMETERS/ADD-PRODUCT_COSTING_PARAMETERS",
+      payload,
+      {
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Add Product Costing Parameters API Error:", error);
+
+    throw (
+      error?.response?.data ||
+      new Error("Failed to add Product Costing Parameters")
+    );
+  }
+};
+
+export const addBreakDownTypeDetails = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/API/PRODUCTION/BREAK_DOWN_TYPE_DETAILS/ADD-BREAK_DOWN_TYPE_DETAILS",
+      payload,
+      {
+        headers: {
+          accept: "*/*",
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Add Break Down Type Details API Error:", error);
+
+    throw (
+      error?.response?.data ||
+      new Error("Failed to add Break Down Type Details")
+    );
+  }
+};

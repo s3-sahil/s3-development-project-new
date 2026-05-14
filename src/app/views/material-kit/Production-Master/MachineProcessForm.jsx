@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
+import { addMachineProcessDetails } from "app/utils/ProductionMaterialServices";
 import { useState } from "react";
 
 const MachineProcessForm = () => {
@@ -17,14 +18,52 @@ const MachineProcessForm = () => {
     process: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
+  // ================= HANDLE CHANGE =================
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSave = () => {
-    console.log("Saved Data:", formData);
-    alert("Saved (UI Only)");
+  // ================= SAVE =================
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+
+      const payload = {
+        oP_DESC: formData.process,
+        oP_CODE: formData.process?.slice(0, 5),
+        unit_Code: formData.machineCode?.slice(0, 5),
+        division: formData.machineName?.slice(0, 3),
+      };
+
+      const response = await addMachineProcessDetails(payload);
+
+      alert(
+        response?.message ||
+          "Machine Process Details Added Successfully"
+      );
+
+      console.log("Save Response:", response);
+
+      // ================= RESET =================
+      setFormData({
+        machineCode: "",
+        machineName: "",
+        process: "",
+      });
+    } catch (error) {
+      console.error("Save Error:", error);
+
+      alert(error?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,7 +79,12 @@ const MachineProcessForm = () => {
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
           <h2>Machine Process Details</h2>
 
           <Box display="flex" gap={1}>
@@ -48,8 +92,11 @@ const MachineProcessForm = () => {
               variant="contained"
               startIcon={<Icon>save</Icon>}
               onClick={handleSave}
+              disabled={loading}
             >
-              <Span>Save</Span>
+              <Span>
+                {loading ? "Saving..." : "Save"}
+              </Span>
             </Button>
 
             <Button
@@ -61,10 +108,12 @@ const MachineProcessForm = () => {
           </Box>
         </Box>
 
+        {/* Form */}
         <Grid container spacing={2}>
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <TextField
               label="Machine Code"
+              placeholder="Machine Code"
               name="machineCode"
               value={formData.machineCode}
               onChange={handleChange}
@@ -73,9 +122,10 @@ const MachineProcessForm = () => {
             />
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <TextField
               label="Machine Name"
+              placeholder="Machine Name"
               name="machineName"
               value={formData.machineName}
               onChange={handleChange}
@@ -84,9 +134,10 @@ const MachineProcessForm = () => {
             />
           </Grid>
 
-          <Grid item xs={4}>
+          <Grid item xs={12} md={4}>
             <TextField
               label="Process"
+              placeholder="Process"
               name="process"
               value={formData.process}
               onChange={handleChange}
