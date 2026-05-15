@@ -153,3 +153,112 @@ export const RootCausePaginationAPI = async (
     return { Data: [], TotalCount: 0 };
   }
 };
+
+export const addMaintenanceCategory = async (categoryData) => {
+  try {
+    const response = await axiosInstance.post(
+      "/ADD-MAINTENANCE_CATEGORY_DETAIL",
+      {
+        fld_CategCd: categoryData.categoryCode,
+        fld_Description: categoryData.description,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response || error.message);
+    throw new Error(
+      error.response?.data?.message || "Failed to add maintenance category."
+    );
+  }
+};
+
+
+export const addRootCauseDetails = async (rootCauseData) => {
+  try {
+    const response = await axiosInstance.post(
+      "/ADD-ROOT_COUSE_DETAILS",
+      {
+        root_cause_code: rootCauseData.rootCauseCode,
+        description: rootCauseData.rootCause,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response || error.message);
+    throw new Error(
+      error.response?.data?.message || "Failed to add root cause details."
+    );
+  }
+};
+
+
+export const addMaintenanceReasonMaster = async (reasonData) => {
+  try {
+    const response = await axiosInstance.post(
+      "/ADD-MAINTENANCE_REASON_MASTER",
+      {
+        fld_Cd: reasonData.code,
+        fld_Description: reasonData.description,
+        fld_CategCd: reasonData.category,
+        fld_MainType: reasonData.category, // same as category radio
+        fld_tobechecked: reasonData.toBeChecked ? "Y" : "N",
+      },
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response || error.message);
+    throw new Error(
+      error.response?.data?.message || "Failed to add maintenance reason."
+    );
+  }
+};
+
+
+export const addPreventiveMaintenanceScheduling = async (data) => {
+  try {
+    const response = await axiosInstance.post(
+      "/ADD-PREVENTIVE_MAINTENANCE_SCHEDULING",
+      {
+        fld_SchNo: data.scheduleNo,
+        fld_PrevCd: data.preventiveReason,
+        fld_MachineNo: data.machineGroup,
+        fld_Frequency: data.frequency,
+        fld_TimeFrom: data.timeFrom || new Date().toISOString(),
+        fld_TimeTo: data.timeTo || "",
+        profcen_cd: data.employee,
+        scheduleday: data.scheduleDay || "",
+        scheduledate: data.scheduleDate || new Date().toISOString(),
+      },
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response || error.message);
+    throw new Error(
+      error.response?.data?.message || "Failed to save preventive maintenance."
+    );
+  }
+};

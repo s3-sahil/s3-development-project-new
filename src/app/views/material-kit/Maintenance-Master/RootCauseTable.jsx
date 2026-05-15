@@ -37,7 +37,7 @@ export default function RootCauseTable() {
       setLoading(true);
 
       const response = await RootCausePaginationAPI(
-        "ROOT_CAUSE_MASTER",
+        "ROOT_CAUSE",
         paginationModel.page + 1,
         paginationModel.pageSize,
         searchColumn,

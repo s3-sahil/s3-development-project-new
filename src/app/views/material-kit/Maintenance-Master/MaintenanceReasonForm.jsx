@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
+import { addMaintenanceReasonMaster } from "app/utils/MaintenanceMaterialServices";
 import { useState } from "react";
 
 const MaintenanceReasonForm = () => {
@@ -30,20 +31,42 @@ const MaintenanceReasonForm = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log("Saved Data:", formData);
-    alert("Maintenance Reason saved (UI Only)");
+  const handleSave = async () => {
+    try {
+      const payload = {
+        fld_Cd: formData.code,
+        fld_Description: formData.description,
+        fld_CategCd: formData.category,
+        fld_MainType: formData.category,
+        fld_tobechecked: formData.toBeChecked ? "Y" : "N",
+      };
+
+      const res = await addMaintenanceReasonMaster(payload);
+
+      console.log("Response:", res);
+      alert(res?.message || "Saved successfully!");
+    } catch (error) {
+      console.error(error.message);
+      alert(error.message);
+    }
   };
 
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Maintenance" }, { name: "Reason Master" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Maintenance" }, { name: "Reason Master" }]}
+        />
       </Box>
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
           <h2>Maintenance Reason Master</h2>
 
           <Box display="flex" gap={1}>
@@ -91,11 +114,31 @@ const MaintenanceReasonForm = () => {
               value={formData.category}
               onChange={handleChange}
             >
-              <FormControlLabel value="Preventive" control={<Radio />} label="Preventive" />
-              <FormControlLabel value="BreakDown" control={<Radio />} label="BreakDown" />
-              <FormControlLabel value="ShutDown" control={<Radio />} label="ShutDown" />
-              <FormControlLabel value="Periodic Overhauling" control={<Radio />} label="Periodic Overhauling" />
-              <FormControlLabel value="Predictive" control={<Radio />} label="Predictive" />
+              <FormControlLabel
+                value="Preventive"
+                control={<Radio />}
+                label="Preventive"
+              />
+              <FormControlLabel
+                value="BreakDown"
+                control={<Radio />}
+                label="BreakDown"
+              />
+              <FormControlLabel
+                value="ShutDown"
+                control={<Radio />}
+                label="ShutDown"
+              />
+              <FormControlLabel
+                value="Periodic Overhauling"
+                control={<Radio />}
+                label="Periodic Overhauling"
+              />
+              <FormControlLabel
+                value="Predictive"
+                control={<Radio />}
+                label="Predictive"
+              />
             </RadioGroup>
           </Grid>
 

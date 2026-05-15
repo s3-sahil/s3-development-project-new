@@ -40,7 +40,7 @@ export default function MaintenanceCategoryTable() {
 
       const response =
         await MaintenanceCategoryPaginationAPI(
-          "MAINTENANCE_CATEGORY",
+          "CategMaster",
           paginationModel.page + 1,
           paginationModel.pageSize,
           searchColumn,

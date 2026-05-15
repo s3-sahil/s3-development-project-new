@@ -9,56 +9,90 @@ import {
   Box,
   Stack,
 } from "@mui/material";
+
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { BreakdownSlipPaginationAPI } from "app/utils/MaintenanceTransactionServices";
+
 
 export default function BreakdownSlipTable() {
   const navigate = useNavigate();
+
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const [searchText, setSearchText] = useState("");
   const [searchField, setSearchField] = useState("slipNo");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    {
-      id: 1,
-      slipNo: "BD001",
-      maintenanceType: "Breakdown",
-      date: "02/03/2026",
-      reason: "Motor Failure",
-      machine: "Press Machine",
-      breakdownDate: "02/03/2026",
-      breakdownTime: "09:00 AM",
-      reportedTime: "09:15 AM",
-      reportedBy: "John Doe",
-    },
-    {
-      id: 2,
-      slipNo: "BD002",
-      maintenanceType: "Shutdown",
-      date: "01/03/2026",
-      reason: "Scheduled Overhaul",
-      machine: "CNC Machine",
-      breakdownDate: "01/03/2026",
-      breakdownTime: "02:00 PM",
-      reportedTime: "02:10 PM",
-      reportedBy: "Jane Smith",
-    },
-  ];
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toString().toLowerCase().includes(searchText.toLowerCase())
-  );
+  // ================= FETCH API =================
+  const fetchData = async () => {
+    try {
+      setLoading(true);
 
-  const handleEdit = (row) => {
-    navigate(`/material/maintenance-breakdown-slip-form/edit/${row.id}`, { state: row });
+      const res = await BreakdownSlipPaginationAPI(
+        "BreakDownShopMaster",
+        page + 1,
+        pageSize,
+        searchField,
+        searchText
+      );
+
+      const data = res?.Data || [];
+
+      const mappedRows = data.map((item, index) => ({
+        id: item.id || index + 1,
+        slipNo: item.fld_SlipNo || "",
+        maintenanceType: item.maintenanceType || "",
+        date: item.fld_Date || "",
+        reason: item.fld_Reason || "",
+        machine: item.fld_MachineNo || "",
+        breakdownDate: item.dt_breakdown || "",
+        breakdownTime: item.fld_TimeFrom || "",
+        reportedTime: item.fld_TimeReported || "",
+        reportedBy: item.fld_ReportedBy || "",
+      }));
+
+      setRows(mappedRows);
+      setRowCount(res?.TotalCount || 0);
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      setRows([]);
+      setRowCount(0);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // ================= USE EFFECT =================
+  useEffect(() => {
+    fetchData();
+  }, [page, pageSize]);
+
+  // ================= SEARCH =================
+  const handleSearch = () => {
+    setPage(0);
+    fetchData();
+  };
+
+  // ================= EDIT =================
+  const handleEdit = (row) => {
+    navigate(`/material/maintenance-breakdown-slip-form/edit/${row.id}`, {
+      state: row,
+    });
+  };
+
+  // ================= ADD =================
   const handleAddNew = () => {
     navigate("/material/maintenance-breakdown-slip-form/add");
   };
 
+  // ================= COLUMNS =================
   const columns = [
     { field: "slipNo", headerName: "Slip No", width: 150 },
     { field: "maintenanceType", headerName: "Maintenance Type", width: 180 },
@@ -87,11 +121,16 @@ export default function BreakdownSlipTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Maintenance" }, { name: "Breakdown Slip Entry" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Maintenance" },
+            { name: "Breakdown Slip Entry" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
-        {/* Top Controls */}
+        {/* SEARCH + ADD */}
         <Box display="flex" justifyContent="space-between">
           <Box display="flex" gap={2}>
             <TextField
@@ -114,7 +153,9 @@ export default function BreakdownSlipTable() {
               <MenuItem value="reportedBy">Reported By</MenuItem>
             </TextField>
 
-            <Button variant="contained">Search</Button>
+            <Button variant="contained" onClick={handleSearch}>
+              Search
+            </Button>
           </Box>
 
           <Button
@@ -126,15 +167,21 @@ export default function BreakdownSlipTable() {
           </Button>
         </Box>
 
-        {/* DataGrid */}
+        {/* GRID */}
         <Box sx={{ height: 450, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: { paginationModel: { pageSize: 5, page: 0 } },
+            loading={loading}
+            paginationMode="server"
+            rowCount={rowCount}
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
             }}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

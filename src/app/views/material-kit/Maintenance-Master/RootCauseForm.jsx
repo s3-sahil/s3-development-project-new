@@ -1,13 +1,7 @@
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Icon,
-  Grid,
-} from "@mui/material";
+import { Box, Container, TextField, Button, Icon, Grid } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
+import { addRootCauseDetails } from "app/utils/MaintenanceMaterialServices";
 import { useState } from "react";
 
 const RootCauseForm = () => {
@@ -24,21 +18,42 @@ const RootCauseForm = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log("Saved Data:", formData);
-    alert("Root Cause Details saved (UI Only)");
-  };
+  const handleSave = async () => {
+    try {
+      const payload = {
+        root_cause_code: formData.rootCauseCode,
+        description: formData.rootCause,
+      };
 
+      const res = await addRootCauseDetails(payload);
+
+      console.log("API Response:", res);
+      alert(res?.message || "Saved successfully!");
+    } catch (error) {
+      console.error(error.message);
+      alert(error.message);
+    }
+  };
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Maintenance" }, { name: "Root Cause Details" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Maintenance" },
+            { name: "Root Cause Details" },
+          ]}
+        />
       </Box>
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <h2>Root Cause Details</h2>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <h2></h2>
 
           <Box display="flex" gap={1}>
             <Button
@@ -49,9 +64,9 @@ const RootCauseForm = () => {
               <Span>Save</Span>
             </Button>
 
-            <Button variant="outlined" startIcon={<Icon>print</Icon>}>
+            {/* <Button variant="outlined" startIcon={<Icon>print</Icon>}>
               <Span>Print</Span>
-            </Button>
+            </Button> */}
           </Box>
         </Box>
 

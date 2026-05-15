@@ -38,7 +38,7 @@ export default function PreventiveMaintenanceTable() {
       setLoading(true);
 
       const response = await PreventiveMaintenancePaginationAPI(
-        "PREVENTIVE_MAINTENANCE",
+        "PrevScheduleMaster",
         paginationModel.page + 1,
         paginationModel.pageSize,
         searchColumn,

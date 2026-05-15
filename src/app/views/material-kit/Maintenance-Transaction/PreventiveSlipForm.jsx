@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
+import { addPreventiveSlipEntry } from "app/utils/MaintenanceTransactionServices";
 import { useState } from "react";
 
 const PreventiveSlipForm = () => {
@@ -32,21 +33,51 @@ const PreventiveSlipForm = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log("Saved Data:", formData);
-    alert("Preventive Slip Entry saved (UI Only)");
+  const handleSave = async () => {
+    try {
+      const payload = {
+        slipNo: formData.slipNo,
+        maintenanceType: formData.maintenanceType,
+        machine: formData.machine,
+        preventiveReason: formData.preventiveReason,
+        startAt: formData.startAt,
+        dateFrom: formData.date ? new Date(formData.date).toISOString() : null,
+        dateTo: formData.date ? new Date(formData.date).toISOString() : null,
+        remark: formData.remark,
+        status: "OPEN",
+        productiveFlag: "s",
+      };
+
+      const res = await addPreventiveSlipEntry(payload);
+
+      console.log("Response:", res);
+      alert(res?.message || "Saved successfully!");
+    } catch (error) {
+      console.error(error.message);
+      alert(error.message);
+    }
   };
 
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Maintenance" }, { name: "Preventive Slip Entry" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Maintenance" },
+            { name: "Preventive Slip Entry" },
+          ]}
+        />
       </Box>
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <h2>Preventive Slip Entry</h2>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <h2></h2>
 
           <Box display="flex" gap={1}>
             <Button
@@ -57,9 +88,9 @@ const PreventiveSlipForm = () => {
               <Span>Save</Span>
             </Button>
 
-            <Button variant="outlined" startIcon={<Icon>print</Icon>}>
+            {/* <Button variant="outlined" startIcon={<Icon>print</Icon>}>
               <Span>Print</Span>
-            </Button>
+            </Button> */}
           </Box>
         </Box>
 
@@ -72,9 +103,21 @@ const PreventiveSlipForm = () => {
               value={formData.maintenanceType}
               onChange={handleChange}
             >
-              <FormControlLabel value="Preventive" control={<Radio />} label="Preventive" />
-              <FormControlLabel value="Periodic Overhauling" control={<Radio />} label="Periodic Overhauling" />
-              <FormControlLabel value="Predictive" control={<Radio />} label="Predictive" />
+              <FormControlLabel
+                value="Preventive"
+                control={<Radio />}
+                label="Preventive"
+              />
+              <FormControlLabel
+                value="Periodic Overhauling"
+                control={<Radio />}
+                label="Periodic Overhauling"
+              />
+              <FormControlLabel
+                value="Predictive"
+                control={<Radio />}
+                label="Predictive"
+              />
             </RadioGroup>
           </Grid>
 

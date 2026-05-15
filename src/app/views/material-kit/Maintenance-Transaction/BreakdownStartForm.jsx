@@ -1,13 +1,7 @@
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Icon,
-  Grid,
-} from "@mui/material";
+import { Box, Container, TextField, Button, Icon, Grid } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
+import { addBreakdownShutdownStartEntry } from "app/utils/MaintenanceTransactionServices";
 import { useState } from "react";
 
 const BreakdownStartForm = () => {
@@ -27,21 +21,48 @@ const BreakdownStartForm = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log("Saved Data:", formData);
-    alert("Breakdown/Shutdown Start Entry saved (UI Only)");
-  };
+  const handleSave = async () => {
+    try {
+      const payload = {
+        slipNo: formData.slipNo,
+        machine: formData.machine,
+        startDate: formData.startDate,
+        startAt: formData.startAt,
+        reasonCode: formData.reasonCode,
+        reportedBy: "",
+        shift: "",
+        profcen_cd: "",
+      };
 
+      const res = await addBreakdownShutdownStartEntry(payload);
+
+      console.log("Response:", res);
+      alert(res?.message || "Saved successfully!");
+    } catch (error) {
+      console.error(error.message);
+      alert(error.message);
+    }
+  };
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Maintenance" }, { name: "Breakdown/Shutdown Start Entry" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Maintenance" },
+            { name: "Breakdown/Shutdown Start Entry" },
+          ]}
+        />
       </Box>
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <h2>Breakdown / Shutdown Start Entry</h2>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <h2></h2>
 
           <Box display="flex" gap={1}>
             <Button
@@ -52,9 +73,9 @@ const BreakdownStartForm = () => {
               <Span>Save</Span>
             </Button>
 
-            <Button variant="outlined" startIcon={<Icon>print</Icon>}>
+            {/* <Button variant="outlined" startIcon={<Icon>print</Icon>}>
               <Span>Print</Span>
-            </Button>
+            </Button> */}
           </Box>
         </Box>
 

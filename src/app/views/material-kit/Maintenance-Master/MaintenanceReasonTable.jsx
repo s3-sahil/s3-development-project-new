@@ -39,7 +39,7 @@ export default function MaintenanceReasonTable() {
       setLoading(true);
 
       const res = await MaintenanceReasonPaginationAPI(
-        "maintenance_reason_master",
+        "Reasons",
         pageNo + 1,
         size
       );

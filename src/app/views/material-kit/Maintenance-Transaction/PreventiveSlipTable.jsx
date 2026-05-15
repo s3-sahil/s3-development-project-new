@@ -9,52 +9,89 @@ import {
   Box,
   Stack,
 } from "@mui/material";
+
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { PreventiveSlipPaginationAPI } from "app/utils/MaintenanceTransactionServices";
+
 
 export default function PreventiveSlipTable() {
   const navigate = useNavigate();
+
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const [searchText, setSearchText] = useState("");
   const [searchField, setSearchField] = useState("slipNo");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    {
-      id: 1,
-      slipNo: "PS001",
-      maintenanceType: "Preventive",
-      machine: "Riveting Machine",
-      preventiveReason: "Reset Start Button",
-      startAt: "09:00 AM",
-      date: "02/03/2026",
-      remark: "Routine check",
-    },
-    {
-      id: 2,
-      slipNo: "PS002",
-      maintenanceType: "Periodic Overhauling",
-      machine: "CNC Machine",
-      preventiveReason: "Tool Overhaul",
-      startAt: "02:00 PM",
-      date: "01/03/2026",
-      remark: "Scheduled overhaul",
-    },
-  ];
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toString().toLowerCase().includes(searchText.toLowerCase())
-  );
+  // ================= FETCH API =================
+  const fetchData = async () => {
+    try {
+      setLoading(true);
 
-  const handleEdit = (row) => {
-    navigate(`/material/maintenance-preventive-slip-form/edit/${row.id}`, { state: row });
+      const res = await PreventiveSlipPaginationAPI(
+        "MaintenanceTrans",
+        page + 1,
+        pageSize,
+        searchField,
+        searchText
+      );
+
+      const data = res?.Data || [];
+
+      const mappedRows = data.map((item, index) => ({
+        id: item.id || index + 1,
+        slipNo: item.fld_SlipNo || "",
+        maintenanceType: item.fld_Type || "",
+        machine: item.fld_MachineNo || "",
+        preventiveReason: item.fld_Reason || "",
+        startAt: item.fld_TimeFrom || "",
+        date: item.fld_DateFrom || "",
+        remark: item.remark || "",
+      }));
+
+      setRows(mappedRows);
+      setRowCount(res?.TotalCount || 0);
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      setRows([]);
+      setRowCount(0);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // ================= EFFECT =================
+  useEffect(() => {
+    fetchData();
+  }, [page, pageSize]);
+
+  // ================= SEARCH =================
+  const handleSearch = () => {
+    setPage(0);
+    fetchData();
+  };
+
+  // ================= EDIT =================
+  const handleEdit = (row) => {
+    navigate(
+      `/material/maintenance-preventive-slip-form/edit/${row.id}`,
+      { state: row }
+    );
+  };
+
+  // ================= ADD =================
   const handleAddNew = () => {
     navigate("/material/maintenance-preventive-slip-form/add");
   };
 
+  // ================= COLUMNS =================
   const columns = [
     { field: "slipNo", headerName: "Slip No", width: 150 },
     { field: "maintenanceType", headerName: "Maintenance Type", width: 200 },
@@ -81,11 +118,16 @@ export default function PreventiveSlipTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Maintenance" }, { name: "Preventive Slip Entry" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Maintenance" },
+            { name: "Preventive Slip Entry" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
-        {/* Top Controls */}
+        {/* SEARCH + ADD */}
         <Box display="flex" justifyContent="space-between">
           <Box display="flex" gap={2}>
             <TextField
@@ -104,10 +146,17 @@ export default function PreventiveSlipTable() {
             >
               <MenuItem value="slipNo">Slip No</MenuItem>
               <MenuItem value="machine">Machine</MenuItem>
-              <MenuItem value="preventiveReason">Preventive Reason</MenuItem>
+              <MenuItem value="preventiveReason">
+                Preventive Reason
+              </MenuItem>
+              <MenuItem value="maintenanceType">
+                Maintenance Type
+              </MenuItem>
             </TextField>
 
-            <Button variant="contained">Search</Button>
+            <Button variant="contained" onClick={handleSearch}>
+              Search
+            </Button>
           </Box>
 
           <Button
@@ -119,15 +168,21 @@ export default function PreventiveSlipTable() {
           </Button>
         </Box>
 
-        {/* DataGrid */}
+        {/* GRID */}
         <Box sx={{ height: 450, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: { paginationModel: { pageSize: 5, page: 0 } },
+            loading={loading}
+            paginationMode="server"
+            rowCount={rowCount}
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
             }}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

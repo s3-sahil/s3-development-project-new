@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
+import { addMaintenanceCategory } from "app/utils/MaintenanceMaterialServices";
 import { useState } from "react";
 
 const MaintenanceCategoryForm = () => {
@@ -28,21 +29,40 @@ const MaintenanceCategoryForm = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log("Saved Data:", formData);
-    alert("Category saved (UI Only)");
+  const handleSave = async () => {
+    try {
+      const payload = {
+        fld_CategCd: formData.categoryCode,
+        fld_Description: formData.description,
+      };
+
+      const res = await addMaintenanceCategory(payload);
+
+      console.log("Saved Response:", res);
+      alert(res?.message || "Saved successfully!");
+    } catch (error) {
+      console.error(error.message);
+      alert(error.message);
+    }
   };
 
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Material" }, { name: "Item Categories" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Material" }, { name: "Item Categories" }]}
+        />
       </Box>
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <h2>Category Form</h2>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <h2></h2>
 
           <Box display="flex" gap={1}>
             <Button
@@ -53,9 +73,9 @@ const MaintenanceCategoryForm = () => {
               <Span>Save</Span>
             </Button>
 
-            <Button variant="outlined" startIcon={<Icon>print</Icon>}>
+            {/* <Button variant="outlined" startIcon={<Icon>print</Icon>}>
               <Span>Print</Span>
-            </Button>
+            </Button> */}
           </Box>
         </Box>
 
