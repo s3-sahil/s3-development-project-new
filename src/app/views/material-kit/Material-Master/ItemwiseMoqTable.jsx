@@ -150,12 +150,12 @@ const fetchMaterialGradeData = async (
   const columnOptions = [
     {
       label: "Material Grade",
-      value: "material_grade",
+      value: "ITEM_CODE",
     },
 
     {
       label: "Description",
-      value: "grade_desc",
+      value: "PROFCEN_CD",
     },
   ];
 

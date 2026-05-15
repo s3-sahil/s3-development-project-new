@@ -198,33 +198,8 @@ export default function PhysicalInventoryTable() {
 
   const columnOptions = [
     {
-      label: "Financial Year",
-      value: "financial_year",
-    },
-
-    {
-      label: "Month",
-      value: "month",
-    },
-
-    {
-      label: "Stock Type",
-      value: "stock_type",
-    },
-
-    {
-      label: "Department",
-      value: "department",
-    },
-
-    {
       label: "Item Code",
-      value: "item_code",
-    },
-
-    {
-      label: "Item Name",
-      value: "item_name",
+      value: "ITEM_CODE",
     },
   ];
 

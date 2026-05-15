@@ -184,17 +184,7 @@ export default function ExchangeCurrencyTable() {
   const columnOptions = [
     {
       label: "Currency",
-      value: "curr_code",
-    },
-
-    {
-      label: "Import Rate",
-      value: "import_rate",
-    },
-
-    {
-      label: "Export Rate",
-      value: "export_rate",
+      value: "CURRENCY",
     },
   ];
 

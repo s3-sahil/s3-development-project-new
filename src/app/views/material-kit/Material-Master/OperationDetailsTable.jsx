@@ -167,17 +167,12 @@ export default function OperationDetailsTable() {
   const columnOptions = [
     {
       label: "Code",
-      value: "code",
+      value: "OP_CODE",
     },
 
     {
       label: "Operation Name",
-      value: "operation_name",
-    },
-
-    {
-      label: "Production Operation",
-      value: "production_operation",
+      value: "PROFCENCD",
     },
   ];
 

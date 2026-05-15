@@ -223,32 +223,7 @@ export default function SupplierTable() {
   const columnOptions = [
     {
       label: "Supplier Code",
-      value: "vendor_code",
-    },
-
-    {
-      label: "Supplier Name",
-      value: "vendor_name",
-    },
-
-    {
-      label: "Category",
-      value: "category",
-    },
-
-    {
-      label: "Country",
-      value: "country",
-    },
-
-    {
-      label: "State",
-      value: "state",
-    },
-
-    {
-      label: "GST No",
-      value: "gst_no",
+      value: "VEND_CODE",
     },
   ];
 

@@ -204,27 +204,7 @@ export default function HSNTable() {
   const columnOptions = [
     {
       label: "HSN/SAC Code",
-      value: "hsn_code",
-    },
-
-    {
-      label: "Name",
-      value: "name",
-    },
-
-    {
-      label: "HSN Flag",
-      value: "hsn_flag",
-    },
-
-    {
-      label: "Notification No",
-      value: "notification_no",
-    },
-
-    {
-      label: "UOM",
-      value: "uom",
+      value: "TARIFF_CODE",
     },
   ];
 

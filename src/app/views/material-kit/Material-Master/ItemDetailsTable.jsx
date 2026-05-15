@@ -176,22 +176,7 @@ export default function ItemDetailsTable() {
   const columnOptions = [
     {
       label: "Item Code",
-      value: "item_code",
-    },
-
-    {
-      label: "Item Name",
-      value: "item_name",
-    },
-
-    {
-      label: "Unit",
-      value: "unit",
-    },
-
-    {
-      label: "Stock Unit",
-      value: "stock_unit",
+      value: "ITEM_CODE",
     },
   ];
 
