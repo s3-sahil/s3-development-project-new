@@ -20,6 +20,7 @@ import { addPackingSlip, fetchCustomerAPI } from "app/utils/authServices";
 import {
   fetchItemCodesByCustomer,
   fetchPackingAndSubType,
+  fetchPackingSlipQuantityAPI,
   fetchStockByItemCode,
 } from "app/utils/salesTransactionServices";
 import { useEffect, useState } from "react";
@@ -253,27 +254,82 @@ const PackingSlipForm = () => {
     }));
   };
 
- const handleAddItem = () => {
-  const newItem = {
-    itemCode: selectedStock.ITEM_CODE,
-    item_name: selectedStock.DESC,
-    quantity: state.quantity,
-    rate: selectedStock.RATE,
-    poid: selectedStock.PO_ID,
+  //  const handleAddItem = () => {
+  //   const newItem = {
+  //     itemCode: selectedStock.ITEM_CODE,
+  //     item_name: selectedStock.DESC,
+  //     quantity: state.quantity,
+  //     rate: selectedStock.RATE,
+  //     poid: selectedStock.PO_ID,
+  //   };
+
+  //   setItems((prev) => [...prev, newItem]);
+
+  //   // clear fields
+  //   setState((prev) => ({
+  //     ...prev,
+  //     quantity: "",
+  //     orderNo: "",
+  //   }));
+
+  //   // setSelectedStock(null);
+  //   // setStockList([]);
+  // };
+
+  // ADD button function replace with this
+
+  const handleAddItem = async () => {
+    try {
+      if (!selectedStock?.ITEM_CODE) {
+        alert("Please select Item Code");
+        return;
+      }
+
+      // API CALL
+      const response = await fetchPackingSlipQuantityAPI({
+        Pay_type: payValue,
+        Item_Catg_Type: selectedStock?.category_type || "",
+        Profcen_cd: localStorage.getItem("PROFCEN_CD"),
+        Period: localStorage.getItem("fromDate"),
+        Item_Code: selectedStock?.ITEM_CODE,
+      });
+
+      console.log("Packing Slip Response:", response);
+
+      // ITEM CODE CHECK
+      const matchedItem = response.find(
+        (item) => item.ITEM_CODE === selectedStock.ITEM_CODE,
+      );
+
+      // IF ITEM FOUND -> SHOW TABLE DATA
+      if (matchedItem) {
+        const newItem = {
+          itemCode: selectedStock.ITEM_CODE,
+          item_name: selectedStock.DESC,
+          quantity: state.quantity,
+          rate: selectedStock.RATE,
+          poid: selectedStock.PO_ID,
+        };
+
+        setItems((prev) => [...prev, newItem]);
+
+        // clear fields
+        setState((prev) => ({
+          ...prev,
+          quantity: "",
+          orderNo: "",
+        }));
+
+        setSelectedStock(null);
+      } else {
+        // ERROR MESSAGE
+        alert("Item Code not found in Packing Slip Quantity response");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong");
+    }
   };
-
-  setItems((prev) => [...prev, newItem]);
-
-  // clear fields
-  setState((prev) => ({
-    ...prev,
-    quantity: "",
-    orderNo: "",
-  }));
-
-  // setSelectedStock(null);
-  // setStockList([]);
-};
 
   const handleRemoveItem = () => {
     const updatedItems = items.filter(

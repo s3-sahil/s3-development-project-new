@@ -614,3 +614,34 @@ export const fetchPackingTypeAPI = async () => {
         return [];
     }
 };
+
+export const fetchPackingSlipQuantityAPI = async ({
+    Pay_type,
+    Item_Catg_Type,
+    Profcen_cd,
+    Period,
+    Item_Code,
+}) => {
+    try {
+        const { data } = await axiosInstance.get(
+            `/Fetch-PACKING_SLIP_QUANTITY`,
+            {
+                params: {
+                    Pay_type,
+                    Item_Catg_Type,
+                    Profcen_cd,
+                    Period,
+                    Item_Code,
+                },
+            }
+        );
+
+        return data?.Data || [];
+    } catch (error) {
+        console.error(
+            "Error fetching packing slip quantity:",
+            error
+        );
+        return [];
+    }
+};
