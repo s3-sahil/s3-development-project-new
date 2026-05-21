@@ -34,12 +34,14 @@ const PackingTypeModal = ({
   setFinalQuantity,
   selectedItem,
   payValue,
+  remark,
+  setRemark,
   setPayValue,
 }) => {
   const [qtyPerBox, setQtyPerBox] = useState("");
   const [loading, setLoading] = useState(false);
 
-  console.log("payValue:", payValue,selectedItem)
+  console.log("payValue:", payValue, selectedItem);
   // ✅ ADD ROW
   const handleAddRow = () => {
     const newRow = {
@@ -54,6 +56,18 @@ const PackingTypeModal = ({
     };
 
     setRows((prev) => [...prev, newRow]);
+    const updatedRows = [...rows, newRow];
+
+    const remarkText = updatedRows
+      .map((row) =>
+        packingType === "Box"
+          ? `${row.qty} / ${row.total} / ${packingType}`
+          : `${row.qty} / ${packingType}`,
+      )
+      .join(", ");
+
+    // ✅ update parent state
+    setRemark?.(remarkText);
   };
 
   // ✅ REMOVE ROW
@@ -129,7 +143,9 @@ const PackingTypeModal = ({
         Pay_type: payValue,
         Item_Catg_Type: selectedItem?.CATG_CODE || "",
         Profcen_cd: localStorage.getItem("PROFCEN_CD"),
-        Period: new Date(localStorage.getItem("toDate")).toISOString().slice(0, 7),
+        Period: new Date(localStorage.getItem("toDate"))
+          .toISOString()
+          .slice(0, 7),
         Item_Code: selectedItem?.ITEM_CODE || "",
       });
 
@@ -213,6 +229,7 @@ const PackingTypeModal = ({
                       label="Boxes"
                       value={boxes}
                       onChange={(e) => setBoxes(e.target.value)}
+                      autoComplete="off"
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -223,6 +240,7 @@ const PackingTypeModal = ({
                       value={qtyPerBox}
                       onChange={(e) => setQtyPerBox(e.target.value)}
                       onKeyDown={handleQtyEnter}
+                      autoComplete="off"
                     />
                   </Grid>
                 </>
@@ -237,6 +255,7 @@ const PackingTypeModal = ({
                     label="Loose Qty"
                     value={looseQty}
                     onChange={(e) => setLooseQty(e.target.value)}
+                    autoComplete="off"
                   />
                 </Grid>
               )}

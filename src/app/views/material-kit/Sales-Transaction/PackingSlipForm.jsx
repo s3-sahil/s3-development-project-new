@@ -49,7 +49,7 @@ const PackingSlipForm = () => {
     formDate: "",
     formType: "",
     currency: "",
-    poId:""
+    poId: "",
   });
 
   const [items, setItems] = useState([]);
@@ -69,8 +69,10 @@ const PackingSlipForm = () => {
   const [looseQty, setLooseQty] = useState("");
   const [selectedItemData, setSelectedItemData] = useState(null);
   const [payValue, setPayValue] = useState("");
+  const [remark, setRemark] = useState("");
   const [stockList, setStockList] = useState([]);
   const [loadingStock, setLoadingStock] = useState(false);
+  const [selectedStock, setSelectedStock] = useState(null);
   const [rows, setRows] = useState([
     { srNo: 1, qtyLoose: "", totLoose: "", itemCode: "" },
   ]);
@@ -215,7 +217,9 @@ const PackingSlipForm = () => {
         PO_NO: x.PO_NO,
         PO_DT: x.PO_DT,
         PO_ID: x.PO_ID,
-        PO_ID_DT: x.PO_ID_DT
+        PO_ID_DT: x.PO_ID_DT,
+        RATE: x.RATE,
+        ITEM_NAME: x.ITEM_NAME,
       }));
 
       setItemCodes(normalized);
@@ -249,41 +253,27 @@ const PackingSlipForm = () => {
     }));
   };
 
-  const handleAddItem = () => {
-    if (!state.itemCode || !state.quantity) return;
-
-    const newItem = {
-      itemCode: state.itemCode,
-      operation: state.operation,
-      quantity: state.quantity,
-      formNo: state.formNo,
-      formDate: state.formDate,
-      formType: state.formType,
-      currency: state.currency,
-    };
-
-    if (selectedItems.length === 1) {
-      const index = selectedItems[0];
-      const updatedItems = [...items];
-      updatedItems[index] = newItem;
-      setItems(updatedItems);
-      setSelectedItems([]);
-    } else {
-      setItems([...items, newItem]);
-    }
-
-    // Clear only item-related fields
-    setState({
-      ...state,
-      itemCode: "",
-      operation: "",
-      quantity: "",
-      formNo: "",
-      formDate: "",
-      formType: "",
-      currency: "",
-    });
+ const handleAddItem = () => {
+  const newItem = {
+    itemCode: selectedStock.ITEM_CODE,
+    item_name: selectedStock.DESC,
+    quantity: state.quantity,
+    rate: selectedStock.RATE,
+    poid: selectedStock.PO_ID,
   };
+
+  setItems((prev) => [...prev, newItem]);
+
+  // clear fields
+  setState((prev) => ({
+    ...prev,
+    quantity: "",
+    orderNo: "",
+  }));
+
+  // setSelectedStock(null);
+  // setStockList([]);
+};
 
   const handleRemoveItem = () => {
     const updatedItems = items.filter(
@@ -471,6 +461,9 @@ const PackingSlipForm = () => {
       quantity: value,
     }));
   };
+
+  const fromDate = localStorage.getItem("fromDate");
+  const toDate = localStorage.getItem("toDate");
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
@@ -479,7 +472,7 @@ const PackingSlipForm = () => {
         />
       </Box>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="off">
         <Box
           sx={{
             background: "#fff",
@@ -539,6 +532,10 @@ const PackingSlipForm = () => {
               value={state.date}
               onChange={handleChange}
               InputLabelProps={{ shrink: true }}
+              inputProps={{
+                min: fromDate,
+                max: toDate,
+              }}
               fullWidth
               size="small"
             />
@@ -612,7 +609,14 @@ const PackingSlipForm = () => {
                   poNo: newValue ? newValue.PO_NO : "",
                   poDate: newValue ? newValue.PO_DT : "",
                   poId: newValue ? newValue.PO_ID1 : "",
+                  cate_code: newValue ? newValue.CATG_CODE : "",
+                  rate: newValue ? newValue.RATE : "",
+                  item_name: newValue ? newValue.ITEM_NAME : "",
+                  item_code: newValue ? newValue.ITEM_CODE1 : "",
                 }));
+
+                setSelectedStock(newValue);
+
                 if (newValue.ITEM_CODE) {
                   setLoadingStock(true);
                   try {
@@ -679,8 +683,8 @@ const PackingSlipForm = () => {
             <TextField
               label="Remark"
               name="remark"
-              value={state.remark}
-              onChange={handleChange}
+              value={remark}
+              onChange={(e) => setRemark(e.target.value)}
               size="small"
               rows={2}
               fullWidth
@@ -710,7 +714,8 @@ const PackingSlipForm = () => {
         >
           <Box display="flex" gap={2}>
             <Button variant="contained" onClick={handleAddItem}>
-              {selectedItems.length === 1 ? "UPDATE" : "ADD"}
+              {/* {selectedItems.length === 1 ? "UPDATE" : "ADD"} */}
+              ADD
             </Button>
 
             <Button
@@ -783,7 +788,7 @@ const PackingSlipForm = () => {
                 />
               )}
             /> */}
-            <Autocomplete
+            {/* <Autocomplete
               size="small"
               fullWidth
               options={stockList || []}
@@ -805,7 +810,7 @@ const PackingSlipForm = () => {
                   <div>
                     <strong>{option.DESC}</strong>
                     <div style={{ fontSize: "12px", color: "#555" }}>
-                      Code: {option.DESC } {option.category_type}
+                      Code: {option.DESC} {option.category_type}
                     </div>
                   </div>
                 </li>
@@ -813,41 +818,48 @@ const PackingSlipForm = () => {
               renderInput={(params) => (
                 <TextField {...params} label="Item Name" />
               )}
-            />
-            {/* <Autocomplete
+            /> */}
+            <Autocomplete
               size="small"
               fullWidth
-              options={itemCodes} // ✅ hardcoded
+              // options={itemCodes} // ✅ hardcoded
+              options={stockList || []}
+              loading={loadingStock}
               getOptionLabel={(option) =>
                 `${option.ITEM_CODE} - ${option.DESC} - ${option.UOM}`
               }
               isOptionEqualToValue={(option, value) =>
-                option.ITEM_CODE === value.ITEM_CODE
+                option.DESC === value.DESC
               }
-              value={
-                itemCodes.find((i) => i.ITEM_CODE === state.itemCode) || null
-              }
+              // value={
+              //   itemCodes.find((i) => i.ITEM_CODE === state.itemCode) || null
+              // }
               onChange={(event, newValue) => {
                 console.log("Selected Value:", newValue); // ✅ check in console
 
                 setState((prev) => ({
                   ...prev,
-                  itemCode: newValue ? newValue.ITEM_CODE : "",
+                  stockDesc: newValue ? newValue.DESC : "",
                 }));
 
                 if (newValue) {
                   setOpenModal(true); // ✅ modal trigger
                 }
               }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Item Code"
-                  // temporarily remove disable for testing
-                  disabled={false}
-                />
+              renderOption={(props, option) => (
+                <li {...props}>
+                  <div>
+                    <strong>{option.DESC}</strong>
+                    <div style={{ fontSize: "12px", color: "#555" }}>
+                      Code: {option.DESC} {option.category_type}
+                    </div>
+                  </div>
+                </li>
               )}
-            /> */}
+              renderInput={(params) => (
+                <TextField {...params} label="Item Code" />
+              )}
+            />
 
             {/* <TextField
               label="Operation"
@@ -856,7 +868,7 @@ const PackingSlipForm = () => {
               onChange={handleChange}
               fullWidth
               size="small"
-            />
+            /> */}
 
             <TextField
               label="Quantity"
@@ -868,7 +880,7 @@ const PackingSlipForm = () => {
               size="small"
             />
           </Box>
-          <Box
+          {/* <Box
             display="grid"
             gridTemplateColumns="repeat(4, 1fr)"
             gap={3}
@@ -910,8 +922,8 @@ const PackingSlipForm = () => {
               onChange={handleChange}
               fullWidth
               size="small"
-            /> */}
-          </Box>
+            />
+          </Box> */}
 
           {/* Items Table */}
           {items.length > 0 && (
@@ -919,14 +931,11 @@ const PackingSlipForm = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell padding="checkbox" />
                     <TableCell>Item Code</TableCell>
-                    <TableCell>Operation</TableCell>
                     <TableCell>Quantity</TableCell>
-                    <TableCell>Form No</TableCell>
-                    <TableCell>Form Date</TableCell>
-                    <TableCell>Form Type</TableCell>
-                    <TableCell>Currency</TableCell>
+                    <TableCell>PO ID</TableCell>
+                    <TableCell>Rate</TableCell>
+                    <TableCell>Item Name</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -935,19 +944,11 @@ const PackingSlipForm = () => {
                       key={index}
                       selected={selectedItems.includes(index)}
                     >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          checked={selectedItems.includes(index)}
-                          onChange={() => handleItemSelect(index)}
-                        />
-                      </TableCell>
                       <TableCell>{item.itemCode}</TableCell>
-                      <TableCell>{item.operation}</TableCell>
                       <TableCell>{item.quantity}</TableCell>
-                      <TableCell>{item.formNo}</TableCell>
-                      <TableCell>{item.formDate}</TableCell>
-                      <TableCell>{item.formType}</TableCell>
-                      <TableCell>{item.currency}</TableCell>
+                      <TableCell>{item.poid}</TableCell>
+                      <TableCell>{item.rate}</TableCell>
+                      <TableCell>{item.item_name}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -996,6 +997,8 @@ const PackingSlipForm = () => {
         setFinalQuantity={handleSetQuantity}
         selectedItem={selectedItemData}
         payValue={payValue}
+        remark={remark}
+        setRemark={setRemark}
       />
     </Container>
   );
