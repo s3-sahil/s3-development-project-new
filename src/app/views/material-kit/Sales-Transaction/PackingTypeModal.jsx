@@ -16,7 +16,10 @@ import {
   Typography,
   Icon,
 } from "@mui/material";
-import { fetchPackingSlipQuantity } from "app/utils/salesTransactionServices";
+import {
+  fetchPackingSlipQuantity,
+  fetchPackingTypeAPI,
+} from "app/utils/salesTransactionServices";
 import { useEffect, useState } from "react";
 
 const PackingTypeModal = ({
@@ -40,6 +43,17 @@ const PackingTypeModal = ({
 }) => {
   const [qtyPerBox, setQtyPerBox] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [packingTypeOptions, setPackingTypeOptions] = useState([]);
+
+  useEffect(() => {
+    const getPackingType = async () => {
+      const response = await fetchPackingTypeAPI();
+      setPackingTypeOptions(response);
+    };
+
+    getPackingType();
+  }, []);
 
   console.log("payValue:", payValue, selectedItem);
   // ✅ ADD ROW
@@ -214,8 +228,11 @@ const PackingTypeModal = ({
                   value={packingType}
                   onChange={(e) => setPackingType(e.target.value)}
                 >
-                  <MenuItem value="Box">Box</MenuItem>
-                  <MenuItem value="Loose">Loose</MenuItem>
+                  {packingTypeOptions.map((item, index) => (
+                    <MenuItem key={index} value={item.packing_type}>
+                      {item.packing_type}
+                    </MenuItem>
+                  ))}
                 </TextField>
               </Grid>
 

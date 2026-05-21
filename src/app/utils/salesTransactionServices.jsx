@@ -601,3 +601,16 @@ export const addPreShipmentPackingSlip = async (payload) => {
     throw error;
   }
 };
+
+export const fetchPackingTypeAPI = async () => {
+    try {
+        const { data } = await axiosInstance.get(
+            `/api/Master/Fetch-packing_type`
+        );
+
+        return data.Data || [];
+    } catch (error) {
+        console.error("Error fetching packing type:", error);
+        return [];
+    }
+};
