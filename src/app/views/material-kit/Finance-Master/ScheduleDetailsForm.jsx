@@ -67,7 +67,7 @@ export default function ScheduleDetailsForm() {
     }
 
     setFormData({
-      schedule: "",
+      schedule: "", 
       scheduleName: "",
       glCategory: "",
       unit: "UNIT-1",
