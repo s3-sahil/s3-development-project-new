@@ -914,7 +914,7 @@ const navigations = [
               hidePeriod: true,
             },
           },
-           {
+          {
             name: "Product Price List Details",
             path: "/material/sales-product-price-list-details-table",
             icon: "arrow_forward",
@@ -927,7 +927,7 @@ const navigations = [
               hidePeriod: true,
             },
           },
-         {
+          {
             name: "Salesman",
             path: "/Sales/material/salesman",
             icon: "arrow_forward",
@@ -977,8 +977,8 @@ const navigations = [
               hidePeriod: true,
             },
           },
-           {
-            name: "Product Wise Packing" ,
+          {
+            name: "Product Wise Packing",
             path: "/material/sales-product-wise-packing-table",
             icon: "arrow_forward",
           },
@@ -1710,26 +1710,41 @@ const navigations = [
             name: "Maintenance Category Deails",
             path: "/material/maintenance-maintenance-category-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Root Cause Details",
             path: "/material/maintenance-root-cause-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Maintenance Reason Master",
             path: "/material/maintenance-reason-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Machines Spares Details ",
             path: "/material/production-breakdown-detail-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Preventive Maintenance Scheduling",
             path: "/material/maintenance-preventive-maintenance-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
