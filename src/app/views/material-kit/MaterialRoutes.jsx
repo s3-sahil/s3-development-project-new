@@ -3458,6 +3458,8 @@ const materialRoutes = [
   {
     path: "/material/Item-Material-Grade-form/add",
     element: <ItemMaterialGradeForm />,
+  },
+  { 
     path: "/material/sales-product-wise-packing-table",
     element: <ProductWisePackingTable />,
   },
