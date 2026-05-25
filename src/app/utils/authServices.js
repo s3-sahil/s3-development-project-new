@@ -1938,7 +1938,6 @@ export const UpdateScheduleDetails = async (payload) => {
   }
 };
 
-<<<<<<< HEAD
 export const getCustomerList = async () => {
   try {
     const response = await axiosInstance.get(
@@ -1987,23 +1986,6 @@ export const updateCustomerDetail = async (customerData) => {
     throw new Error(
       error.response?.data?.message ||
       "Failed to update Customer Detail."
-    );
-  }
-};
-
-export const deleteCustomerDetail = async (custCode) => {
-  try {
-    const response = await axiosInstance.delete(
-      `/API/SD/CUSTOMER_DETAIL/DELETE-CUSTOMER_DETAIL/${custCode}`
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error("Delete Error:", error.response || error.message);
-
-    throw new Error(
-      error.response?.data?.message ||
-      "Failed to delete Customer Detail."
     );
   }
 };
@@ -2151,7 +2133,6 @@ export const getProjectExecutionList = async (po_id, item_Code,Proj_code) => {
     throw new Error("Failed to fetch Daily Activity Plan");
   }
 };
-=======
 
 export const getSchDropdown  = async (value) => {
     try {
@@ -2189,4 +2170,3 @@ export const GroupDetailsSave = async (saveData) => {
         throw new Error(error.response?.data?.message || "Failed to add Schedule.");
     }
 };
->>>>>>> Prakash-developer

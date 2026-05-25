@@ -64,43 +64,6 @@ export default function GroupDetailsTable() {
     // };
   
 
-<<<<<<< HEAD
-  const [rows, setRows] = useState([
-    {
-      id: 1,
-      groupCode: "GRP001",
-      belongsTo: "Finance",
-      subGroupApplicable: true,
-      desc: "Accounts Group",
-      category: "Assets",
-      schedule: "Schedule I",
-    },
-    {
-      id: 2,
-      groupCode: "GRP002",
-      belongsTo: "Operations",
-      subGroupApplicable: false,
-      desc: "Production Group",
-      category: "Expenses",
-      schedule: "Schedule II",
-    },
-  ]);
-
-  const handleDelete = (id) => setRows(rows.filter((row) => row.id !== id));
-
-  const columns = [
-    { field: "groupCode", headerName: "Group Code", flex: 1 },
-    { field: "belongsTo", headerName: "Group Belongs To", flex: 2 },
-    {
-      field: "subGroupApplicable",
-      headerName: "Sub Group Applicable",
-      flex: 1,
-      renderCell: (params) => (params.value ? "Yes" : "No"),
-    },
-    { field: "desc", headerName: "Group Desc", flex: 2 },
-    { field: "category", headerName: "Group Category", flex: 1 },
-    { field: "schedule", headerName: "Schedule", flex: 1 },
-=======
   //const handleDelete = (id) => setRows(rows.filter((row) => row.id !== id));
 
   const columns = [
@@ -110,7 +73,6 @@ export default function GroupDetailsTable() {
     { field: "gr_indicator_cd", headerName: "Indicator", flex: 1, renderCell: (params) => (params.value ? "Yes" : "No") },
     { field: "SubGroupFlag", headerName: "Sub Group", flex: 1 },
     { field: "sch_no", headerName: "Schedule", flex: 1 },
->>>>>>> Prakash-developer
     {
       field: "actions",
       headerName: "Actions",
@@ -167,14 +129,6 @@ export default function GroupDetailsTable() {
           </Button>
         </Box>
 
-<<<<<<< HEAD
-        <Box sx={{ height: 500 }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10]}
-=======
         <Box sx={{ height: 620 }}>
           <DataGrid 
           rows={rows}
@@ -188,7 +142,6 @@ export default function GroupDetailsTable() {
               setPage(model.page);
               setPageSize(model.pageSize);
             }}
->>>>>>> Prakash-developer
           />
         </Box>
       </Stack>

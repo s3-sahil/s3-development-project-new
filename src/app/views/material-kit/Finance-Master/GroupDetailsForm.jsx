@@ -13,11 +13,7 @@ import {
   Alert
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-<<<<<<< HEAD
-import { deleteGroupDetailsAPI } from "app/utils/materialMaterialServices";
-=======
 import { getgr_indicatorDropdown, getSchDropdown, GroupDetailsSave } from "app/utils/authServices";
->>>>>>> Prakash-developer
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -66,34 +62,6 @@ export default function GroupDetailsForm() {
     }
   };
 
-<<<<<<< HEAD
-  const handleDelete = async () => {
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete Group Code ${formData.Group_code}?`,
-    );
-
-    if (!confirmDelete) return;
-
-    try {
-      setLoading(true);
-
-      const res = await deleteGroupDetailsAPI(formData.Group_code);
-
-      alert(
-        res?.message ||
-          res?.Errormessage ||
-          res?.error ||
-          "Deleted successfully",
-      );
-
-      navigate("/finance/Group-Details-Table");
-    } catch (err) {
-      alert("Delete failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-=======
 const [scheduleOptions, setScheduleOptions] = useState([]);
 const [grIndicatorOptions, setGrIndicatorOptions] = useState([]);
 
@@ -217,7 +185,6 @@ const handleCategoryChange = async (e) => {
 
     
 
->>>>>>> Prakash-developer
 
   return (
     <Container maxWidth="xl">
@@ -238,43 +205,14 @@ const handleCategoryChange = async (e) => {
             </Snackbar>
       <Box sx={{ p: 3, borderRadius: 2 }}>
         {/* Header */}
-<<<<<<< HEAD
-        <Box display="flex" justifyContent="space-between" mb={2}>
-          <Typography variant="h5" fontWeight={600}></Typography>
-
-          {mode === "delete" ? (
-            <Button
-              variant="contained"
-              color="error"
-              startIcon={<Icon>delete</Icon>}
-              onClick={handleDelete}
-              disabled={loading}
-            >
-              {loading ? "Deleting..." : "Delete"}
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              startIcon={<Icon>save</Icon>}
-              // onClick={handleSave}
-              disabled={loading}
-            >
-              {loading ? "Saving..." : "Save"}
-            </Button>
-          )}
-=======
         <Box display="flex" justifyContent="space-between" mb={2} alignItems="center">
           <Typography variant="h5" fontWeight="bold">Group Details</Typography>
           <Button variant="contained" onChange={handleSave} startIcon={<Icon>save</Icon>}>Save</Button>
->>>>>>> Prakash-developer
         </Box>
 
         {/* Form */}
         <Grid container spacing={2}>
-<<<<<<< HEAD
-=======
           {/* <Grid item xs={4}><TextField label="Group Code" size="small" fullWidth value={formData.groupCode} onChange={handleChange("groupCode")} /></Grid> */}
->>>>>>> Prakash-developer
           <Grid item xs={4}>
             <TextField
               label="Group Code"
@@ -282,22 +220,6 @@ const handleCategoryChange = async (e) => {
               fullWidth
               value={formData.groupCode}
               onChange={handleChange("groupCode")}
-<<<<<<< HEAD
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              select
-              label="Group Belongs To"
-              size="small"
-              fullWidth
-              value={formData.belongsTo}
-              onChange={handleChange("belongsTo")}
-            >
-              <MenuItem value="Finance">Finance</MenuItem>
-              <MenuItem value="Operations">Operations</MenuItem>
-              <MenuItem value="HR">HR</MenuItem>
-=======
               InputProps={{
                     readOnly: true,
                   }}
@@ -365,60 +287,12 @@ const handleCategoryChange = async (e) => {
                   {item.sch_desc}
                 </MenuItem>
               ))}
->>>>>>> Prakash-developer
             </TextField>
           </Grid>
           <Grid item xs={4}>
             <FormControlLabel
               control={
                 <Checkbox
-<<<<<<< HEAD
-                  checked={formData.subGroupApplicable}
-                  onChange={handleCheckboxChange}
-                />
-              }
-              label="Sub Group Applicable"
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              label="Group Desc"
-              size="small"
-              fullWidth
-              value={formData.desc}
-              onChange={handleChange("desc")}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              select
-              label="Group Category"
-              size="small"
-              fullWidth
-              value={formData.category}
-              onChange={handleChange("category")}
-            >
-              <MenuItem value="Assets">Assets</MenuItem>
-              <MenuItem value="Liabilities">Liabilities</MenuItem>
-              <MenuItem value="Expenses">Expenses</MenuItem>
-              <MenuItem value="Income">Income</MenuItem>
-            </TextField>
-          </Grid>
-          <Grid item xs={3}>
-            <TextField
-              select
-              label="Schedule"
-              size="small"
-              fullWidth
-              value={formData.schedule}
-              onChange={handleChange("schedule")}
-            >
-              <MenuItem value="Schedule I">Schedule I</MenuItem>
-              <MenuItem value="Schedule II">Schedule II</MenuItem>
-              <MenuItem value="Schedule III">Schedule III</MenuItem>
-            </TextField>
-          </Grid>
-=======
                   checked={formData.gplflag}
                   name="gplflag"
                   onChange={handleCheckboxChange}
@@ -427,7 +301,6 @@ const handleCategoryChange = async (e) => {
               label="GPL Flag"
             />
           </Grid>
->>>>>>> Prakash-developer
         </Grid>
 
         {/* Actions */}
@@ -447,16 +320,8 @@ const handleCategoryChange = async (e) => {
             Added Groups
           </Typography>
           {records.map((rec) => (
-<<<<<<< HEAD
-            <Box
-              key={rec.id}
-              sx={{ p: 1, border: "1px solid #ccc", borderRadius: 1, mb: 1 }}
-            >
-              <Typography>{`${rec.groupCode} | ${rec.belongsTo} | SubGroup: ${rec.subGroupApplicable ? "Yes" : "No"} | ${rec.desc} | ${rec.category} | ${rec.schedule}`}</Typography>
-=======
             <Box key={rec.id} sx={{ p: 1, border: "1px solid #ccc", borderRadius: 1, mb: 1 }}>
               <Typography>{`${rec.groupCode} | ${rec.belongsTo} | ${rec.subGroupApplicable ? "Yes" : "No"} | ${rec.desc} | ${rec.category} | ${rec.subGroupApplicable ? "Yes" : "No"} | ${rec.schedule}`}</Typography>
->>>>>>> Prakash-developer
             </Box>
           ))}
         </Box>

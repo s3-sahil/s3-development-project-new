@@ -103,8 +103,6 @@ export default function FirebaseLogin() {
 
         // ✅ SET DATA FOR MODAL
         setDivisions(JsonData.Divisions || []);
-<<<<<<< HEAD
-=======
         const defaultDivision = JsonData.Divisions?.[0]?.PROFCEN_CD;
 
         const selectedDivisionData =
@@ -117,7 +115,6 @@ export default function FirebaseLogin() {
           "selectedDivisionData",
           JSON.stringify(selectedDivisionData),
         );
->>>>>>> Prakash-developer
 
         const fyList = JsonData.FINANCE_YEAR || [];
         setFinanceYears(fyList);

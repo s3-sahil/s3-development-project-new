@@ -120,7 +120,6 @@ import SubGroupDetailsTable from "./Finance-Master/SubGroupDetailsTable";
 import SubGroupDetailsForm from "./Finance-Master/SubGroupDetailsForm";
 import TDSParameterTable from "./Finance-Master/TDSParameterTable";
 import TDSParameterForm from "./Finance-Master/TDSParameterForm";
-<<<<<<< HEAD
 import CustomersPurchaseOrderLoginTable from "./Sales-Transaction/customersPurchaseOrderLoginTable";
 import UOMTable from "./Material-Master/UOMTable";
 import UOMForm from "./Material-Master/UOMForm";
@@ -128,12 +127,10 @@ import InspectionParameterTable from "./Material-Master/InspectionParameterTable
 import InspectionParameterForm from "./Material-Master/InspectionParameterForm";
 import ItemMaterialGradeTable from "./Material-Master/ItemMaterialGradeTable";
 import ItemMaterialGradeForm from "./Material-Master/ItemMaterialGradeForm";
-=======
 import ProductWisePackingForm from "./Sales-Master/ProductWisePackingForm";
 import ProductWisePackingTable from "./Sales-Master/ProductWisePackingTable";
 import ProductPriceListTable from "./Sales-Master/ProductPriceListTable";
 import ProductPriceListDetailsForm from "./Sales-Master/ProductPriceListDetailsForm";
->>>>>>> Prakash-developer
 // import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
 // import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
 // import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
@@ -3407,7 +3404,6 @@ const materialRoutes = [
     element: <TDSParameterForm />,
   },
   {
-<<<<<<< HEAD
     path: "/material/Purchase-Order-Table",
     element: <PurchaseOrderTable />,
   },
@@ -3462,7 +3458,6 @@ const materialRoutes = [
   {
     path: "/material/Item-Material-Grade-form/add",
     element: <ItemMaterialGradeForm />,
-=======
     path: "/material/sales-product-wise-packing-table",
     element: <ProductWisePackingTable />,
   },
@@ -3485,7 +3480,6 @@ const materialRoutes = [
   {
     path: "/material/sales-product-price-list-details-form/add",
     element: <ProductPriceListDetailsForm />,
->>>>>>> Prakash-developer
   },
 ];
 
