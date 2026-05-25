@@ -1,9 +1,17 @@
 import { Box, Container, TextField, Button, Icon, Grid, Paper } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {  ProjectActivityAdd, ProjectActivityEdit} from "app/utils/authServices";
+import { useLocation, useNavigate } from "react-router-dom";
+
 
 const ProjectActivityMasterForm = () => {
+  const location = useLocation(); // for edit data
+
+  const [actionMode, setActionMode] = useState("new"); // new | edit
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     activityCode: "",
     activityDescription: "",
@@ -14,10 +22,75 @@ const ProjectActivityMasterForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Project Activity Master Save:", formData);
-    alert("Saved (UI Only)");
-  };
+    // 🔹 If Edit mode, fetch full record
+    const fetchEditData = async (Activity_code) => {
+      try {
+        const res = await ProjectActivityEdit(Activity_code);
+  
+        if (res?.data) {
+          const data = res.data;
+          setFormData({
+            activityCode: data.activity_code ?? "",
+            activityDescription: data.description ?? ""
+          });
+        }
+      } catch (error) {
+        console.error("Edit fetch error:", error);
+      }
+    };
+  
+
+
+  // 🔹 On load
+    useEffect(() => {
+  
+      // If coming from Edit
+      if (location.state?.Activity_code) {
+        setActionMode("edit");
+        fetchEditData(location.state.Activity_code);
+      }
+    }, []);
+
+   // 🔹 Save (Add / Update)
+    const handleSave = async () => {
+      if (
+        !formData.activityCode ||
+        !formData.activityDescription 
+      ) {
+        alert("Please fill all required fields");
+        return;
+      }
+  
+      const nameParts = formData.activityDescription.trim().split(" ");
+  
+      const payload = {
+        activity_code: formData.activityCode,
+        description: formData.activityDescription
+      };
+  
+      try {
+        setLoading(true);
+  
+        const result =  await ProjectActivityAdd(payload); // same API for add/update
+
+            if (result) {
+              alert(result.message || "Project Activity Saved Successfully");
+              navigate("/material/sales-project-activity-master-table"); // go back to table
+            }
+
+            // alert(
+            // actionMode === "edit"
+            //   ? "Project Activity updated successfully!"
+            //   : "Project Activity added successfully!"
+            // );  
+  
+      } catch (error) {
+        console.error("Save Error:", error);
+        alert("Failed to save Project Activity");
+      } finally {
+        setLoading(false);
+      }
+    };
 
   return (
     <Container maxWidth="xl">
@@ -32,8 +105,9 @@ const ProjectActivityMasterForm = () => {
             variant="contained"
             startIcon={<Icon>save</Icon>}
             onClick={handleSave}
+            disabled={loading}
           >
-            Save
+              <Span>{actionMode === "edit" ? "Update" : "Save"}</Span>
           </Button>
         </Box>
         <Grid container spacing={3}>

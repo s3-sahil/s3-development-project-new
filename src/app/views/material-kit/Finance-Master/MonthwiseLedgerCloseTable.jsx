@@ -70,7 +70,7 @@ export default function MonthwiseLedgerCloseTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 500 }}>
+        <Box sx={{ height: 620 }}>
           <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5, 10]} />
         </Box>
       </Stack>

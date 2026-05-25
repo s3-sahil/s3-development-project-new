@@ -40,10 +40,10 @@ export const addSalesman = async (salesmanData) => {
     }
 };
 
-export const fetchEmployeesDropdown = async (profcen_cd) => {
+export const fetchEmployeesDropdown = async (profcen_cd, saleEmp = false) => {
     try {
         const { data } = await axiosInstance.get(
-            `/api/Master/Fetch-Employees-dropdown?Profcen_cd=${profcen_cd}`
+            `/api/Master/Fetch-Employees-dropdown?Profcen_cd=${profcen_cd}&salesmanEmpDrp=${saleEmp}`
         );
         return data.Data || []; // ✅ return just the array
     } catch (error) {
@@ -359,6 +359,296 @@ export const SalesmanPaginationAPI = async (
     }
 };
 
+
+export const FI_ScheduleDTLPaginationAPI = async (
+    tableName = "sch",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("sch Finance Master Schedule pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const GroupDTLPaginationAPI = async (
+    tableName = "Group_master",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Group_master Finance Master Group Details pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const SubGroup_master_PaginationAPI = async (
+    tableName = "SubGroup_master",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("SubGroup_master Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const account_master_PaginationAPI = async (
+    tableName = "account_master",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("account_master Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const Bank_master_PaginationAPI = async (
+    tableName = "Bank_master",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Bank_master Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const TDS_PARA_PaginationAPI = async (
+    tableName = "TDS_PARA",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("TDS_PARA Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const DEPRECIATION_PARA_PaginationAPI = async (
+    tableName = "DEPRECIATION_PARA",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("DEPRECIATION_PARA Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const advance_master_PaginationAPI = async (
+    tableName = "advance_master",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("advance_master Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const CROS_MST_PaginationAPI = async (
+    tableName = "CROS_MST",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("CROS_MST Finance Master pagination fetch error:", error);
+        return null;
+    }
+};
+
+
+
+
+export const deleteSchedule = async (empCode) => {
+    try {
+        const response = await axiosInstance.delete(
+            `/?Emp_no=${empCode}`
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("Delete Error:", error.response || error.message);
+
+        throw new Error(
+            error.response?.data?.message ||
+            "Failed to delete Schedule Detail."
+        );
+    }
+};
+
+export const deleteGroupDTL = async (empCode) => {
+    try {
+        const response = await axiosInstance.delete(
+            `/?Emp_no=${empCode}`
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("Delete Error:", error.response || error.message);
+
+        throw new Error(
+            error.response?.data?.message ||
+            "Failed to delete Group Detail."
+        );
+    }
+};
+
 export const salesmanDetailsEdit = async (empNo) => {
     try {
         const response = await axiosInstance.get(
@@ -395,34 +685,34 @@ export const salesmanDetailsEdit = async (empNo) => {
     }
 };
 
-export const Employeelistapichange = async (profcen_cd) => {
-    try {
-        const response = await axiosInstance.get(
-            "/api/Master/Fetch-Employees-dropdown",
-            {
-                params: { Profcen_cd: profcen_cd },
-            }
-        );
+// export const Employeelistapichange = async (profcen_cd) => {
+//     try {
+//         const response = await axiosInstance.get(
+//             "/api/Master/Fetch-Employees-dropdown",
+//             {
+//                 params: { Profcen_cd: profcen_cd },
+//             }
+//         );
 
-        const data = response.data;
+//         const data = response.data;
 
-        console.log("API Response Data:", data);
+//         console.log("API Response Data:", data);
 
-        // Lowercase top-level keys
-        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
-            acc[key.toLowerCase()] = data[key];
-            return acc;
-        }, {});
+//         // Lowercase top-level keys
+//         const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+//             acc[key.toLowerCase()] = data[key];
+//             return acc;
+//         }, {});
 
-        return lowerCaseResponse; // { data: [...] }
-    } catch (error) {
-        console.error(
-            "Error fetching dropdown data:",
-            error.response || error.message
-        );
-        return { data: [] };
-    }
-};
+//         return lowerCaseResponse; // { data: [...] }
+//     } catch (error) {
+//         console.error(
+//             "Error fetching dropdown data:",
+//             error.response || error.message
+//         );
+//         return { data: [] };
+//     }
+// };
 
 export const customerDetailPaginationAPI = async (
     tableName = "cust_mst",
@@ -499,21 +789,21 @@ export const employeeSalaryApi = async (salaryData) => {
 };
 
 export const saveTmsParameter = async (tmsData) => {
-  try {
-    const response = await axiosInstance.post(
-      "/API/TMS/TMS_PARAMETER/ADD-TMSPARAMETER",
-      tmsData
-    );
+    try {
+        const response = await axiosInstance.post(
+            "/API/TMS/TMS_PARAMETER/ADD-TMSPARAMETER",
+            tmsData
+        );
 
-    return response.data;
-  } catch (error) {
-    console.error("API Error:", error.response || error.message);
+        return response.data;
+    } catch (error) {
+        console.error("API Error:", error.response || error.message);
 
-    throw new Error(
-      error.response?.data?.message || 
-      "Failed to save TMS Parameter."
-    );
-  }
+        throw new Error(
+            error.response?.data?.message ||
+            "Failed to save TMS Parameter."
+        );
+    }
 };
 
 export const TMSParameterPaginationAPI = async (
@@ -548,103 +838,1107 @@ export const TMSParameterPaginationAPI = async (
     }
 };
 
-export const saveRotationDetails = async (rotationData) => {
-  try {
-    const response = await axiosInstance.post(
-      "/API/TMS/ROTATION_DETAILS/ADD-ROTATIONDETAILS",
-      rotationData
-    );
 
-    return response.data;
-  } catch (error) {
-    console.error("API Error:", error.response || error.message);
+export const saveCardDetails = async (cardData) => {
+    try {
+        const response = await axiosInstance.post(
+            "/API/TMS/CARD_DETAILS/ADD-CARDETAILS?Card_No=" + cardData,
+        );
 
-    throw new Error(
-      error.response?.data?.message || 
-      "Failed to Save Rotation Details."
-    );
-  }
+        return response.data;
+    } catch (error) {
+        console.error("API Error:", error.response || error.message);
+
+        throw new Error(
+            error.response?.data?.message ||
+            "Failed to save Card Details."
+        );
+    }
 };
 
-export const fetchShift = async () => {
-  try {
 
-    const response = await axiosInstance.get(
-      "/api/Master/FETCH-SHIFT"
-    );
+export const CardDetailPaginationAPI = async (
+    tableName = "Card_Mst",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
 
-    return response.data;
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
 
-  } catch (error) {
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Card Details pagination fetch error:",
+            error.response || error.message
+        );
 
-    console.error("API Error:", error.response || error.message);
-
-    throw new Error(
-      error.response?.data?.message ||
-      "Failed to fetch shift details."
-    );
-
-  }
+        return { Data: [], TotalCount: 0 };
+    }
 };
 
-export const saveRoute = async (routeDtails) => {
-  try {
+export const ProjectActivityPaginationAPI = async (
+    tableName = "Project_activity",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
 
-    const response = await axiosInstance.post(
-      "/API/TMS/ROUTE_DETAILS/ADD-ROUTEDETAILS",
-      routeDtails
-    );
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
 
-    return response.data;
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Customer pagination fetch error:",
+            error.response || error.message
+        );
 
-  } catch (error) {
-
-    console.error("API Error:", error.response || error.message);
-
-    throw new Error(
-      error.response?.data?.message ||
-      "Failed to save route details. Please try again."
-    );
-
-  }
+        return { Data: [], TotalCount: 0 };
+    }
 };
 
-export const manualPunchingSave = async (leadObj) => {
-  try {
-    const response = await axiosInstance.post(
-      "/API/TMS/MANUAL_PUNCHING/ADD-MANUALPUNCHING",
-      leadObj
-    );
+// export const saveCustomerDetail = async (customerData) => {
+//   try {
+//     const response = await axiosInstance.post(
+//       "/API/SD/CUSTOMER_DETAIL/ADD-CUSTOMER_DETAIL_ALL",
+//       customerData
+//     );
 
-    return response.data;
-  } catch (error) {
-    console.error("API Error:", error.response || error.message);
+//     return response.data;
+//   } catch (error) {
+//     console.error("API Error:", error.response);
 
-    throw new Error(
-      error.response?.data?.message ||
-      "Failed to save manual punching data. Please try again."
-    );
-  }
+//     throw new Error(
+//       error.response?.data?.message ||
+//       "Failed to save Customer Detail."
+//     );
+//   }
+// };
+
+export const CUSTOMER_DETAILPaginationAPI = async (
+    tableName = "",
+    pageNumber = 1,
+    pageSize = 10,    
+    orderBy = ""
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                    orderBy
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Customer Detail pagination fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
 };
 
 export const saveCustomerDetail = async (customerData) => {
+    try {
+        const response = await axiosInstance.post(
+            "/API/SD/CUSTOMER_DETAIL/ADD-CUSTOMER_DETAIL",
+            customerData
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("API Error:", error.Message);
+
+        throw new Error(
+            error.response?.data?.message ||
+            "Failed to save Customer Detail."
+        );
+    }
+};
+
+
+
+export const ProjectActivityAdd = async (payload) => {
+    try {
+        console.log("Calling Project Activity Add API with:", payload);
+
+        const response = await axiosInstance.post(
+            "ADD-PROJECT_ACTIVITY", // relative to baseURL
+            payload
+        );
+
+
+        console.log("Project Activity Add API Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Project Activity Add API Error:", error.response || error.message);
+
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+
+        throw new Error("Failed to add Project Activity. Please try again.");
+    }
+};
+
+
+export const ProjectActivityEdit = async (Activity_code) => {
+    try {
+        const response = await axiosInstance.get(
+            "/GETRETRIVE-PROJECT_ACTIVITY",
+            {
+                params: { Activity_code: Activity_code },
+            }
+        );
+
+        const data = response.data;
+        console.log("API Response Data:", data);
+
+        // Lowercase top-level keys
+        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+            acc[key.toLowerCase()] = data[key];
+            return acc;
+        }, {});
+
+        // Lowercase nested Data keys
+        const normalizedData = Object.keys(
+            lowerCaseResponse.data || {}
+        ).reduce((acc, key) => {
+            acc[key.toLowerCase()] = lowerCaseResponse.data[key];
+            return acc;
+        }, {});
+
+        return { data: normalizedData };
+    } catch (error) {
+        console.error(
+            "Project Activity Edit API Error:",
+            error.response || error.message
+        );
+        return { data: {} };
+    }
+};
+
+export const ContractReviewChecklistPaginationAPI = async (
+    tableName = "contract_review_checklist",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Contract Review Checklist pagination fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
+};
+
+export const deleteSalesman = async (empCode) => {
+    try {
+        const response = await axiosInstance.delete(
+            `/DELETE-SALESMAN_DETAILS?Emp_no=${empCode}`
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("Delete Error:", error.response || error.message);
+
+        throw new Error(
+            error.response?.data?.message ||
+            "Failed to delete Salesman Detail."
+        );
+    }
+};
+
+
+export const deleteCustomerDetail = async (empCode) => {
+    try {
+        const response = await axiosInstance.delete(
+            `/${empCode}`
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("Delete Error:", error.response || error.message);
+
+        throw new Error(
+            error.response?.data?.message ||
+            "Failed to delete Customer Detail."
+        );
+    }
+};
+
+
+// export const salesmanDetailsAdd = async (payload) => {
+//     try {
+//         console.log("Calling Salesman Add API with:", payload);
+
+//         const response = await axiosInstance.post(
+//             "/ADD-SALESMAN_DETAILS", // relative to baseURL
+//             payload
+//         );
+
+//         console.log("Salesman Add API Response:", response.data);
+//         return response.data;
+//     } catch (error) {
+//         console.error("Salesman Add API Error:", error.response || error.message);
+
+//         if (error.response?.data?.message) {
+//             throw new Error(error.response.data.message);
+//         }
+
+//         throw new Error("Failed to add salesman. Please try again.");
+//     }
+// };
+
+export const ContractReviewChecklistDetailsAdd = async (payload) => {
+    try {
+        console.log("Calling ContractReviewChecklistDetailsAdd Add API with:", payload);
+
+        const response = await axiosInstance.post(
+            "/ADD-CONTACT_REVIEW_CHECKLIST", // relative to baseURL
+            payload
+        );
+
+        console.log("ContractReviewChecklistDetailsAdd Add API Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("ContractReviewChecklistDetailsAdd Add API Error:", error.response || error.message);
+
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+
+        throw new Error("Failed to add salesman. Please try again.");
+    }
+};
+
+// GET ContactReviewCheckList
+export const ContactReviewCheckListEdit = async (check_list_code) => {
+    try {
+        const response = await axiosInstance.get(
+            "/GETRETRIVE-CONTACT_REVIEW_CHECKLIST",
+            {
+                params: { check_list_code: check_list_code },
+            }
+        );
+
+        const data = response.data;
+        console.log("API Response Data:", data);
+
+        // Lowercase top-level keys
+        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+            acc[key.toLowerCase()] = data[key];
+            return acc;
+        }, {});
+
+        // Lowercase nested Data keys
+        const normalizedData = Object.keys(
+            lowerCaseResponse.data || {}
+        ).reduce((acc, key) => {
+            acc[key.toLowerCase()] = lowerCaseResponse.data[key];
+            return acc;
+        }, {});
+
+        return { data: normalizedData };
+    } catch (error) {
+        console.error(
+            "Contect Review Checklist Edit API Error:",
+            error.response || error.message
+        );
+        return { data: {} };
+    }
+};
+
+export const ConsigneeTablePaginationAPI = async (
+    tableName = "Cust_Consignee",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Consignee Detail pagination fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
+};
+
+export const ConsigneeFormSAVE = async (payload) => {
+    try {
+        console.log("Calling Consignee Add API with:", payload);
+
+        const response = await axiosInstance.post(
+            "API/SD/CONSIGNEE_DETAIL/ADD-CONSIGNEE_DETAIL", // relative to baseURL
+            payload
+        );
+
+
+        console.log("Consignee Add API Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Consignee Add API Error:", error.response || error.message);
+
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+
+        throw new Error("Failed to add Consignee. Please try again.");
+    }
+};
+
+
+export const fetchCustomerList = async () => {
+
+    try {
+        const { data } = await axiosInstance.get(
+            `api/Master/FETCH-CUSTOMER`
+        );
+        return data.Data || []; // ✅ return just the array
+    } catch (error) {
+        console.error("Error fetching dropdown data:", error);
+        return [];
+    }
+};
+
+export const fetch_state = async () => {
+
+    try {
+        const { data } = await axiosInstance.get(
+            `api/Master/Fetch-State`
+        );
+        return data.Data || []; // ✅ return just the array
+    } catch (error) {
+        console.error("Error fetching dropdown data:", error);
+        return [];
+    }
+};
+
+
+export const Fetch_District = async () => {
+
+    try {
+        const { data } = await axiosInstance.get(
+            `api/Master/Fetch-District`
+        );
+        return data.Data || []; // ✅ return just the array
+    } catch (error) {
+        console.error("Error fetching dropdown data:", error);
+        return [];
+    }
+};
+
+
+export const Fetch_Country = async () => {
+
+    try {
+        const { data } = await axiosInstance.get(
+            `api/Master/Fetch-Country_code_mst`
+        );
+        return data.Data || []; // ✅ return just the array
+    } catch (error) {
+        console.error("Error fetching dropdown data:", error);
+        return [];
+    }
+};
+
+export const Fetch_Project_activity = async () => {
+
+    try {
+        const { data } = await axiosInstance.get(
+            `api/Master/Fetch-Project_activity`
+        );
+        return data.Data || []; // ✅ return just the array
+    } catch (error) {
+        console.error("Error fetching dropdown data:", error);
+        return [];
+    }
+};
+
+export const Fetch_PAYCOND = async () => {
+
+    try {
+        const { data } = await axiosInstance.get(
+            `api/Master/FETCH-PAYCOND`
+        );
+        return data.Data || []; // ✅ return just the array
+    } catch (error) {
+        console.error("Error fetching dropdown data:", error);
+        return [];
+    }
+};
+
+export const ProductPriceListPaginationAPI = async (
+    tableName = "PriceList",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Product Price List Details pagination fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
+};
+
+// GET Product Price List
+export const ProductPriceListEdit = async (ITEM_CODE, batchqty) => {
+    try {
+        const response = await axiosInstance.get(
+            "/API/SD/PRODUCT_PRICE_LIST_DETAILS/GETRETRIVE-PRODUCT_PRICE_LIST_DETAILS",
+            {
+                params: { ITEM_CODE: ITEM_CODE , batchqty: batchqty}
+            }
+        );
+
+        const data = response.data;
+        console.log("API Response Data:", data);
+
+        // Lowercase top-level keys
+        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+            acc[key.toLowerCase()] = data[key];
+            return acc;
+        }, {});
+
+        // Lowercase nested Data keys
+        const normalizedData = Object.keys(
+            lowerCaseResponse.data || {}
+        ).reduce((acc, key) => {
+            acc[key.toLowerCase()] = lowerCaseResponse.data[key];
+            return acc;
+        }, {});
+
+        return { data: normalizedData };
+    } catch (error) {
+        console.error(
+            "Product Price List Edit API Error:",
+            error.response || error.message
+        );
+        return { data: {} };
+    }
+};
+
+
+export const ProductPriceListSAVE = async (payload) => {
+    try {
+        console.log("Calling Consignee Add API with:", payload);
+
+        const response = await axiosInstance.post(
+            "API/SD/PRODUCT_PRICE_LIST_DETAILS/ADD-PRODUCT_PRICE_LIST_DETAILS", // relative to baseURL
+            payload
+        );
+
+
+        console.log("Product Price List Add API Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Product Price List Add API Error:", error.response || error.message);
+
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+
+        throw new Error("Failed to add Product Price List. Please try again.");
+    }
+};
+
+export const ProjectExecutionPlan_PaginationAPI = async (
+    tableName = "Project_execution_Head",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Project Execution Plan pagination fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
+};
+
+export const ProjectExecutionPlan_SAVE = async (payload) => {
+    try {
+        console.log("Calling Consignee Add API with:", payload);
+
+        const response = await axiosInstance.post(
+            "ADD-PROJECT_EXECUTION_PLAN", // relative to baseURL
+            payload
+        );
+
+
+        console.log("Project Execution Plan Add API Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Project Execution Plan Add API Error:", error.response || error.message);
+
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+
+        throw new Error("Failed to add Project Execution Plan. Please try again.");
+    }
+};
+
+export const ProjectExecutionPlan_Update = async (payload) => {
+    try {
+        console.log("Calling Execution Update API with:", payload);
+
+        const response = await axiosInstance.post(
+            "UPDATE-PROJECT_EXECUTION_PLAN", // relative to baseURL
+            payload
+        );
+
+
+        console.log("Project Execution Plan Update API Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Project Execution Plan Update API Error:", error.response || error.message);
+
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+
+        throw new Error("Failed to Update Project Execution Plan. Please try again.");
+    }
+};
+
+// GET Product Price List
+export const ProjectExecutionPlanRetrieve = async (po_id, item_Code, Proj_code, profcen_cd) => {
+    try {
+        const response = await axiosInstance.get(
+            "GET-PROJECT_EXECUTION_PLAN",
+            {
+                params: { po_id, item_Code, Proj_code, profcen_cd}
+            }
+        );
+
+        const data = response.data;
+        console.log("API Response Data:", data);
+
+        // Lowercase top-level keys
+        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+            acc[key.toLowerCase()] = data[key];
+            return acc;
+        }, {});
+
+        // Lowercase nested Data keys
+        const normalizedData = Object.keys(
+            lowerCaseResponse.data || {}
+        ).reduce((acc, key) => {
+            acc[key.toLowerCase()] = lowerCaseResponse.data[key];
+            return acc;
+        }, {});
+
+        return { data: normalizedData };
+    } catch (error) {
+        console.error(
+            "PROJECT_EXECUTION_PLAN Edit API Error:",
+            error.response || error.message
+        );
+        return { data: {} };
+    }
+};
+
+export const ProjectExecutionPlan_Delete = async (r) => {
+    try {
+        const response = await axiosInstance.delete(
+            `/DELETE-PROJECT_EXECUTION_PLAN`,
+            {
+                params: {
+                    po_id: r.po_id,
+                    item_Code: r.item_Code,
+                    Proj_code: r.Proj_code,
+                    profcen_cd: r.profcen_cd
+                }
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("Delete Error:", error.response || error.message);
+
+        throw new Error(
+            error.response?.data?.message ||
+            "Failed to delete Salesman Detail."
+        );
+    }
+};
+
+export const fetch_POIDItemCodeDropdown = async (Cust_code) => {
+    try {
+        const { data } = await axiosInstance.get(
+            `/Fetch-PROJECT_EXECUTION_PLAN_ITEM_CODE_LIST?Cust_code=${Cust_code}`
+        );
+        return data.Data || []; // ✅ return just the array
+    } catch (error) {
+        console.error("Error fetching dropdown data:", error);
+        return [];
+    }
+};
+
+export const ITEM_CATEGORY_PaginationAPI = async (
+    tableName = "CATEGORY",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "ITEM_CATEGORY pagination fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
+};
+
+export const ITEM_CATEGORY_SAVE = async (payload) => {
+    try {
+        console.log("Calling Consignee Add API with:", payload);
+
+        const response = await axiosInstance.post(
+            "API/MATERIAL/ITEM_CATEGORY_DETAILS/ADD-ITEM_CATEGORY_D", // relative to baseURL
+            payload
+        );
+
+
+        console.log("ITEM_CATEGORY_DETAILS Add API Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error("ITEM_CATEGORY_DETAILS Add API Error:", error.response || error.message);
+
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+
+        throw new Error("Failed to add ITEM_CATEGORY_DETAILS. Please try again.");
+    }
+};
+
+
+export const ConsigneeDetailsEdit = async (cust_code, Con_code) => {
+    try {
+        const response = await axiosInstance.get(
+            "API/SD/CONSIGNEE_DETAIL/GETRETRIVE-CONSIGNEE_DETAIL",
+            {
+                params: { cust_code: cust_code, Con_code: Con_code },
+            }
+        );
+
+        const data = response.data;
+        console.log("API Response Data:", data);
+
+        // Lowercase top-level keys
+        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+            acc[key.toLowerCase()] = data[key];
+            return acc;
+        }, {});
+
+        // Lowercase nested Data keys
+        const normalizedData = Object.keys(
+            lowerCaseResponse.data || {}
+        ).reduce((acc, key) => {
+            acc[key.toLowerCase()] = lowerCaseResponse.data[key];
+            return acc;
+        }, {});
+
+        return { data: normalizedData };
+    } catch (error) {
+        console.error(
+            "Consignee Edit API Error:",
+            error.response || error.message
+        );
+        return { data: {} };
+    }
+};
+
+// GET CUSTOMER
+export const CustomerDetailsEdit = async (cust_code) => {
+    try {
+        const response = await axiosInstance.get(
+            "/API/SD/CUSTOMER_DETAIL/GET-CUSTOMER_DETAIL",
+            {
+                params: { cust_code: cust_code },
+            }
+        );
+
+        const data = response.data;
+        console.log("API Response Data:", data);
+
+        // Lowercase top-level keys
+        const lowerCaseResponse = Object.keys(data).reduce((acc, key) => {
+            acc[key.toLowerCase()] = data[key];
+            return acc;
+        }, {});
+
+        // Lowercase nested Data keys
+        const normalizedData = Object.keys(
+            lowerCaseResponse.data || {}
+        ).reduce((acc, key) => {
+            acc[key.toLowerCase()] = lowerCaseResponse.data[key];
+            return acc;
+        }, {});
+
+        return { data: normalizedData };
+    } catch (error) {
+        console.error(
+            "Costomer Detail Edit API Error:",
+            error.response || error.message
+        );
+        return { data: {} };
+    }
+};
+
+// UPDATE CUSTOMER
+
+export const UpdatedCustomerDetail = async (customerData) => {
+    try {
+        const response = await axiosInstance.post(
+            "/API/SD/CUSTOMER_DETAIL/UPDATE-CUSTOMER_DETAIL",
+            customerData
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("API Error:", error.response);
+
+        throw new Error(
+            error.response?.data?.message ||
+            "*Failed to Update Customer Detail."
+        );
+    }
+};
+
+
+export const fetchCategoryCustomerDetails = async () => {
+
+    try {
+        const { data } = await axiosInstance.get(
+            `api/Master/Fetch-Vendor_Type`
+        );
+        return data.Data || []; // ✅ return just the array
+    } catch (error) {
+        console.error("Error fetching dropdown data:", error);
+        return [];
+    }
+};
+
+export const checkPanExists = async (panNumber) => {
+    try {
+        const { data } = await axiosInstance.get(
+            `/API/SD/CUSTOMER_DETAIL/CHECK-EXIST-PAN_CARD?panNumber=${panNumber}`
+        );
+
+        return data?.Data || data || {};
+    } catch (error) {
+        console.error("Error checking PAN:", error);
+        return {};
+    }
+};
+
+
+export const checkGSTExists = async (GSTnumber) => {
+    try {
+        const { data } = await axiosInstance.get(
+            `/API/SD/CUSTOMER_DETAIL/CHECK-EXIST-GSTNO?GSTnumber=${GSTnumber}`
+        );
+
+        return data?.Data || data || {};
+    } catch (error) {
+        console.error("Error checking GSTnumber:", error);
+        return {};
+    }
+};
+
+export const getCustomerMaxCode = async (firstLetter) => {
+    try {
+        const { data } = await axiosInstance.get(
+            `/API/SD/CUSTOMER_DETAIL/CUSTOMER_DETAIL-MaxCode_By_FLatter?FLatter=${firstLetter}`
+        );
+        return data || {};
+    } catch (error) {
+        console.error("Error fetching max code:", error);
+        return {};
+    }
+};
+
+
+export const fetchIndustry_typeCustomer = async () => {
+
+    try {
+        const { data } = await axiosInstance.get(
+            `api/Master/Fetch-Industry_type`
+        );
+        return data.Data || []; // ✅ return just the array
+    } catch (error) {
+        console.error("Error fetching dropdown data:", error);
+        return [];
+    }
+};
+
+
+export const saveCustomerItemDetails = async (payload) => {
+    try {
+        console.log("Calling Customer Item Details API with:", payload);
+
+        const response = await axiosInstance.post(
+            "/ADD-CUSTOMER_ITEM_DETAILS",
+            payload,
+            {
+                headers: {
+                    "Content-Type": "application/json-patch+json",
+                },
+            }
+        );
+
+        console.log("Customer Item Details API Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error(
+            "Customer Item Details API Error:",
+            error.response || error.message
+        );
+
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+
+        throw new Error("Failed to save Customer Item Details.");
+    }
+};
+
+export const updateCustomerItemDetails = async (payload) => {
+    try {
+        console.log("Calling Update API with:", payload);
+
+        const response = await axiosInstance.post(
+            "/UPDATE-CUSTOMER_ITEM_DETAILS",
+            payload,
+            {
+                headers: {
+                    "Content-Type": "application/json-patch+json",
+                },
+            }
+        );
+
+        console.log("Update API Response:", response.data);
+        return response.data;
+    } catch (error) {
+        console.error(
+            "Update API Error:",
+            error.response || error.message
+        );
+
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+
+        throw new Error("Failed to update Customer Item Details.");
+    }
+};
+
+export const CustomerItemDetailsPaginationAPI = async ({
+    tableName = "Alternate_Item",
+    pageNumber = 1,
+    pageSize = 10,
+    searchString = "",
+    columnNameForSearch = "",
+    orderBy = "",
+    userName = "",
+    profcen_cd = "",
+    financeDTColumn = "",
+    fstartDate = "",
+    fendDate = "",
+} = {}) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                    searchString,
+                    columnNameForSearch,
+                    orderBy,
+                    userName,
+                    Profcen_cd: profcen_cd,
+                    financeDTColumn,
+                    fstartDate,
+                    fendDate,
+                },
+            }
+        );
+
+        if (data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Customer Item pagination error:", error);
+        return null;
+    }
+};
+
+
+export const ScheduleDetailsSave = async (saveData) => {
+    try {
+        const response = await axiosInstance.post("API/FINANCE/SCHEDULE_DETAILS/ADD-SCHEDULE_DETAILS", saveData);
+        return response.data;
+    } catch (error) {
+        console.error("API Error:", error.response || error.message);
+        throw new Error(error.response?.data?.message || "Failed to add Schedule.");
+    }
+};
+
+
+export const UpdateScheduleDetails = async (payload) => {
   try {
-    const response = await axiosInstance.post(
-      "/API/SD/CUSTOMER_DETAIL/ADD-CUSTOMER_DETAIL_ALL",
-      customerData
+    const response = await axiosInstance.put(
+      "/API/FINANCE/SCHEDULE_DETAILS/UPDATE-SCHEDULE_DETAILS",
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      }
     );
 
     return response.data;
   } catch (error) {
-    console.error("API Error:", error.response || error.message);
-
-    throw new Error(
-      error.response?.data?.message ||
-      "Failed to save Customer Detail."
-    );
+    console.error(error);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Update failed",
+    };
   }
 };
 
+<<<<<<< HEAD
 export const getCustomerList = async () => {
   try {
     const response = await axiosInstance.get(
@@ -857,3 +2151,42 @@ export const getProjectExecutionList = async (po_id, item_Code,Proj_code) => {
     throw new Error("Failed to fetch Daily Activity Plan");
   }
 };
+=======
+
+export const getSchDropdown  = async (value) => {
+    try {
+        const { data } = await axiosInstance.get(
+            `api/Master/Fetch-sch?sch_for=${value}`
+
+        );
+        return data || {};
+    } catch (error) {
+        console.error("Error fetching", error);
+        return {};
+    }
+};
+
+export const getgr_indicatorDropdown  = async (value) => {
+    try {
+        const { data } = await axiosInstance.get(
+            `api/Master/Fetch-gr_indicator?gr_for=${value}`
+
+        );
+        return data || {};
+    } catch (error) {
+        console.error("Error fetching", error);
+        return {};
+    }
+};
+
+
+export const GroupDetailsSave = async (saveData) => {
+    try {
+        const response = await axiosInstance.post("API/FINANCE/SCHEDULE_DETAILS/ADD-SCHEDULE_DETAILS", saveData);
+        return response.data;
+    } catch (error) {
+        console.error("API Error:", error.response || error.message);
+        throw new Error(error.response?.data?.message || "Failed to add Schedule.");
+    }
+};
+>>>>>>> Prakash-developer

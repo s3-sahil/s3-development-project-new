@@ -12,15 +12,26 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
+<<<<<<< HEAD
 import {
   addItemCategoryDetails,
   fetchCategoryTypeAPI,
 } from "app/utils/materialMaterialServices";
 import { useEffect, useState } from "react";
+=======
+import { ITEM_CATEGORY_SAVE } from "app/utils/authServices";
+import { useState } from "react";
+>>>>>>> Prakash-developer
 
 const ItemCategoryForm = () => {
+
+  const [loading, setLoading] = useState(false);
+  const [actionMode, setActionMode] = useState("new");
+
+
   const [formData, setFormData] = useState({
     materialGroup: "",
+    indicator:"",
     categoryCode: "",
     categoryName: "",
     otherIndicator: "",
@@ -50,7 +61,17 @@ const ItemCategoryForm = () => {
       setLoadingDropdown(false);
     }
   };
+  // 🔹 Save (Add / Update)
+  const handleSave = async () => {
+    if (
+      !formData.categoryCode ||
+      !formData.indicator 
+    ) {
+      alert("Please fill all required fields");
+      return;
+    }
 
+<<<<<<< HEAD
   // ✅ Handle input change
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -95,10 +116,27 @@ const ItemCategoryForm = () => {
 
       lW_Value: "",
     };
+=======
+   // const nameParts = formData.employeeName.trim().split(" ");
+
+    const payload = {
+  catG_CODE: formData.categoryCode || "",
+  desc: formData.categoryName || "",
+  indicator: formData.otherIndicator || "",                  // if you have an indicator field in formData, map it here
+  raw_ind: "",                    // optional, if not in UI leave blank
+  //other_ind: formData.otherIndicator || "",
+  iN_use: !!formData.inUse,
+  loc: formData.locationCompulsory ? "Y" : "N", // or true/false if API expects boolean
+  imp_Material: formData.importMaterial ? "Y" : "N", // or true/false
+  auto_Subcatg_no: formData.categoryCode || "",
+  lW_Value: formData.lW_Value || "", // add field if UI has it
+};
+>>>>>>> Prakash-developer
 
     try {
       setLoading(true);
 
+<<<<<<< HEAD
       const res = await addItemCategoryDetails(payload);
 
       alert(res.message || "Saved successfully");
@@ -116,6 +154,20 @@ const ItemCategoryForm = () => {
     } catch (error) {
       console.error("Save Error:", error);
       alert(error.message || "Something went wrong");
+=======
+      await ITEM_CATEGORY_SAVE(payload); // same API for add/update
+
+      alert(
+        actionMode === "edit"
+          ? "Item Catg updated successfully!"
+          : "Item Catg added successfully!"
+      );
+
+      navigate("/material/material-item-category-table"); // go back to table
+    } catch (error) {
+      console.error("Save Error:", error);
+      alert("Failed to save Item Catg");
+>>>>>>> Prakash-developer
     } finally {
       setLoading(false);
     }
@@ -146,7 +198,11 @@ const ItemCategoryForm = () => {
               )
             }
             onClick={handleSave}
+<<<<<<< HEAD
             disabled={loading}
+=======
+              disabled={loading}
+>>>>>>> Prakash-developer
           >
             <Span>{loading ? "Saving..." : "Save"}</Span>
           </Button>
@@ -221,8 +277,8 @@ const ItemCategoryForm = () => {
             <TextField
               select
               label="Other Indicator"
-              name="otherIndicator"
-              value={formData.otherIndicator}
+              name="indicator"
+              value={formData.indicator}
               onChange={handleChange}
               size="small"
               fullWidth

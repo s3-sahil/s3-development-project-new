@@ -16,6 +16,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { saveTmsParameter } from "app/utils/authServices";
 
 const INITIAL_FORM = {
+  division: "",
   punchingFileFlag: "No",
   woffShiftGen: "No",
   odTourApproval: "No",

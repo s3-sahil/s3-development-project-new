@@ -3,6 +3,7 @@ import {
   Icon,
   IconButton,
   Tooltip,
+  TextField,
   Button,
 } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -11,15 +12,14 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { SalesmanPaginationAPI } from "app/utils/authServices";
+import { deleteSalesman, SalesmanPaginationAPI } from "app/utils/authServices";
 
 
 export default function SalesmanTable() {
   const navigate = useNavigate();
-
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0); 
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [rowCount, setRowCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -49,17 +49,26 @@ export default function SalesmanTable() {
   }, [page, pageSize]);
 
   const handleAdd = () => {
-    navigate("/material/salesman/add");
+    navigate("/Sales/Master/SalesmanForm/add");
   };
 
   const handleEdit = (row) => {
-    navigate(`/material/salesman/edit/${row.Emp_no}`, {
+    navigate(`/Sales/Master/SalesmanForm/edit/${row.Emp_no}`, {
       state: row,
     });
   };
 
-  const handleDelete = (id) => {
-    console.log("Delete salesman:", id);
+  const handleDelete = async (id) => {debugger
+    if (window.confirm("Are you sure you want to delete this Salesman?")) {
+      try {
+        await deleteSalesman(id);
+        loadSalesman();
+        alert("Salesman deleted successfully.");
+      } catch (error) {
+        console.error("Delete Error:", error);
+        alert("Failed to delete salesman.");
+      }
+    }
   };
 
   const columns = [
@@ -81,7 +90,7 @@ export default function SalesmanTable() {
           </Tooltip>
 
           <Tooltip title="Delete">
-            <IconButton onClick={() => handleDelete(params.row.id)}>
+            <IconButton onClick={() => handleDelete(params.row.Emp_no)}>
               <Icon color="error">delete</Icon>
             </IconButton>
           </Tooltip>
@@ -109,7 +118,7 @@ export default function SalesmanTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 420, width: "100%" }}>
+        <Box sx={{ height: 620, width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}

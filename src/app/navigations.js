@@ -914,6 +914,11 @@ const navigations = [
               hidePeriod: true,
             },
           },
+           {
+            name: "Product Price List Details",
+            path: "/material/sales-product-price-list-details-table",
+            icon: "arrow_forward",
+          },
           {
             name: "Contract Review",
             path: "/material/sales-Contract-review-table",
@@ -922,9 +927,9 @@ const navigations = [
               hidePeriod: true,
             },
           },
-          {
+         {
             name: "Salesman",
-            path: "/material/salesman",
+            path: "/Sales/material/salesman",
             icon: "arrow_forward",
             meta: {
               hidePeriod: true,
@@ -971,6 +976,11 @@ const navigations = [
             meta: {
               hidePeriod: true,
             },
+          },
+           {
+            name: "Product Wise Packing" ,
+            path: "/material/sales-product-wise-packing-table",
+            icon: "arrow_forward",
           },
           {
             name: "Customer Wise Product Price List",

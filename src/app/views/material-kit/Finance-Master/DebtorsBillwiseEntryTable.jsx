@@ -100,7 +100,7 @@ export default function DebtorsBillwiseEntryTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 500 }}>
+        <Box sx={{ height: 620 }}>
           <DataGrid
             rows={rows}
             columns={columns}

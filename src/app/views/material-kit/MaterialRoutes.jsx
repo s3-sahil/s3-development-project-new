@@ -120,6 +120,7 @@ import SubGroupDetailsTable from "./Finance-Master/SubGroupDetailsTable";
 import SubGroupDetailsForm from "./Finance-Master/SubGroupDetailsForm";
 import TDSParameterTable from "./Finance-Master/TDSParameterTable";
 import TDSParameterForm from "./Finance-Master/TDSParameterForm";
+<<<<<<< HEAD
 import CustomersPurchaseOrderLoginTable from "./Sales-Transaction/customersPurchaseOrderLoginTable";
 import UOMTable from "./Material-Master/UOMTable";
 import UOMForm from "./Material-Master/UOMForm";
@@ -127,6 +128,12 @@ import InspectionParameterTable from "./Material-Master/InspectionParameterTable
 import InspectionParameterForm from "./Material-Master/InspectionParameterForm";
 import ItemMaterialGradeTable from "./Material-Master/ItemMaterialGradeTable";
 import ItemMaterialGradeForm from "./Material-Master/ItemMaterialGradeForm";
+=======
+import ProductWisePackingForm from "./Sales-Master/ProductWisePackingForm";
+import ProductWisePackingTable from "./Sales-Master/ProductWisePackingTable";
+import ProductPriceListTable from "./Sales-Master/ProductPriceListTable";
+import ProductPriceListDetailsForm from "./Sales-Master/ProductPriceListDetailsForm";
+>>>>>>> Prakash-developer
 // import EmployeeConsumptionTable from "./Maintenance-Master/EmployeeConsumptionTable";
 // import EmployeeConsumptionForm from "./Maintenance-Master/EmployeeConsumptionForm";
 // import MaintenanceCategoryTable from "./Maintenance-Master/MaintenanceCategoryTable";
@@ -1108,12 +1115,14 @@ const materialRoutes = [
   { path: "/material/expansion-panel", element: <AppExpansionPanel /> },
   { path: "/material/dialog", element: <AppDialog /> },
   { path: "/material/snackbar", element: <AppSnackbar /> },
-  { path: "/material/salesman", element: <SalesmanTable /> },
-  { path: "/material/salesman/add", element: <SalesmanForm /> },
-  { path: "/material/salesman/edit/:employeeCode", element: <SalesmanForm /> },
+ { path: "/Sales/material/salesman", element: <SalesmanTable /> },
+  { path: "/Sales/Master/SalesmanForm/add", element: <SalesmanForm /> },
+  { path: "/Sales/Master/SalesmanForm/edit/:Emp_no", element: <SalesmanForm /> },
+ 
   { path: "/material/customers", element: <CustomerDetailTable /> },
   { path: "/material/customer/add", element: <CustomerDetailForm /> },
-  { path: "/material/customer/edit/:code", element: <CustomerDetailForm /> },
+  { path: "/material/customer/edit/:cust_code", element: <CustomerDetailForm /> },
+   { path: "/material/customer/delete/:cust_code", element: <CustomerDetailForm /> },
   {
     path: "/material/activity-reports-rights-table",
     element: <ActivityReportsRightsTable />,
@@ -1208,7 +1217,7 @@ const materialRoutes = [
   { path: "/material/sales-consignee-table", element: <ConsigneeTable /> },
   { path: "/material/sales-consignee-form/add", element: <ConsigneeForm /> },
   {
-    path: "/material/sales-consignee-form/edit/:slipNo",
+    path: "/material/sales-consignee-form/edit/:cust_code/:con_code",
     element: <ConsigneeForm />,
   },
   {
@@ -1232,7 +1241,7 @@ const materialRoutes = [
     element: <ProjectExecutionPlanForm />,
   },
   {
-    path: "/material/sales-project-execution-plan-form/edit/:slipNo",
+    path: "/material/sales-project-execution-plan-form/edit/:po_id/:item_Code/:Proj_code/:profcen_cd",
     element: <ProjectExecutionPlanForm />,
   },
 
@@ -1257,7 +1266,7 @@ const materialRoutes = [
     element: <ProjectActivityMasterForm />,
   },
   {
-    path: "/material/sales-project-activity-master-form/edit/:slipNo",
+    path: "/material/sales-project-activity-master-form/edit/:Activity_code",
     element: <ProjectActivityMasterForm />,
   },
   {
@@ -1269,7 +1278,7 @@ const materialRoutes = [
     element: <ContractReviewChecklistForm />,
   },
   {
-    path: "/material/sales-contract-review-checklist-form/edit/:slipNo",
+    path: "/material/sales-contract-review-checklist-form/edit/:check_list_code",
     element: <ContractReviewChecklistForm />,
   },
   {
@@ -3398,6 +3407,7 @@ const materialRoutes = [
     element: <TDSParameterForm />,
   },
   {
+<<<<<<< HEAD
     path: "/material/Purchase-Order-Table",
     element: <PurchaseOrderTable />,
   },
@@ -3452,6 +3462,30 @@ const materialRoutes = [
   {
     path: "/material/Item-Material-Grade-form/add",
     element: <ItemMaterialGradeForm />,
+=======
+    path: "/material/sales-product-wise-packing-table",
+    element: <ProductWisePackingTable />,
+  },
+  {
+    path: "/material/sales-product-wise-packing-form/edit/:slipNo",
+    element: <ProductWisePackingForm />,
+  },
+  {
+    path: "/material/sales-product-wise-packing-form/add",
+    element: <ProductWisePackingForm />,
+  },
+     {
+    path: "/material/sales-product-price-list-details-table",
+    element: <ProductPriceListTable />,
+  },
+  {
+    path: "/material/sales-product-price-list-details-form/edit/:ITEM_CODE/:batchqty",
+    element: <ProductPriceListDetailsForm />,
+  },
+  {
+    path: "/material/sales-product-price-list-details-form/add",
+    element: <ProductPriceListDetailsForm />,
+>>>>>>> Prakash-developer
   },
 ];
 

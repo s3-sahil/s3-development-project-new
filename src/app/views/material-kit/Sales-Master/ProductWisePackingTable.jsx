@@ -41,7 +41,7 @@ const ProductWisePackingTable = () => {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/product-wise-packing/edit/${params.row.id}`, {
+                navigate(`/material/sales-product-wise-packing-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
               }
@@ -70,13 +70,13 @@ const ProductWisePackingTable = () => {
         <Button
           variant="contained"
           startIcon={<Icon>add</Icon>}
-          onClick={() => navigate("/material/product-wise-packing/add")}
+          onClick={() => navigate("/material/sales-product-wise-packing-form/add")}
         >
           New
         </Button>
       </Box>
 
-      <Box sx={{ height: 520, width: "100%", background: "#fff", borderRadius: 2 }}>
+      <Box sx={{ height: 620, width: "100%", background: "#fff", borderRadius: 2 }}>
         <DataGrid rows={rows} columns={columns} disableRowSelectionOnClick />
       </Box>
     </Container>

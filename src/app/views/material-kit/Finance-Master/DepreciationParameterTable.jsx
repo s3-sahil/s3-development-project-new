@@ -10,18 +10,54 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { DEPRECIATION_PARA_PaginationAPI } from "app/utils/authServices";
 
 export default function DepreciationParameterTable() {
   const navigate = useNavigate();
-
-  const [rows, setRows] = useState([
-    { id: 1, mode: "Group Wise", groupCode: "GRP01", subGroup: "Machinery", depreciation: "10%", companyAct: "12%", incomeTax: "15%" },
-    { id: 2, mode: "GL Code Wise", groupCode: "GL001", subGroup: "Cash Account", depreciation: "5%", companyAct: "6%", incomeTax: "10%" },
-  ]);
-
-  const handleDelete = (id) => setRows(rows.filter((row) => row.id !== id));
-
+          const [rows, setRows] = useState([]);
+          const [page, setPage] = useState(0); 
+          const [pageSize, setPageSize] = useState(10);
+          const [rowCount, setRowCount] = useState(0);
+          const [loading, setLoading] = useState(false);
+        
+          const loadDEPRECIATION_PARA = async () => {
+            setLoading(true);
+            const res = await DEPRECIATION_PARA_PaginationAPI(
+              "DEPRECIATION_PARA",
+              page + 1, 
+              pageSize
+            );
+        
+            if (res?.Data) {
+              setRows(
+                res.Data.map((item, index) => ({
+                  id: item.id || index + 1, 
+                  ...item,
+                }))
+              );
+              setRowCount(res.TotalCount || 0);
+            }
+        
+            setLoading(false);
+          };
+        
+          useEffect(() => {
+            loadDEPRECIATION_PARA();
+          }, [page, pageSize]);
+          
+          const handleDelete = async (id) => {
+            if (window.confirm("Are you sure you want to delete this DEPRECIATION_PARA?")) {
+              try {
+                await deleteDEPRECIATION_PARA(id);
+                loadDEPRECIATION_PARA();
+                alert("DEPRECIATION_PARA deleted successfully.");
+              } catch (error) {
+                console.error("Delete Error:", error);
+                alert("Failed to delete DEPRECIATION_PARA.");
+              }
+            }
+          };
   const columns = [
     { field: "mode", headerName: "Mode", flex: 1 },
     { field: "groupCode", headerName: "Group Code / GL Code", flex: 1 },
@@ -73,8 +109,20 @@ export default function DepreciationParameterTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 500 }}>
-          <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5, 10]} />
+        <Box sx={{ height: 620 }}>
+          <DataGrid 
+          rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server" 
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
+            }}
+          />
         </Box>
       </Stack>
     </Container>
