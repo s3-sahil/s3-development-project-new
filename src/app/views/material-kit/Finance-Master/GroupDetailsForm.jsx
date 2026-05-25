@@ -114,13 +114,13 @@ const handleCategoryChange = async (e) => {
           }
           const payload =
             records.map((rec) => ({
-              group_code: rec.schedule,
-              group_desc: rec.schedule,
-              bS_Status: rec.schedule,
-              gr_indicator_cd: rec.schedule,
+              group_code: rec.groupCode,
+              group_desc: rec.desc,
+              bS_Status: rec.belongsTo,
+              gr_indicator_cd: rec.category,
               sch_no: rec.schedule,
-              subGroupFlag: rec.schedule,
-              gplFlag: rec.schedule,
+              subGroupFlag: rec.subGroupApplicable ? "Y" : "N",
+              gplFlag: rec.gplflag ? "Y" : "N"
             }));
     
           try {

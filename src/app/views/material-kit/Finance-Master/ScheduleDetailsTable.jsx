@@ -88,6 +88,7 @@ export default function ScheduleDetailsTable() {
                 navigate(`/material/finance-schedule-details-form/edit/${params.row.id}`, {
                   state: params.row,
                 })
+                
               }
             >
               <Icon color="primary">edit</Icon>

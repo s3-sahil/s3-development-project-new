@@ -1933,6 +1933,30 @@ export const ScheduleDetailsSave = async (saveData) => {
     }
 };
 
+
+export const UpdateScheduleDetails = async (payload) => {
+  try {
+    const response = await axiosInstance.put(
+      "/API/FINANCE/SCHEDULE_DETAILS/UPDATE-SCHEDULE_DETAILS",
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json-patch+json",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Update failed",
+    };
+  }
+};
+
+
 export const getSchDropdown  = async (value) => {
     try {
         const { data } = await axiosInstance.get(
