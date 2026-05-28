@@ -4,12 +4,9 @@ import {
   IconButton,
   Tooltip,
   Button,
-  TextField,
-  MenuItem,
+  Box,
+  Stack,
 } from "@mui/material";
-
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
 
 import { DataGrid } from "@mui/x-data-grid";
 
@@ -18,19 +15,21 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 
 import { useState, useEffect } from "react";
-import { SalesVoucherPaginationAPI } from "app/utils/FinanceTransactionServices";
+
+import SearchFilter from "../SearchFilter";
+import { BankPaymentPaginationAPI } from "app/utils/FinanceTransactionServices";
 
 
-export default function SalesVoucherTable() {
+export default function BankPaymentTable() {
   const navigate = useNavigate();
 
   const [rows, setRows] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
-  const [searchText, setSearchText] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [searchField, setSearchField] = useState("voucherNo");
+  const [searchColumn, setSearchColumn] = useState("");
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -40,27 +39,36 @@ export default function SalesVoucherTable() {
   const [rowCount, setRowCount] = useState(0);
 
   // ================= FETCH DATA =================
+
   const fetchData = async () => {
     try {
       setLoading(true);
 
-      const response = await SalesVoucherPaginationAPI(
-        "SALES_VOUCHER",
+      const response = await BankPaymentPaginationAPI(
+        "BANK_PAYMENT",
         paginationModel.page + 1,
         paginationModel.pageSize,
-        searchField,
-        searchText,
+        searchColumn,
+        searchQuery,
       );
 
       if (response?.Data) {
         const mappedRows = response.Data.map((item, index) => ({
           id: item.id || index + 1,
 
+          paymentType: item.paymentType || "",
+
           voucherNo: item.voucherNo || "",
 
           voucherDate: item.voucherDate || "",
 
           partyCode: item.partyCode || "",
+
+          chequeAmt: item.chequeAmt || "",
+
+          chequeNo: item.chequeNo || "",
+
+          payType: item.payType || "",
 
           narration: item.narration || "",
 
@@ -72,7 +80,10 @@ export default function SalesVoucherTable() {
         setRowCount(response.TotalCount || 0);
       }
     } catch (error) {
-      console.error("Fetch Error:", error);
+      console.error(
+        "Bank Payment Fetch Error:",
+        error.response || error.message,
+      );
     } finally {
       setLoading(false);
     }
@@ -80,43 +91,69 @@ export default function SalesVoucherTable() {
 
   useEffect(() => {
     fetchData();
-  }, [paginationModel, searchText, searchField]);
+  }, [paginationModel, searchQuery, searchColumn]);
 
   // ================= DELETE =================
+
   const handleDelete = (id) => {
     setRows(rows.filter((row) => row.id !== id));
   };
 
   // ================= COLUMNS =================
+
   const columns = [
+    {
+      field: "paymentType",
+      headerName: "Payment Type",
+      width: 180,
+    },
+
     {
       field: "voucherNo",
       headerName: "Voucher No",
-      flex: 1,
+      width: 160,
     },
 
     {
       field: "voucherDate",
       headerName: "Voucher Date",
-      flex: 1,
+      width: 160,
     },
 
     {
       field: "partyCode",
       headerName: "Party Code",
-      flex: 1,
+      width: 180,
+    },
+
+    {
+      field: "chequeAmt",
+      headerName: "Cheque Amount",
+      width: 180,
+    },
+
+    {
+      field: "chequeNo",
+      headerName: "Cheque No",
+      width: 180,
+    },
+
+    {
+      field: "payType",
+      headerName: "Pay Type",
+      width: 160,
     },
 
     {
       field: "narration",
       headerName: "Narration",
-      flex: 2,
+      width: 220,
     },
 
     {
       field: "actions",
       headerName: "Actions",
-      flex: 1,
+      width: 140,
       sortable: false,
 
       renderCell: (params) => (
@@ -124,12 +161,9 @@ export default function SalesVoucherTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(
-                  `/material/finance-sales-voucher-form/edit/${params.row.id}`,
-                  {
-                    state: params.row.original,
-                  },
-                )
+                navigate(`/material/bank-payment-form/edit/${params.row.id}`, {
+                  state: params.row.original,
+                })
               }
             >
               <Icon color="primary">edit</Icon>
@@ -149,57 +183,62 @@ export default function SalesVoucherTable() {
   return (
     <Container maxWidth="xl">
       {/* Breadcrumb */}
+
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: "SALES" },
-            {
-              name: "Sales Voucher",
-            },
-          ]}
+          routeSegments={[{ name: "Finance" }, { name: "Bank Payment" }]}
         />
       </Box>
 
       <Stack spacing={3}>
         {/* Top Controls */}
+
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Box display="flex" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              {
+                value: "paymentType",
+                label: "Payment Type",
+              },
 
-            <TextField
-              select
-              size="small"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              sx={{ width: 220 }}
-            >
-              <MenuItem value="voucherNo">Voucher No</MenuItem>
+              {
+                value: "voucherNo",
+                label: "Voucher No",
+              },
 
-              <MenuItem value="partyCode">Party Code</MenuItem>
+              {
+                value: "partyCode",
+                label: "Party Code",
+              },
 
-              <MenuItem value="narration">Narration</MenuItem>
-            </TextField>
+              {
+                value: "chequeNo",
+                label: "Cheque No",
+              },
 
-            <Button variant="contained" onClick={fetchData}>
-              Search
-            </Button>
-          </Box>
+              {
+                value: "narration",
+                label: "Narration",
+              },
+            ]}
+            onSearch={fetchData}
+          />
 
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/finance-sales-voucher-form/add")}
+            onClick={() => navigate("/material/bank-payment-form/add")}
           >
             New
           </Button>
         </Box>
 
         {/* DataGrid */}
+
         <Box sx={{ height: 500 }}>
           <DataGrid
             rows={rows}

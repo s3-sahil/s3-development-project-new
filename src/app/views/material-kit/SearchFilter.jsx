@@ -1,5 +1,3 @@
-// ========================== SearchFilter.jsx ==========================
-
 import { Box, Button, MenuItem, TextField } from "@mui/material";
 
 export default function SearchFilter({

@@ -18,10 +18,10 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 
 import { useState, useEffect } from "react";
-import { SalesVoucherPaginationAPI } from "app/utils/FinanceTransactionServices";
+import { SupplierBillNoPoPaginationAPI } from "app/utils/FinanceTransactionServices";
 
 
-export default function SalesVoucherTable() {
+export default function SupplierBillNoPoTable() {
   const navigate = useNavigate();
 
   const [rows, setRows] = useState([]);
@@ -30,7 +30,7 @@ export default function SalesVoucherTable() {
 
   const [searchText, setSearchText] = useState("");
 
-  const [searchField, setSearchField] = useState("voucherNo");
+  const [searchField, setSearchField] = useState("supplierCode");
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -40,12 +40,13 @@ export default function SalesVoucherTable() {
   const [rowCount, setRowCount] = useState(0);
 
   // ================= FETCH DATA =================
+
   const fetchData = async () => {
     try {
       setLoading(true);
 
-      const response = await SalesVoucherPaginationAPI(
-        "SALES_VOUCHER",
+      const response = await SupplierBillNoPoPaginationAPI(
+        "SUPPLIER_BILL_NO_PO",
         paginationModel.page + 1,
         paginationModel.pageSize,
         searchField,
@@ -56,11 +57,23 @@ export default function SalesVoucherTable() {
         const mappedRows = response.Data.map((item, index) => ({
           id: item.id || index + 1,
 
-          voucherNo: item.voucherNo || "",
+          supplierCode: item.supplierCode || "",
 
-          voucherDate: item.voucherDate || "",
+          party: item.party || "",
 
-          partyCode: item.partyCode || "",
+          docNo: item.docNo || "",
+
+          invoiceNo: item.invoiceNo || "",
+
+          invoiceDate: item.invoiceDate || "",
+
+          billAmount: item.billAmount || "",
+
+          cgst: item.cgst || "",
+
+          sgst: item.sgst || "",
+
+          igst: item.igst || "",
 
           narration: item.narration || "",
 
@@ -83,34 +96,72 @@ export default function SalesVoucherTable() {
   }, [paginationModel, searchText, searchField]);
 
   // ================= DELETE =================
+
   const handleDelete = (id) => {
     setRows(rows.filter((row) => row.id !== id));
   };
 
   // ================= COLUMNS =================
+
   const columns = [
     {
-      field: "voucherNo",
-      headerName: "Voucher No",
+      field: "supplierCode",
+      headerName: "Supplier Code",
       flex: 1,
     },
 
     {
-      field: "voucherDate",
-      headerName: "Voucher Date",
+      field: "party",
+      headerName: "Party",
       flex: 1,
     },
 
     {
-      field: "partyCode",
-      headerName: "Party Code",
+      field: "docNo",
+      headerName: "Doc No",
+      flex: 1,
+    },
+
+    {
+      field: "invoiceNo",
+      headerName: "Invoice No",
+      flex: 1,
+    },
+
+    {
+      field: "invoiceDate",
+      headerName: "Invoice Date",
+      flex: 1,
+    },
+
+    {
+      field: "billAmount",
+      headerName: "Bill Amount",
+      flex: 1,
+    },
+
+    {
+      field: "cgst",
+      headerName: "CGST",
+      flex: 1,
+    },
+
+    {
+      field: "sgst",
+      headerName: "SGST",
+      flex: 1,
+    },
+
+    {
+      field: "igst",
+      headerName: "IGST",
       flex: 1,
     },
 
     {
       field: "narration",
       headerName: "Narration",
-      flex: 2,
+      flex: 1,
     },
 
     {
@@ -125,7 +176,7 @@ export default function SalesVoucherTable() {
             <IconButton
               onClick={() =>
                 navigate(
-                  `/material/finance-sales-voucher-form/edit/${params.row.id}`,
+                  `/material/supplier-bills-no-po-form/edit/${params.row.id}`,
                   {
                     state: params.row.original,
                   },
@@ -149,12 +200,13 @@ export default function SalesVoucherTable() {
   return (
     <Container maxWidth="xl">
       {/* Breadcrumb */}
+
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
-            { name: "SALES" },
+            { name: "Finance" },
             {
-              name: "Sales Voucher",
+              name: "Supplier Bills No PO",
             },
           ]}
         />
@@ -162,6 +214,7 @@ export default function SalesVoucherTable() {
 
       <Stack spacing={3}>
         {/* Top Controls */}
+
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" gap={2}>
             <TextField
@@ -178,11 +231,13 @@ export default function SalesVoucherTable() {
               onChange={(e) => setSearchField(e.target.value)}
               sx={{ width: 220 }}
             >
-              <MenuItem value="voucherNo">Voucher No</MenuItem>
+              <MenuItem value="supplierCode">Supplier Code</MenuItem>
 
-              <MenuItem value="partyCode">Party Code</MenuItem>
+              <MenuItem value="invoiceNo">Invoice No</MenuItem>
 
-              <MenuItem value="narration">Narration</MenuItem>
+              <MenuItem value="docNo">Doc No</MenuItem>
+
+              <MenuItem value="party">Party</MenuItem>
             </TextField>
 
             <Button variant="contained" onClick={fetchData}>
@@ -193,13 +248,14 @@ export default function SalesVoucherTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/finance-sales-voucher-form/add")}
+            onClick={() => navigate("/material/supplier-bills-no-po-form/add")}
           >
             New
           </Button>
         </Box>
 
         {/* DataGrid */}
+
         <Box sx={{ height: 500 }}>
           <DataGrid
             rows={rows}

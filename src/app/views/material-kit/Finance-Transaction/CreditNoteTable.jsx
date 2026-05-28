@@ -4,49 +4,132 @@ import {
   IconButton,
   Tooltip,
   Button,
+  TextField,
+  MenuItem,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { CreditNotePaginationAPI } from "app/utils/FinanceTransactionServices";
 
 export default function CreditNoteTable() {
   const navigate = useNavigate();
 
-  const [rows, setRows] = useState([
-    { id: 1, category: "Sales Return", customerCode: "CUST101", voucherNo: "CN001", voucherDate: "01/04/2025", narration: "Return of goods" },
-    { id: 2, category: "Discount Adjustment", customerCode: "CUST102", voucherNo: "CN002", voucherDate: "02/04/2025", narration: "Discount entry" },
-  ]);
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const handleDelete = (id) => setRows(rows.filter((row) => row.id !== id));
+  const [searchText, setSearchText] = useState("");
+  const [searchField, setSearchField] = useState("category");
 
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const [rowCount, setRowCount] = useState(0);
+
+  // ================= FETCH DATA =================
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await CreditNotePaginationAPI(
+        "CREDIT_NOTE",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchField,
+        searchText
+      );
+
+      if (response?.Data) {
+        const mappedRows = response.Data.map((item, index) => ({
+          id: item.id || index + 1,
+          category: item.category || "",
+          customerCode: item.customerCode || "",
+          voucherNo: item.voucherNo || "",
+          voucherDate: item.voucherDate || "",
+          narration: item.narration || "",
+          original: item,
+        }));
+
+        setRows(mappedRows);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error(
+        "Credit Note Fetch Error:",
+        error.response || error.message
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchText, searchField]);
+
+  // ================= DELETE =================
+  const handleDelete = (id) => {
+    setRows(rows.filter((row) => row.id !== id));
+  };
+
+  // ================= COLUMNS =================
   const columns = [
-    { field: "category", headerName: "Category", flex: 1 },
-    { field: "customerCode", headerName: "Customer Code", flex: 1 },
-    { field: "voucherNo", headerName: "Voucher No", flex: 1 },
-    { field: "voucherDate", headerName: "Voucher Date", flex: 1 },
-    { field: "narration", headerName: "Narration", flex: 1 },
+    {
+      field: "category",
+      headerName: "Category",
+      flex: 1,
+    },
+    {
+      field: "customerCode",
+      headerName: "Customer Code",
+      flex: 1,
+    },
+    {
+      field: "voucherNo",
+      headerName: "Voucher No",
+      flex: 1,
+    },
+    {
+      field: "voucherDate",
+      headerName: "Voucher Date",
+      flex: 1,
+    },
+    {
+      field: "narration",
+      headerName: "Narration",
+      flex: 1,
+    },
     {
       field: "actions",
       headerName: "Actions",
       flex: 1,
+      sortable: false,
       renderCell: (params) => (
         <Stack direction="row" spacing={1}>
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/finance-credit-note-form/edit/${params.row.id}`, {
-                  state: params.row,
-                })
+                navigate(
+                  `/material/finance-credit-note-form/edit/${params.row.id}`,
+                  {
+                    state: params.row.original,
+                  }
+                )
               }
             >
               <Icon color="primary">edit</Icon>
             </IconButton>
           </Tooltip>
+
           <Tooltip title="Delete">
-            <IconButton onClick={() => handleDelete(params.row.id)}>
+            <IconButton
+              onClick={() => handleDelete(params.row.id)}
+            >
               <Icon color="error">delete</Icon>
             </IconButton>
           </Tooltip>
@@ -57,23 +140,95 @@ export default function CreditNoteTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Credit Note" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Finance" },
+            { name: "Credit Note" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
-        <Box display="flex" justifyContent="flex-end">
+        {/* Top Controls */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Box display="flex" gap={2}>
+            <TextField
+              size="small"
+              placeholder="Search..."
+              value={searchText}
+              onChange={(e) =>
+                setSearchText(e.target.value)
+              }
+            />
+
+            <TextField
+              select
+              size="small"
+              value={searchField}
+              onChange={(e) =>
+                setSearchField(e.target.value)
+              }
+              sx={{ width: 220 }}
+            >
+              <MenuItem value="category">
+                Category
+              </MenuItem>
+
+              <MenuItem value="customerCode">
+                Customer Code
+              </MenuItem>
+
+              <MenuItem value="voucherNo">
+                Voucher No
+              </MenuItem>
+
+              <MenuItem value="narration">
+                Narration
+              </MenuItem>
+            </TextField>
+
+            <Button
+              variant="contained"
+              onClick={fetchData}
+            >
+              Search
+            </Button>
+          </Box>
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/finance-credit-note-form/add")}
+            onClick={() =>
+              navigate(
+                "/material/finance-credit-note-form/add"
+              )
+            }
           >
             New
           </Button>
         </Box>
 
+        {/* DataGrid */}
         <Box sx={{ height: 500 }}>
-          <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5, 10]} />
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={
+              setPaginationModel
+            }
+            pageSizeOptions={[5, 10, 20]}
+            disableRowSelectionOnClick
+          />
         </Box>
       </Stack>
     </Container>
