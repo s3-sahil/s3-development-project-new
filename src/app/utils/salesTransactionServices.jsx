@@ -645,3 +645,20 @@ export const fetchPackingSlipQuantityAPI = async ({
         return [];
     }
 };
+
+
+export const fetchInvoicePONoAPI = async (
+  slip_type,
+  SALES_TYPE,
+) => {
+  try {
+    const response = await axiosInstance.get(
+      `/Fetch-INVOICE_ITEM_CODE_LIST?slip_type=${slip_type}&SALES_TYPE=${SALES_TYPE}`,
+    );
+
+    return response.data?.Data || [];
+  } catch (error) {
+    console.error("Fetch Invoice PO API Error:", error);
+    return [];
+  }
+};

@@ -16,7 +16,10 @@ import { useEffect, useState } from "react";
 
 import { DataGrid } from "@mui/x-data-grid";
 import { addInvoice, fetchItemcodeAPI } from "app/utils/authServices";
-import { fetchPackingAndSubType } from "app/utils/salesTransactionServices";
+import {
+  fetchInvoicePONoAPI,
+  fetchPackingAndSubType,
+} from "app/utils/salesTransactionServices";
 import InvoiceGSTModal from "./InvoiceGSTModal";
 import InvoiceOtherDetailsModal from "./InvoiceOtherDetailsModal";
 import InvoiceTransporterModal from "./InvoiceTransporterModal";
@@ -83,6 +86,34 @@ const InvoiceForm = () => {
     vehicleNo: "",
     transportMode: "",
   });
+
+  const [poList, setPoList] = useState([]);
+  const [loadingPO, setLoadingPO] = useState(false);
+
+  // ================= LOAD PO API =================
+
+  useEffect(() => {
+    if (formData.invoiceType && formData.invoiceSubType) {
+      loadPONumbers();
+    }
+  }, [formData.invoiceType, formData.invoiceSubType]);
+
+  const loadPONumbers = async () => {
+    try {
+      setLoadingPO(true);
+
+      const data = await fetchInvoicePONoAPI(
+        formData.invoiceType,
+        formData.invoiceSubType,
+      );
+
+      setPoList(data || []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingPO(false);
+    }
+  };
 
   useEffect(() => {
     loadPackingData();
@@ -579,7 +610,6 @@ const InvoiceForm = () => {
                     InputLabelProps={{ shrink: true }}
                   />
                 </Grid>
-
                 <Grid item xs={3}>
                   <Autocomplete
                     size="small"
@@ -605,7 +635,6 @@ const InvoiceForm = () => {
                     )}
                   />
                 </Grid>
-
                 <Grid item xs={3}>
                   <TextField
                     label="Customer Name"
@@ -621,14 +650,43 @@ const InvoiceForm = () => {
                 <Grid item xs={3}>
                   <TextField label="Invoice No" fullWidth size="small" />
                 </Grid>
-
                 <Grid item xs={3}>
                   <TextField label="PO Login" fullWidth size="small" />
                 </Grid>
+                // ================= PO NO DROPDOWN =================
                 <Grid item xs={3}>
-                  <TextField label="PO No" fullWidth size="small" />
+                  <Autocomplete
+                    size="small"
+                    fullWidth
+                    options={poList || []}
+                    loading={loadingPO}
+                    value={
+                      poList.find((item) => item.Po_Id === formData.poNo) ||
+                      null
+                    }
+                    getOptionLabel={(option) =>
+                      `${option.Po_Id} - ${option.Cust_Code || ""}`
+                    }
+                    onChange={(event, value) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        poNo: value?.Po_Id || "",
+                        customerCode: value?.Cust_Code || "",
+                        customerName: value?.ITEM_NAME || "",
+                        vehicleNo: value?.VEHICLE_NO || "",
+                        transportMode: value?.DELEVERY_BY || "",
+                        currency: value?.CURR_CODE1 || "",
+                      }));
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="PO No"
+                        placeholder="Search PO No"
+                      />
+                    )}
+                  />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField label="Remark" fullWidth size="small" />
                 </Grid>
