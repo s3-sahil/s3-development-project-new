@@ -1,11 +1,11 @@
 import {
+  Box,
+  Button,
   Container,
   Icon,
   IconButton,
-  Tooltip,
-  Button,
-  Box,
   Stack,
+  Tooltip,
 } from "@mui/material";
 
 import { DataGrid } from "@mui/x-data-grid";
@@ -18,9 +18,6 @@ import { useEffect, useState } from "react";
 
 import SearchFilter from "../SearchFilter";
 
-import {
-  deleteBank_master,
-} from "app/utils/authServices";
 import { Bank_master_PaginationAPI } from "app/utils/FinanceTransactionServices";
 
 export default function BankDetailsTable() {
@@ -79,19 +76,19 @@ export default function BankDetailsTable() {
   // ================= DELETE =================
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this Bank Master?")) {
-      try {
-        await deleteBank_master(id);
+    // if (window.confirm("Are you sure you want to delete this Bank Master?")) {
+    //   try {
+    //     await deleteBank_master(id);
 
-        loadBank_master();
+    //     loadBank_master();
 
-        alert("Bank Master deleted successfully.");
-      } catch (error) {
-        console.error("Delete Error:", error);
+    //     alert("Bank Master deleted successfully.");
+    //   } catch (error) {
+    //     console.error("Delete Error:", error);
 
-        alert("Failed to delete Bank Master.");
-      }
-    }
+    //     alert("Failed to delete Bank Master.");
+    //   }
+    // }
   };
 
   // ================= COLUMNS =================
