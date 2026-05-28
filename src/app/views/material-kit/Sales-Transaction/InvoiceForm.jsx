@@ -598,8 +598,38 @@ const InvoiceForm = () => {
                     ))}
                   </TextField>
                 </Grid>
-                <Grid item xs={3}>
+                {/* <Grid item xs={3}>
                   <TextField label="Packing No." fullWidth size="small" />
+                </Grid> */}
+                <Grid item xs={3}>
+                  <Autocomplete
+                    size="small"
+                    fullWidth
+                    options={packingList || []}
+                    value={
+                      packingList.find(
+                        (item) => item.Slip_No === formData.packingNo,
+                      ) || null
+                    }
+                    getOptionLabel={(option) =>
+                      `${option.Slip_No} - ${option.SALES_TYPE || ""}`
+                    }
+                    onChange={(event, value) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        packingNo: value?.Slip_No || "",
+                        invoiceType: value?.INV_TYPE || "",
+                        invoiceSubType: value?.SALES_TYPE || "",
+                      }));
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Packing No"
+                        placeholder="Search Packing No"
+                      />
+                    )}
+                  />
                 </Grid>
                 <Grid item xs={3}>
                   <TextField
@@ -654,7 +684,7 @@ const InvoiceForm = () => {
                   <TextField label="PO Login" fullWidth size="small" />
                 </Grid>
                 // ================= PO NO DROPDOWN =================
-                <Grid item xs={3}>
+                {/* <Grid item xs={3}>
                   <Autocomplete
                     size="small"
                     fullWidth
@@ -686,6 +716,9 @@ const InvoiceForm = () => {
                       />
                     )}
                   />
+                </Grid> */}
+                <Grid item xs={3}>
+                  <TextField label="PO No" fullWidth size="small" />
                 </Grid>
                 <Grid item xs={6}>
                   <TextField label="Remark" fullWidth size="small" />
