@@ -1,157 +1,178 @@
 import {
-    Container,
-    Icon,
-    IconButton,
-    Tooltip,
-    Button,
-    Typography,
-    Stack,
+  Container,
+  Icon,
+  IconButton,
+  Tooltip,
+  Button,
+  Stack,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { ExportDocumentParameterPaginationAPI } from "app/utils/salesTransactionServices";
 
 export default function ExportDocumentsTable() {
-    const navigate = useNavigate();
 
-    // 🔹 Dummy Data (Replace with API)
-    const rows = [
-        {
-            id: 1,
-            functionName: "Export Documents",
-            objectName: "Sales Module",
-            newAccess: true,
-            editAccess: true,
-            deleteAccess: false,
-            viewAccess: true,
-            menuLevel: "Level 1",
-        },
-    ];
+  const navigate = useNavigate();
 
-    const handleAdd = () => {
-        navigate("/material/sales-export-documents-form/add");
-    };
+  const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
+  const [rowCount, setRowCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-    const handleEdit = (row) => {
-        navigate(`/material/sales-export-documents-form/edit/${row.id}`, { state: row });
-    };
+  // ===== Fetch Data =====
+  const fetchExportDocuments = async (pageNo, size) => {
 
-    const handleDelete = (id) => {
-        console.log("Delete:", id);
-    };
+    try {
 
-    const columns = [
-        {
-            field: "functionName",
-            headerName: "Function",
-            flex: 1,
-        },
-        {
-            field: "objectName",
-            headerName: "Object Name",
-            flex: 1,
-        },
-        {
-            field: "newAccess",
-            headerName: "New",
-            width: 90,
-            align: "center",
-            headerAlign: "center",
-            renderCell: (params) =>
-                params.value ? <Icon color="success">check</Icon> : null,
-        },
-        {
-            field: "editAccess",
-            headerName: "Edit",
-            width: 90,
-            align: "center",
-            headerAlign: "center",
-            renderCell: (params) =>
-                params.value ? <Icon color="primary">check</Icon> : null,
-        },
-        {
-            field: "deleteAccess",
-            headerName: "Delete",
-            width: 100,
-            align: "center",
-            headerAlign: "center",
-            renderCell: (params) =>
-                params.value ? <Icon color="error">check</Icon> : null,
-        },
-        {
-            field: "viewAccess",
-            headerName: "View",
-            width: 90,
-            align: "center",
-            headerAlign: "center",
-            renderCell: (params) =>
-                params.value ? <Icon color="action">check</Icon> : null,
-        },
-        {
-            field: "menuLevel",
-            headerName: "Menu Level",
-            width: 130,
-        },
-        {
-            field: "actions",
-            headerName: "Actions",
-            width: 130,
-            sortable: false,
-            renderCell: (params) => (
-                <>
-                    <Tooltip title="Edit">
-                        <IconButton onClick={() => handleEdit(params.row)}>
-                            <Icon color="primary">edit</Icon>
-                        </IconButton>
-                    </Tooltip>
+      setLoading(true);
 
-                    <Tooltip title="Delete">
-                        <IconButton onClick={() => handleDelete(params.row.id)}>
-                            <Icon color="error">delete</Icon>
-                        </IconButton>
-                    </Tooltip>
-                </>
-            ),
-        },
-    ];
+      const response = await ExportDocumentParameterPaginationAPI(
+        "invoice_hed",
+        pageNo + 1,
+        size
+      );
 
-    return (
-        <Container maxWidth="xl">
-            {/* ===== Breadcrumb ===== */}
-            <Box className="breadcrumb">
-                <Breadcrumb
-                    routeSegments={[{ name: "Sales" }, { name: "Export Documents" }]}
-                />
-            </Box>
+      setRows(response?.Data || []);
+      setRowCount(response?.TotalCount || 0);
 
-            <Stack spacing={3}>
-                {/* ===== Top Right Button ===== */}
-                <Box display="flex" justifyContent="flex-end">
-                    <Button
-                        variant="contained"
-                        startIcon={<Icon>add</Icon>}
-                        onClick={handleAdd}
-                    >
-                        New
-                    </Button>
-                </Box>
+    } catch (error) {
 
-                {/* ===== Data Table ===== */}
-                <Box sx={{ height: 420, width: "100%" }}>
-                    <DataGrid
-                        rows={rows}
-                        columns={columns}
-                        pageSizeOptions={[5, 10]}
-                        disableRowSelectionOnClick
-                        initialState={{
-                            pagination: {
-                                paginationModel: { pageSize: 5, page: 0 },
-                            },
-                        }}
-                    />
-                </Box>
-            </Stack>
-        </Container>
-    );
+      console.error("Fetch Error:", error.message);
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  };
+
+  useEffect(() => {
+    fetchExportDocuments(page, pageSize);
+  }, [page, pageSize]);
+
+  // ===== Navigation =====
+
+  const handleAdd = () => {
+    navigate("/material/sales-export-documents-form/add");
+  };
+
+  const handleEdit = (row) => {
+    navigate(`/material/sales-export-documents-form/edit/${row.INV_NO}`, {
+      state: row,
+    });
+  };
+
+  const handleDelete = (id) => {
+    console.log("Delete:", id);
+  };
+
+  // ===== Columns =====
+
+  const columns = [
+    {
+      field: "INV_NO",
+      headerName: "Invoice No",
+      width: 150,
+    },
+    {
+      field: "INV_TYPE",
+      headerName: "Invoice Type",
+      width: 150,
+    },
+    {
+      field: "SALES_TYPE",
+      headerName: "Sales Type",
+      width: 150,
+    },
+    {
+      field: "CONSIN_NAME",
+      headerName: "Customer",
+      flex: 1,
+    },
+    {
+      field: "CONSIN_CITY",
+      headerName: "City",
+      width: 130,
+    },
+    {
+      field: "NET_AMT",
+      headerName: "Net Amount",
+      width: 150,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 130,
+      sortable: false,
+      renderCell: (params) => (
+        <>
+          <Tooltip title="Edit">
+            <IconButton onClick={() => handleEdit(params.row)}>
+              <Icon color="primary">edit</Icon>
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Delete">
+            <IconButton onClick={() => handleDelete(params.row.INV_NO)}>
+              <Icon color="error">delete</Icon>
+            </IconButton>
+          </Tooltip>
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <Container maxWidth="xl">
+
+      <Box className="breadcrumb">
+        <Breadcrumb
+          routeSegments={[
+            { name: "Sales" },
+            { name: "Export Documents" },
+          ]}
+        />
+      </Box>
+
+      <Stack spacing={3}>
+
+        <Box display="flex" justifyContent="flex-end">
+          <Button
+            variant="contained"
+            startIcon={<Icon>add</Icon>}
+            onClick={handleAdd}
+          >
+            New
+          </Button>
+        </Box>
+
+        <Box sx={{ height: 500, width: "100%" }}>
+
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            getRowId={(row) => row.INV_NO}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={{ page, pageSize }}
+            pageSizeOptions={[5, 10, 20]}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
+            }}
+            disableRowSelectionOnClick
+          />
+
+        </Box>
+
+      </Stack>
+
+    </Container>
+  );
 }

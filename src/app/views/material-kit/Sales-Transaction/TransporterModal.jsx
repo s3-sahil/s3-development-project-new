@@ -75,9 +75,9 @@ const TransporterModal = ({ open, onClose, onSave }) => {
                         value={state.transporterOn}
                         onChange={handleChange}
                     >
-                        <FormControlLabel value="Our A/c" control={<Radio />} label="Our A/c" />
-                        <FormControlLabel value="Your A/c" control={<Radio />} label="Your A/c" />
-                        <FormControlLabel value="N.A" control={<Radio />} label="N.A" />
+                        <FormControlLabel value="O" control={<Radio />} label="Our A/c" />
+                        <FormControlLabel value="Y" control={<Radio />} label="Your A/c" />
+                        <FormControlLabel value="N" control={<Radio />} label="N.A" />
                     </RadioGroup>
 
                     <TextField

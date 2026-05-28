@@ -8,15 +8,18 @@ import {
   Checkbox,
   FormControlLabel,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
-import { ITEM_CATEGORY_SAVE } from "app/utils/authServices";
-import { useState } from "react";
+import {
+  addItemCategoryDetails,
+  fetchCategoryTypeAPI,
+} from "app/utils/materialMaterialServices";
+import { useEffect, useState } from "react";
 
 const ItemCategoryForm = () => {
 
-  const [loading, setLoading] = useState(false);
   const [actionMode, setActionMode] = useState("new");
 
 
@@ -31,53 +34,93 @@ const ItemCategoryForm = () => {
     importMaterial: false,
   });
 
+  const [loading, setLoading] = useState(false);
+  const [loadingDropdown, setLoadingDropdown] = useState(false);
+  const [materialGroupOptions, setMaterialGroupOptions] = useState([]);
+
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
+  // ✅ Load dropdown data safely
+  const loadInitialData = async () => {
+    try {
+      setLoadingDropdown(true);
+      const res = await fetchCategoryTypeAPI();
+      setMaterialGroupOptions(res || []);
+    } catch (error) {
+      console.error("Dropdown API Error:", error);
+      setMaterialGroupOptions([]);
+    } finally {
+      setLoadingDropdown(false);
+    }
+  };
+
+  // ✅ Handle input change
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : String(value),
     }));
   };
-  // 🔹 Save (Add / Update)
+  // ✅ Save API call
   const handleSave = async () => {
-    if (
-      !formData.categoryCode ||
-      !formData.indicator 
-    ) {
-      alert("Please fill all required fields");
+    // 🔴 Validation
+    if (!formData.materialGroup) {
+      alert("Material Group is required");
       return;
     }
 
-   // const nameParts = formData.employeeName.trim().split(" ");
+    if (!formData.categoryCode || !formData.categoryName) {
+      alert("Category Code and Name are required");
+      return;
+    }
 
+    // ✅ Payload mapping
     const payload = {
-  catG_CODE: formData.categoryCode || "",
-  desc: formData.categoryName || "",
-  indicator: formData.otherIndicator || "",                  // if you have an indicator field in formData, map it here
-  raw_ind: "",                    // optional, if not in UI leave blank
-  //other_ind: formData.otherIndicator || "",
-  iN_use: !!formData.inUse,
-  loc: formData.locationCompulsory ? "Y" : "N", // or true/false if API expects boolean
-  imp_Material: formData.importMaterial ? "Y" : "N", // or true/false
-  auto_Subcatg_no: formData.categoryCode || "",
-  lW_Value: formData.lW_Value || "", // add field if UI has it
-};
+      CATG_CODE: formData.categoryCode.substring(0, 2), // max 2 chars
+
+      desc: formData.categoryName,
+
+      indicator: formData.materialGroup.substring(0, 2), // max 2 chars
+
+      raw_ind: formData.materialGroup === "RM" ? "Y" : "N", // single char ONLY
+
+      other_ind: (formData.otherIndicator || "").substring(0, 2),
+
+      iN_use: formData.inUse,
+
+      loc: formData.locationCompulsory ? "Y" : "N",
+
+      imp_Material: formData.importMaterial ? "Y" : "N",
+
+      auto_Subcatg_no: "",
+
+      lW_Value: "",
+    };
 
     try {
       setLoading(true);
 
-      await ITEM_CATEGORY_SAVE(payload); // same API for add/update
+      const res = await addItemCategoryDetails(payload);
 
-      alert(
-        actionMode === "edit"
-          ? "Item Catg updated successfully!"
-          : "Item Catg added successfully!"
-      );
+      alert(res.message || "Saved successfully");
 
-      navigate("/material/material-item-category-table"); // go back to table
+      // ✅ Reset form
+      setFormData({
+        materialGroup: "",
+        categoryCode: "",
+        categoryName: "",
+        otherIndicator: "",
+        inUse: false,
+        locationCompulsory: false,
+        importMaterial: false,
+      });
     } catch (error) {
       console.error("Save Error:", error);
-      alert("Failed to save Item Catg");
+      alert(error.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -85,6 +128,7 @@ const ItemCategoryForm = () => {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
@@ -99,11 +143,17 @@ const ItemCategoryForm = () => {
         <Box display="flex" justifyContent="flex-end" mb={2}>
           <Button
             variant="contained"
-            startIcon={<Icon>save</Icon>}
+            startIcon={
+              loading ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : (
+                <Icon>save</Icon>
+              )
+            }
             onClick={handleSave}
-              disabled={loading}
+            disabled={loading}
           >
-            <Span>Save</Span>
+            <Span>{loading ? "Saving..." : "Save"}</Span>
           </Button>
         </Box>
 
@@ -111,17 +161,23 @@ const ItemCategoryForm = () => {
           {/* Material Group */}
           <Grid item xs={4}>
             <TextField
-              select
               label="Material Group"
               name="materialGroup"
-              value={formData.materialGroup}
+              value={formData.materialGroup ?? ""}
               onChange={handleChange}
               size="small"
               fullWidth
+              select
             >
-              <MenuItem value="">Select</MenuItem>
-              <MenuItem value="RM">Raw Material</MenuItem>
-              <MenuItem value="FP">Finished Product</MenuItem>
+              <MenuItem value="">
+                <em>Select Material Group</em>
+              </MenuItem>
+
+              {(materialGroupOptions || []).map((item, index) => (
+                <MenuItem key={index} value={String(item.CATG_CODE)}>
+                  {item.categorytype}
+                </MenuItem>
+              ))}
             </TextField>
           </Grid>
 
@@ -134,6 +190,7 @@ const ItemCategoryForm = () => {
               onChange={handleChange}
               size="small"
               fullWidth
+              required
             />
           </Grid>
 
@@ -160,6 +217,7 @@ const ItemCategoryForm = () => {
               onChange={handleChange}
               size="small"
               fullWidth
+              required
             />
           </Grid>
 
@@ -180,7 +238,9 @@ const ItemCategoryForm = () => {
               <MenuItem value="FP">FP</MenuItem>
             </TextField>
           </Grid>
+
           <Grid item xs={4}></Grid>
+
           {/* Location Compulsory */}
           <Grid item xs={4}>
             <FormControlLabel

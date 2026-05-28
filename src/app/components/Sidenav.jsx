@@ -10,7 +10,7 @@ import navigations from "app/navigations";
 const StyledScrollBar = styled(Scrollbar)(() => ({
   paddingLeft: "1rem",
   paddingRight: "1rem",
-  position: "relative"
+  position: "relative",
 }));
 
 const SideNavMobile = styled("div")(({ theme }) => ({
@@ -22,11 +22,25 @@ const SideNavMobile = styled("div")(({ theme }) => ({
   zIndex: -1,
   width: "100vw",
   background: "rgba(0, 0, 0, 0.54)",
-  [theme.breakpoints.up("lg")]: { display: "none" }
+  [theme.breakpoints.up("lg")]: { display: "none" },
 }));
 
 export default function Sidenav({ children }) {
   const { settings, updateSettings } = useSettings();
+
+  const handleNavClick = (item) => {
+    debugger
+    let value = false;
+
+    if (item?.meta?.hidePeriod) {
+      value = true;
+    } else if (item?.parentMeta?.hidePeriod) {
+      value = true;
+    }
+
+    localStorage.setItem("hidePeriod", value);
+    window.dispatchEvent(new Event("hidePeriodChange"));
+  };
 
   const updateSidebarMode = (sidebarSettings) => {
     let activeLayoutSettingsName = settings.activeLayout + "Settings";
@@ -36,8 +50,11 @@ export default function Sidenav({ children }) {
       ...settings,
       [activeLayoutSettingsName]: {
         ...activeLayoutSettings,
-        leftSidebar: { ...activeLayoutSettings.leftSidebar, ...sidebarSettings }
-      }
+        leftSidebar: {
+          ...activeLayoutSettings.leftSidebar,
+          ...sidebarSettings,
+        },
+      },
     });
   };
 
@@ -45,7 +62,7 @@ export default function Sidenav({ children }) {
     <Fragment>
       <StyledScrollBar options={{ suppressScrollX: true }}>
         {children}
-        <MatxVerticalNav items={navigations} />
+        <MatxVerticalNav items={navigations} onItemClick={handleNavClick} />
       </StyledScrollBar>
 
       <SideNavMobile onClick={() => updateSidebarMode({ mode: "close" })} />

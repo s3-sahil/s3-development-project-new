@@ -10,51 +10,107 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import SearchFilter from "../SearchFilter";
+import { MaterialIssuePaginationAPI } from "app/utils/materialTransactionServices";
 
 export default function MaterialIssueTable() {
   const navigate = useNavigate();
 
-  const rows = [
-    {
-      id: 1,
-      issueNo: "MI001",
-      issueDate: "2026-02-19",
-      department: "Production",
-      project: "Project A",
-      itemCode: "ST001",
-      quantity: 100,
-      uom: "Kg",
-      avlQty: 500,
-      status: "Pending",
-    },
-    {
-      id: 2,
-      issueNo: "MI002",
-      issueDate: "2026-02-18",
-      department: "Maintenance",
-      project: "Project B",
-      itemCode: "CP002",
-      quantity: 50,
-      uom: "Meter",
-      avlQty: 200,
-      status: "Issued",
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [rowCount, setRowCount] = useState(0);
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const fetchData = async () => {
+    setLoading(true);
+
+    try {
+      const response = await MaterialIssuePaginationAPI(
+        "material_issue",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery,
+      );
+
+      if (response?.Data) {
+        const mappedData = response.Data.map((row, index) => ({
+          ...row,
+          id: `${row.issueNo}_${index}`,
+        }));
+
+        setRows(mappedData);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching Material Issue data:", error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
 
   const columns = [
-    { field: "issueNo", headerName: "Issue No.", width: 150 },
-    { field: "issueDate", headerName: "Issue Date", width: 150 },
-    { field: "department", headerName: "Department", width: 200 },
-    { field: "project", headerName: "Project", width: 200 },
-    { field: "itemCode", headerName: "Item Code", width: 150 },
-    { field: "quantity", headerName: "Quantity", width: 120 },
-    { field: "uom", headerName: "UOM", width: 120 },
-    { field: "avlQty", headerName: "Available Qty", width: 150 },
-    { field: "status", headerName: "Status", width: 150 },
+    {
+      field: "issueNo",
+      headerName: "Issue No.",
+      flex: 1,
+    },
+    {
+      field: "issueDate",
+      headerName: "Issue Date",
+      flex: 1,
+    },
+    {
+      field: "department",
+      headerName: "Department",
+      flex: 1,
+    },
+    {
+      field: "project",
+      headerName: "Project",
+      flex: 1,
+    },
+    {
+      field: "itemCode",
+      headerName: "Item Code",
+      flex: 1,
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      flex: 1,
+    },
+    {
+      field: "uom",
+      headerName: "UOM",
+      flex: 1,
+    },
+    {
+      field: "avlQty",
+      headerName: "Available Qty",
+      flex: 1,
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 1,
+    },
     {
       field: "actions",
       headerName: "Actions",
       width: 120,
+      sortable: false,
       renderCell: (params) => (
         <Tooltip title="Edit">
           <IconButton
@@ -74,11 +130,44 @@ export default function MaterialIssueTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Material" }, { name: "Material Issue" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Material" },
+            { name: "Material Issue" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
-        <Box display="flex" justifyContent="flex-end">
+        {/* Top Bar */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              {
+                value: "issueNo",
+                label: "Issue No.",
+              },
+              {
+                value: "department",
+                label: "Department",
+              },
+              {
+                value: "itemCode",
+                label: "Item Code",
+              },
+            ]}
+            onSearch={() => fetchData()}
+          />
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
@@ -88,8 +177,19 @@ export default function MaterialIssueTable() {
           </Button>
         </Box>
 
-        <Box sx={{ height: 420 }}>
-          <DataGrid rows={rows} columns={columns} />
+        {/* Table */}
+        <Box sx={{ height: 550, width: "100%" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[10, 20, 50]}
+            disableRowSelectionOnClick
+          />
         </Box>
       </Stack>
     </Container>

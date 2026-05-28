@@ -15,6 +15,7 @@ import {
 import { Breadcrumb } from "app/components";
 import { getgr_indicatorDropdown, getSchDropdown, GroupDetailsSave } from "app/utils/authServices";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function GroupDetailsForm() {
   const [formData, setFormData] = useState({
@@ -29,6 +30,9 @@ export default function GroupDetailsForm() {
   });
 
   const [records, setRecords] = useState([]);
+  const location = useLocation();
+  const mode = location.state?.mode || "add";
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (field) => (event) =>
     setFormData({ ...formData, [field]: event.target.value });
@@ -185,7 +189,9 @@ const handleCategoryChange = async (e) => {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Group Details" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Finace" }, { name: "Group Details" }]}
+        />
       </Box>
             <Snackbar
               open={snackbar.open}
@@ -299,12 +305,20 @@ const handleCategoryChange = async (e) => {
 
         {/* Actions */}
         <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
-          <Button variant="contained" startIcon={<Icon>add</Icon>} onClick={handleAdd}>Add</Button>
+          <Button
+            variant="contained"
+            startIcon={<Icon>add</Icon>}
+            onClick={handleAdd}
+          >
+            Add
+          </Button>
         </Box>
 
         {/* Preview */}
         <Box mt={3}>
-          <Typography variant="subtitle1" fontWeight="bold">Added Groups</Typography>
+          <Typography variant="subtitle1" fontWeight="bold">
+            Added Groups
+          </Typography>
           {records.map((rec) => (
             <Box key={rec.id} sx={{ p: 1, border: "1px solid #ccc", borderRadius: 1, mb: 1 }}>
               <Typography>{`${rec.groupCode} | ${rec.belongsTo} | ${rec.subGroupApplicable ? "Yes" : "No"} | ${rec.desc} | ${rec.category} | ${rec.subGroupApplicable ? "Yes" : "No"} | ${rec.schedule}`}</Typography>

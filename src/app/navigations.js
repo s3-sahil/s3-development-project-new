@@ -8,36 +8,54 @@ const navigations = [
       {
         name: "Master",
         icon: "person",
+        meta: {
+          hidePeriod: true,
+        },
         children: [
           {
             name: "Activity Reports Rights",
             path: "/material/system-admin-activity-report-table",
             icon: "person_add",
             tooltip: "activity-reports-rights-table",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Activity Form Rights",
             path: "/material/activity-reports-rights-table",
             icon: "list",
             tooltip: "Customer Master",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Login Parameters",
             path: "/material/system-admin-login-parameter-table",
             icon: "list",
             tooltip: "Customer Master",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "New Role",
             path: "/material/system-admin-new-role-table",
             icon: "list",
             tooltip: "Customer Master",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Login Details",
             path: "/material/system-admin-login-details-table",
             icon: "list",
             tooltip: "Customer Master",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
@@ -94,62 +112,98 @@ const navigations = [
       {
         name: "Master",
         icon: "person",
+        meta: {
+          hidePeriod: true,
+        },
         children: [
           {
             name: "TMS Parameter",
             path: "/material/TMS-parameter-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Card Details",
             path: "/material/TMS-card-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Attendance Status Details",
             path: "/material/TMS-attendance-status-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Rotation Details",
             path: "/material/TMS-rotation-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Route Details",
             path: "/material/TMS-route-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Shift Details",
             path: "/material/TMS-Shift-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Assign Cards",
             path: "/material/TMS-assign-cards-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Grade Wise Rule",
             path: "/material/TMS-grade-wise-rules-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Coff Rules",
             path: "/material/material-alternate-item-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Overtime Rules",
             path: "/material/TMS-overtime-rules-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
       {
         name: "Transaction",
         icon: "directions_transit",
+        meta: {
+          hidePeriod: false,
+        },
         children: [
           {
             name: "Manual Punching",
@@ -242,127 +296,202 @@ const navigations = [
             name: "Employee Information",
             path: "/material/payroll-employee-information-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Salary / Wages Details",
             path: "/material/payroll-salary-wages-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Profession Tax Slab",
             path: "/material/payroll-profession-tax-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Labour Welfare Slab",
             path: "/material/payroll-labour-welfare-slab-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Designation Details",
             path: "/material/payroll-designation-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Experience Details",
             path: "/material/payroll-designation-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
 
           {
             name: "Grade Details",
             path: "/material/payroll-grade-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Location Details",
             path: "/material/payroll-location-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Education Details Entry",
             path: "/material/payroll-education-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Family Detail Entry",
             path: "/material/payroll-family-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Training On Job",
             path: "/material/payroll-training-on-job-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Training Party Details",
             path: "/payroll/family-details",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Outsiders Loan Details",
             path: "/payroll/family-details",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Employee Loan Details",
             path: "/payroll/family-details",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "LIC Details",
             path: "/payroll/family-details",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Leave Details",
             path: "/material/payroll-leave-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Yearly Holiday Details",
             path: "/material/payroll-yearly-holiday-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Advance Leave Details",
             path: "/material/payroll-advance-leave-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Company Parameters",
             path: "/material/payroll-company-parameters-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Applicable Income Heads",
             path: "/material/payroll-application-income-head-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Grade Wise Payment Details",
             path: "/material/payroll-grade-wise-payment-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Attendance Bonus",
             path: "/payroll/family-details",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Deduction Recovery Method",
             path: "/material/payroll-deduction-recovery-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Department Details",
             path: "/material/payroll-department-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Payroll Calculation",
             path: "/material/payroll-payroll-calculations-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
@@ -439,30 +568,45 @@ const navigations = [
             path: "/material/activity-reports-rights-table",
             icon: "person_add",
             tooltip: "activity-reports-rights-table",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Vehicle In-Out Types",
             path: "/material/customers",
             icon: "list",
             tooltip: "Customer Master",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Visting Authority",
             path: "/material/customers",
             icon: "list",
             tooltip: "Customer Master",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Vehicle Route Details",
             path: "/material/customers",
             icon: "list",
             tooltip: "Customer Master",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Emergency Contact Details",
             path: "/material/customers",
             icon: "list",
             tooltip: "Customer Master",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
@@ -588,163 +732,259 @@ const navigations = [
         children: [
           {
             name: "Unit Of Measurement",
-            path: "/material/payroll-employee-information-table",
+            path: "/material/Unit-Of-Management-Table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Item Category Detail",
             path: "/material/material-item-category-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Item Code Sub-Category Detail",
             path: "/material/payroll-employee-information-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Itemwise Moq",
             path: "/material/material-item-wise-moq-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Item Rate Details",
             path: "/material/material-item-rate-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Shares Of Business",
             path: "/material/material-share-of-business-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "GRN Wise Opening Stock",
             path: "/material/material-GRN-wise-opening-stock-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "HSN/SAC Master",
             path: "/material/material-HSN-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Alternate Item Details",
             path: "/material/material-alternate-item-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "State Detail",
             path: "/material/material-state-detail-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Country Detail",
             path: "/material/material-country-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Supplier Detail",
             path: "/material/material-supplier-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "District Detail",
             path: "/material/material-district-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Property Values",
             path: "/material/material-property-values-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Categorywise Property Values",
             path: "/material/material-category-property-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Machine Hour Rate Detail",
             path: "/material/material-machine-hour-rate-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Item HSN Detail",
             path: "/material/material-item-HSN-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Operation Detail",
             path: "/material/material-operation-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "GST Detail",
             path: "/material/material-GST-detail-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Exchange Currency Master",
             path: "/material/material-exchange-currency-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Product Movement Flow",
             path: "/material/material-product-movement-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Payement Conditions Detail",
             path: "/material/material-payment-conditions-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "SAC Group Master",
             path: "/material/material-SAC-group-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Material Defect Detail",
             path: "/material/material-material-defect-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Physical Inventory",
             path: "/material/material-physical-inventory-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Item Detail",
             path: "/material/material-item-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Bill Of Material",
             path: "/material/material-GRN-wise-opening-stock-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Grade Master Details",
             path: "/material/material-grade-master-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Itemwise Material Grade Detail",
-            path: "/material/material-GRN-wise-opening-stock-table",
+            path: "/material/Item-Material-Grade-Table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Project Detail",
             path: "/material/material-project-detail-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Inspection Parameter",
-            path: "/material/material-GRN-wise-opening-stock-table",
+            path: "/material/Inspection-Parameter-Table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Item Inspection Parameter Details",
             path: "/material/material-item-inspection-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
@@ -859,7 +1099,7 @@ const navigations = [
           },
           {
             name: "Additional Work Order Requisition",
-            path: "/material/additional-work-order-requisition-table",
+            path: "/material/material-additional-work-order-requisition-table",
             icon: "arrow_forward",
           },
           {
@@ -885,18 +1125,27 @@ const navigations = [
       {
         name: "Master",
         icon: "person",
+        meta: {
+          hidePeriod: true,
+        },
         children: [
           {
             name: "Consignee Details",
             path: "/material/sales-consignee-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Notify Party Details",
             path: "/material/customers",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
-           {
+          {
             name: "Product Price List Details",
             path: "/material/sales-product-price-list-details-table",
             icon: "arrow_forward",
@@ -905,16 +1154,25 @@ const navigations = [
             name: "Contract Review",
             path: "/material/sales-Contract-review-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
-         {
+          {
             name: "Salesman",
             path: "/Sales/material/salesman",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Customer Details",
             path: "/material/customers",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           // SALES / MATERIAL MASTER TABLES
 
@@ -922,24 +1180,36 @@ const navigations = [
             name: "Customer Item Details",
             path: "/material/sales-customer-item-details-form-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Contract Review Checklist",
             path: "/material/sales-contract-review-checklist-form-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Project Execution Plan",
             path: "/material/sales-project-execution-plan-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Project Activity Master",
             path: "/material/sales-project-activity-master-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
-           {
-            name: "Product Wise Packing" ,
+          {
+            name: "Product Wise Packing",
             path: "/material/sales-product-wise-packing-table",
             icon: "arrow_forward",
           },
@@ -947,6 +1217,9 @@ const navigations = [
             name: "Customer Wise Product Price List",
             path: "/material/sales-customer-wise-product-price-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
@@ -971,10 +1244,13 @@ const navigations = [
         name: "Transaction",
         path: "/sysadmin/roles",
         icon: "directions_transit",
+        meta: {
+          hidePeriod: false,
+        },
         children: [
           {
             name: "Customer's Purchase Order Login",
-            path: "/material/customers-purchase-order-login",
+            path: "/material/customers-purchase-order-login-table",
             icon: "arrow_forward",
           },
           {
@@ -1064,101 +1340,161 @@ const navigations = [
             name: "Schedule Details",
             path: "/material/finance-schedule-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Group Details",
             path: "/material/finance-group-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Sub Group Details",
             path: "/material/finance-sub-group-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "General Ledger",
             path: "/material/finance-general-ledger-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Item Details",
             path: "/material/finance-item-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Bank Details",
             path: "/material/finance-bank-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Item Code Sub-Category Detail",
             path: "/material/TMS-assign-cards-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "T.D.S. Parameter",
             path: "/material/finance-TDS-parameter-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Depreciation Parameter",
             path: "/material/finance-depreciation-parameter-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Employee Advance Details",
             path: "/material/finance-employee-advance-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Creditors Billwise Entry",
             path: "/material/finance-creditors-billwise-entry-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Bank Reconciliation Untagging",
             path: "/material/finance-bank-reconciliation-untagging-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Bank Reconciliation Master",
             path: "/material/TMS-overtime-rules-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Bank Reconciliation Close",
             path: "/material/finance-bank-reconciliation-close-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Opening Balance",
             path: "/material/finance-opening-balance-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Debtors Billwise Entry",
             path: "/material/finance-debtors-billwise-entry-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Cheque Entry",
             path: "/material/finance-cheque-opening-entry-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Daily Cash Close",
             path: "/material/finance-daily-cash-close-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Monthwise Ledger Close",
             path: "/material/finance-monthwise-ledger-close-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Financial & Finalization",
             path: "/material/finance-close-finalization-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
@@ -1320,7 +1656,7 @@ const navigations = [
             name: "Register",
             path: "/material/TMS-shift-schedule-table",
             icon: "arrow_forward",
-             children: [
+            children: [
               {
                 name: "DBK Register",
                 path: "/finance/service-voucher-linking",
@@ -1331,7 +1667,7 @@ const navigations = [
                 path: "/finance/service-voucher-linking",
                 icon: "arrow_forward",
               },
-               {
+              {
                 name: "Advance Authorization Register",
                 path: "/finance/service-voucher-linking",
                 icon: "arrow_forward",
@@ -1380,26 +1716,41 @@ const navigations = [
             name: "Section Details",
             path: "/material/production-section-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Section Wise Process Details",
             path: "/material/production-sectionWise-process-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Break Down Type Details",
             path: "/material/production-breakdown-type-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Break Down Details",
             path: "/material/production-breakdown-detail-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Machine Process Details",
             path: "/material/production-machine-process-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           // SALES / MATERIAL MASTER TABLES
 
@@ -1407,16 +1758,25 @@ const navigations = [
             name: "Machine/Asset Group Details",
             path: "/material/production-machine-asset-group-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Machine/Asset Details",
             path: "/material/production-machine-asset-detail-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Product Costing Parameters",
             path: "/material/production-product-costing-parameter-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
@@ -1454,61 +1814,97 @@ const navigations = [
             name: "Critical Inspection Parameter",
             path: "/material/TQM-critical-inspection-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Inspection Sampling Plan",
             path: "/material/TQM-sampling-plan-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Quality Defect Type Details",
             path: "/material/TQM-quality-defect-type-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Pre-Dispatch Inspection Entry",
             path: "/material/TQM-Pre-dispatch-inspection-entry-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Pre-Dispatch Inspection Details Entry",
             path: "/material/TQM-Pre-dispatch-inspection-details-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "First Piece Approval",
             path: "/material/TQM-first-piece-approval-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Customer Satisfaction Servey (CSS) Form",
             path: "/material/TQM-customer-satisfaction-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Customer Complaints",
             path: "/material/TQM-customer-complaints-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "ISO/TS/QS Document Details",
             path: "/material/TQM-Iso-document-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Test Master",
             path: "/material/TQM-test-master-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Quality Defect Master",
             path: "/material/TQM-quality-defect-master-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Dock Audit Plan (DAP)",
             path: "/material/TQM-dock-audit-plan-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },
@@ -1545,26 +1941,41 @@ const navigations = [
             name: "Maintenance Category Deails",
             path: "/material/maintenance-maintenance-category-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Root Cause Details",
             path: "/material/maintenance-root-cause-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Maintenance Reason Master",
             path: "/material/maintenance-reason-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Machines Spares Details ",
             path: "/material/production-breakdown-detail-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
           {
             name: "Preventive Maintenance Scheduling",
             path: "/material/maintenance-preventive-maintenance-table",
             icon: "arrow_forward",
+            meta: {
+              hidePeriod: true,
+            },
           },
         ],
       },

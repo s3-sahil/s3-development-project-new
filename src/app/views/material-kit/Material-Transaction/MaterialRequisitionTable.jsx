@@ -11,50 +11,70 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import SearchFilter from "../SearchFilter";
+import { MaterialRequisitionPaginationAPI } from "app/utils/materialTransactionServices";
 
 export default function MaterialRequisitionTable() {
   const navigate = useNavigate();
 
-  const rows = [
-    {
-      id: 1,
-      mrNo: "MR001",
-      date: "2026-02-20",
-      department: "Production",
-      project: "Project A",
-      itemCode: "ST001",
-      quantity: 100,
-      uom: "Kg",
-      avlStock: 500,
-      status: "Pending",
-    },
-    {
-      id: 2,
-      mrNo: "MR002",
-      date: "2026-02-19",
-      department: "Maintenance",
-      project: "Project B",
-      itemCode: "CP002",
-      quantity: 50,
-      uom: "Meter",
-      avlStock: 200,
-      status: "Approved",
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [rowCount, setRowCount] = useState(0);
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const fetchData = async () => {
+    setLoading(true);
+
+    try {
+      const response = await MaterialRequisitionPaginationAPI(
+        "material_requisition",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery
+      );
+
+      if (response && response.Data) {
+        const mappedData = response.Data.map((row, index) => ({
+          ...row,
+          id: `${row.mr_no}_${index}`,
+        }));
+
+        setRows(mappedData);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching Material Requisition:", error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
 
   const columns = [
-    { field: "mrNo", headerName: "MR No.", width: 150 },
-    { field: "date", headerName: "Date", width: 150 },
-    { field: "department", headerName: "Department", width: 200 },
-    { field: "project", headerName: "Project", width: 200 },
-    { field: "itemCode", headerName: "Item Code", width: 150 },
-    { field: "quantity", headerName: "Quantity", width: 120 },
-    { field: "uom", headerName: "UOM", width: 120 },
-    { field: "avlStock", headerName: "Available Stock", width: 150 },
+    { field: "mr_no", headerName: "MR No.", flex: 1 },
+    { field: "mr_date", headerName: "Date", flex: 1 },
+    { field: "department", headerName: "Department", flex: 1 },
+    { field: "project", headerName: "Project", flex: 1 },
+    { field: "item_code", headerName: "Item Code", flex: 1 },
+    { field: "quantity", headerName: "Quantity", flex: 1 },
+    { field: "uom", headerName: "UOM", flex: 1 },
+    { field: "avl_stock", headerName: "Available Stock", flex: 1 },
+
     {
       field: "status",
       headerName: "Status",
-      width: 150,
+      flex: 1,
       renderCell: (params) => (
         <Chip
           label={params.value}
@@ -63,17 +83,22 @@ export default function MaterialRequisitionTable() {
         />
       ),
     },
+
     {
       field: "actions",
       headerName: "Actions",
       width: 120,
+      sortable: false,
       renderCell: (params) => (
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/material-requisition-form/edit/${params.row.id}`, {
-                state: params.row,
-              })
+              navigate(
+                `/material/material-requisition-form/edit/${params.row.id}`,
+                {
+                  state: params.row,
+                }
+              )
             }
           >
             <Icon color="primary">edit</Icon>
@@ -86,28 +111,58 @@ export default function MaterialRequisitionTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Material" }, { name: "Material Requisition" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Material" },
+            { name: "Material Requisition" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
-        <Box display="flex" justifyContent="flex-end">
+        {/* Search + Button */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              { value: "mr_no", label: "MR No" },
+              { value: "department", label: "Department" },
+              { value: "item_code", label: "Item Code" },
+            ]}
+            onSearch={() => fetchData()}
+          />
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/material-requisition-form/add")}
+            onClick={() =>
+              navigate("/material/material-requisition-form/add")
+            }
           >
             New
           </Button>
         </Box>
 
-        <Box sx={{ height: 420 }}>
+        {/* Table */}
+        <Box sx={{ height: 550, width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10]}
-            disableSelectionOnClick
-            autoHeight
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[10, 20, 50]}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

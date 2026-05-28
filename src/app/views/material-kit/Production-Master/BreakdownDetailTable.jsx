@@ -4,74 +4,117 @@ import {
   IconButton,
   Tooltip,
   Button,
-  TextField,
-  MenuItem,
   Box,
   Stack,
 } from "@mui/material";
+
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import SearchFilter from "../SearchFilter";
+import { BreakdownDetailPaginationAPI } from "app/utils/ProductionMaterialServices";
+
 
 export default function BreakdownDetailTable() {
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState("");
-  const [searchField, setSearchField] = useState("breakdownCode");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    {
-      id: 1,
-      breakdownTypeCode: "BT001",
-      breakdownCode: "BD001",
-      description: "Electrical Failure",
-      category: "Electrical",
-      overallEffApplicable: true,
-    },
-    {
-      id: 2,
-      breakdownTypeCode: "BT002",
-      breakdownCode: "BD002",
-      description: "Mechanical Failure",
-      category: "Mechanical",
-      overallEffApplicable: false,
-    },
-    {
-      id: 3,
-      breakdownTypeCode: "BT003",
-      breakdownCode: "BD003",
-      description: "Software Issue",
-      category: "Software",
-      overallEffApplicable: true,
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toString().toLowerCase().includes(searchText.toLowerCase())
-  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
 
+  const [rowCount, setRowCount] = useState(0);
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  // ================= FETCH DATA =================
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await BreakdownDetailPaginationAPI(
+        "vbreakdown_detail",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery
+      );
+
+      if (response?.Data) {
+        const mappedRows = response.Data.map((item, index) => ({
+          id: item.id || index + 1,
+          breakdownTypeCode: item.Breakdown_Type_Code || "",
+          breakdownCode: item.Breakdown_Code || "",
+          description: item.Description || "",
+          category: item.Category || "",
+          overallEffApplicable:
+            item.Overall_Eff_Applicable === true ||
+            item.Overall_Eff_Applicable === "Y",
+          original: item,
+        }));
+
+        setRows(mappedRows);
+        setRowCount(response?.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      setRows([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
+
+  // ================= EDIT =================
   const handleEdit = (row) => {
     navigate(`/material/production-breakdown-detail-form/edit/${row.id}`, {
-      state: row,
+      state: row.original,
     });
   };
 
+  // ================= ADD =================
   const handleAddNew = () => {
     navigate("/material/production-breakdown-detail-form/add");
   };
 
+  // ================= COLUMNS =================
   const columns = [
-    { field: "breakdownTypeCode", headerName: "Breakdown Type Code", width: 200 },
-    { field: "breakdownCode", headerName: "Breakdown Code", width: 180 },
-    { field: "description", headerName: "Description", width: 250 },
-    { field: "category", headerName: "Category", width: 200 },
+    {
+      field: "breakdownTypeCode",
+      headerName: "Breakdown Type Code",
+      flex: 1,
+    },
+    {
+      field: "breakdownCode",
+      headerName: "Breakdown Code",
+      flex: 1,
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      flex: 1.5,
+    },
+    {
+      field: "category",
+      headerName: "Category",
+      flex: 1,
+    },
     {
       field: "overallEffApplicable",
       headerName: "Overall Eff. Applicable",
-      width: 220,
+      flex: 1,
       renderCell: (params) => (params.value ? "Yes" : "No"),
     },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -89,6 +132,7 @@ export default function BreakdownDetailTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
@@ -99,31 +143,38 @@ export default function BreakdownDetailTable() {
       </Box>
 
       <Stack spacing={3}>
-        {/* Top Controls */}
-        <Box display="flex" justifyContent="space-between">
-          <Box display="flex" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-
-            <TextField
-              select
-              size="small"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              sx={{ width: 200 }}
-            >
-              <MenuItem value="breakdownTypeCode">Breakdown Type Code</MenuItem>
-              <MenuItem value="breakdownCode">Breakdown Code</MenuItem>
-              <MenuItem value="description">Description</MenuItem>
-              <MenuItem value="category">Category</MenuItem>
-            </TextField>
-
-            <Button variant="contained">Search</Button>
-          </Box>
+        {/* Search + Add */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              {
+                value: "Breakdown_Type_Code",
+                label: "Breakdown Type Code",
+              },
+              {
+                value: "Breakdown_Code",
+                label: "Breakdown Code",
+              },
+              {
+                value: "Description",
+                label: "Description",
+              },
+              {
+                value: "Category",
+                label: "Category",
+              },
+            ]}
+            onSearch={() => fetchData()}
+          />
 
           <Button
             variant="contained"
@@ -135,16 +186,17 @@ export default function BreakdownDetailTable() {
         </Box>
 
         {/* DataGrid */}
-        <Box sx={{ height: 450, width: "100%" }}>
+        <Box sx={{ height: 550, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
-            }}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[5, 10, 20, 50]}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

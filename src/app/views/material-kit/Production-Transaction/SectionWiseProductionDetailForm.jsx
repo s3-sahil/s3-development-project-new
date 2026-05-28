@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
+import { addSectionWiseProcessDetails } from "app/utils/ProductionMaterialServices";
 import { useState } from "react";
 
 const SectionWiseProductionDetailForm = () => {
@@ -24,6 +25,7 @@ const SectionWiseProductionDetailForm = () => {
     shiftIncharge: "",
     machineNo: "",
     cutTime: "",
+
     // Production Details
     productCode: "",
     operation: "",
@@ -36,29 +38,89 @@ const SectionWiseProductionDetailForm = () => {
     okQty: "",
     wipQty: "",
     remark: "",
+
     // Breakdown Details
     breakdownReason: "",
     breakdownFrom: "",
     breakdownTo: "",
     totalBreakdownTime: "",
+
     // Other Workmen Details
     directEmployee: "",
     indirectEmployee: "",
+
     // Workmen Details
     employee: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
+  // ================= HANDLE CHANGE =================
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleSave = () => {
-    console.log("Saved Data:", formData);
-    alert("Section Wise Production detail saved (UI Only)");
+  // ================= SAVE =================
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+
+      const payload = {
+        desc: formData.productionType || formData.remark,
+        oP_CODE: formData.operation?.slice(0, 5),
+        shop_Code: formData.section?.slice(0, 2),
+        division: formData.machineNo?.slice(0, 3),
+      };
+
+      const response = await addSectionWiseProcessDetails(payload);
+
+      alert(
+        response?.message || "Section Wise Process Details Added Successfully",
+      );
+
+      console.log("Save Response:", response);
+
+      // ================= RESET =================
+      setFormData({
+        section: "PRODUCTION",
+        reportNo: "",
+        reportDate: "",
+        shiftFrom: "",
+        shiftTo: "",
+        shiftIncharge: "",
+        machineNo: "",
+        cutTime: "",
+        productCode: "",
+        operation: "",
+        productionType: "",
+        fromTime: "",
+        toTime: "",
+        totalTime: "",
+        produceQty: "",
+        rejectionQty: "",
+        okQty: "",
+        wipQty: "",
+        remark: "",
+        breakdownReason: "",
+        breakdownFrom: "",
+        breakdownTo: "",
+        totalBreakdownTime: "",
+        directEmployee: "",
+        indirectEmployee: "",
+        employee: "",
+      });
+    } catch (error) {
+      console.error("Save Error:", error);
+
+      alert(error?.message || error?.Errormessage || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -74,7 +136,12 @@ const SectionWiseProductionDetailForm = () => {
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
           <h2>Section Wise Production Details</h2>
 
           <Box display="flex" gap={1}>
@@ -82,8 +149,9 @@ const SectionWiseProductionDetailForm = () => {
               variant="contained"
               startIcon={<Icon>save</Icon>}
               onClick={handleSave}
+              disabled={loading}
             >
-              <Span>Save</Span>
+              <Span>{loading ? "Saving..." : "Save"}</Span>
             </Button>
 
             <Button variant="outlined" startIcon={<Icon>print</Icon>}>
@@ -94,10 +162,22 @@ const SectionWiseProductionDetailForm = () => {
 
         {/* Common Fields */}
         <Grid container spacing={2} mb={2}>
-          {["section","reportNo","reportDate","shiftFrom","shiftTo","shiftIncharge","machineNo","cutTime"].map((field) => (
-            <Grid item xs={6} key={field}>
+          {[
+            "section",
+            "reportNo",
+            "reportDate",
+            "shiftFrom",
+            "shiftTo",
+            "shiftIncharge",
+            "machineNo",
+            "cutTime",
+          ].map((field) => (
+            <Grid item xs={12} md={6} key={field}>
               <TextField
                 label={field.replace(/([A-Z])/g, " $1")}
+                placeholder={field
+                  .replace(/([A-Z])/g, " $1")
+                  .replace(/\b\w/g, (char) => char.toUpperCase())}
                 name={field}
                 value={formData[field]}
                 onChange={handleChange}
@@ -109,20 +189,39 @@ const SectionWiseProductionDetailForm = () => {
         </Grid>
 
         {/* Tabs */}
-        <Tabs value={activeTab} onChange={(e, val) => setActiveTab(val)} sx={{ mb: 2 }}>
+        <Tabs
+          value={activeTab}
+          onChange={(e, val) => setActiveTab(val)}
+          sx={{ mb: 2 }}
+        >
           <Tab label="Production Details" />
           <Tab label="Break Down Details" />
           <Tab label="Other Workmen Details" />
           <Tab label="Workmen Details" />
         </Tabs>
 
-        {/* Tab Panels */}
+        {/* Production Details */}
         {activeTab === 0 && (
           <Grid container spacing={2}>
-            {["productCode","operation","productionType","fromTime","toTime","totalTime","produceQty","rejectionQty","okQty","wipQty","remark"].map((field) => (
-              <Grid item xs={6} key={field}>
+            {[
+              "productCode",
+              "operation",
+              "productionType",
+              "fromTime",
+              "toTime",
+              "totalTime",
+              "produceQty",
+              "rejectionQty",
+              "okQty",
+              "wipQty",
+              "remark",
+            ].map((field) => (
+              <Grid item xs={12} md={6} key={field}>
                 <TextField
                   label={field.replace(/([A-Z])/g, " $1")}
+                  placeholder={field
+                    .replace(/([A-Z])/g, " $1")
+                    .replace(/\b\w/g, (char) => char.toUpperCase())}
                   name={field}
                   value={formData[field]}
                   onChange={handleChange}
@@ -134,12 +233,21 @@ const SectionWiseProductionDetailForm = () => {
           </Grid>
         )}
 
+        {/* Breakdown Details */}
         {activeTab === 1 && (
           <Grid container spacing={2}>
-            {["breakdownReason","breakdownFrom","breakdownTo","totalBreakdownTime"].map((field) => (
-              <Grid item xs={6} key={field}>
+            {[
+              "breakdownReason",
+              "breakdownFrom",
+              "breakdownTo",
+              "totalBreakdownTime",
+            ].map((field) => (
+              <Grid item xs={12} md={6} key={field}>
                 <TextField
                   label={field.replace(/([A-Z])/g, " $1")}
+                  placeholder={field
+                    .replace(/([A-Z])/g, " $1")
+                    .replace(/\b\w/g, (char) => char.toUpperCase())}
                   name={field}
                   value={formData[field]}
                   onChange={handleChange}
@@ -151,12 +259,16 @@ const SectionWiseProductionDetailForm = () => {
           </Grid>
         )}
 
+        {/* Other Workmen Details */}
         {activeTab === 2 && (
           <Grid container spacing={2}>
-            {["directEmployee","indirectEmployee"].map((field) => (
-              <Grid item xs={6} key={field}>
+            {["directEmployee", "indirectEmployee"].map((field) => (
+              <Grid item xs={12} md={6} key={field}>
                 <TextField
                   label={field.replace(/([A-Z])/g, " $1")}
+                  placeholder={field
+                    .replace(/([A-Z])/g, " $1")
+                    .replace(/\b\w/g, (char) => char.toUpperCase())}
                   name={field}
                   value={formData[field]}
                   onChange={handleChange}
@@ -168,11 +280,13 @@ const SectionWiseProductionDetailForm = () => {
           </Grid>
         )}
 
+        {/* Workmen Details */}
         {activeTab === 3 && (
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <TextField
                 label="Employee"
+                placeholder="Employee"
                 name="employee"
                 value={formData.employee}
                 onChange={handleChange}

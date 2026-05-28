@@ -1,10 +1,4 @@
-import {
-  Container,
-  Icon,
-  IconButton,
-  Tooltip,
-  Button,
-} from "@mui/material";
+import { Container, Icon, IconButton, Tooltip, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
@@ -88,16 +82,26 @@ export default function GroupDetailsTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/finance-group-details-form/edit/${params.row.id}`, {
-                  state: params.row,
-                })
+                navigate(
+                  `/material/finance-group-details-form/edit/${params.row.id}`,
+                  {
+                    state: params.row,
+                  },
+                )
               }
             >
               <Icon color="primary">edit</Icon>
             </IconButton>
           </Tooltip>
           <Tooltip title="Delete">
-            <IconButton onClick={() => handleDelete(params.row.id)}>
+            <IconButton
+              onClick={() =>
+                navigate(
+                  `/material/finance-group-details-form/delete/${params.row.id}`,
+                  { state: { ...params.row, mode: "delete" } },
+                )
+              }
+            >
               <Icon color="error">delete</Icon>
             </IconButton>
           </Tooltip>
@@ -109,7 +113,9 @@ export default function GroupDetailsTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Group Details" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Finace" }, { name: "Group Details" }]}
+        />
       </Box>
 
       <Stack spacing={3}>

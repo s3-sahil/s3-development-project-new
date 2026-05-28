@@ -4,47 +4,108 @@ import {
   IconButton,
   Tooltip,
   Button,
-  TextField,
-  MenuItem,
-  Box,
-  Stack,
 } from "@mui/material";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import SearchFilter from "../SearchFilter";
+import { SectionPaginationAPI } from "app/utils/ProductionMaterialServices";
 
 export default function SectionTable() {
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState("");
-  const [searchField, setSearchField] = useState("sectionCode");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    { id: 1, sectionCode: "SEC001", sectionName: "Assembly", department: "Production" },
-    { id: 2, sectionCode: "SEC002", sectionName: "Welding", department: "Maintenance" },
-    { id: 3, sectionCode: "SEC003", sectionName: "Testing", department: "Quality" },
-    { id: 4, sectionCode: "SEC004", sectionName: "Accounts", department: "Finance" },
-  ];
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+
+  // ✅ Fetch Data
+  const fetchData = async (
+    pageNo = page,
+    size = pageSize,
+    searchCol = searchColumn,
+    searchVal = searchQuery
+  ) => {
+    try {
+      setLoading(true);
+
+      const res = await SectionPaginationAPI(
+        "section_master",
+        pageNo + 1,
+        size,
+        searchCol,
+        searchVal
+      );
+
+      if (res?.Data) {
+        const formattedRows = res.Data.map((item, index) => ({
+          id: item.id || index + 1,
+
+          sectionCode: item.sectionCode || "",
+          sectionName: item.sectionName || "",
+          department: item.department || "",
+
+          original: item,
+        }));
+
+        setRows(formattedRows);
+        setRowCount(res.TotalCount || 0);
+      }
+    } catch (err) {
+      console.error("Section Fetch Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(page, pageSize);
+  }, [page, pageSize]);
+
+  // ✅ Search
+  const handleSearch = () => {
+    fetchData(0, pageSize, searchColumn, searchQuery);
+    setPage(0);
+  };
+
+  // ✅ Edit
   const handleEdit = (row) => {
     navigate(`/material/production-section-form/edit/${row.id}`, {
-      state: row,
+      state: row.original,
     });
   };
 
+  // ✅ Add New
   const handleAddNew = () => {
     navigate("/material/production-section-form/add");
   };
 
+  // ✅ Columns
   const columns = [
-    { field: "sectionCode", headerName: "Section Code", width: 180 },
-    { field: "sectionName", headerName: "Section Name", width: 250 },
-    { field: "department", headerName: "Department", width: 200 },
+    {
+      field: "sectionCode",
+      headerName: "Section Code",
+      flex: 1,
+    },
+    {
+      field: "sectionName",
+      headerName: "Section Name",
+      flex: 1,
+    },
+    {
+      field: "department",
+      headerName: "Department",
+      flex: 1,
+    },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -62,6 +123,7 @@ export default function SectionTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
@@ -72,30 +134,25 @@ export default function SectionTable() {
       </Box>
 
       <Stack spacing={3}>
-        {/* Top Controls */}
-        <Box display="flex" justifyContent="space-between">
-          <Box display="flex" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-
-            <TextField
-              select
-              size="small"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              sx={{ width: 180 }}
-            >
-              <MenuItem value="sectionCode">Section Code</MenuItem>
-              <MenuItem value="sectionName">Section Name</MenuItem>
-              <MenuItem value="department">Department</MenuItem>
-            </TextField>
-
-            <Button variant="contained">Search</Button>
-          </Box>
+        {/* Search + Add */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              { value: "sectionCode", label: "Section Code" },
+              { value: "sectionName", label: "Section Name" },
+              { value: "department", label: "Department" },
+            ]}
+            onSearch={handleSearch}
+          />
 
           <Button
             variant="contained"
@@ -106,17 +163,21 @@ export default function SectionTable() {
           </Button>
         </Box>
 
-        {/* DataGrid */}
-        <Box sx={{ height: 450, width: "100%" }}>
+        {/* Table */}
+        <Box sx={{ height: 500, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
+            loading={loading}
+            paginationMode="server"
+            rowCount={rowCount}
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
             }}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

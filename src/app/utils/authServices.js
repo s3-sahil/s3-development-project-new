@@ -170,26 +170,6 @@ export const fetchPayCondAPI = async () => {
     }
 };
 
-export const saveCustomerPurchaseOrder = async (payload) => {
-    try {
-        const response = await axiosInstance.post(
-            "/ADD-CUSTOMER_PURCHASE_ORDER",
-            payload,
-            {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }
-        );
-
-        return response.data;
-    } catch (error) {
-        console.error("API Error:", error.response?.data || error.message);
-        throw new Error(
-            error.response?.data?.Message || "Failed to save Customer Purchase Order"
-        );
-    }
-};
 
 export const login = async (Login_Name, Login_Pwd) => {
     try {
@@ -245,18 +225,8 @@ export const addPackingSlip = async (payload) => {
     }
 };
 
-export const addEnquiryDetails = async (enquiryData) => {
-    try {
-        const response = await axiosInstance.post("/ADD-EQUIRE_DEATILS", enquiryData);
-        return response.data;
-    } catch (error) {
-        console.error("API Error:", error.response || error.message);
-        throw new Error(error.response?.data?.message || "Failed to add enquiry details.");
-    }
-};
-
-export const EnquiryPaginationAPI = async (
-    tableName = "enquiry_hed",
+export const PackingSlipPaginationAPI = async (
+    tableName = "packingSlip",
     pageNumber = 1,
     pageSize = 10
 ) => {
@@ -278,10 +248,22 @@ export const EnquiryPaginationAPI = async (
 
         return null;
     } catch (error) {
-        console.error("Enquiry pagination fetch error:", error);
+        console.error("Packing Slip pagination fetch error:", error);
         return null;
     }
 };
+
+export const addEnquiryDetails = async (enquiryData) => {debugger
+    try {
+        const response = await axiosInstance.post("/ADD-EQUIRE_DEATILS", enquiryData);
+        return response.data;
+    } catch (error) {
+        console.error("API Error:", error.response || error.message);
+        throw new Error(error.response?.data?.message || "Failed to add enquiry details.");
+    }
+};
+
+
 
 export const GetEnquiryDetailsAPI = async ({
     Enq_no,
@@ -1956,6 +1938,201 @@ export const UpdateScheduleDetails = async (payload) => {
   }
 };
 
+export const getCustomerList = async () => {
+  try {
+    const response = await axiosInstance.get(
+      "/API/SD/CUSTOMER_DETAIL/GET-CUSTOMER_DETAIL_ALL"
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to fetch Customer Details."
+    );
+  }
+};
+
+export const getCustomerById = async (custCode) => {
+  try {
+    const response = await axiosInstance.get(
+      `/API/SD/CUSTOMER_DETAIL/GET-CUSTOMER_DETAIL/${custCode}`
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to fetch Customer Detail."
+    );
+  }
+};
+
+export const updateCustomerDetail = async (customerData) => {
+  try {
+    const response = await axiosInstance.put(
+      "/API/SD/CUSTOMER_DETAIL/UPDATE-CUSTOMER_DETAIL",
+      customerData
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Update Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to update Customer Detail."
+    );
+  }
+};
+
+export const getExportDocumentsList = async () => {
+  try {
+
+    const response = await axiosInstance.get(
+      "/API/SALES/EXPORT_DOCUMENTS/GET-EXPORT_DOCUMENTS"
+    );
+
+    return response.data;
+
+  } catch (error) {
+
+    console.error("API Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to fetch Export Documents"
+    );
+  }
+};
+
+
+export const saveDailyActivityPlan = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "ADD-DAILY_ACTIVITY",
+      payload
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Save Error:", error.response || error.message);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "Failed to save Daily Activity Plan"
+    );
+  }
+};
+
+export const DailyActivityPaginationAPI = async (
+    tableName = "DAILY_ACTIVITY",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return { Data: [], TotalCount: 0 };
+    } catch (error) {
+        console.error(
+            "Customer pagination fetch error:",
+            error.response || error.message
+        );
+
+        return { Data: [], TotalCount: 0 };
+    }
+};
+
+export const getDailyActivityPlanList = async (Activity_No, Emp_No) => {
+  try {
+    const response = await axiosInstance.get(
+      "/GETRETRIVE-DAILY_ACTIVITY",
+      {
+        params: { Activity_No, Emp_No }
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Error:", error.response || error.message);
+    throw new Error("Failed to fetch Daily Activity Plan");
+  }
+};
+
+export const deleteDailyActivityPlan = async (id) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/API/PLANNING/DAILY_ACTIVITY_PLAN/DELETE/${id}`
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Delete Error:", error.response || error.message);
+    throw new Error("Failed to delete record");
+  }
+};
+
+export const ProjectExecutionPaginationAPI = async (
+    tableName = "project_execution_Head",
+    pageNumber = 1,
+    pageSize = 10
+) => {
+    try {
+        const { data } = await axiosInstance.get(
+            "/api/PaginationByTable/GetPaginationByTable",
+            {
+                params: {
+                    TableNameForPagination: tableName,
+                    pageNumber,
+                    pageSize,
+                },
+            }
+        );
+
+        if (data?.StatusCode === 200 || data?.Data) {
+            return data;
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Packing Slip pagination fetch error:", error);
+        return null;
+    }
+};
+
+export const getProjectExecutionList = async (po_id, item_Code,Proj_code) => {
+  try {
+    const response = await axiosInstance.get(
+      "/GETRETRIVE-DAILY_ACTIVITY",
+      {
+        params: { po_id, item_Code,Proj_code    }
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Fetch Error:", error.response || error.message);
+    throw new Error("Failed to fetch Daily Activity Plan");
+  }
+};
 
 export const getSchDropdown  = async (value) => {
     try {

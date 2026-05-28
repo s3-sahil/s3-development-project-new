@@ -4,46 +4,90 @@ import {
   IconButton,
   Tooltip,
   Button,
-  TextField,
-  MenuItem,
   Box,
   Stack,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import SearchFilter from "../SearchFilter";
+import { SectionWiseProcessPaginationAPI } from "app/utils/ProductionMaterialServices";
 
 export default function SectionWiseProcessTable() {
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState("");
-  const [searchField, setSearchField] = useState("sectionCode");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    { id: 1, sectionCode: "SEC001", process: "Cutting" },
-    { id: 2, sectionCode: "SEC002", process: "Welding" },
-    { id: 3, sectionCode: "SEC003", process: "Inspection" },
-    { id: 4, sectionCode: "SEC004", process: "Packaging" },
-  ];
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
 
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const [rowCount, setRowCount] = useState(0);
+
+  // ✅ Fetch Data
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await SectionWiseProcessPaginationAPI(
+        "SECTIONWISE_PROCESS",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery
+      );
+
+      if (response?.Data) {
+        const mappedRows = response.Data.map((item, index) => ({
+          id: item.id || index + 1,
+          sectionCode: item.sectionCode || "",
+          process: item.process || "",
+          original: item,
+        }));
+
+        setRows(mappedRows);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
+
+  // ✅ Edit
   const handleEdit = (row) => {
-    navigate(`/material/production-sectionWise-process-form/edit/${row.id}`, {
-      state: row,
-    });
+    navigate(
+      `/material/production-sectionWise-process-form/edit/${row.id}`,
+      {
+        state: row.original,
+      }
+    );
   };
 
-  const handleAddNew = () => {
-    navigate("/material/production-sectionWise-process-form/add");
-  };
-
+  // ✅ Columns
   const columns = [
-    { field: "sectionCode", headerName: "Section Code", width: 200 },
-    { field: "process", headerName: "Process", width: 250 },
+    {
+      field: "sectionCode",
+      headerName: "Section Code",
+      flex: 1,
+    },
+    {
+      field: "process",
+      headerName: "Process",
+      flex: 1,
+    },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -61,6 +105,7 @@ export default function SectionWiseProcessTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
@@ -72,49 +117,52 @@ export default function SectionWiseProcessTable() {
 
       <Stack spacing={3}>
         {/* Top Controls */}
-        <Box display="flex" justifyContent="space-between">
-          <Box display="flex" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-
-            <TextField
-              select
-              size="small"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              sx={{ width: 180 }}
-            >
-              <MenuItem value="sectionCode">Section Code</MenuItem>
-              <MenuItem value="process">Process</MenuItem>
-            </TextField>
-
-            <Button variant="contained">Search</Button>
-          </Box>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              {
+                value: "sectionCode",
+                label: "Section Code",
+              },
+              {
+                value: "process",
+                label: "Process",
+              },
+            ]}
+            onSearch={fetchData}
+          />
 
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={handleAddNew}
+            onClick={() =>
+              navigate("/material/production-sectionWise-process-form/add")
+            }
           >
             New
           </Button>
         </Box>
 
-        {/* DataGrid */}
-        <Box sx={{ height: 450, width: "100%" }}>
+        {/* Table */}
+        <Box sx={{ height: 500, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
-            }}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[5, 10, 20]}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

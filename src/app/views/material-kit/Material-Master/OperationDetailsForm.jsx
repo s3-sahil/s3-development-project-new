@@ -9,6 +9,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { addOperationDetails } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 
 export default function OperationDetailsForm() {
@@ -22,7 +23,7 @@ export default function OperationDetailsForm() {
     inUse: false,
     productionOperation: false,
   });
-
+  const [loading, setLoading] = useState(false);
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -31,19 +32,55 @@ export default function OperationDetailsForm() {
     }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Operation Details Saved (UI Only)");
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+
+      const payload = {
+        desc: formData.operationName,
+        oP_CODE: formData.code,
+        oP_TYPE: formData.operationType,
+        bom_flag: formData.bomFlag ? "Y" : "N",
+        inuse_flag: formData.inUse ? "Y" : "N",
+        op_UOM: formData.uom,
+        ohs: 0,
+        opn_cost: 0,
+        prod_flag: formData.productionOperation ? "Y" : "N",
+        extraQty_per: 0,
+        packing_flag: "N",
+        rM_required: "N",
+        op_uom1: formData.uom,
+        tariff_Code: formData.sacCode,
+        profcenCd: "",
+      };
+
+      const res = await addOperationDetails(payload);
+
+      alert(res.message);
+
+      // reset form
+      setFormData({
+        code: "",
+        operationName: "",
+        bomFlag: false,
+        sacCode: "",
+        operationType: "MACHINE",
+        uom: "HOUR",
+        inUse: false,
+        productionOperation: false,
+      });
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
         <Breadcrumb
-          routeSegments={[
-            { name: "Material" },
-            { name: "Operation Details" },
-          ]}
+          routeSegments={[{ name: "Material" }, { name: "Operation Details" }]}
         />
       </Box>
 
@@ -53,8 +90,9 @@ export default function OperationDetailsForm() {
             variant="contained"
             startIcon={<Icon>save</Icon>}
             onClick={handleSave}
+            disabled={loading}
           >
-            Save
+            {loading ? "Saving..." : "Save"}
           </Button>
         </Box>
 

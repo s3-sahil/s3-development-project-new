@@ -8,7 +8,9 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { addGSTDetails, deleteGSTDetailsAPI } from "app/utils/materialMaterialServices";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function GSTDetailForm() {
   const [formData, setFormData] = useState({
@@ -21,28 +23,150 @@ export default function GSTDetailForm() {
     glCode: "",
     description: "",
   });
+  const location = useLocation();
+  const mode = location.state?.mode || "add";
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (location.state) {
+      setFormData({
+        uom: location.state.uom || "",
+        desc: location.state.desc || "",
+        decimal: location.state.decimal || false,
+        conversion: false,
+      });
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("GST Detail Saved (UI Only)");
+  const handleSave = async () => {
+    // 🔴 Validation
+    if (!formData.taxCode) {
+      alert("Tax Code is required");
+      return;
+    }
+
+    if (!formData.taxPercent) {
+      alert("Tax % is required");
+      return;
+    }
+
+    try {
+      // ✅ Format WEF → MMYYYY (or whatever backend expects)
+      const wef =
+        formData.wefMonth && formData.wefYear
+          ? `${formData.wefMonth.padStart(2, "0")}${formData.wefYear}`
+          : "";
+
+      const payload = {
+        taX_CODE: formData.taxCode,
+
+        desc: formData.taxName || "",
+
+        percent: Number(formData.taxPercent) || 0,
+
+        acC_CODE: formData.glCode || "",
+
+        indicator: formData.taxType?.charAt(0) || "", // C/S/I/T
+
+        wef: wef,
+
+        calC_ON: "BASIC", // default (change if needed)
+
+        state: "", // optional or map if you add state dropdown
+
+        inusE_FLAG: "Y", // default
+
+        cenvaT_APPL: "N", // default
+
+        forM_ID: "GST", // default
+
+        flag: "N", // default
+      };
+
+      const res = await addGSTDetails(payload);
+
+      console.log("API Response:", res);
+
+      alert(res.message || "Saved successfully");
+
+      // ✅ Reset form
+      setFormData({
+        taxType: "",
+        taxCode: "",
+        taxName: "",
+        taxPercent: "",
+        wefMonth: "",
+        wefYear: "",
+        glCode: "",
+        description: "",
+      });
+    } catch (error) {
+      console.error("Save Error:", error);
+      alert(error.message || "Something went wrong");
+    }
   };
 
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete GST Tax Code ${formData.TAX_CODE}?`,
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      setLoading(true);
+
+      const res = await deleteGSTDetailsAPI(formData.TAX_CODE);
+
+      alert(
+        res?.message ||
+          res?.Errormessage ||
+          res?.error ||
+          "Deleted successfully",
+      );
+
+      navigate("/finance/GST-Details-Table");
+    } catch (err) {
+      alert("Delete failed");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Finance" }, { name: "GST Detail" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Finance" }, { name: "GST Detail" }]}
+        />
       </Box>
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         <Box display="flex" justifyContent="flex-end" mb={2}>
-          <Button variant="contained" startIcon={<Icon>save</Icon>} onClick={handleSave}>
-            Save
-          </Button>
+          {mode === "delete" ? (
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<Icon>delete</Icon>}
+              onClick={handleDelete}
+              disabled={loading}
+            >
+              {loading ? "Deleting..." : "Delete"}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              startIcon={<Icon>save</Icon>}
+              onClick={handleSave}
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save"}
+            </Button>
+          )}
         </Box>
 
         <Grid container spacing={3}>

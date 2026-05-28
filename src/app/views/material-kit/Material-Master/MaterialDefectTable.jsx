@@ -41,7 +41,7 @@ export default function MaterialDefectTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/tqm/material-defect-form/edit/${params.row.id}`, {
+              navigate(`/material/material-material-defect-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -70,7 +70,7 @@ export default function MaterialDefectTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/tqm/material-defect-form/add")
+              navigate("/material/material-material-defect-form/add")
             }
           >
             New

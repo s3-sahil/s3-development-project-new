@@ -7,6 +7,7 @@ import {
   Grid,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { addCountryDetails } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 
 export default function CountryDetailsForm() {
@@ -20,14 +21,52 @@ export default function CountryDetailsForm() {
     transportSeaTo: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Country Details Saved (UI Only)");
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+
+      const payload = {
+        country: formData.country,
+        currency: formData.currency,
+        conv_rate: 0,
+        conv_date: new Date().toISOString(),
+        curR_FRACTION: "",
+        sub_Currency: formData.subCurrency,
+        airFrom: Number(formData.transportAirFrom) || 0,
+        airto: Number(formData.transportAirTo) || 0,
+        seaFrom: Number(formData.transportSeaFrom) || 0,
+        seato: Number(formData.transportSeaTo) || 0,
+        country_code: formData.country
+          ? formData.country.slice(0, 2).toUpperCase()
+          : "",
+      };
+
+      const res = await addCountryDetails(payload);
+
+      alert(res.message);
+
+      // Reset form (optional)
+      setFormData({
+        country: "",
+        currency: "",
+        subCurrency: "",
+        transportAirFrom: "",
+        transportAirTo: "",
+        transportSeaFrom: "",
+        transportSeaTo: "",
+      });
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,8 +86,9 @@ export default function CountryDetailsForm() {
             variant="contained"
             startIcon={<Icon>save</Icon>}
             onClick={handleSave}
+            disabled={loading}
           >
-            Save
+            {loading ? "Saving..." : "Save"}
           </Button>
         </Box>
 

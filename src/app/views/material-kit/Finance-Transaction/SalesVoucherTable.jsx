@@ -4,46 +4,138 @@ import {
   IconButton,
   Tooltip,
   Button,
+  TextField,
+  MenuItem,
 } from "@mui/material";
+
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
+
 import { DataGrid } from "@mui/x-data-grid";
+
 import { Breadcrumb } from "app/components";
+
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
+import { SalesVoucherPaginationAPI } from "app/utils/FinanceTransactionServices";
+
 
 export default function SalesVoucherTable() {
   const navigate = useNavigate();
 
-  const [rows, setRows] = useState([
-    { id: 1, voucherNo: "SV001", voucherDate: "01/04/2025", partyCode: "PARTY001", narration: "Sale of goods" },
-    { id: 2, voucherNo: "SV002", voucherDate: "02/04/2025", partyCode: "PARTY002", narration: "Service income" },
-  ]);
+  const [rows, setRows] = useState([]);
 
-  const handleDelete = (id) => setRows(rows.filter((row) => row.id !== id));
+  const [loading, setLoading] = useState(false);
 
+  const [searchText, setSearchText] = useState("");
+
+  const [searchField, setSearchField] = useState("voucherNo");
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const [rowCount, setRowCount] = useState(0);
+
+  // ================= FETCH DATA =================
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      const response = await SalesVoucherPaginationAPI(
+        "SALES_VOUCHER",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchField,
+        searchText,
+      );
+
+      if (response?.Data) {
+        const mappedRows = response.Data.map((item, index) => ({
+          id: item.id || index + 1,
+
+          voucherNo: item.voucherNo || "",
+
+          voucherDate: item.voucherDate || "",
+
+          partyCode: item.partyCode || "",
+
+          narration: item.narration || "",
+
+          original: item,
+        }));
+
+        setRows(mappedRows);
+
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchText, searchField]);
+
+  // ================= DELETE =================
+  const handleDelete = (id) => {
+    setRows(rows.filter((row) => row.id !== id));
+  };
+
+  // ================= COLUMNS =================
   const columns = [
-    { field: "voucherNo", headerName: "Voucher No", flex: 1 },
-    { field: "voucherDate", headerName: "Voucher Date", flex: 1 },
-    { field: "partyCode", headerName: "Party Code", flex: 1 },
-    { field: "narration", headerName: "Narration", flex: 2 },
+    {
+      field: "voucherNo",
+      headerName: "Voucher No",
+      flex: 1,
+    },
+
+    {
+      field: "voucherDate",
+      headerName: "Voucher Date",
+      flex: 1,
+    },
+
+    {
+      field: "partyCode",
+      headerName: "Party Code",
+      flex: 1,
+    },
+
+    {
+      field: "narration",
+      headerName: "Narration",
+      flex: 2,
+    },
+
     {
       field: "actions",
       headerName: "Actions",
       flex: 1,
+      sortable: false,
+
       renderCell: (params) => (
         <Stack direction="row" spacing={1}>
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/finance-sales-voucher-form/edit/${params.row.id}`, {
-                  state: params.row,
-                })
+                navigate(
+                  `/material/finance-sales-voucher-form/edit/${params.row.id}`,
+                  {
+                    state: params.row.original,
+                  },
+                )
               }
             >
               <Icon color="primary">edit</Icon>
             </IconButton>
           </Tooltip>
+
           <Tooltip title="Delete">
             <IconButton onClick={() => handleDelete(params.row.id)}>
               <Icon color="error">delete</Icon>
@@ -56,12 +148,48 @@ export default function SalesVoucherTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "SALES" }, { name: "Sales Voucher" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "SALES" },
+            {
+              name: "Sales Voucher",
+            },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
-        <Box display="flex" justifyContent="flex-end">
+        {/* Top Controls */}
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Box display="flex" gap={2}>
+            <TextField
+              size="small"
+              placeholder="Search..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+
+            <TextField
+              select
+              size="small"
+              value={searchField}
+              onChange={(e) => setSearchField(e.target.value)}
+              sx={{ width: 220 }}
+            >
+              <MenuItem value="voucherNo">Voucher No</MenuItem>
+
+              <MenuItem value="partyCode">Party Code</MenuItem>
+
+              <MenuItem value="narration">Narration</MenuItem>
+            </TextField>
+
+            <Button variant="contained" onClick={fetchData}>
+              Search
+            </Button>
+          </Box>
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
@@ -71,8 +199,19 @@ export default function SalesVoucherTable() {
           </Button>
         </Box>
 
+        {/* DataGrid */}
         <Box sx={{ height: 500 }}>
-          <DataGrid rows={rows} columns={columns} pageSize={5} rowsPerPageOptions={[5, 10]} />
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[5, 10, 20]}
+            disableRowSelectionOnClick
+          />
         </Box>
       </Stack>
     </Container>

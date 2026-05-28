@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import Loadable from "app/components/Loadable";
 import ActivityReportsRightsTable from "./Sys-Admin-Master/ActivityFormRightsTable";
-import CustomersPurchaseOrderLogin from "./Sales-Transaction/customersPurchaseOrderLogin";
+import CustomersPurchaseOrderLogin from "./Sales-Transaction/CustomersPurchaseOrderLogin";
 import BreakdownSlipTable from "./Maintenance-Transaction/BreakdownSlipTable";
 import BreakdownSlipForm from "./Maintenance-Transaction/BreakdownSlipForm";
 import BreakdownStartTable from "./Maintenance-Transaction/BreakdownStartTable";
@@ -120,6 +120,13 @@ import SubGroupDetailsTable from "./Finance-Master/SubGroupDetailsTable";
 import SubGroupDetailsForm from "./Finance-Master/SubGroupDetailsForm";
 import TDSParameterTable from "./Finance-Master/TDSParameterTable";
 import TDSParameterForm from "./Finance-Master/TDSParameterForm";
+import CustomersPurchaseOrderLoginTable from "./Sales-Transaction/customersPurchaseOrderLoginTable";
+import UOMTable from "./Material-Master/UOMTable";
+import UOMForm from "./Material-Master/UOMForm";
+import InspectionParameterTable from "./Material-Master/InspectionParameterTable";
+import InspectionParameterForm from "./Material-Master/InspectionParameterForm";
+import ItemMaterialGradeTable from "./Material-Master/ItemMaterialGradeTable";
+import ItemMaterialGradeForm from "./Material-Master/ItemMaterialGradeForm";
 import ProductWisePackingForm from "./Sales-Master/ProductWisePackingForm";
 import ProductWisePackingTable from "./Sales-Master/ProductWisePackingTable";
 import ProductPriceListTable from "./Sales-Master/ProductPriceListTable";
@@ -1083,6 +1090,13 @@ const MaintenanceReasonForm = Loadable(
   lazy(() => import("./Maintenance-Master/MaintenanceReasonForm")),
 );
 
+const PurchaseOrderTable = Loadable(
+  lazy(() => import("./Material-Transaction/PurchaseOrderTable")),
+);
+const PurchaseOrderForm = Loadable(
+  lazy(() => import("./Material-Transaction/PurchaseOrderForm")),
+);
+
 const materialRoutes = [
   { path: "/material/table", element: <AppTable /> },
   { path: "/material/form", element: <AppForm /> },
@@ -1111,7 +1125,15 @@ const materialRoutes = [
     element: <ActivityReportsRightsTable />,
   },
   {
-    path: "/material/customers-purchase-order-login",
+    path: "/material/customers-purchase-order-login-table",
+    element: <CustomersPurchaseOrderLoginTable />,
+  },
+  {
+    path: "/material/customers-purchase-order-login-form/add",
+    element: <CustomersPurchaseOrderLogin />,
+  },
+  {
+    path: "/material/customers-purchase-order-login-form/edit/:slipNo",
     element: <CustomersPurchaseOrderLogin />,
   },
   { path: "/material/packing-slip-table", element: <PackingSlipTable /> },
@@ -1618,6 +1640,10 @@ const materialRoutes = [
     element: <ItemRateForm />,
   },
   {
+    path: "/material/material-item-rate-form/delete/:slipNo",
+    element: <ItemRateForm />,
+  },
+  {
     path: "/material/material-item-wise-moq-table",
     element: <ItemwiseMoqTable />,
   },
@@ -1627,6 +1653,10 @@ const materialRoutes = [
   },
   {
     path: "/material/material-item-wise-moq-form/edit/:slipNo",
+    element: <ItemwiseMoqForm />,
+  },
+  {
+    path: "/material/material-item-wise-moq-form/delete/:slipNo",
     element: <ItemwiseMoqForm />,
   },
   {
@@ -1642,6 +1672,10 @@ const materialRoutes = [
     element: <ShareOfBusinessForm />,
   },
   {
+    path: "/material/material-share-of-business-form/delete/:slipNo",
+    element: <ShareOfBusinessForm />,
+  },
+  {
     path: "/material/material-GRN-wise-opening-stock-table",
     element: <GRNWiseOpeningStockTable />,
   },
@@ -1651,6 +1685,10 @@ const materialRoutes = [
   },
   {
     path: "/material/material-GRN-wise-opening-stock-form/edit/:slipNo",
+    element: <GRNWiseOpeningStockForm />,
+  },
+  {
+    path: "/material/material-GRN-wise-opening-stock-form/delete/:slipNo",
     element: <GRNWiseOpeningStockForm />,
   },
   {
@@ -1675,6 +1713,10 @@ const materialRoutes = [
   },
   {
     path: "/material/material-SAC-group-master-form/edit/:slipNo",
+    element: <SACGroupMasterForm />,
+  },
+  {
+    path: "/material/material-SAC-group-master-form/delete/:slipNo",
     element: <SACGroupMasterForm />,
   },
   {
@@ -1726,6 +1768,10 @@ const materialRoutes = [
     element: <PropertyValuesForm />,
   },
   {
+    path: "/material/material-property-values-form/delete/:slipNo",
+    element: <PropertyValuesForm />,
+  },
+  {
     path: "/material/material-category-property-table",
     element: <CategoryPropertyTable />,
   },
@@ -1738,6 +1784,10 @@ const materialRoutes = [
     element: <CategoryPropertyForm />,
   },
   {
+    path: "/material/material-category-property-form/delete/:slipNo",
+    element: <CategoryPropertyForm />,
+  },
+  {
     path: "/material/material-machine-hour-rate-table",
     element: <MachineHourRateTable />,
   },
@@ -1747,6 +1797,10 @@ const materialRoutes = [
   },
   {
     path: "/material/material-machine-hour-rate-form/edit/:slipNo",
+    element: <MachineHourRateForm />,
+  },
+  {
+    path: "/material/material-machine-hour-rate-form/delete/:slipNo",
     element: <MachineHourRateForm />,
   },
   {
@@ -1770,7 +1824,15 @@ const materialRoutes = [
     element: <OperationDetailsForm />,
   },
   {
+    path: "/material/material-operation-details-form/add",
+    element: <OperationDetailsForm />,
+  },
+  {
     path: "/material/material-operation-details-form/edit/:slipNo",
+    element: <OperationDetailsForm />,
+  },
+  {
+    path: "/material/material-operation-details-form/delete/:slipNo",
     element: <OperationDetailsForm />,
   },
   {
@@ -1783,6 +1845,10 @@ const materialRoutes = [
   },
   {
     path: "/material/material-exchange-currency-form/edit/:slipNo",
+    element: <ExchangeCurrencyForm />,
+  },
+  {
+    path: "/material/material-exchange-currency-form/delete/:slipNo",
     element: <ExchangeCurrencyForm />,
   },
   {
@@ -1810,6 +1876,10 @@ const materialRoutes = [
     element: <PaymentConditionsForm />,
   },
   {
+    path: "/material/material-payment-conditions-form/delete/:slipNo",
+    element: <PaymentConditionsForm />,
+  },
+  {
     path: "/material/material-material-defect-table",
     element: <MaterialDefectTable />,
   },
@@ -1834,6 +1904,10 @@ const materialRoutes = [
     element: <PhysicalInventoryForm />,
   },
   {
+    path: "/material/material-physical-inventory-form/delete/:slipNo",
+    element: <PhysicalInventoryForm />,
+  },
+  {
     path: "/material/material-item-details-table",
     element: <ItemDetailsTable />,
   },
@@ -1846,6 +1920,10 @@ const materialRoutes = [
     element: <ItemDetailsForm />,
   },
   {
+    path: "/material/material-item-details-form/delete/:slipNo",
+    element: <ItemDetailsForm />,
+  },
+  {
     path: "/material/material-grade-master-table",
     element: <GradeMasterTable />,
   },
@@ -1855,6 +1933,10 @@ const materialRoutes = [
   },
   {
     path: "/material/material-grade-master-form/edit/:slipNo",
+    element: <GradeMasterForm />,
+  },
+  {
+    path: "/material/material-grade-master-form/delete/:slipNo",
     element: <GradeMasterForm />,
   },
   {
@@ -1894,6 +1976,10 @@ const materialRoutes = [
     element: <SupplierForm />,
   },
   {
+    path: "/material/material-supplier-form/delete/:slipNo",
+    element: <SupplierForm />,
+  },
+  {
     path: "/material/material-SAC-group-table",
     element: <SACGroupTable />,
   },
@@ -1918,6 +2004,10 @@ const materialRoutes = [
     element: <GSTDetailForm />,
   },
   {
+    path: "/material/material-GST-detail-form/delete/:slipNo",
+    element: <GSTDetailForm />,
+  },
+  {
     path: "/material/material-HSN-table",
     element: <HSNTable />,
   },
@@ -1927,6 +2017,10 @@ const materialRoutes = [
   },
   {
     path: "/material/material-HSN-form/edit/:slipNo",
+    element: <HSNForm />,
+  },
+  {
+    path: "/material/material-HSN-form/delete/:slipNo",
     element: <HSNForm />,
   },
   {
@@ -3230,6 +3324,10 @@ const materialRoutes = [
     element: <GroupDetailsForm />,
   },
   {
+    path: "/material/finance-group-details-form/delete/:slipNo",
+    element: <GroupDetailsForm />,
+  },
+  {
     path: "/material/finance-group-details-form/add",
     element: <GroupDetailsForm />,
   },
@@ -3293,7 +3391,7 @@ const materialRoutes = [
     path: "/material/finance-sub-group-details-form/add",
     element: <SubGroupDetailsForm />,
   },
-   {
+  {
     path: "/material/finance-TDS-parameter-table",
     element: <TDSParameterTable />,
   },
@@ -3306,6 +3404,62 @@ const materialRoutes = [
     element: <TDSParameterForm />,
   },
   {
+    path: "/material/Purchase-Order-Table",
+    element: <PurchaseOrderTable />,
+  },
+  {
+    path: "/material/Purchase-Order-form/edit/:slipNo",
+    element: <PurchaseOrderForm />,
+  },
+  {
+    path: "/material/Purchase-Order-form/add",
+    element: <PurchaseOrderForm />,
+  },
+  {
+    path: "/material/Unit-Of-Management-Table",
+    element: <UOMTable />,
+  },
+  {
+    path: "/material/Unit-Of-Management-form/edit/:slipNo",
+    element: <UOMForm />,
+  },
+  {
+    path: "/material/Unit-Of-Management-form/add",
+    element: <UOMForm />,
+  },
+  {
+    path: "/material/Unit-Of-Management-form/delete/:slipNo",
+    element: <UOMForm />,
+  },
+  {
+    path: "/material/Inspection-Parameter-Table",
+    element: <InspectionParameterTable />,
+  },
+  {
+    path: "/material/Inspection-Parameter-form/edit/:slipNo",
+    element: <InspectionParameterForm />,
+  },
+  {
+    path: "/material/Inspection-Parameter-form/delete/:slipNo",
+    element: <InspectionParameterForm />,
+  },
+  {
+    path: "/material/Inspection-Parameter-form/add",
+    element: <InspectionParameterForm />,
+  },
+  {
+    path: "/material/Item-Material-Grade-Table",
+    element: <ItemMaterialGradeTable />,
+  },
+  {
+    path: "/material/Item-Material-Grade-form/edit/:slipNo",
+    element: <ItemMaterialGradeForm />,
+  },
+  {
+    path: "/material/Item-Material-Grade-form/add",
+    element: <ItemMaterialGradeForm />,
+  },
+  { 
     path: "/material/sales-product-wise-packing-table",
     element: <ProductWisePackingTable />,
   },

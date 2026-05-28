@@ -193,6 +193,7 @@ const Layout1Topbar = () => {
     userData.PROFCEN_CD = selected;
     localStorage.setItem("userData", JSON.stringify(userData));
   };
+  const hidePeriod = localStorage.getItem("hidePeriod") === "true";
   return (
     <TopbarRoot>
       <TopbarContainer>
@@ -437,6 +438,8 @@ const Layout1Topbar = () => {
               );
             })}
           </MatxMenu>
+{!hidePeriod && (
+<>
 
           {/* 📅 FROM DATE */}
           <TextField
@@ -484,6 +487,7 @@ const Layout1Topbar = () => {
               </MenuItem>
             ))}
           </TextField>
+          </>)}
         </Box>
       </TopbarContainer>
     </TopbarRoot>

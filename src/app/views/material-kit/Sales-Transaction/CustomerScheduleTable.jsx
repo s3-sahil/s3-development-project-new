@@ -1,160 +1,231 @@
 import {
-    Container,
-    Icon,
-    IconButton,
-    Tooltip,
-    Button,
-    TextField,
-    MenuItem,
+  Container,
+  Icon,
+  IconButton,
+  Tooltip,
+  Button,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import SearchFilter from "../SearchFilter";
+
+// 👉 IMPORT YOUR API
+import {
+  CustomerSchedulePaginationAPI,
+} from "app/utils/salesTransactionServices";
 
 export default function CustomerScheduleTable() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    // 🔹 Dummy Data (replace with API response)
-    const rows = [
-        {
-            id: 1,
-            shiftCode: "F",
-            description: "FIRST",
-            shiftStart: 8,
-            shiftEnd: 17,
-            totalHrs: 9,
-            lunchStart: 12.3,
-            lunchEnd: 13,
-            earlyIn: 7.3,
-            division: "C",
-        },
-        {
-            id: 2,
-            shiftCode: "G",
-            description: "GENERAL",
-            shiftStart: 8.3,
-            shiftEnd: 17.3,
-            totalHrs: 9,
-            lunchStart: 12.3,
-            lunchEnd: 13,
-            earlyIn: 8,
-            division: "C",
-        },
-    ];
+  const [rows, setRows] = useState([]);
+  const [originalRows, setOriginalRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-    const handleAdd = () => {
-        navigate("/material/sales-customer-schedule-detail-form/add");
-    };
+  const [rowCount, setRowCount] = useState(0);
 
-    const handleEdit = (row) => {
-        navigate(`/material/sales-customer-schedule-detail-form/edit/${row.id}`, {
-            state: row,
-        });
-    };
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
 
-    const handleDelete = (id) => {
-        console.log("Delete:", id);
-    };
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
 
-    const columns = [
-        { field: "shiftCode", headerName: "Shift Code", width: 110 },
-        { field: "description", headerName: "Description", flex: 1 },
-        { field: "shiftStart", headerName: "Shift Start", width: 120 },
-        { field: "shiftEnd", headerName: "Shift End", width: 120 },
-        { field: "totalHrs", headerName: "Total Hrs", width: 100 },
-        { field: "lunchStart", headerName: "Lunch Start", width: 120 },
-        { field: "lunchEnd", headerName: "Lunch End", width: 120 },
-        { field: "earlyIn", headerName: "Early In", width: 100 },
-        { field: "division", headerName: "Division", width: 100 },
+  // ===========================
+  // ✅ FETCH DATA (SERVER SIDE)
+  // ===========================
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await CustomerSchedulePaginationAPI(
+        "cust_rcia",
+        paginationModel.page + 1,
+        paginationModel.pageSize
+      );
 
-        {
-            field: "actions",
-            headerName: "Actions",
-            width: 120,
-            sortable: false,
-            renderCell: (params) => (
-                <>
-                    <Tooltip title="Edit">
-                        <IconButton onClick={() => handleEdit(params.row)}>
-                            <Icon color="primary">edit</Icon>
-                        </IconButton>
-                    </Tooltip>
+      if (response?.Data) {
+        const formattedData = response.Data.map((item, index) => ({
+          id: item.cust_code || index, // ✅ important
 
-                    <Tooltip title="Delete">
-                        <IconButton onClick={() => handleDelete(params.row.id)}>
-                            <Icon color="error">delete</Icon>
-                        </IconButton>
-                    </Tooltip>
-                </>
-            ),
-        },
-    ];
+          customerName: item.cust_code,
+          itemCode: item.item_code,
+          totalQuantity: item.TotalCount,
+        }));
 
-    return (
-        <Container maxWidth="xl">
-            {/* ===== Breadcrumb ===== */}
-            <Box className="breadcrumb">
-                <Breadcrumb
-                    routeSegments={[
-                        { name: "Sales" },
-                        { name: "Customer Schedule Detail" },
-                    ]}
-                />
-            </Box>
+        setRows(formattedData);
+        setOriginalRows(formattedData);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Fetch Error:", error);
+      setRows([]);
+      setOriginalRows([]);
+      setRowCount(0);
+    }
+    setLoading(false);
+  };
 
-            <Stack spacing={3}>
-                {/* ===== Top Section (Search + New Button) ===== */}
-                <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                >
-                    {/* Search Section */}
-                    <Box display="flex" gap={2}>
-                        <TextField
-                            size="small"
-                            placeholder="Search..."
-                        />
-                        <TextField
-                            size="small"
-                            select
-                            defaultValue=""
-                            sx={{ width: 180 }}
-                        >
-                            <MenuItem value="">Select Column</MenuItem>
-                            <MenuItem value="shiftCode">Shift Code</MenuItem>
-                            <MenuItem value="description">Description</MenuItem>
-                        </TextField>
-                        <Button variant="contained">Search</Button>
-                    </Box>
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel]);
 
-                    {/* New Button */}
-                    <Button
-                        variant="contained"
-                        startIcon={<Icon>add</Icon>}
-                        onClick={handleAdd}
-                    >
-                        New
-                    </Button>
-                </Box>
+  // ===========================
+  // ✅ NAVIGATION
+  // ===========================
+  const handleAdd = () => {
+    navigate("/material/sales-customer-schedule-detail-form/add");
+  };
 
-                {/* ===== DataGrid ===== */}
-                <Box sx={{ height: 500, width: "100%" }}>
-                    <DataGrid
-                        rows={rows}
-                        columns={columns}
-                        pageSizeOptions={[10, 25, 50]}
-                        disableRowSelectionOnClick
-                        initialState={{
-                            pagination: {
-                                paginationModel: { pageSize: 10, page: 0 },
-                            },
-                        }}
-                    />
-                </Box>
-            </Stack>
-        </Container>
-    );
+  const handleEdit = async (row) => {
+    setLoading(true);
+    try {
+      const response = await getCustomerScheduleById(row.id);
+
+      if (response) {
+        navigate(
+          `/material/sales-customer-schedule-detail-form/edit/${row.id}`,
+          {
+            state: { scheduleData: response },
+          }
+        );
+      }
+    } catch (error) {
+      console.error("Edit fetch error:", error);
+    }
+    setLoading(false);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this schedule?")) {
+    //   try {
+    //     await deleteCustomerSchedule(id);
+    //     alert("Deleted Successfully");
+    //     fetchData();
+    //   } catch (error) {
+    //     console.error("Delete error:", error);
+    //     alert("Delete failed");
+    //   }
+    }
+  };
+
+  // ===========================
+  // ✅ SEARCH
+  // ===========================
+  const handleSearch = () => {
+    if (!searchQuery) {
+      setRows(originalRows);
+      return;
+    }
+
+    const filtered = originalRows.filter((row) => {
+      const searchStr = searchQuery.toLowerCase();
+
+      if (searchColumn) {
+        return String(row[searchColumn])
+          .toLowerCase()
+          .includes(searchStr);
+      } else {
+        return Object.values(row).some((val) =>
+          String(val).toLowerCase().includes(searchStr)
+        );
+      }
+    });
+
+    setRows(filtered);
+  };
+
+  // ===========================
+  // ✅ COLUMNS
+  // ===========================
+  const columns = [
+    { field: "period", headerName: "Period", width: 120 },
+    { field: "customerName", headerName: "Customer Name", flex: 1 },
+    { field: "itemCode", headerName: "Item Code", width: 150 },
+    {
+      field: "totalQuantity",
+      headerName: "Total Quantity",
+      width: 150,
+      align: "right",
+    },
+
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 120,
+      sortable: false,
+      renderCell: (params) => (
+        <>
+          <Tooltip title="Edit">
+            <IconButton onClick={() => handleEdit(params.row)}>
+              <Icon color="primary">edit</Icon>
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Delete">
+            <IconButton onClick={() => handleDelete(params.row.id)}>
+              <Icon color="error">delete</Icon>
+            </IconButton>
+          </Tooltip>
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <Container maxWidth="xl">
+      {/* ===== Breadcrumb ===== */}
+      <Box className="breadcrumb">
+        <Breadcrumb
+          routeSegments={[
+            { name: "Sales" },
+            { name: "Customer Schedule Detail" },
+          ]}
+        />
+      </Box>
+
+      <Stack spacing={3}>
+        {/* ===== Top Section ===== */}
+        <Box display="flex" justifyContent="space-between">
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              { value: "customerName", label: "Customer Name" },
+              { value: "poNo", label: "PO No" },
+            ]}
+            onSearch={handleSearch}
+          />
+
+          <Button
+            variant="contained"
+            startIcon={<Icon>add</Icon>}
+            onClick={handleAdd}
+          >
+            New
+          </Button>
+        </Box>
+
+        {/* ===== DataGrid ===== */}
+        <Box sx={{ height: 500 }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[10, 25, 50]}
+            disableRowSelectionOnClick
+          />
+        </Box>
+      </Stack>
+    </Container>
+  );
 }

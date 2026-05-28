@@ -5,9 +5,12 @@ import {
   Button,
   Icon,
   Grid,
+  Autocomplete,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
+import { fetchItemcodeAPI } from "app/utils/authServices";
+import { addAlternateItemDetails } from "app/utils/materialMaterialServices";
+import { useEffect, useState } from "react";
 
 export default function AlternateItemForm() {
   const [formData, setFormData] = useState({
@@ -15,15 +18,51 @@ export default function AlternateItemForm() {
     alternateItemCode: "",
     description: "",
   });
+  const [itemOptions, setItemOptions] = useState([]);
+
+  useEffect(() => {
+    const loadItems = async () => {
+      const data = await fetchItemcodeAPI();
+      setItemOptions(data);
+    };
+
+    loadItems();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Alternate Item Saved (UI Only)");
+  const handleSave = async () => {
+    try {
+      // API expects array payload
+      const payload = [
+        {
+          item_Code: formData.itemCode,
+          alternate_item: formData.alternateItemCode,
+          cust_Code: "", // optional (add field if needed)
+          cust_item_desc: formData.description,
+        },
+      ];
+
+      const res = await addAlternateItemDetails(payload);
+
+      console.log("API Response:", res);
+      debugger;
+      if (res?.success) {
+        alert(res.message || "Saved successfully");
+
+        // Reset form
+        setFormData({
+          itemCode: "",
+          alternateItemCode: "",
+          description: "",
+        });
+      }
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -50,13 +89,24 @@ export default function AlternateItemForm() {
 
         <Grid container spacing={3}>
           <Grid item xs={6}>
-            <TextField
-              label="Item Code"
-              name="itemCode"
-              value={formData.itemCode}
-              onChange={handleChange}
+            <Autocomplete
+              options={itemOptions}
               size="small"
-              fullWidth
+              getOptionLabel={(option) => option.ITEM_CODE || ""}
+              onChange={(e, value) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  itemCode: value?.ITEM_CODE || "",
+                }));
+              }}
+              renderOption={(props, option) => (
+                <li {...props} key={option.ITEM_CODE}>
+                  {option.ITEM_CODE}
+                </li>
+              )}
+              renderInput={(params) => (
+                <TextField {...params} label="Item Code" fullWidth />
+              )}
             />
           </Grid>
 

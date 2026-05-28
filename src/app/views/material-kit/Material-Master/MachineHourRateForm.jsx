@@ -1,12 +1,6 @@
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Icon,
-  Grid,
-} from "@mui/material";
+import { Box, Container, TextField, Button, Icon, Grid } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { addMachineHourRate } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 
 export default function MachineHourRateForm() {
@@ -22,9 +16,38 @@ export default function MachineHourRateForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("Machine Hour Rate Saved (UI Only)");
+  const handleSave = async () => {
+    if (!formData.machineCode || !formData.gradeCode) {
+      alert("Machine Code and Grade Code required");
+      return;
+    }
+
+    try {
+      const payload = [
+        {
+          unit_code: formData.machineCode, // Machine Code
+          mat_code: formData.gradeCode, // Grade Code
+          unitHrRate: Number(formData.unitHourRate) || 0,
+        },
+      ];
+
+      console.log("Payload:", payload);
+
+      const res = await addMachineHourRate(payload);
+
+      alert(res.message || "Saved successfully");
+
+      // ✅ Reset form
+      setFormData({
+        machineCode: "",
+        gradeCode: "",
+        gradeDescription: "",
+        unitHourRate: "",
+      });
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
   };
 
   return (

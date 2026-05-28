@@ -53,7 +53,7 @@ export default function ItemMaterialGradeTable() {
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/item-material-grade-form/edit/${params.row.id}`, {
+              navigate(`/material/Item-Material-Grade-form/edit/${params.row.id}`, {
                 state: params.row,
               })
             }
@@ -82,7 +82,7 @@ export default function ItemMaterialGradeTable() {
             variant="contained"
             startIcon={<Icon>add</Icon>}
             onClick={() =>
-              navigate("/material/item-material-grade-form/add")
+              navigate("/material/Item-Material-Grade-form/add")
             }
           >
             New

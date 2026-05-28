@@ -6,65 +6,106 @@ import {
   Button,
   TextField,
   MenuItem,
-  Box,
-  Stack,
 } from "@mui/material";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import SearchFilter from "../SearchFilter";
+import { MachineProcessPaginationAPI } from "app/utils/ProductionMaterialServices";
 
 export default function MachineProcessTable() {
   const navigate = useNavigate();
-  const [searchText, setSearchText] = useState("");
-  const [searchField, setSearchField] = useState("machineCode");
 
-  // 🔹 Example Data (UI Only)
-  const rows = [
-    {
-      id: 1,
-      machineCode: "MC001",
-      machineName: "Lathe Machine",
-      process: "Cutting",
-    },
-    {
-      id: 2,
-      machineCode: "MC002",
-      machineName: "Welding Machine",
-      process: "Welding",
-    },
-    {
-      id: 3,
-      machineCode: "MC003",
-      machineName: "Drill Machine",
-      process: "Drilling",
-    },
-    {
-      id: 4,
-      machineCode: "MC004",
-      machineName: "Inspection Machine",
-      process: "Inspection",
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const filteredRows = rows.filter((row) =>
-    row[searchField]?.toLowerCase().includes(searchText.toLowerCase()),
-  );
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+
+  // ✅ Fetch Data
+  const fetchData = async (
+    pageNo = page,
+    size = pageSize,
+    searchCol = searchColumn,
+    searchVal = searchQuery
+  ) => {
+    try {
+      setLoading(true);
+
+      const res = await MachineProcessPaginationAPI(
+        "machine_process_master",
+        pageNo + 1,
+        size,
+        searchCol,
+        searchVal
+      );
+
+      if (res?.Data) {
+        const formattedRows = res.Data.map((item, index) => ({
+          id: item.id || index + 1,
+          machineCode: item.machineCode || "",
+          machineName: item.machineName || "",
+          process: item.process || "",
+          original: item,
+        }));
+
+        setRows(formattedRows);
+        setRowCount(res.TotalCount || 0);
+      }
+    } catch (err) {
+      console.error("Machine Process Fetch Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(page, pageSize);
+  }, [page, pageSize]);
+
+  // ✅ Search
+  const handleSearch = () => {
+    fetchData(0, pageSize, searchColumn, searchQuery);
+    setPage(0);
+  };
+
+  // ✅ Edit
   const handleEdit = (row) => {
     navigate(`/material/production-machine-process-form/edit/${row.id}`, {
-      state: row,
+      state: row.original,
     });
   };
 
+  // ✅ Add New
   const handleAddNew = () => {
     navigate("/material/production-machine-process-form/add");
   };
 
+  // ✅ Columns
   const columns = [
-    { field: "machineCode", headerName: "Machine Code", width: 180 },
-    { field: "machineName", headerName: "Machine Name", width: 250 },
-    { field: "process", headerName: "Process", width: 200 },
+    {
+      field: "machineCode",
+      headerName: "Machine Code",
+      flex: 1,
+    },
+    {
+      field: "machineName",
+      headerName: "Machine Name",
+      flex: 1,
+    },
+    {
+      field: "process",
+      headerName: "Process",
+      flex: 1,
+    },
+
     {
       field: "actions",
       headerName: "Actions",
@@ -82,6 +123,7 @@ export default function MachineProcessTable() {
 
   return (
     <Container maxWidth="xl">
+      {/* Breadcrumb */}
       <Box className="breadcrumb">
         <Breadcrumb
           routeSegments={[
@@ -92,30 +134,25 @@ export default function MachineProcessTable() {
       </Box>
 
       <Stack spacing={3}>
-        {/* Top Controls */}
-        <Box display="flex" justifyContent="space-between">
-          <Box display="flex" gap={2}>
-            <TextField
-              size="small"
-              placeholder="Search..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-            />
-
-            <TextField
-              select
-              size="small"
-              value={searchField}
-              onChange={(e) => setSearchField(e.target.value)}
-              sx={{ width: 180 }}
-            >
-              <MenuItem value="machineCode">Machine Code</MenuItem>
-              <MenuItem value="machineName">Machine Name</MenuItem>
-              <MenuItem value="process">Process</MenuItem>
-            </TextField>
-
-            <Button variant="contained">Search</Button>
-          </Box>
+        {/* Search + Add */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              { value: "machineCode", label: "Machine Code" },
+              { value: "machineName", label: "Machine Name" },
+              { value: "process", label: "Process" },
+            ]}
+            onSearch={handleSearch}
+          />
 
           <Button
             variant="contained"
@@ -126,17 +163,21 @@ export default function MachineProcessTable() {
           </Button>
         </Box>
 
-        {/* DataGrid */}
-        <Box sx={{ height: 450, width: "100%" }}>
+        {/* Table */}
+        <Box sx={{ height: 500, width: "100%" }}>
           <DataGrid
-            rows={filteredRows}
+            rows={rows}
             columns={columns}
-            pageSizeOptions={[5, 10]}
-            initialState={{
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
+            loading={loading}
+            paginationMode="server"
+            rowCount={rowCount}
+            pageSizeOptions={[5, 10, 20]}
+            paginationModel={{ page, pageSize }}
+            onPaginationModelChange={(model) => {
+              setPage(model.page);
+              setPageSize(model.pageSize);
             }}
+            disableRowSelectionOnClick
           />
         </Box>
       </Stack>

@@ -10,55 +10,81 @@ import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
 import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import SearchFilter from "../SearchFilter";
+import { MaterialStockAdjustmentPaginationAPI } from "app/utils/materialTransactionServices";
 
 export default function MaterialStockAdjustmentTable() {
   const navigate = useNavigate();
 
-  const rows = [
-    {
-      id: 1,
-      adjustmentNo: "MSA001",
-      date: "2026-02-19",
-      project: "Project A",
-      department: "Production",
-      itemCode: "ST001",
-      quantity: 100,
-      uom: "Kg",
-      avlStock: 500,
-    },
-    {
-      id: 2,
-      adjustmentNo: "MSA002",
-      date: "2026-02-18",
-      project: "Project B",
-      department: "Maintenance",
-      itemCode: "CP002",
-      quantity: 50,
-      uom: "Meter",
-      avlStock: 200,
-    },
-  ];
+  const [rows, setRows] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchColumn, setSearchColumn] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [rowCount, setRowCount] = useState(0);
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 10,
+  });
+
+  const fetchData = async () => {
+    setLoading(true);
+
+    try {
+      const response = await MaterialStockAdjustmentPaginationAPI(
+        "material_stock_adjustment",
+        paginationModel.page + 1,
+        paginationModel.pageSize,
+        searchColumn,
+        searchQuery
+      );
+
+      if (response && response.Data) {
+        const mappedData = response.Data.map((row, index) => ({
+          ...row,
+          id: `${row.adjustment_no}_${index}`,
+        }));
+
+        setRows(mappedData);
+        setRowCount(response.TotalCount || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching Material Stock Adjustment:", error);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [paginationModel, searchQuery, searchColumn]);
 
   const columns = [
-    { field: "adjustmentNo", headerName: "Adjustment No.", width: 180 },
-    { field: "date", headerName: "Date", width: 150 },
-    { field: "project", headerName: "Project", width: 200 },
-    { field: "department", headerName: "Department", width: 200 },
-    { field: "itemCode", headerName: "Item Code", width: 150 },
-    { field: "quantity", headerName: "Quantity", width: 120 },
-    { field: "uom", headerName: "UOM", width: 120 },
-    { field: "avlStock", headerName: "Available Stock", width: 150 },
+    { field: "adjustment_no", headerName: "Adjustment No.", flex: 1 },
+    { field: "date", headerName: "Date", flex: 1 },
+    { field: "project", headerName: "Project", flex: 1 },
+    { field: "department", headerName: "Department", flex: 1 },
+    { field: "item_code", headerName: "Item Code", flex: 1 },
+    { field: "quantity", headerName: "Quantity", flex: 1 },
+    { field: "uom", headerName: "UOM", flex: 1 },
+    { field: "avl_stock", headerName: "Available Stock", flex: 1 },
+
     {
       field: "actions",
       headerName: "Actions",
       width: 120,
+      sortable: false,
       renderCell: (params) => (
         <Tooltip title="Edit">
           <IconButton
             onClick={() =>
-              navigate(`/material/material-stock-adjustment-form/edit/${params.row.id}`, {
-                state: params.row,
-              })
+              navigate(
+                `/material/material-stock-adjustment-form/edit/${params.row.id}`,
+                {
+                  state: params.row,
+                }
+              )
             }
           >
             <Icon color="primary">edit</Icon>
@@ -71,22 +97,60 @@ export default function MaterialStockAdjustmentTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Material" }, { name: "Stock Adjustment" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Material" },
+            { name: "Stock Adjustment" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
-        <Box display="flex" justifyContent="flex-end">
+        {/* Search + Button */}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={2}
+        >
+          <SearchFilter
+            searchValue={searchQuery}
+            setSearchValue={setSearchQuery}
+            searchColumn={searchColumn}
+            setSearchColumn={setSearchColumn}
+            columnOptions={[
+              { value: "adjustment_no", label: "Adjustment No" },
+              { value: "project", label: "Project" },
+              { value: "department", label: "Department" },
+              { value: "item_code", label: "Item Code" },
+            ]}
+            onSearch={() => fetchData()}
+          />
+
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/material-stock-adjustment-form/add")}
+            onClick={() =>
+              navigate("/material/material-stock-adjustment-form/add")
+            }
           >
             New
           </Button>
         </Box>
 
-        <Box sx={{ height: 420 }}>
-          <DataGrid rows={rows} columns={columns} />
+        {/* Table */}
+        <Box sx={{ height: 550, width: "100%" }}>
+          <DataGrid
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            rowCount={rowCount}
+            paginationMode="server"
+            paginationModel={paginationModel}
+            onPaginationModelChange={setPaginationModel}
+            pageSizeOptions={[10, 20, 50]}
+            disableRowSelectionOnClick
+          />
         </Box>
       </Stack>
     </Container>

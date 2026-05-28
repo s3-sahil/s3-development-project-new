@@ -6,8 +6,10 @@ import {
   Icon,
   Grid,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import { addItemWiseMOQ } from "app/utils/materialMaterialServices";
 import { useState } from "react";
 
 export default function ItemwiseMoqForm() {
@@ -21,14 +23,56 @@ export default function ItemwiseMoqForm() {
     uom: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSave = () => {
-    console.log("MOQ Saved:", formData);
-    alert("Itemwise MOQ Saved (UI Only)");
+  // ✅ SAVE API
+  const handleSave = async () => {
+    if (!formData.itemCode) {
+      alert("Item Code is required");
+      return;
+    }
+
+    const payload = {
+      iteM_CODE: formData.itemCode,
+      minqty: Number(formData.minQty || 0),
+      maxqty: Number(formData.maxQty || 0),
+      rolqty: Number(formData.reorderLevel || 0),
+      leadtime: Number(formData.leadTime || 0),
+      profcen_cd: "", // optional or map if you have field
+      orderqty: Number(formData.orderQty || 0),
+    };
+
+    try {
+      setLoading(true);
+
+      const res = await addItemWiseMOQ(payload);
+
+      alert(res?.message || res?.Errormessage || "Saved successfully");
+
+      // reset
+      setFormData({
+        itemCode: "",
+        leadTime: "",
+        minQty: "",
+        maxQty: "",
+        reorderLevel: "",
+        orderQty: "",
+        uom: "",
+      });
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,11 +87,19 @@ export default function ItemwiseMoqForm() {
       </Box>
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
+        {/* SAVE BUTTON */}
         <Box display="flex" justifyContent="flex-end" mb={2}>
           <Button
             variant="contained"
-            startIcon={<Icon>save</Icon>}
             onClick={handleSave}
+            disabled={loading}
+            startIcon={
+              loading ? (
+                <CircularProgress size={18} color="inherit" />
+              ) : (
+                <Icon>save</Icon>
+              )
+            }
           >
             Save
           </Button>
@@ -73,6 +125,7 @@ export default function ItemwiseMoqForm() {
               onChange={handleChange}
               size="small"
               fullWidth
+              type="number"
             />
           </Grid>
 
@@ -84,6 +137,7 @@ export default function ItemwiseMoqForm() {
               onChange={handleChange}
               size="small"
               fullWidth
+              type="number"
             />
           </Grid>
 
@@ -95,6 +149,7 @@ export default function ItemwiseMoqForm() {
               onChange={handleChange}
               size="small"
               fullWidth
+              type="number"
             />
           </Grid>
 
@@ -106,6 +161,7 @@ export default function ItemwiseMoqForm() {
               onChange={handleChange}
               size="small"
               fullWidth
+              type="number"
             />
           </Grid>
 
@@ -117,13 +173,14 @@ export default function ItemwiseMoqForm() {
               onChange={handleChange}
               size="small"
               fullWidth
+              type="number"
             />
           </Grid>
 
           <Grid item xs={6}>
             <TextField
               select
-              label="Order Qty UOM"
+              label="UOM"
               name="uom"
               value={formData.uom}
               onChange={handleChange}

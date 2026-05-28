@@ -9,6 +9,11 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { useState } from "react";
+import {
+  addSacGroupMaster,
+  deleteSACGroupMasterAPI,
+} from "app/utils/materialMaterialServices";
+import { useLocation } from "react-router-dom";
 
 export default function SACGroupForm() {
   const [formData, setFormData] = useState({
@@ -18,27 +23,118 @@ export default function SACGroupForm() {
     flag: "",
   });
 
+  const location = useLocation();
+  const mode = location.state?.mode || "add";
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSave = () => {
-    console.log("Saved:", formData);
-    alert("SAC Group Saved (UI Only)");
+  const resetForm = () => {
+    setFormData({
+      headingNo: "",
+      groupCode: "",
+      groupDescription: "",
+      flag: "",
+    });
   };
 
+  const handleSave = async () => {
+    try {
+      if (!formData.groupCode || !formData.groupDescription) {
+        alert("Please fill required fields");
+        return;
+      }
+
+      setLoading(true);
+
+      const payload = {
+        tgroup_Code: formData.groupCode,
+        group_desc: formData.groupDescription,
+        flag: formData.flag === "Service" ? "S" : "M",
+        heading_no: formData.headingNo,
+      };
+
+      console.log("Payload =>", payload);
+
+      const res = await addSacGroupMaster(payload);
+
+      alert(res.message || "Saved Successfully ✅");
+
+      resetForm();
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Save failed ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle Delete
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete SAC Group Code ${formData.Tgroup_Code}?`,
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      setLoading(true);
+
+      const res = await deleteSACGroupMasterAPI(formData.Tgroup_Code);
+
+      alert(res?.Errormessage || "Deleted successfully");
+
+      navigate("/material/SAC-Group-Master-Table");
+    } catch (err) {
+      alert("Delete failed");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Finance" }, { name: "SAC Group Master" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Finance" }, { name: "SAC Group Master" }]}
+        />
       </Box>
 
-      <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
+      <Box
+        sx={{
+          background: "#fff",
+          p: 3,
+          borderRadius: 2,
+          boxShadow: 2,
+        }}
+      >
         <Box display="flex" justifyContent="flex-end" mb={2}>
-          <Button variant="contained" startIcon={<Icon>save</Icon>} onClick={handleSave}>
-            Save
-          </Button>
+          {mode === "delete" ? (
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<Icon>delete</Icon>}
+              onClick={handleDelete}
+              disabled={loading}
+            >
+              {loading ? "Deleting..." : "Delete"}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              startIcon={<Icon>save</Icon>}
+              onClick={handleSave}
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save"}
+            </Button>
+          )}
         </Box>
 
         <Grid container spacing={3}>
@@ -56,6 +152,7 @@ export default function SACGroupForm() {
               <MenuItem value="Manufacturing">Manufacturing</MenuItem>
             </TextField>
           </Grid>
+
           <Grid item xs={6}>
             <TextField
               label="Heading No."
@@ -66,6 +163,7 @@ export default function SACGroupForm() {
               fullWidth
             />
           </Grid>
+
           <Grid item xs={6}>
             <TextField
               label="Group Code"
@@ -76,6 +174,7 @@ export default function SACGroupForm() {
               fullWidth
             />
           </Grid>
+
           <Grid item xs={6}>
             <TextField
               label="Group Description"

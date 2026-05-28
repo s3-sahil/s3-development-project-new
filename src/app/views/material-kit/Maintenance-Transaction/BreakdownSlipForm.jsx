@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
 import { Span } from "app/components/Typography";
+import { addBreakdownSlipEntry } from "app/utils/MaintenanceTransactionServices";
 import { useState } from "react";
 
 const BreakdownSlipForm = () => {
@@ -34,21 +35,55 @@ const BreakdownSlipForm = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log("Saved Data:", formData);
-    alert("Breakdown Slip Entry saved (UI Only)");
+  const handleSave = async () => {
+    try {
+      const payload = {
+        slipNo: formData.slipNo,
+        date: formData.date ? new Date(formData.date).toISOString() : null,
+        breakdownTime: formData.breakdownTime,
+        reportedTime: formData.reportedTime,
+        machine: formData.machine,
+        reason: formData.reason,
+        reportedBy: formData.reportedBy,
+        shift: "",
+        profcen_cd: "",
+        breakdownDate: formData.breakdownDate
+          ? new Date(formData.breakdownDate).toISOString()
+          : null,
+        flag: "s",
+        productive_Flag: "s",
+      };
+
+      const res = await addBreakdownSlipEntry(payload);
+
+      console.log("Response:", res);
+      alert(res?.message || "Saved successfully!");
+    } catch (error) {
+      console.error(error.message);
+      alert(error.message);
+    }
   };
 
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Maintenance" }, { name: "Breakdown Slip Entry" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Maintenance" },
+            { name: "Breakdown Slip Entry" },
+          ]}
+        />
       </Box>
 
       <Box sx={{ background: "#fff", p: 3, borderRadius: 2 }}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <h2>Breakdown Slip Entry</h2>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mb={2}
+        >
+          <h2></h2>
 
           <Box display="flex" gap={1}>
             <Button
@@ -59,9 +94,9 @@ const BreakdownSlipForm = () => {
               <Span>Save</Span>
             </Button>
 
-            <Button variant="outlined" startIcon={<Icon>print</Icon>}>
+            {/* <Button variant="outlined" startIcon={<Icon>print</Icon>}>
               <Span>Print</Span>
-            </Button>
+            </Button> */}
           </Box>
         </Box>
 
@@ -74,8 +109,16 @@ const BreakdownSlipForm = () => {
               value={formData.maintenanceType}
               onChange={handleChange}
             >
-              <FormControlLabel value="Breakdown" control={<Radio />} label="Breakdown" />
-              <FormControlLabel value="Shutdown" control={<Radio />} label="Shutdown" />
+              <FormControlLabel
+                value="Breakdown"
+                control={<Radio />}
+                label="Breakdown"
+              />
+              <FormControlLabel
+                value="Shutdown"
+                control={<Radio />}
+                label="Shutdown"
+              />
             </RadioGroup>
           </Grid>
 
