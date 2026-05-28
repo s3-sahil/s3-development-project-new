@@ -18,8 +18,8 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 
 import { useState, useEffect } from "react";
+import { SupplierBillsMultipleTaxPaginationAPI } from "app/utils/FinanceTransactionServices";
 
-import { SupplierBillsMultipleTaxPaginationAPI } from "app/services/FinanceService";
 
 export default function SupplierBillsMultipleTaxTable() {
   const navigate = useNavigate();

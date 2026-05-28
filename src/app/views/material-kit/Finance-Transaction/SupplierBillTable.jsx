@@ -18,8 +18,8 @@ import { Breadcrumb } from "app/components";
 import { useNavigate } from "react-router-dom";
 
 import { useState, useEffect } from "react";
+import { SupplierBillPaginationAPI } from "app/utils/FinanceTransactionServices";
 
-import { SupplierBillPaginationAPI } from "app/services/FinanceService";
 
 export default function SupplierBillTable() {
   const navigate = useNavigate();
