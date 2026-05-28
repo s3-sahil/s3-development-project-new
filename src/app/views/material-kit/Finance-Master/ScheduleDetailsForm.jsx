@@ -79,19 +79,12 @@ export default function ScheduleDetailsForm() {
     }
   };
 
-<<<<<<< HEAD
     setFormData({
       schedule: "", 
       scheduleName: "",
       glCategory: "",
       unit: "UNIT-1",
     });
-=======
-  //   // Edit ( Update )
-  //   useEffect(() => {
-  //   if (location.state) {
-  //     const data = location.state;
->>>>>>> a0cf07b4f6d9af40f871f86fd03d5796848d7934
 
   //     setActionMode("edit");
 
