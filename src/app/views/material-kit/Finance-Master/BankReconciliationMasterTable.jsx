@@ -19,7 +19,6 @@ import { useEffect, useState } from "react";
 import SearchFilter from "../SearchFilter";
 import { BankReconciliationMasterPaginationAPI } from "app/utils/FinanceTransactionServices";
 
-
 export default function BankReconciliationMasterTable() {
   const navigate = useNavigate();
 
@@ -125,7 +124,10 @@ export default function BankReconciliationMasterTable() {
                 navigate(
                   `/material/finance-bank-reconciliation-master-form/edit/${params.row.id}`,
                   {
-                    state: params.row,
+                    state: {
+                      ...params.row,
+                      isEdit: true,
+                    },
                   },
                 )
               }

@@ -1,10 +1,4 @@
-import {
-  Container,
-  Icon,
-  IconButton,
-  Tooltip,
-  Button,
-} from "@mui/material";
+import { Container, Icon, IconButton, Tooltip, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
@@ -15,49 +9,51 @@ import { DEPRECIATION_PARA_PaginationAPI } from "app/utils/authServices";
 
 export default function DepreciationParameterTable() {
   const navigate = useNavigate();
-          const [rows, setRows] = useState([]);
-          const [page, setPage] = useState(0); 
-          const [pageSize, setPageSize] = useState(10);
-          const [rowCount, setRowCount] = useState(0);
-          const [loading, setLoading] = useState(false);
-        
-          const loadDEPRECIATION_PARA = async () => {
-            setLoading(true);
-            const res = await DEPRECIATION_PARA_PaginationAPI(
-              "DEPRECIATION_PARA",
-              page + 1, 
-              pageSize
-            );
-        
-            if (res?.Data) {
-              setRows(
-                res.Data.map((item, index) => ({
-                  id: item.id || index + 1, 
-                  ...item,
-                }))
-              );
-              setRowCount(res.TotalCount || 0);
-            }
-        
-            setLoading(false);
-          };
-        
-          useEffect(() => {
-            loadDEPRECIATION_PARA();
-          }, [page, pageSize]);
-          
-          const handleDelete = async (id) => {
-            if (window.confirm("Are you sure you want to delete this DEPRECIATION_PARA?")) {
-              try {
-                await deleteDEPRECIATION_PARA(id);
-                loadDEPRECIATION_PARA();
-                alert("DEPRECIATION_PARA deleted successfully.");
-              } catch (error) {
-                console.error("Delete Error:", error);
-                alert("Failed to delete DEPRECIATION_PARA.");
-              }
-            }
-          };
+  const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const loadDEPRECIATION_PARA = async () => {
+    setLoading(true);
+    const res = await DEPRECIATION_PARA_PaginationAPI(
+      "DEPRECIATION_PARA",
+      page + 1,
+      pageSize,
+    );
+
+    if (res?.Data) {
+      setRows(
+        res.Data.map((item, index) => ({
+          id: item.id || index + 1,
+          ...item,
+        })),
+      );
+      setRowCount(res.TotalCount || 0);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadDEPRECIATION_PARA();
+  }, [page, pageSize]);
+
+  const handleDelete = async (id) => {
+    if (
+      window.confirm("Are you sure you want to delete this DEPRECIATION_PARA?")
+    ) {
+      try {
+        await deleteDEPRECIATION_PARA(id);
+        loadDEPRECIATION_PARA();
+        alert("DEPRECIATION_PARA deleted successfully.");
+      } catch (error) {
+        console.error("Delete Error:", error);
+        alert("Failed to delete DEPRECIATION_PARA.");
+      }
+    }
+  };
   const columns = [
     { field: "mode", headerName: "Mode", flex: 1 },
     { field: "groupCode", headerName: "Group Code / GL Code", flex: 1 },
@@ -74,9 +70,15 @@ export default function DepreciationParameterTable() {
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/finance-depreciation-parameter-form/edit/${params.row.id}`, {
-                  state: params.row,
-                })
+                navigate(
+                  `/material/finance-depreciation-parameter-form/edit/${params.row.id}`,
+                  {
+                    state: {
+                     ...params.row,
+                      isEdit: true,
+                    },
+                  },
+                )
               }
             >
               <Icon color="primary">edit</Icon>
@@ -95,7 +97,12 @@ export default function DepreciationParameterTable() {
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Depreciation Parameter" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Finace" },
+            { name: "Depreciation Parameter" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
@@ -103,19 +110,21 @@ export default function DepreciationParameterTable() {
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/finance-depreciation-parameter-form/add")}
+            onClick={() =>
+              navigate("/material/finance-depreciation-parameter-form/add")
+            }
           >
             New
           </Button>
         </Box>
 
         <Box sx={{ height: 620 }}>
-          <DataGrid 
-          rows={rows}
+          <DataGrid
+            rows={rows}
             columns={columns}
             loading={loading}
             rowCount={rowCount}
-            paginationMode="server" 
+            paginationMode="server"
             pageSizeOptions={[5, 10, 20]}
             paginationModel={{ page, pageSize }}
             onPaginationModelChange={(model) => {

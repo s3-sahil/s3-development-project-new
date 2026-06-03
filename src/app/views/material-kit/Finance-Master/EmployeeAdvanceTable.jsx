@@ -1,10 +1,4 @@
-import {
-  Container,
-  Icon,
-  IconButton,
-  Tooltip,
-  Button,
-} from "@mui/material";
+import { Container, Icon, IconButton, Tooltip, Button } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import { DataGrid } from "@mui/x-data-grid";
@@ -14,50 +8,52 @@ import { useEffect, useState } from "react";
 import { advance_master_PaginationAPI } from "app/utils/authServices";
 
 export default function EmployeeAdvanceTable() {
-const navigate = useNavigate();
-        const [rows, setRows] = useState([]);
-        const [page, setPage] = useState(0); 
-        const [pageSize, setPageSize] = useState(10);
-        const [rowCount, setRowCount] = useState(0);
-        const [loading, setLoading] = useState(false);
-      
-        const loadadvance_master = async () => {
-          setLoading(true);
-          const res = await advance_master_PaginationAPI(
-            "advance_master",
-            page + 1, 
-            pageSize
-          );
-      
-          if (res?.Data) {
-            setRows(
-              res.Data.map((item, index) => ({
-                id: item.id || index + 1, 
-                ...item,
-              }))
-            );
-            setRowCount(res.TotalCount || 0);
-          }
-      
-          setLoading(false);
-        };
-      
-        useEffect(() => {
-          loadadvance_master();
-        }, [page, pageSize]);
-        
-        const handleDelete = async (id) => {
-          if (window.confirm("Are you sure you want to delete this advance_master?")) {
-            try {
-              await deleteadvance_master(id);
-              loadadvance_master();
-              alert("advance_master deleted successfully.");
-            } catch (error) {
-              console.error("Delete Error:", error);
-              alert("Failed to delete advance_master.");
-            }
-          }
-        };
+  const navigate = useNavigate();
+  const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const loadadvance_master = async () => {
+    setLoading(true);
+    const res = await advance_master_PaginationAPI(
+      "advance_master",
+      page + 1,
+      pageSize,
+    );
+
+    if (res?.Data) {
+      setRows(
+        res.Data.map((item, index) => ({
+          id: item.id || index + 1,
+          ...item,
+        })),
+      );
+      setRowCount(res.TotalCount || 0);
+    }
+
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadadvance_master();
+  }, [page, pageSize]);
+
+  const handleDelete = async (id) => {
+    if (
+      window.confirm("Are you sure you want to delete this advance_master?")
+    ) {
+      try {
+        await deleteadvance_master(id);
+        loadadvance_master();
+        alert("advance_master deleted successfully.");
+      } catch (error) {
+        console.error("Delete Error:", error);
+        alert("Failed to delete advance_master.");
+      }
+    }
+  };
 
   const columns = [
     { field: "empNo", headerName: "Employee No", flex: 1 },
@@ -72,9 +68,15 @@ const navigate = useNavigate();
           <Tooltip title="Edit">
             <IconButton
               onClick={() =>
-                navigate(`/material/finance-employee-advance-form/edit/${params.row.id}`, {
-                  state: params.row,
-                })
+                navigate(
+                  `/material/finance-employee-advance-form/edit/${params.row.id}`,
+                  {
+                    state: {
+                      ...params.row,
+                      isEdit: true,
+                    },
+                  },
+                )
               }
             >
               <Icon color="primary">edit</Icon>
@@ -93,7 +95,12 @@ const navigate = useNavigate();
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb">
-        <Breadcrumb routeSegments={[{ name: "Finance" }, { name: "Employee Advance Details" }]} />
+        <Breadcrumb
+          routeSegments={[
+            { name: "Finance" },
+            { name: "Employee Advance Details" },
+          ]}
+        />
       </Box>
 
       <Stack spacing={3}>
@@ -101,7 +108,9 @@ const navigate = useNavigate();
           <Button
             variant="contained"
             startIcon={<Icon>add</Icon>}
-            onClick={() => navigate("/material/finance-employee-advance-form/add")}
+            onClick={() =>
+              navigate("/material/finance-employee-advance-form/add")
+            }
           >
             New
           </Button>
@@ -113,7 +122,7 @@ const navigate = useNavigate();
             columns={columns}
             loading={loading}
             rowCount={rowCount}
-            paginationMode="server" 
+            paginationMode="server"
             pageSizeOptions={[5, 10, 20]}
             paginationModel={{ page, pageSize }}
             onPaginationModelChange={(model) => {

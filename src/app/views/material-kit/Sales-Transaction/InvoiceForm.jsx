@@ -683,7 +683,6 @@ const InvoiceForm = () => {
                 <Grid item xs={3}>
                   <TextField label="PO Login" fullWidth size="small" />
                 </Grid>
-                // ================= PO NO DROPDOWN =================
                 {/* <Grid item xs={3}>
                   <Autocomplete
                     size="small"

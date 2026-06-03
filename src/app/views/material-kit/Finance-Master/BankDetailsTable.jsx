@@ -79,13 +79,10 @@ export default function BankDetailsTable() {
     // if (window.confirm("Are you sure you want to delete this Bank Master?")) {
     //   try {
     //     await deleteBank_master(id);
-
     //     loadBank_master();
-
     //     alert("Bank Master deleted successfully.");
     //   } catch (error) {
     //     console.error("Delete Error:", error);
-
     //     alert("Failed to delete Bank Master.");
     //   }
     // }
@@ -145,7 +142,10 @@ export default function BankDetailsTable() {
                 navigate(
                   `/material/finance-bank-details-form/edit/${params.row.id}`,
                   {
-                    state: params.row,
+                    state: {
+                      ...params.row,
+                      isEdit: true,
+                    },
                   },
                 )
               }

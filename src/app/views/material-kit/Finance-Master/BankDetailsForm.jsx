@@ -10,7 +10,12 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
+import {
+  addBankDetails,
+  updateBankDetails,
+} from "app/utils/FinanceMasterServices";
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function BankDetailsForm() {
   const [formData, setFormData] = useState({
@@ -38,9 +43,42 @@ export default function BankDetailsForm() {
   });
 
   const [banks, setBanks] = useState([]);
+  const location = useLocation();
+
+  const [isEdit, setIsEdit] = useState(false);
+
+  useEffect(() => {
+    if (location.state) {
+      const data = location.state;
+
+      setIsEdit(data.isEdit || false);
+
+      setFormData({
+        bankCode: data.Bank_code || "",
+        bankName: data.Bank_name || "",
+        shortName: data.Short_name || "",
+        address1: data.Bank_add1 || "",
+        address2: data.Bank_add2 || "",
+        address3: data.Bank_add3 || "",
+        phone: data.Phone || "",
+        fax: data.Fax || "",
+        email: data.Email || "",
+        pincode: data.Pin || "",
+        branch: data.Branch || "",
+        branchCd: data.Branch_Loc || "",
+        clientId: data.Client_Code || "",
+        gstNo: data.Gst_no || "",
+        ifscCode: data.Ifsc_code || "",
+        odAmount: data.OD_amt || "",
+      });
+    }
+  }, [location.state]);
 
   const handleChange = (field) => (event) => {
-    const value = event.target.type === "checkbox" ? event.target.checked : event.target.value;
+    const value =
+      event.target.type === "checkbox"
+        ? event.target.checked
+        : event.target.value;
     setFormData({ ...formData, [field]: value });
   };
 
@@ -73,62 +111,294 @@ export default function BankDetailsForm() {
     }
   };
 
+  const handleSave = async () => {
+    try {
+      const payload = {
+        bank_code: formData.bankCode,
+        bank_name: formData.bankName,
+        bank_add1: formData.address1,
+        bank_add2: formData.address2,
+        bank_add3: formData.address3,
+        phone: formData.phone,
+        fax: formData.fax,
+        email: formData.email,
+        pin: formData.pincode,
+
+        cheque_flag: formData.nonOperational ? "Y" : "N",
+
+        oD_flag: formData.overdraftFlag ? "Y" : "N",
+        oD_amt: Number(formData.odAmount || 0),
+
+        acc_code: "",
+        use_flag: formData.activeFlag ? "Y" : "N",
+
+        short_name: formData.shortName,
+
+        service_Tax: 0,
+        noOf_Bills: 0,
+
+        eefC_curr: formData.eefcBank ? "Y" : "N",
+
+        client_Code: formData.clientId,
+        branch: formData.branch,
+        branch_Loc: formData.branchCd,
+
+        gst_no: formData.gstNo,
+        ifsc_code: formData.ifscCode,
+      };
+
+      let response;
+
+      if (isEdit) {
+        // UPDATE API
+        response = await updateBankDetails(payload);
+        alert("Bank Details Updated Successfully");
+      } else {
+        // ADD API expects ARRAY
+        response = await addBankDetails([payload]);
+        alert("Bank Details Saved Successfully");
+      }
+
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+      alert(error?.message || "Something went wrong");
+    }
+  };
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Bank Details" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Finace" }, { name: "Bank Details" }]}
+        />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" mb={2} alignItems="center">
-          <Typography variant="h5" fontWeight="bold">
-            Bank Details
-          </Typography>
-          <Button variant="contained" startIcon={<Icon>save</Icon>}>
-            Save
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          mb={2}
+          alignItems="center"
+        >
+          <Typography variant="h5" fontWeight="bold"></Typography>
+          <Button
+            variant="contained"
+            startIcon={<Icon>{isEdit ? "edit" : "save"}</Icon>}
+            onClick={handleSave}
+          >
+            {isEdit ? "Update" : "Save"}
           </Button>
         </Box>
 
         {/* Form */}
         <Grid container spacing={2}>
-          <Grid item xs={4}><TextField label="Bank Code" size="small" fullWidth value={formData.bankCode} onChange={handleChange("bankCode")} /></Grid>
-          <Grid item xs={4}><TextField label="Bank Name" size="small" fullWidth value={formData.bankName} onChange={handleChange("bankName")} /></Grid>
-          <Grid item xs={4}><TextField label="Short Name" size="small" fullWidth value={formData.shortName} onChange={handleChange("shortName")} /></Grid>
-          <Grid item xs={4}><TextField label="Address 1" size="small" fullWidth value={formData.address1} onChange={handleChange("address1")} /></Grid>
-          <Grid item xs={4}><TextField label="Address 2" size="small" fullWidth value={formData.address2} onChange={handleChange("address2")} /></Grid>
-          <Grid item xs={4}><TextField label="Address 3" size="small" fullWidth value={formData.address3} onChange={handleChange("address3")} /></Grid>
-          <Grid item xs={4}><TextField label="Phone" size="small" fullWidth value={formData.phone} onChange={handleChange("phone")} /></Grid>
-          <Grid item xs={4}><TextField label="Fax" size="small" fullWidth value={formData.fax} onChange={handleChange("fax")} /></Grid>
-          <Grid item xs={4}><TextField label="Email" size="small" fullWidth value={formData.email} onChange={handleChange("email")} /></Grid>
-          <Grid item xs={4}><TextField label="Pincode" size="small" fullWidth value={formData.pincode} onChange={handleChange("pincode")} /></Grid>
-          <Grid item xs={4}><TextField label="Branch" size="small" fullWidth value={formData.branch} onChange={handleChange("branch")} /></Grid>
-          <Grid item xs={4}><TextField label="Branch Cd" size="small" fullWidth value={formData.branchCd} onChange={handleChange("branchCd")} /></Grid>
-          <Grid item xs={4}><TextField label="Client ID" size="small" fullWidth value={formData.clientId} onChange={handleChange("clientId")} /></Grid>
-          <Grid item xs={4}><TextField label="GST No" size="small" fullWidth value={formData.gstNo} onChange={handleChange("gstNo")} /></Grid>
-          <Grid item xs={4}><TextField label="IFSC Code" size="small" fullWidth value={formData.ifscCode} onChange={handleChange("ifscCode")} /></Grid>
-          <Grid item xs={4}><TextField label="O.D. Amount" size="small" fullWidth value={formData.odAmount} onChange={handleChange("odAmount")} /></Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Bank Code"
+              size="small"
+              fullWidth
+              value={formData.bankCode}
+              onChange={handleChange("bankCode")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Bank Name"
+              size="small"
+              fullWidth
+              value={formData.bankName}
+              onChange={handleChange("bankName")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Short Name"
+              size="small"
+              fullWidth
+              value={formData.shortName}
+              onChange={handleChange("shortName")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Address 1"
+              size="small"
+              fullWidth
+              value={formData.address1}
+              onChange={handleChange("address1")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Address 2"
+              size="small"
+              fullWidth
+              value={formData.address2}
+              onChange={handleChange("address2")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Address 3"
+              size="small"
+              fullWidth
+              value={formData.address3}
+              onChange={handleChange("address3")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Phone"
+              size="small"
+              fullWidth
+              value={formData.phone}
+              onChange={handleChange("phone")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Fax"
+              size="small"
+              fullWidth
+              value={formData.fax}
+              onChange={handleChange("fax")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Email"
+              size="small"
+              fullWidth
+              value={formData.email}
+              onChange={handleChange("email")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Pincode"
+              size="small"
+              fullWidth
+              value={formData.pincode}
+              onChange={handleChange("pincode")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Branch"
+              size="small"
+              fullWidth
+              value={formData.branch}
+              onChange={handleChange("branch")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Branch Cd"
+              size="small"
+              fullWidth
+              value={formData.branchCd}
+              onChange={handleChange("branchCd")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="Client ID"
+              size="small"
+              fullWidth
+              value={formData.clientId}
+              onChange={handleChange("clientId")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="GST No"
+              size="small"
+              fullWidth
+              value={formData.gstNo}
+              onChange={handleChange("gstNo")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="IFSC Code"
+              size="small"
+              fullWidth
+              value={formData.ifscCode}
+              onChange={handleChange("ifscCode")}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              label="O.D. Amount"
+              size="small"
+              fullWidth
+              value={formData.odAmount}
+              onChange={handleChange("odAmount")}
+            />
+          </Grid>
         </Grid>
 
         {/* Flags */}
         <Box mt={2}>
-          <FormControlLabel control={<Checkbox checked={formData.overdraftFlag} onChange={handleChange("overdraftFlag")} />} label="Overdraft Flag" />
-          <FormControlLabel control={<Checkbox checked={formData.activeFlag} onChange={handleChange("activeFlag")} />} label="Active Flag" />
-          <FormControlLabel control={<Checkbox checked={formData.nonOperational} onChange={handleChange("nonOperational")} />} label="Non Operational Bank" />
-          <FormControlLabel control={<Checkbox checked={formData.eefcBank} onChange={handleChange("eefcBank")} />} label="EEFC Bank" />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.overdraftFlag}
+                onChange={handleChange("overdraftFlag")}
+              />
+            }
+            label="Overdraft Flag"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.activeFlag}
+                onChange={handleChange("activeFlag")}
+              />
+            }
+            label="Active Flag"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.nonOperational}
+                onChange={handleChange("nonOperational")}
+              />
+            }
+            label="Non Operational Bank"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formData.eefcBank}
+                onChange={handleChange("eefcBank")}
+              />
+            }
+            label="EEFC Bank"
+          />
         </Box>
 
         <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
-          <Button variant="contained" startIcon={<Icon>add</Icon>} onClick={handleAdd}>
+          <Button
+            variant="contained"
+            startIcon={<Icon>add</Icon>}
+            onClick={handleAdd}
+          >
             Add
           </Button>
         </Box>
 
         {/* Added Banks Preview */}
         <Box mt={3}>
-          <Typography variant="subtitle1" fontWeight="bold">Added Banks</Typography>
+          <Typography variant="subtitle1" fontWeight="bold">
+            Added Banks
+          </Typography>
           {banks.map((bank) => (
-            <Box key={bank.id} sx={{ p: 1, border: "1px solid #ccc", borderRadius: 1, mb: 1 }}>
+            <Box
+              key={bank.id}
+              sx={{ p: 1, border: "1px solid #ccc", borderRadius: 1, mb: 1 }}
+            >
               <Typography>{`${bank.bankCode} - ${bank.bankName} - ${bank.branch} (${bank.ifscCode})`}</Typography>
             </Box>
           ))}
