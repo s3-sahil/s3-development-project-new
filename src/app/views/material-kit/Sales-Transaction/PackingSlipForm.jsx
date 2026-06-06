@@ -385,7 +385,7 @@ const PackingSlipForm = () => {
 
     const payload = {
       packingSlip_ex: {
-        slip_No: state.slipNo || "",
+        slip_No: "",
         slip_dt: toISO(state.date),
         cust_Code: state.customer || "",
         po_Id: state.poId || "",
@@ -433,7 +433,6 @@ const PackingSlipForm = () => {
         quantity: toNumber(item.quantity),
         emp_no: state.empNo || "",
         heat_code: item.heatCode || "",
-        inv_no: item.invNo || "",
         inv_dt: toISO(item.invDate),
         slip_type: state.packingType || "",
         profcen_cd: localStorage.getItem("PROFCEN_CD") || "",
@@ -493,8 +492,8 @@ const PackingSlipForm = () => {
 
       // ✅ REQUIRED ROOT FIELDS (missing before)
       period: state.period || "",
-      mM_DOC_DOCUMNET: state.doc || "",
-      mM_DOC_TYPE: state.docType || "",
+      mM_DOC_DOCUMNET: "",
+      mM_DOC_TYPE:  "",
       profceN_CD: localStorage.getItem("PROFCEN_CD") || "",
     };
 

@@ -48,8 +48,6 @@ import SamplingPlanTable from "./TQM-Master/SamplingPlanTable";
 import SamplingPlanForm from "./TQM-Master/SamplingPlanForm";
 import TestMasterTable from "./TQM-Master/TestMasterTable";
 import TestMasterForm from "./TQM-Master/TestMasterForm";
-import AssetRegisterEntryForm from "./Finance-Transaction/AssetRegisterEntryForm";
-import AssetRegisterEntryTable from "./Finance-Transaction/AssetRegisterEntryTable";
 import BankReceiptTable from "./Finance-Transaction/BankReceiptTable";
 import BankReceiptForm from "./Finance-Transaction/BankReceiptForm";
 import BillPassingTable from "./Finance-Transaction/BillPassingTable";
@@ -2967,18 +2965,18 @@ const materialRoutes = [
     path: "/material/TQM-test-master-form/add",
     element: <TestMasterForm />,
   },
-  {
-    path: "/material/finance-asset-register-entry-table",
-    element: <AssetRegisterEntryTable />,
-  },
-  {
-    path: "/material/finance-asset-register-entry-form/edit/:slipNo",
-    element: <AssetRegisterEntryForm />,
-  },
-  {
-    path: "/material/finance-asset-register-entry-form/add",
-    element: <AssetRegisterEntryForm />,
-  },
+  // {
+  //   path: "/material/finance-asset-register-entry-table",
+  //   element: <AssetRegisterEntryTable />,
+  // },
+  // {
+  //   path: "/material/finance-asset-register-entry-form/edit/:slipNo",
+  //   element: <AssetRegisterEntryForm />,
+  // },
+  // {
+  //   path: "/material/finance-asset-register-entry-form/add",
+  //   element: <AssetRegisterEntryForm />,
+  // },
   {
     path: "/material/finance-bank-receipt-table",
     element: <BankReceiptTable />,
