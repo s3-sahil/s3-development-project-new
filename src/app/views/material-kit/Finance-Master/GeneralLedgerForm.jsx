@@ -11,9 +11,17 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { Breadcrumb } from "app/components";
-import { useState } from "react";
+import {
+  addGeneralLedger,
+  updateGeneralLedger,
+} from "app/utils/FinanceMasterServices";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export default function GeneralLedgerForm() {
+  const location = useLocation();
+
+  const [isEdit, setIsEdit] = useState(false);
   const [formData, setFormData] = useState({
     glCode: "",
     groupCode: "",
@@ -35,8 +43,45 @@ export default function GeneralLedgerForm() {
 
   const [ledgers, setLedgers] = useState([]);
 
+  useEffect(() => {
+    if (location.state) {
+      setIsEdit(true);
+
+      setFormData({
+        glCode: location.state.acc_code || "",
+        groupCode: location.state.group_code || "",
+        subGroupCode: location.state.subGroup_code || "",
+        glName: location.state.desc || "",
+
+        groupCategory: location.state.bs_flag || "",
+        glSchedule: location.state.sch_no || "",
+
+        gstRetention: location.state.retentionPercent || "",
+
+        dueDateGovLiability: location.state.due_Date || "",
+
+        inUse: location.state.inUse === "Y",
+
+        gplFlag: location.state.pl_flag === "Y",
+
+        glSummary: location.state.summary_status === "Y",
+
+        purchaseRegFlag: location.state.purchase_Reg === "Y",
+
+        provisionFlag: location.state.prov_Flg === "Y",
+
+        putToUseFlag: location.state.putToUse === "Y",
+
+        govLiability: location.state.gov_liability === "Y",
+      });
+    }
+  }, [location]);
+
   const handleChange = (field) => (event) => {
-    const value = event.target.type === "checkbox" ? event.target.checked : event.target.value;
+    const value =
+      event.target.type === "checkbox"
+        ? event.target.checked
+        : event.target.value;
     setFormData({ ...formData, [field]: value });
   };
 
@@ -64,20 +109,90 @@ export default function GeneralLedgerForm() {
     }
   };
 
+  const handleSave = async () => {
+    try {
+      const payload = {
+        acc_code: formData.glCode,
+
+        desc: formData.glName,
+
+        pl_flag: formData.gplFlag ? "Y" : "N",
+
+        bs_flag: formData.groupCategory,
+
+        ac_flag: "A",
+
+        group_code: formData.groupCode,
+
+        bs_status: "Y",
+
+        sch_no: formData.glSchedule,
+
+        summary_status: formData.glSummary ? "Y" : "N",
+
+        subGroup_code: formData.subGroupCode,
+
+        purchase_Reg: formData.purchaseRegFlag ? "Y" : "N",
+
+        prov_Flg: formData.provisionFlag ? "Y" : "N",
+
+        sch_no1: formData.glSchedule,
+
+        week_No: 0,
+
+        servRetentionPer: Number(formData.gstRetention || 0),
+
+        putToUse: formData.putToUseFlag ? "Y" : "N",
+
+        retentionPercent: Number(formData.gstRetention || 0),
+
+        subSubGroup_code: "",
+
+        inUse: formData.inUse ? "Y" : "N",
+
+        gov_liability: formData.govLiability ? "Y" : "N",
+
+        due_Date: Number(formData.dueDateGovLiability || 0),
+      };
+
+      if (isEdit) {
+        await updateGeneralLedger(payload);
+
+        alert("General Ledger Updated Successfully");
+      } else {
+        await addGeneralLedger([payload]);
+
+        alert("General Ledger Saved Successfully");
+      }
+    } catch (error) {
+      console.error(error);
+
+      alert("Operation Failed");
+    }
+  };
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "Finance" }, { name: "General Ledger" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Finance" }, { name: "General Ledger" }]}
+        />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" mb={2} alignItems="center">
-          <Typography variant="h5" fontWeight="bold">
-            General Ledger
-          </Typography>
-          <Button variant="contained" startIcon={<Icon>save</Icon>}>
-            Save
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          mb={2}
+          alignItems="center"
+        >
+          <Typography variant="h5" fontWeight="bold"></Typography>
+          <Button
+            variant="contained"
+            startIcon={<Icon>{isEdit ? "edit" : "save"}</Icon>}
+            onClick={handleSave}
+          >
+            {isEdit ? "Update" : "Save"}
           </Button>
         </Box>
 
@@ -173,46 +288,90 @@ export default function GeneralLedgerForm() {
         {/* Flags */}
         <Box mt={2}>
           <FormControlLabel
-            control={<Checkbox checked={formData.inUse} onChange={handleChange("inUse")} />}
+            control={
+              <Checkbox
+                checked={formData.inUse}
+                onChange={handleChange("inUse")}
+              />
+            }
             label="In Use"
           />
           <FormControlLabel
-            control={<Checkbox checked={formData.gplFlag} onChange={handleChange("gplFlag")} />}
+            control={
+              <Checkbox
+                checked={formData.gplFlag}
+                onChange={handleChange("gplFlag")}
+              />
+            }
             label="GPL Flag"
           />
           <FormControlLabel
-            control={<Checkbox checked={formData.glSummary} onChange={handleChange("glSummary")} />}
+            control={
+              <Checkbox
+                checked={formData.glSummary}
+                onChange={handleChange("glSummary")}
+              />
+            }
             label="GL Summary"
           />
           <FormControlLabel
-            control={<Checkbox checked={formData.purchaseRegFlag} onChange={handleChange("purchaseRegFlag")} />}
+            control={
+              <Checkbox
+                checked={formData.purchaseRegFlag}
+                onChange={handleChange("purchaseRegFlag")}
+              />
+            }
             label="Purchase Reg Flag"
           />
           <FormControlLabel
-            control={<Checkbox checked={formData.provisionFlag} onChange={handleChange("provisionFlag")} />}
+            control={
+              <Checkbox
+                checked={formData.provisionFlag}
+                onChange={handleChange("provisionFlag")}
+              />
+            }
             label="Provision Flag"
           />
           <FormControlLabel
-            control={<Checkbox checked={formData.putToUseFlag} onChange={handleChange("putToUseFlag")} />}
+            control={
+              <Checkbox
+                checked={formData.putToUseFlag}
+                onChange={handleChange("putToUseFlag")}
+              />
+            }
             label="Put To Use Flag"
           />
           <FormControlLabel
-            control={<Checkbox checked={formData.govLiability} onChange={handleChange("govLiability")} />}
+            control={
+              <Checkbox
+                checked={formData.govLiability}
+                onChange={handleChange("govLiability")}
+              />
+            }
             label="Government Liability"
           />
         </Box>
 
         <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
-          <Button variant="contained" startIcon={<Icon>add</Icon>} onClick={handleAdd}>
+          <Button
+            variant="contained"
+            startIcon={<Icon>add</Icon>}
+            onClick={handleAdd}
+          >
             Add
           </Button>
         </Box>
 
         {/* Added Ledgers Preview */}
         <Box mt={3}>
-          <Typography variant="subtitle1" fontWeight="bold">Added Ledgers</Typography>
+          <Typography variant="subtitle1" fontWeight="bold">
+            Added Ledgers
+          </Typography>
           {ledgers.map((ledger) => (
-            <Box key={ledger.id} sx={{ p: 1, border: "1px solid #ccc", borderRadius: 1, mb: 1 }}>
+            <Box
+              key={ledger.id}
+              sx={{ p: 1, border: "1px solid #ccc", borderRadius: 1, mb: 1 }}
+            >
               <Typography>
                 {`${ledger.glCode} - ${ledger.glName} - ${ledger.groupCode} (${ledger.groupCategory})`}
               </Typography>

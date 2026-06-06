@@ -42,41 +42,153 @@ export default function ChequeOpeningEntryForm() {
     }
   };
 
+  const handleSave = async () => {
+    try {
+      const payload = {
+        bank_code: formData.bankCode || "",
+
+        chq_no: formData.chequeNo || "",
+
+        chq_date: formData.chequeDate
+          ? new Date(formData.chequeDate).toISOString()
+          : new Date().toISOString(),
+
+        chq_amt: Number(formData.amount || 0),
+
+        profcen_cd: localStorage.getItem("PROFCEN_CD") || "",
+
+        clear_flag: "N",
+
+        mode: formData.mode || "",
+
+        useR_NAME: localStorage.getItem("login_name") || "",
+
+        userdate: new Date().toISOString(),
+
+        clear_date: formData.chequeDate
+          ? new Date(formData.chequeDate).toISOString()
+          : new Date().toISOString(),
+
+        vou_no: "",
+
+        vou_date: new Date().toISOString(),
+
+        party_code: "",
+
+        narration: `${formData.mode} Cheque Opening Entry`,
+
+        party_name: "",
+
+        yyyy_mm: `${new Date().getFullYear()}${String(
+          new Date().getMonth() + 1,
+        ).padStart(2, "0")}`,
+
+        flag: formData.flag === "Debit" ? "D" : "C",
+      };
+
+      console.log("Payload:", payload);
+
+      const response = await addChequeOpeningEntry(payload);
+
+      console.log(response);
+
+      alert("Cheque Opening Entry Saved Successfully");
+    } catch (error) {
+      console.error(error);
+      alert("Failed To Save");
+    }
+  };
+
   return (
     <Container maxWidth="xl">
       <Box className="breadcrumb" mb={2}>
-        <Breadcrumb routeSegments={[{ name: "Finace" }, { name: "Cheque Opening Entry" }]} />
+        <Breadcrumb
+          routeSegments={[{ name: "Finace" }, { name: "Cheque Opening Entry" }]}
+        />
       </Box>
 
       <Box sx={{ p: 3, borderRadius: 2 }}>
         {/* Header */}
-        <Box display="flex" justifyContent="space-between" mb={2} alignItems="center">
-          <Typography variant="h5" fontWeight="bold">Cheque Opening Entry</Typography>
-          <Button variant="contained" startIcon={<Icon>save</Icon>}>Save</Button>
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          mb={2}
+          alignItems="center"
+        >
+          <Typography variant="h5" fontWeight="bold">
+            Cheque Opening Entry
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<Icon>save</Icon>}
+            onClick={handleSave}
+          >
+            Save
+          </Button>
         </Box>
 
         {/* Form */}
         <Grid container spacing={2}>
           <Grid item xs={4}>
-            <TextField label="Bank Code" size="small" fullWidth value={formData.bankCode} onChange={handleChange("bankCode")} />
+            <TextField
+              label="Bank Code"
+              size="small"
+              fullWidth
+              value={formData.bankCode}
+              onChange={handleChange("bankCode")}
+            />
           </Grid>
           <Grid item xs={4}>
-            <TextField label="Cheque No" size="small" fullWidth value={formData.chequeNo} onChange={handleChange("chequeNo")} />
+            <TextField
+              label="Cheque No"
+              size="small"
+              fullWidth
+              value={formData.chequeNo}
+              onChange={handleChange("chequeNo")}
+            />
           </Grid>
           <Grid item xs={4}>
-            <TextField label="Cheque Date" type="date" size="small" fullWidth InputLabelProps={{ shrink: true }} value={formData.chequeDate} onChange={handleChange("chequeDate")} />
+            <TextField
+              label="Cheque Date"
+              type="date"
+              size="small"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+              value={formData.chequeDate}
+              onChange={handleChange("chequeDate")}
+            />
           </Grid>
           <Grid item xs={4}>
-            <TextField label="Amount" size="small" fullWidth value={formData.amount} onChange={handleChange("amount")} />
+            <TextField
+              label="Amount"
+              size="small"
+              fullWidth
+              value={formData.amount}
+              onChange={handleChange("amount")}
+            />
           </Grid>
           <Grid item xs={4}>
-            <TextField select label="Mode" size="small" fullWidth value={formData.mode} onChange={handleChange("mode")}>
+            <TextField
+              select
+              label="Mode"
+              size="small"
+              fullWidth
+              value={formData.mode}
+              onChange={handleChange("mode")}
+            >
               <MenuItem value="Payment">Payment</MenuItem>
               <MenuItem value="Receipt">Receipt</MenuItem>
             </TextField>
           </Grid>
           <Grid item xs={4}>
-            <TextField select label="Flag" size="small" fullWidth value={formData.flag} onChange={handleChange("flag")}>
+            <TextField
+              select
+              label="Flag"
+              size="small"
+              fullWidth
+              value={formData.flag}
+              onChange={handleChange("flag")}
+            >
               <MenuItem value="Debit">Debit</MenuItem>
               <MenuItem value="Credit">Credit</MenuItem>
             </TextField>
@@ -85,14 +197,25 @@ export default function ChequeOpeningEntryForm() {
 
         {/* Actions */}
         <Box mt={2} display="flex" justifyContent="flex-end" gap={2}>
-          <Button variant="contained" startIcon={<Icon>add</Icon>} onClick={handleAdd}>Add</Button>
+          <Button
+            variant="contained"
+            startIcon={<Icon>add</Icon>}
+            onClick={handleAdd}
+          >
+            Add
+          </Button>
         </Box>
 
         {/* Preview */}
         <Box mt={3}>
-          <Typography variant="subtitle1" fontWeight="bold">Added Entries</Typography>
+          <Typography variant="subtitle1" fontWeight="bold">
+            Added Entries
+          </Typography>
           {records.map((rec) => (
-            <Box key={rec.id} sx={{ p: 1, border: "1px solid #ccc", borderRadius: 1, mb: 1 }}>
+            <Box
+              key={rec.id}
+              sx={{ p: 1, border: "1px solid #ccc", borderRadius: 1, mb: 1 }}
+            >
               <Typography>{`${rec.bankCode} - Cheque: ${rec.chequeNo} - Date: ${rec.chequeDate} - Amount: ${rec.amount} - ${rec.mode} (${rec.flag})`}</Typography>
             </Box>
           ))}
