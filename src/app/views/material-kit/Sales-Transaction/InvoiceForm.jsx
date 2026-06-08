@@ -605,21 +605,24 @@ const InvoiceForm = () => {
                   <Autocomplete
                     size="small"
                     fullWidth
-                    options={packingList || []}
+                    options={poList || []}
+                    loading={loadingPO}
                     value={
-                      packingList.find(
-                        (item) => item.Slip_No === formData.packingNo,
-                      ) || null
+                      poList.find((item) => item.Po_Id === formData.poNo) ||
+                      null
                     }
                     getOptionLabel={(option) =>
-                      `${option.Slip_No} - ${option.SALES_TYPE || ""}`
+                      `${option.Po_Id} - ${option.Cust_Code || ""}`
                     }
                     onChange={(event, value) => {
                       setFormData((prev) => ({
                         ...prev,
-                        packingNo: value?.Slip_No || "",
-                        invoiceType: value?.INV_TYPE || "",
-                        invoiceSubType: value?.SALES_TYPE || "",
+                        poNo: value?.Po_Id || "",
+                        customerCode: value?.Cust_Code || "",
+                        customerName: value?.ITEM_NAME || "",
+                        vehicleNo: value?.VEHICLE_NO || "",
+                        transportMode: value?.DELEVERY_BY || "",
+                        currency: value?.CURR_CODE1 || "",
                       }));
                     }}
                     renderInput={(params) => (

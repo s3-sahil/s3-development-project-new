@@ -27,9 +27,10 @@ const PackingSlipTable = () => {
         searchQuery
       );
       if (response && response.Data) {
-        const dataWithId = response.Data.map((row) => ({
+        const dataWithId = response.Data.map((row, index) => ({
           ...row,
-          id: row.Slip_No,
+          // ✅ Generate unique ID combining pageNumber, index and Slip_No
+          id: `${pageToFetch}-${index}-${row.Slip_No}`,
           slip_No: row.Slip_No,
           slip_dt: row.Slip_dt,
           cust_Code: row.Cust_Code,

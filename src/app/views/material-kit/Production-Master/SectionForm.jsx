@@ -24,15 +24,15 @@ const SectionForm = () => {
   const departments = [
     {
       label: "Production",
-      value: "PROD",
+      value: "PRO",
     },
     {
       label: "Maintenance",
-      value: "MAIN",
+      value: "MAI",
     },
     {
       label: "Quality",
-      value: "QUAL",
+      value: "QUA",
     },
     {
       label: "Finance",

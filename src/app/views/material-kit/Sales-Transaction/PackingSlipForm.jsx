@@ -427,7 +427,7 @@ const PackingSlipForm = () => {
       },
 
       list_packingslip_detail_ex: items.map((item) => ({
-        slip_No: state.slipNo || "",
+        slip_No: "",
         slip_dt: toISO(state.date),
         item_code: item.itemCode || "",
         quantity: toNumber(item.quantity),
@@ -881,7 +881,7 @@ const PackingSlipForm = () => {
               options={stockList || []}
               loading={loadingStock}
               getOptionLabel={(option) =>
-                `${option.ITEM_CODE} - ${option.DESC} - ${option.UOM}`
+                `${option.category_type} - ${option.DESC}`
               }
               isOptionEqualToValue={(option, value) =>
                 option.DESC === value.DESC

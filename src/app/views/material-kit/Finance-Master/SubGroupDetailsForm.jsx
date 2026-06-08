@@ -26,6 +26,8 @@ export default function SubGroupDetailsForm() {
 
   const [records, setRecords] = useState([]);
 
+  const [actionMode, setActionMode] = useState("new"); // new | edit
+
   const handleChange = (field) => (event) =>
     setFormData({ ...formData, [field]: event.target.value });
 
@@ -116,7 +118,7 @@ export default function SubGroupDetailsForm() {
           <Typography variant="h5" fontWeight="bold">
             Sub Group Details
           </Typography>
-          <Button variant="contained" startIcon={<Icon>save</Icon>}>
+          <Button onClick={handleSave} variant="contained" startIcon={<Icon>save</Icon>}>
             Save
           </Button>
         </Box>

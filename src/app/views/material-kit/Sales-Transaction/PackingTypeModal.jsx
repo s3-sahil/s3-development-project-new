@@ -43,8 +43,14 @@ const PackingTypeModal = ({
 }) => {
   const [qtyPerBox, setQtyPerBox] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [packingTypeOptions, setPackingTypeOptions] = useState([]);
+
+  // ✅ Validation helper for numeric input
+  const validateNumericInput = (value) => {
+    if (value === "" || value === null) return "";
+    const num = parseFloat(value);
+    return isNaN(num) || num < 0 ? "" : num.toString();
+  };
 
   useEffect(() => {
     const getPackingType = async () => {
@@ -56,32 +62,62 @@ const PackingTypeModal = ({
   }, []);
 
   console.log("payValue:", payValue, selectedItem);
-  // ✅ ADD ROW
+  // ✅ ADD ROW - IMPROVED
   const handleAddRow = () => {
+    // Validation: Check packing type
+    if (!packingType || packingType.trim() === "") {
+      alert("Please select packing type first");
+      return;
+    }
+
+    // Validation: For Box type, check Boxes value
+    if (packingType === "Box") {
+      if (!boxes || parseFloat(boxes) <= 0) {
+        alert("Please enter valid number of boxes");
+        return;
+      }
+      if (!qtyPerBox || parseFloat(qtyPerBox) < 0) {
+        alert("Please enter valid quantity per box");
+        return;
+      }
+    }
+
+    // Validation: For Loose type, check Loose Qty
+    if (packingType === "Loose") {
+      if (!looseQty || parseFloat(looseQty) <= 0) {
+        alert("Please enter valid loose quantity");
+        return;
+      }
+    }
+
     const newRow = {
       srNo: rows.length + 1,
-
       qty:
-        packingType === "Box" ? Number(qtyPerBox || 0) : Number(looseQty || 0),
-
-      total: packingType === "Box" ? Number(boxes || 0) : Number(looseQty || 0),
-
+        packingType === "Box" ? parseFloat(qtyPerBox || 0) : parseFloat(looseQty || 0),
+      total: packingType === "Box" ? parseFloat(boxes || 0) : parseFloat(looseQty || 0),
       itemCode: itemCode || "",
     };
 
     setRows((prev) => [...prev, newRow]);
     const updatedRows = [...rows, newRow];
 
+    // Update remark based on packing type
     const remarkText = updatedRows
-      .map((row) =>
+      .map((row, idx) =>
         packingType === "Box"
-          ? `${row.qty} / ${row.total} / ${packingType}`
-          : `${row.qty} / ${packingType}`,
+          ? `Box ${idx + 1}: ${row.qty}/${row.total}`
+          : `Loose ${idx + 1}: ${row.qty}`
       )
-      .join(", ");
+      .join(" | ");
 
-    // ✅ update parent state
     setRemark?.(remarkText);
+
+    // Reset input fields after adding row
+    if (packingType === "Box") {
+      setQtyPerBox("");
+    } else {
+      setLooseQty("");
+    }
   };
 
   // ✅ REMOVE ROW
@@ -97,15 +133,26 @@ const PackingTypeModal = ({
     setRows(reIndex);
   };
 
-  // ✅ CHANGE (Editable + Auto Calculate)
+  // ✅ CHANGE ROW (Editable + Auto Calculate)
   const handleRowChange = (index, value) => {
-    const updated = [...rows];
-    updated[index].qty = value;
+    const numValue = parseFloat(value) || 0;
 
+    // Validation: Prevent negative values
+    if (numValue < 0) {
+      alert("Negative values are not allowed");
+      return;
+    }
+
+    const updated = [...rows];
+    updated[index].qty = numValue;
+
+    // Auto-calculate total based on packing type
     if (packingType === "Box") {
-      updated[index].total = Number(boxes || 0); // only boxes
+      // For Box: use the boxes value set at top
+      updated[index].total = parseFloat(boxes) || 0;
     } else {
-      updated[index].total = Number(value || 0);
+      // For Loose: total = quantity
+      updated[index].total = numValue;
     }
 
     setRows(updated);
@@ -123,28 +170,81 @@ const PackingTypeModal = ({
     }
   }, [itemCode]);
 
-  // ✅ CALCULATE BUTTON
+  // ✅ CALCULATE BUTTON - IMPROVED
   const handleCalculate = () => {
-    let grandTotal = 0;
-
-    rows.forEach((row) => {
-      let total = 0;
-
-      if (packingType === "Box") {
-        total = Number(row.qty || 0) * Number(row.total || 0);
-      } else {
-        total = Number(row.qty || 0);
-      }
-
-      grandTotal += total;
-    });
-
-    // ✅ only send to parent
-    if (setFinalQuantity) {
-      setFinalQuantity(grandTotal);
+    // Validation: Check if rows exist
+    if (!rows || rows.length === 0) {
+      alert("Please add rows before calculating");
+      return;
     }
 
-    console.log("Grand Total:", grandTotal);
+    // Validation: Check if packing type is selected
+    if (!packingType || packingType.trim() === "") {
+      alert("Please select packing type");
+      return;
+    }
+
+    let grandTotal = 0;
+    let errorRows = [];
+
+    // Calculate total for each row
+    rows.forEach((row, index) => {
+      const qty = parseFloat(row.qty) || 0;
+      const total = parseFloat(row.total) || 0;
+
+      // Validation: Check for negative or invalid values
+      if (qty < 0 || total < 0) {
+        errorRows.push(index + 1);
+        return;
+      }
+
+      let rowCalculation = 0;
+
+      if (packingType === "Box") {
+        // For Box: qty per box * number of boxes
+        rowCalculation = qty * total;
+        
+        // Validation: Ensure both values are provided for Box type
+        if (qty === 0 || total === 0) {
+          console.warn(`Row ${index + 1}: Qty or Total is 0 for Box packing`);
+        }
+      } else if (packingType === "Loose") {
+        // For Loose: just the loose quantity
+        rowCalculation = qty;
+      } else {
+        // For other types: use quantity
+        rowCalculation = qty;
+      }
+
+      grandTotal += rowCalculation;
+    });
+
+    // Validation: Show error if any row has invalid values
+    if (errorRows.length > 0) {
+      alert(`Invalid values in row(s): ${errorRows.join(", ")}`);
+      return;
+    }
+
+    // Validation: Check if grand total is 0
+    if (grandTotal === 0) {
+      alert("Calculated total is 0. Please enter valid quantities.");
+      return;
+    }
+
+    // Round to 2 decimal places for currency/quantity
+    const finalTotal = Math.round(grandTotal * 100) / 100;
+
+    console.log("Calculate Details:", {
+      packingType,
+      rows,
+      grandTotal: finalTotal,
+    });
+
+    // Send to parent component
+    if (setFinalQuantity) {
+      setFinalQuantity(finalTotal);
+      alert(`Total Quantity: ${finalTotal}\n\nPacking Type: ${packingType}`);
+    }
   };
 
   const handleQtyEnter = async (e) => {
@@ -244,9 +344,13 @@ const PackingTypeModal = ({
                       size="small"
                       fullWidth
                       label="Boxes"
+                      type="number"
                       value={boxes}
-                      onChange={(e) => setBoxes(e.target.value)}
+                      onChange={(e) => setBoxes(validateNumericInput(e.target.value))}
+                      error={boxes === ""}
+                      helperText={boxes === "" ? "Required for Box type" : ""}
                       autoComplete="off"
+                      inputProps={{ min: 0, step: 1 }}
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -254,10 +358,14 @@ const PackingTypeModal = ({
                       size="small"
                       fullWidth
                       label="Qty / Box"
+                      type="number"
                       value={qtyPerBox}
-                      onChange={(e) => setQtyPerBox(e.target.value)}
+                      onChange={(e) => setQtyPerBox(validateNumericInput(e.target.value))}
                       onKeyDown={handleQtyEnter}
+                      error={qtyPerBox === ""}
+                      helperText={qtyPerBox === "" ? "Required for Box type" : ""}
                       autoComplete="off"
+                      inputProps={{ min: 0, step: 0.01 }}
                     />
                   </Grid>
                 </>
@@ -270,9 +378,13 @@ const PackingTypeModal = ({
                     size="small"
                     fullWidth
                     label="Loose Qty"
+                    type="number"
                     value={looseQty}
-                    onChange={(e) => setLooseQty(e.target.value)}
+                    onChange={(e) => setLooseQty(validateNumericInput(e.target.value))}
+                    error={looseQty === ""}
+                    helperText={looseQty === "" ? "Required for Loose type" : ""}
                     autoComplete="off"
+                    inputProps={{ min: 0, step: 0.01 }}
                   />
                 </Grid>
               )}
@@ -281,78 +393,150 @@ const PackingTypeModal = ({
         </Box>
 
         {/* TABLE */}
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Sr No.</TableCell>
+        <Box mt={3}>
+          <Typography fontWeight={600} mb={2}>
+            Packing Details Table
+          </Typography>
+          <Table size="small" border={1}>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: "#f0f0f0" }}>
+                <TableCell>Sr No.</TableCell>
 
-              {packingType === "Box" ? (
-                <>
-                  <TableCell>Qty / Box</TableCell>
-                  <TableCell>Total Boxs</TableCell>
-                </>
-              ) : (
-                <>
-                  <TableCell>Loose Qty</TableCell>
-                  <TableCell>Total Loose</TableCell>
-                </>
-              )}
+                {packingType === "Box" ? (
+                  <>
+                    <TableCell>Qty / Box</TableCell>
+                    <TableCell>Total Boxes</TableCell>
+                  </>
+                ) : (
+                  <>
+                    <TableCell>Loose Qty</TableCell>
+                    <TableCell>Total Loose</TableCell>
+                  </>
+                )}
 
-              <TableCell>Item Code</TableCell>
-              <TableCell align="center">Action</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell>{row.srNo}</TableCell>
-
-                <TableCell>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    value={row.qty}
-                    onChange={(e) => handleRowChange(index, e.target.value)}
-                  />
-                </TableCell>
-
-                <TableCell>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    value={row.total}
-                    disabled
-                  />
-                </TableCell>
-
-                <TableCell>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    value={row.itemCode}
-                    disabled
-                  />
-                </TableCell>
-
-                <TableCell align="center">
-                  <Button
-                    size="small"
-                    color="error"
-                    variant="contained"
-                    onClick={() => handleRemoveRow(index)}
-                  >
-                    Remove
-                  </Button>
-                </TableCell>
+                <TableCell>Item Code</TableCell>
+                <TableCell align="center">Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+
+            <TableBody>
+              {rows && rows.length > 0 ? (
+                rows.map((row, index) => (
+                  <TableRow key={row.srNo || index}> {/* ✅ Use srNo as unique key */}
+                    <TableCell>{row.srNo}</TableCell>
+
+                    <TableCell>
+                      <TextField
+                        size="small"
+                        fullWidth
+                        type="number"
+                        value={row.qty}
+                        onChange={(e) => handleRowChange(index, e.target.value)}
+                        inputProps={{ step: 0.01 }}
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <TextField
+                        size="small"
+                        fullWidth
+                        type="number"
+                        value={row.total}
+                        disabled
+                        sx={{
+                          "& .MuiInputBase-input.Mui-disabled": {
+                            color: "black",
+                            WebkitTextFillColor: "black",
+                          },
+                        }}
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <TextField
+                        size="small"
+                        fullWidth
+                        value={row.itemCode}
+                        disabled
+                        sx={{
+                          "& .MuiInputBase-input.Mui-disabled": {
+                            color: "black",
+                            WebkitTextFillColor: "black",
+                          },
+                        }}
+                      />
+                    </TableCell>
+
+                    <TableCell align="center">
+                      <Button
+                        size="small"
+                        color="error"
+                        variant="contained"
+                        onClick={() => handleRemoveRow(index)}
+                      >
+                        Remove
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} align="center" sx={{ py: 2, color: "#999" }}>
+                    No rows added yet. Click "Add Row" to add items.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </Box>
+
+        {/* TOTAL SUMMARY */}
+        {rows && rows.length > 0 && (
+          <Box
+            mt={3}
+            p={2}
+            sx={{
+              backgroundColor: "#e8f5e9",
+              border: "2px solid #4caf50",
+              borderRadius: 1,
+            }}
+          >
+            <Typography fontWeight={700} color="success.dark">
+              📊 Summary
+            </Typography>
+            <Typography variant="body2" mt={1}>
+              <strong>Packing Type:</strong> {packingType}
+            </Typography>
+            <Typography variant="body2">
+              <strong>Total Rows:</strong> {rows.length}
+            </Typography>
+            <Typography variant="body2">
+              <strong>Items in List:</strong>{" "}
+              {rows.map((r) => `${r.qty}${packingType === "Box" ? ` × ${r.total}` : ""}`).join(" + ")}
+            </Typography>
+            <Typography
+              variant="h6"
+              mt={1}
+              sx={{ color: "#2e7d32", fontWeight: 700 }}
+            >
+              Click "Calculate" to compute total quantity
+            </Typography>
+          </Box>
+        )}
 
         {/* BUTTONS */}
-        <Box mt={3} display="flex" justifyContent="space-between">
-          <Button variant="contained" onClick={handleAddRow}>
+        <Box
+          mt={3}
+          display="flex"
+          justifyContent="space-between"
+          sx={{ borderTop: "1px solid #ddd", pt: 2 }}
+        >
+          <Button
+            variant="contained"
+            onClick={handleAddRow}
+            disabled={!packingType}
+            startIcon={<Icon>add</Icon>}
+          >
             Add Row
           </Button>
 
@@ -361,11 +545,18 @@ const PackingTypeModal = ({
               variant="contained"
               color="success"
               onClick={handleCalculate}
+              disabled={!rows || rows.length === 0}
+              startIcon={<Icon>calculate</Icon>}
+              sx={{ fontWeight: 600 }}
             >
-              Calculate
+              Calculate Total
             </Button>
 
-            <Button variant="outlined" onClick={onClose}>
+            <Button
+              variant="outlined"
+              onClick={onClose}
+              startIcon={<Icon>close</Icon>}
+            >
               Close
             </Button>
           </Box>
