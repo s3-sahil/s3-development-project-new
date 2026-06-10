@@ -42,6 +42,9 @@ const CustomersPurchaseOrderLogin = () => {
   });
   const [allSchedules, setAllSchedules] = useState([]); // Store schedules for all items
 
+  const fromDate = localStorage.getItem("fromDate") || "";
+  const toDate = localStorage.getItem("toDate") || "";
+
   const [form, setForm] = useState({
     orderType: "",
     customer: "",
@@ -50,7 +53,7 @@ const CustomersPurchaseOrderLogin = () => {
     loginDate: "",
     orderNo: "",
     orderDate: "",
-    validDate: "",
+    validDate: toDate,
     amendNo: "",
     amendDate: "",
     remark: "",
@@ -336,10 +339,9 @@ const CustomersPurchaseOrderLogin = () => {
   const fetchTaxByHSN = async (hsn) => {
     try {
       const res = await getTaxTermByHSNCode(hsn);
-
-      const mappedTax = (res?.Data || []).map((t, index) => ({
+      const mappedTax = (res || []).map((t, index) => ({
         id: index + 1,
-        code: t.TAX_CODE || t.TaxCode, // ✅ FIX
+        code: t.TAX_CODE,
         desc: t.DESC, // ✅ FIX
         percent: Number(t.PERCENT), // ✅ FIX
         type: t.TaxType, // ✅ IMPORTANT
@@ -644,11 +646,10 @@ const CustomersPurchaseOrderLogin = () => {
                 fullWidth
                 label="Login Date"
                 name="loginDate"
-                value={
-                  form.loginDate || new Date().toISOString().split("T")[0]
-                }
+                value={form.loginDate}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
+                inputProps={{ min: fromDate, max: toDate }}
               />
             </Grid>
 
@@ -695,6 +696,7 @@ const CustomersPurchaseOrderLogin = () => {
                 name="orderNo"
                 value={form.orderNo}
                 onChange={handleChange}
+                disabled // Disable if orderNo exists (edit mode)
               />
             </Grid>
 
@@ -731,6 +733,7 @@ const CustomersPurchaseOrderLogin = () => {
                 value={form.orderDate}
                 onChange={handleChange}
                 InputLabelProps={{ shrink: true }}
+                inputProps={{ min: fromDate, max: toDate }}
               />
             </Grid>
 

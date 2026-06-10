@@ -43,7 +43,7 @@ const TaxTermModal = ({ open, onClose, onSave, defaultRows }) => {
   useEffect(() => {
     if (open) {
       console.log("📦 defaultRows received:", defaultRows);
-
+      debugger;
       if (defaultRows && defaultRows.length > 0) {
         setRows(defaultRows);
       } else {
@@ -93,15 +93,14 @@ const TaxTermModal = ({ open, onClose, onSave, defaultRows }) => {
     if (!selectedTax) return;
 
     const selected = taxOptions.find(
-      (x) => String(x.TAX_CODE) === String(selectedTax)
+      (x) => String(x.TAX_CODE) === String(selectedTax),
     );
 
     if (!selected) return;
 
     const alreadyExists = rows.some(
       (row) =>
-        String(row.code) === String(selected.TAX_CODE) &&
-        row.type === taxType
+        String(row.code) === String(selected.TAX_CODE) && row.type === taxType,
     );
 
     if (alreadyExists) return;
@@ -125,6 +124,7 @@ const TaxTermModal = ({ open, onClose, onSave, defaultRows }) => {
     setRows((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const hasDefaultRows = defaultRows && defaultRows.length > 0;
   return (
     <Dialog
       open={open}
@@ -189,47 +189,61 @@ const TaxTermModal = ({ open, onClose, onSave, defaultRows }) => {
             )}
           </TableBody>
         </Table>
+        {!hasDefaultRows && (
+          <>
+            {/* ================= TAX TYPE ================= */}
+            <Box mt={3}>
+              <Typography fontWeight={600}>Select Tax Type</Typography>
+              <RadioGroup
+                row
+                value={taxType}
+                onChange={(e) => setTaxType(e.target.value)}
+              >
+                <FormControlLabel
+                  value="SGST"
+                  control={<Radio />}
+                  label="SGST"
+                />
+                <FormControlLabel
+                  value="CGST"
+                  control={<Radio />}
+                  label="CGST"
+                />
+                <FormControlLabel
+                  value="IGST"
+                  control={<Radio />}
+                  label="IGST"
+                />
+              </RadioGroup>
+            </Box>
 
-        {/* ================= TAX TYPE ================= */}
-        <Box mt={3}>
-          <Typography fontWeight={600}>Select Tax Type</Typography>
-          <RadioGroup
-            row
-            value={taxType}
-            onChange={(e) => setTaxType(e.target.value)}
-          >
-            <FormControlLabel value="SGST" control={<Radio />} label="SGST" />
-            <FormControlLabel value="CGST" control={<Radio />} label="CGST" />
-            <FormControlLabel value="IGST" control={<Radio />} label="IGST" />
-          </RadioGroup>
-        </Box>
+            {/* ================= DROPDOWN ================= */}
+            <Grid container spacing={2} mt={1}>
+              <Grid item xs={9}>
+                <TextField
+                  select
+                  fullWidth
+                  label="Tax Term"
+                  value={selectedTax}
+                  onChange={(e) => setSelectedTax(e.target.value)}
+                >
+                  <MenuItem value="">-- Select --</MenuItem>
+                  {taxOptions.map((row) => (
+                    <MenuItem key={row.TAX_CODE} value={row.TAX_CODE}>
+                      {row.TAX_CODE} - {row.DESC} ({row.PERCENT}%)
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
 
-        {/* ================= DROPDOWN ================= */}
-        <Grid container spacing={2} mt={1}>
-          <Grid item xs={9}>
-            <TextField
-              select
-              fullWidth
-              label="Tax Term"
-              value={selectedTax}
-              onChange={(e) => setSelectedTax(e.target.value)}
-            >
-              <MenuItem value="">-- Select --</MenuItem>
-              {taxOptions.map((row) => (
-                <MenuItem key={row.TAX_CODE} value={row.TAX_CODE}>
-                  {row.TAX_CODE} - {row.DESC} ({row.PERCENT}%)
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-
-          <Grid item xs={3}>
-            <Button fullWidth variant="contained" onClick={handleAdd}>
-              ADD
-            </Button>
-          </Grid>
-        </Grid>
-
+              <Grid item xs={3}>
+                <Button fullWidth variant="contained" onClick={handleAdd}>
+                  ADD
+                </Button>
+              </Grid>
+            </Grid>
+          </>
+        )}
         {/* ================= FOOTER ================= */}
         <Box display="flex" justifyContent="flex-end" gap={2} mt={4}>
           <Button variant="contained" onClick={() => onSave(rows)}>

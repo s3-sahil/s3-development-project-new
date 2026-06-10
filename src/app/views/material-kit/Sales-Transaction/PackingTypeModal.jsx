@@ -201,12 +201,12 @@ const PackingTypeModal = ({
       let rowCalculation = 0;
 
       if (packingType === "Box") {
-        // For Box: qty per box * number of boxes
-        rowCalculation = qty * total;
+        // For Box: only qty per box (no multiplication)
+        rowCalculation = qty;
         
-        // Validation: Ensure both values are provided for Box type
-        if (qty === 0 || total === 0) {
-          console.warn(`Row ${index + 1}: Qty or Total is 0 for Box packing`);
+        // Validation: Ensure qty is provided for Box type
+        if (qty === 0) {
+          console.warn(`Row ${index + 1}: Qty is 0 for Box packing`);
         }
       } else if (packingType === "Loose") {
         // For Loose: just the loose quantity

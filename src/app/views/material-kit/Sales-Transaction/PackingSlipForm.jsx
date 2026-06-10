@@ -221,6 +221,7 @@ const PackingSlipForm = () => {
         PO_ID_DT: x.PO_ID_DT,
         RATE: x.RATE,
         ITEM_NAME: x.ITEM_NAME,
+        category_type: x.category_type,
       }));
 
       setItemCodes(normalized);
@@ -241,10 +242,32 @@ const PackingSlipForm = () => {
         packingType: value,
       }));
 
+      // Match INV_TYPE and extract PAY_TYPE from packingList
       const selected = packingList.find((item) => item.INV_TYPE === value);
 
-      setPayValue(selected?.PAY_TYPE);
-      console.log("Pay Value:", payValue);
+      if (selected) {
+        setPayValue(selected.PAY_TYPE);
+        console.log("Pay Value Set:", selected.PAY_TYPE);
+      }
+      return;
+    }
+
+    if (name === "subType") {
+      setState((prev) => ({
+        ...prev,
+        subType: value,
+      }));
+
+      // Also match SALES_TYPE and extract PAY_TYPE if needed
+      const selected = packingList.find(
+        (item) =>
+          item.SALES_TYPE === value && item.INV_TYPE === state.packingType,
+      );
+
+      if (selected) {
+        setPayValue(selected.PAY_TYPE);
+        console.log("Pay Value Set (from SubType):", selected.PAY_TYPE);
+      }
       return;
     }
 
@@ -286,21 +309,44 @@ const PackingSlipForm = () => {
       }
 
       // API CALL
+      // Format Period as MM/YYYY from fromDate
+      const fromDateStr = localStorage.getItem("fromDate");
+      const formatPeriod = (dateStr) => {
+        if (!dateStr) return "";
+        const date = new Date(dateStr);
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${month}/${year}`;
+      };
+
       const response = await fetchPackingSlipQuantityAPI({
         Pay_type: payValue,
         Item_Catg_Type: selectedStock?.category_type || "",
         Profcen_cd: localStorage.getItem("PROFCEN_CD"),
-        Period: localStorage.getItem("fromDate"),
+        Period: formatPeriod(fromDateStr),
         Item_Code: selectedStock?.ITEM_CODE,
       });
 
       console.log("Packing Slip Response:", response);
 
+      // CHECK FOR ERROR IN RESPONSE
+      if (response?.error || response?.Error) {
+        const errorMsg = response?.error || response?.Error;
+        alert(
+          `Error: ${typeof errorMsg === "string" ? errorMsg : JSON.stringify(errorMsg)}`,
+        );
+        return;
+      }
+
+      if (response?.message && response?.message !== "Success") {
+        alert(`Error: ${response.message}`);
+        return;
+      }
+
       // ITEM CODE CHECK
       const matchedItem = response.find(
         (item) => item.ITEM_CODE === selectedStock.ITEM_CODE,
       );
-
       // IF ITEM FOUND -> SHOW TABLE DATA
       if (matchedItem) {
         const newItem = {
@@ -326,8 +372,14 @@ const PackingSlipForm = () => {
         alert("Item Code not found in Packing Slip Quantity response");
       }
     } catch (error) {
+      debugger;
       console.error(error);
-      alert("Something went wrong");
+      // Show detailed error message
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong";
+      alert(`Error: ${errorMessage}`);
     }
   };
 
@@ -493,7 +545,7 @@ const PackingSlipForm = () => {
       // ✅ REQUIRED ROOT FIELDS (missing before)
       period: state.period || "",
       mM_DOC_DOCUMNET: "",
-      mM_DOC_TYPE:  "",
+      mM_DOC_TYPE: "",
       profceN_CD: localStorage.getItem("PROFCEN_CD") || "",
     };
 
@@ -602,7 +654,6 @@ const PackingSlipForm = () => {
               getOptionLabel={(option) =>
                 `${option.Cust_code} - ${option.Cust_name || ""}`
               }
-              // ✅ FIX: match value correctly
               isOptionEqualToValue={(option, value) =>
                 option.Cust_code === value.Cust_code
               }
@@ -615,7 +666,7 @@ const PackingSlipForm = () => {
                 setState((prev) => ({
                   ...prev,
                   customer: custCode,
-                  itemCode: "", // ✅ reset item code
+                  itemCode: "",
                 }));
 
                 if (custCode) {
@@ -634,7 +685,11 @@ const PackingSlipForm = () => {
                 );
               }}
               renderInput={(params) => (
-                <TextField {...params} label="Customer" />
+                <TextField
+                  {...params}
+                  label="Customer"
+                  placeholder="Select Customer"
+                />
               )}
             />
 
