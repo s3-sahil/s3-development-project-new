@@ -55,6 +55,7 @@ const PackingTypeModal = ({
   useEffect(() => {
     const getPackingType = async () => {
       const response = await fetchPackingTypeAPI();
+      debugger
       setPackingTypeOptions(response);
     };
 

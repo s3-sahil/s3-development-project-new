@@ -48,6 +48,7 @@ const CustomersPurchaseOrderLogin = () => {
   const [form, setForm] = useState({
     orderType: "",
     customer: "",
+    state: "",
     salesman: "",
     currency: "",
     loginDate: "",
@@ -339,16 +340,33 @@ const CustomersPurchaseOrderLogin = () => {
   const fetchTaxByHSN = async (hsn) => {
     try {
       const res = await getTaxTermByHSNCode(hsn);
-      const mappedTax = (res || []).map((t, index) => ({
+
+      const selectedDivisionData = JSON.parse(
+        localStorage.getItem("selectedDivisionData"),
+      );
+
+      const divisionState = selectedDivisionData?.State?.toUpperCase();
+
+      const customerState = form?.state?.toUpperCase();
+
+      const isSameState = divisionState === customerState;
+
+      const filteredTax = (res || []).filter((t) => {
+        if (isSameState) {
+          return t.TaxType !== "IGST";
+        }
+
+        return t.TaxType !== "CGST" && t.TaxType !== "SGST";
+      });
+
+      const mappedTax = filteredTax.map((t, index) => ({
         id: index + 1,
         code: t.TAX_CODE,
-        desc: t.DESC, // ✅ FIX
-        percent: Number(t.PERCENT), // ✅ FIX
-        type: t.TaxType, // ✅ IMPORTANT
+        desc: t.DESC,
+        percent: Number(t.PERCENT),
+        type: t.TaxType,
         amount: Number(t.PERCENT).toFixed(2),
       }));
-
-      console.log("✅ mappedTax:", mappedTax);
 
       setTaxRows(mappedTax);
     } catch (err) {
@@ -672,6 +690,7 @@ const CustomersPurchaseOrderLogin = () => {
                   setForm((prev) => ({
                     ...prev,
                     customer: newValue ? newValue.Cust_code : "",
+                    state: newValue ? newValue.Cust_state : "",
                   }));
                 }}
                 filterOptions={(options, state) => {

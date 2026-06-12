@@ -77,6 +77,7 @@ const PackingSlipForm = () => {
   const [rows, setRows] = useState([
     { srNo: 1, qtyLoose: "", totLoose: "", itemCode: "" },
   ]);
+  const [filteredItems, setFilteredItems] = useState([]);
 
   useEffect(() => {
     loadPackingData();
@@ -107,7 +108,6 @@ const PackingSlipForm = () => {
       const res = await fetchPackingAndSubType(
         localStorage.getItem("login_name"),
       );
-
       let list = res?.Data || [];
 
       setPackingList(list);
@@ -372,7 +372,6 @@ const PackingSlipForm = () => {
         alert("Item Code not found in Packing Slip Quantity response");
       }
     } catch (error) {
-      debugger;
       console.error(error);
       // Show detailed error message
       const errorMessage =
@@ -710,7 +709,98 @@ const PackingSlipForm = () => {
                   (i) => (i.ORDER_NO || i.ITEM_CODE) === state.orderNo,
                 ) || null
               }
+              // onChange={async (event, newValue) => {
+              //   setState((prev) => ({
+              //     ...prev,
+              //     orderNo: newValue
+              //       ? newValue.ORDER_NO || newValue.ITEM_CODE
+              //       : "",
+              //     poNo: newValue ? newValue.PO_NO : "",
+              //     poDate: newValue ? newValue.PO_DT : "",
+              //     poId: newValue ? newValue.PO_ID1 : "",
+              //     cate_code: newValue ? newValue.CATG_CODE : "",
+              //     rate: newValue ? newValue.RATE : "",
+              //     item_name: newValue ? newValue.ITEM_NAME : "",
+              //     item_code: newValue ? newValue.ITEM_CODE1 : "",
+              //   }));
+
+              //   setSelectedStock(newValue);
+
+              //   if (newValue.ITEM_CODE) {
+              //     setLoadingStock(true);
+              //     try {
+              //       const stockData = await fetchStockByItemCode(
+              //         newValue.ITEM_CODE,
+              //       );
+              //       setStockList(stockData);
+              //     } catch (err) {
+              //       console.error(err);
+              //       setStockList([]);
+              //     }
+              //     setLoadingStock(false);
+              //   } else {
+              //     setStockList([]);
+              //   }
+              // }}
+
+              // onChange={async (event, newValue) => {
+              //   if (newValue) {
+              //     const matchedRecords = itemCodes.filter(
+              //       (item) =>
+              //         item.PO_ID === newValue.PO_ID &&
+              //         item.PO_DT === newValue.PO_DT,
+              //     );
+
+              //     console.log("Matched Records:", matchedRecords);
+              //   }
+
+              //   setState((prev) => ({
+              //     ...prev,
+              //     orderNo: newValue
+              //       ? newValue.ORDER_NO || newValue.ITEM_CODE
+              //       : "",
+              //     poNo: newValue ? newValue.PO_NO : "",
+              //     poDate: newValue ? newValue.PO_DT : "",
+              //     poId: newValue ? newValue.PO_ID1 : "",
+              //     cate_code: newValue ? newValue.CATG_CODE : "",
+              //     rate: newValue ? newValue.RATE : "",
+              //     item_name: newValue ? newValue.ITEM_NAME : "",
+              //     item_code: newValue ? newValue.ITEM_CODE1 : "",
+              //   }));
+
+              //   setSelectedStock(newValue);
+
+              //   if (newValue.ITEM_CODE) {
+              //     setLoadingStock(true);
+              //     try {
+              //       const stockData = await fetchStockByItemCode(
+              //         newValue.ITEM_CODE,
+              //       );
+              //       setStockList(stockData);
+              //     } catch (err) {
+              //       console.error(err);
+              //       setStockList([]);
+              //     }
+              //     setLoadingStock(false);
+              //   } else {
+              //     setStockList([]);
+              //   }
+              // }}
               onChange={async (event, newValue) => {
+                if (newValue) {
+                  const matchedRecords = itemCodes.filter(
+                    (item) =>
+                      item.PO_ID === newValue.PO_ID &&
+                      item.PO_DT === newValue.PO_DT,
+                  );
+
+                  console.log("Matched Records:", matchedRecords);
+
+                  setFilteredItems(matchedRecords);
+                } else {
+                  setFilteredItems([]);
+                }
+
                 setState((prev) => ({
                   ...prev,
                   orderNo: newValue
@@ -724,7 +814,6 @@ const PackingSlipForm = () => {
                   item_name: newValue ? newValue.ITEM_NAME : "",
                   item_code: newValue ? newValue.ITEM_CODE1 : "",
                 }));
-
                 setSelectedStock(newValue);
 
                 if (newValue.ITEM_CODE) {
@@ -929,7 +1018,7 @@ const PackingSlipForm = () => {
                 <TextField {...params} label="Item Name" />
               )}
             /> */}
-            <Autocomplete
+            {/* <Autocomplete
               size="small"
               fullWidth
               // options={itemCodes} // ✅ hardcoded
@@ -969,8 +1058,33 @@ const PackingSlipForm = () => {
               renderInput={(params) => (
                 <TextField {...params} label="Item Code" />
               )}
-            />
+            /> */}
 
+            <Autocomplete
+              size="small"
+              fullWidth
+              options={filteredItems || []}
+              getOptionLabel={(option) =>
+                `${option.ITEM_CODE || ""} - ${option.DESC || ""}`
+              }
+              isOptionEqualToValue={(option, value) =>
+                option.ITEM_CODE === value.ITEM_CODE
+              }
+              onChange={(event, newValue) => {
+                setState((prev) => ({
+                  ...prev,
+                  stockDesc: newValue?.DESC || "",
+                  item_code: newValue?.ITEM_CODE || "",
+                }));
+
+                if (newValue) {
+                  setOpenModal(true);
+                }
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Item Code" />
+              )}
+            />
             {/* <TextField
               label="Operation"
               name="operation"
